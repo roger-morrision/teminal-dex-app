@@ -7,6 +7,7 @@ const MAX_MARKET_ROWS = 100;
 const MAX_CANDLES = 1000;
 const MAX_EVIDENCE_ROWS = 100;
 const MAX_WALLET_HOLDINGS = 500;
+const publicKeyString = z.string().refine(isSolanaAddress, 'Expected an exact 32-byte Solana address.');
 
 export const tokenSchema = z.object({
   id: z.string(), symbol: z.string(), name: z.string(), address: z.string(), pairAddress: z.string(),
@@ -62,6 +63,31 @@ export type HoldersResponse = z.infer<typeof holdersSchema>;
 export const transactionsSchema = z.object({ txns: z.array(z.object({ signature: z.string(), timestamp: z.number(), type: z.enum(['buy', 'sell']), amount: z.number(), amountUsd: z.number(), price: z.number().nullable(), feePayer: z.string().nullable(), source: z.string(), finality: z.string() }).passthrough()).max(MAX_PAGE_ROWS), dataQuality: z.string(), quality: z.object({ freshness: z.string().optional(), completeHistory: z.boolean().optional() }).passthrough().optional() }).passthrough();
 export type TransactionsResponse = z.infer<typeof transactionsSchema>;
 
+const providerEvidenceStatusSchema = z.enum(['success', 'empty', 'unavailable', 'not_configured', 'not_queried', 'error']);
+const boundedProviderStatusMapSchema = z.record(z.string(), providerEvidenceStatusSchema).refine((value) => Object.keys(value).length <= 10, 'Too many provider statuses.');
+export const bubbleGraphSchema = z.object({
+  nodes: z.array(z.object({ address: publicKeyString, label: z.string().nullable().optional(), pct: z.number().nonnegative(), source: z.string() }).passthrough()).max(75),
+  edges: z.array(z.object({ source: publicKeyString, target: publicKeyString, value: z.number().nonnegative(), signature: z.string().optional() }).passthrough()).max(1000),
+  source: z.enum(['holders', 'helius', 'insightx']), edgeSemantics: z.string(),
+  provenance: z.object({ graphSource: z.string(), labelSource: z.string(), balanceSource: z.string() }).passthrough(),
+  freshness: z.object({ status: z.string(), observedAt: z.number().nullable(), staleAfterMs: z.number().nonnegative() }).passthrough(),
+  completeness: z.object({ transactionHistory: z.literal('partial'), acceptedTransfers: z.number().int().nonnegative().nullable() }).passthrough(),
+  providers: boundedProviderStatusMapSchema,
+  providerEvidence: z.record(z.string(), z.object({ role: z.enum(['graph', 'labels', 'balances']), status: providerEvidenceStatusSchema, fetchedAt: z.number().nullable(), limitation: z.string().max(500).optional() }).passthrough()).refine((value) => Object.keys(value).length <= 10, 'Too many provider evidence entries.'),
+  ts: z.number(),
+}).passthrough();
+export type BubbleGraphResponse = z.infer<typeof bubbleGraphSchema>;
+
+export const manipulationSchema = z.object({
+  address: publicKeyString, symbol: z.string(), score: z.number().int().min(0).max(100), level: z.string(),
+  flags: z.array(z.string().max(100)).max(20),
+  metrics: z.object({ indexedSwaps: z.number().int().nonnegative(), indexedWallets: z.number().int().nonnegative(), totalIndexedVolumeUsd: z.number().nonnegative(), rapidRoundTripWallets: z.number().int().nonnegative(), roundTripWalletSharePct: z.number().min(0).max(100), topTraderVolumeSharePct: z.number().min(0).max(100), repeatedSizeVolumeSharePct: z.number().min(0).max(100), sampledHolders: z.number().int().nonnegative(), top10HolderPct: z.number().min(0).max(100) }).passthrough(),
+  evidence: z.object({ roundTrips: z.array(z.record(z.string(), z.unknown())).max(50), concentratedTraders: z.array(z.object({ wallet: publicKeyString, volumeUsd: z.number().nonnegative(), sharePct: z.number().min(0).max(100) }).passthrough()).max(20), repeatedSizes: z.array(z.record(z.string(), z.unknown())).max(20), holders: z.array(z.object({ address: publicKeyString, percentage: z.number().min(0).max(100) }).passthrough()).max(20) }).passthrough(),
+  provenance: z.object({ method: z.literal('indexed_signature_backed_heuristics'), observedAt: z.number(), limitations: z.array(z.string().max(500)).max(20) }).passthrough(),
+  unavailable: z.array(z.string().max(200)).max(20),
+}).passthrough();
+export type ManipulationResponse = z.infer<typeof manipulationSchema>;
+
 export const riskSchema = z.object({ riskScore: z.object({ score: z.number(), riskLevel: z.string(), factors: z.array(z.object({ name: z.string(), description: z.string(), impact: z.string(), scoreImpact: z.number() }).passthrough()), warnings: z.array(z.string()), recommendations: z.array(z.string()) }).passthrough(), riskEvidence: z.record(z.string(), z.unknown()).optional() }).passthrough();
 export type RiskResponse = z.infer<typeof riskSchema>;
 
@@ -84,7 +110,6 @@ export type WalletPnlResponse = z.infer<typeof walletPnlSchema>;
 export const trenchesSchema = z.object({ newTokens: z.array(tokenSchema).max(MAX_PAGE_ROWS), almostBonded: z.array(tokenSchema).max(MAX_PAGE_ROWS), migrated: z.array(tokenSchema).max(MAX_PAGE_ROWS), fetchedAt: z.number(), recordCount: z.number(), providers: z.array(z.string()).max(50), source: z.string(), dataQuality: z.string(), freshness: z.object({ ageMs: z.number().nullable(), staleAfterMs: z.number(), isStale: z.boolean() }).passthrough(), error: z.string().optional() }).passthrough();
 export type TrenchesResponse = z.infer<typeof trenchesSchema>;
 
-const publicKeyString = z.string().refine(isSolanaAddress, 'Expected an exact 32-byte Solana address.');
 export const swapQuoteSchema = z.object({
   quote: z.object({ side: z.enum(['buy', 'sell']), token: z.object({ address: publicKeyString, symbol: z.string(), name: z.string(), price: z.number().positive() }), inputMint: publicKeyString, outputMint: publicKeyString, inAmount: z.string().regex(/^\d+$/), inAmountUi: z.number().positive(), inAmountUiExact: z.string(), inSymbol: z.string(), outAmount: z.string().regex(/^\d+$/), outAmountUi: z.number().positive(), outAmountUiExact: z.string(), outSymbol: z.string(), minOutAmount: z.string().regex(/^\d+$/), minOutUi: z.number().positive(), minOutUiExact: z.string(), priceImpactPct: z.number().nonnegative(), slippageBps: z.number().int().min(1).max(5000), swapUsdValue: z.number().nullable(), route: z.array(z.string()).min(1), contextSlot: z.number().int().positive(), real: z.literal(true) }).passthrough(),
   jupQuote: z.record(z.string(), z.unknown()), quotedAt: z.number(), ts: z.number(),

@@ -351,3 +351,14 @@
 - Verification evidence: strict TypeScript and warning-free Expo lint passed; Jest 25 suites / 119 tests passed; Expo Doctor passed 21/21; web production export passed all 22 routes; Android and iOS production bundles passed. Generated exports were removed after verification.
 - Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles.
 - Next priority: begin the final requirement-by-requirement matrix, separating implementation-complete requirements from backend-contract and physical-device verification blockers without overstating either.
+
+## 2026-08-22 — Slice 32: authoritative holder-cluster and behavior evidence
+
+- Began the final requirement matrix by re-reading the current backend contracts. This corrected Slice 25's stale finding: the backend now exposes `/api/token/[address]/bubble` and `/api/token/[address]/manipulation`, so deeper token evidence was no longer legitimately blocked.
+- Added fail-closed, bounded schemas and client routing for the two authoritative GET-only contracts. Exact Solana identities, partial-history semantics, heuristic method, provider status/evidence, freshness, provenance limitations, and unavailable analyses are preserved rather than inferred or upgraded.
+- Extended Token Detail Holders with observed cluster source/edge semantics, labeled nodes, provider evidence, and an explicit partial-history/non-ownership limitation. Extended Trades with indexed behavior score/level, swap and wallet counts, concentration/round-trip evidence, backend flags, concentrated traders, every heuristic limitation, and unavailable analysis identifiers.
+- Capped graph nodes/edges, provider maps, flags, evidence collections, text lengths, and rendered provider/trader rows. Added contract rejection tests for oversized provider/node payloads and invalid manipulation scores, plus exact endpoint-routing coverage.
+- Re-audited swap execution against the evolved backend. `/api/swap/v2-readiness` explicitly reports blocked execution, while the build/submit boundary still lacks complete decoded intent and owner/idempotency/replay guarantees; mobile execution remains correctly locked.
+- Verification evidence: strict TypeScript and warning-free Expo lint passed; Jest 25 suites / 122 tests passed; Expo Doctor passed 21/21; web production export passed all 22 routes; Android and iOS production bundles passed. Generated exports were removed after verification.
+- Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles.
+- Next priority: finish the final requirement-by-requirement evidence matrix and regression audit, retaining explicit backend-contract and physical-device blockers without overstating completion.

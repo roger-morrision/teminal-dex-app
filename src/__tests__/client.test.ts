@@ -44,6 +44,13 @@ describe('backend client routing', () => {
     expect(jest.mocked(fetch).mock.calls[1]?.[0]).toBe(`https://terminal.example/api/token/${address}/ohlcv?tf=4h`);
   });
 
+  it('routes deeper holder and transaction evidence to authoritative contracts', async () => {
+    const address = '11111111111111111111111111111111';
+    jest.mocked(fetch).mockResolvedValueOnce(jsonResponse({ nodes: [], edges: [], source: 'holders', edgeSemantics: 'none', provenance: { graphSource: 'unavailable', labelSource: 'unavailable', balanceSource: 'holders' }, freshness: { status: 'unavailable', observedAt: null, staleAfterMs: 300000 }, completeness: { transactionHistory: 'partial', acceptedTransfers: null }, providers: {}, providerEvidence: {}, ts: 1 })).mockResolvedValueOnce(jsonResponse({ address, symbol: 'SOL', score: 0, level: 'low_observed', flags: [], metrics: { indexedSwaps: 0, indexedWallets: 0, totalIndexedVolumeUsd: 0, rapidRoundTripWallets: 0, roundTripWalletSharePct: 0, topTraderVolumeSharePct: 0, repeatedSizeVolumeSharePct: 0, sampledHolders: 0, top10HolderPct: 0 }, evidence: { roundTrips: [], concentratedTraders: [], repeatedSizes: [], holders: [] }, provenance: { method: 'indexed_signature_backed_heuristics', observedAt: 1, limitations: ['partial'] }, unavailable: ['common_funder_clusters'] }));
+    await fetchTokenPanel(address, 'bubble'); await fetchTokenPanel(address, 'manipulation');
+    expect(jest.mocked(fetch).mock.calls.map((call) => call[0])).toEqual([`https://terminal.example/api/token/${address}/bubble`, `https://terminal.example/api/token/${address}/manipulation`]);
+  });
+
   it('requests portfolio and PnL evidence with encoded bounded parameters', async () => {
     jest.mocked(fetch).mockResolvedValueOnce(jsonResponse({ success: true, timestamp: 1, data: { address: 'wallet', timeframe: '30d', holdings: [], allocation: {}, totalValueUsd: 0, tokenCount: 0, riskScore: null, performance: null }, provenance: { source: 'provider_backed_wallet_holdings', observedAt: null, dataQuality: 'unavailable', derived: [], unavailable: ['cost_basis'] } })).mockResolvedValueOnce(jsonResponse({ pnl: null, ts: 1 }));
     await fetchPortfolioAnalytics('wallet', '30d'); await fetchWalletPnl('wallet');

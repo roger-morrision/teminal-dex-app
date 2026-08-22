@@ -68,9 +68,19 @@ export default function TokenDetail() {
     queryFn: ({ signal }) => fetchTokenPanel(address, "holders", signal),
     enabled: validAddress && tab === "holders",
   });
+  const bubble = useQuery({
+    queryKey: ["token-panel", address, "bubble"],
+    queryFn: ({ signal }) => fetchTokenPanel(address, "bubble", signal),
+    enabled: validAddress && tab === "holders",
+  });
   const trades = useQuery({
     queryKey: ["token-panel", address, "txns"],
     queryFn: ({ signal }) => fetchTokenPanel(address, "txns", signal),
+    enabled: validAddress && tab === "trades",
+  });
+  const manipulation = useQuery({
+    queryKey: ["token-panel", address, "manipulation"],
+    queryFn: ({ signal }) => fetchTokenPanel(address, "manipulation", signal),
     enabled: validAddress && tab === "trades",
   });
   const risk = useQuery({
@@ -215,55 +225,166 @@ export default function TokenDetail() {
           />
         ) : null}
         {tab === "holders" ? (
-          <AsyncPanel query={holders}>
-            {(data) => (
-              <>
-                <EvidenceLine
-                  label={t("holderSource")}
-                  value={data.source ?? t("unavailable")}
-                />
-                <Text style={styles.sectionTitle}>{t("largestHolders")}</Text>
-                {data.holders.slice(0, 30).map((holder) => (
-                  <DataRow
-                    key={holder.address}
-                    title={`#${holder.rank} ${short(holder.address)}`}
-                    value={`${holder.pct.toFixed(2)}%`}
-                    detail={`${holder.uiAmount.toLocaleString()} ${t("tokens").toLowerCase()}`}
+          <>
+            <AsyncPanel query={holders}>
+              {(data) => (
+                <>
+                  <EvidenceLine
+                    label={t("holderSource")}
+                    value={data.source ?? t("unavailable")}
                   />
-                ))}
-                <Limitation text={t("holderLimitation")} />
-              </>
-            )}
-          </AsyncPanel>
+                  <Text style={styles.sectionTitle}>{t("largestHolders")}</Text>
+                  {data.holders.slice(0, 30).map((holder) => (
+                    <DataRow
+                      key={holder.address}
+                      title={`#${holder.rank} ${short(holder.address)}`}
+                      value={`${holder.pct.toFixed(2)}%`}
+                      detail={`${holder.uiAmount.toLocaleString()} ${t("tokens").toLowerCase()}`}
+                    />
+                  ))}
+                  <Limitation text={t("holderLimitation")} />
+                </>
+              )}
+            </AsyncPanel>
+            <AsyncPanel query={bubble}>
+              {(data) => (
+                <>
+                  <Text style={styles.sectionTitle}>{t("holderClusters")}</Text>
+                  <EvidenceLine
+                    label={t("graphSource")}
+                    value={data.provenance.graphSource}
+                  />
+                  <EvidenceLine
+                    label={t("edgeSemantics")}
+                    value={data.edgeSemantics}
+                  />
+                  <EvidenceLine
+                    label={t("observedEdges")}
+                    value={String(data.edges.length)}
+                  />
+                  <EvidenceLine
+                    label={t("observedNodes")}
+                    value={String(data.nodes.length)}
+                  />
+                  {data.nodes
+                    .filter((node) => node.label)
+                    .slice(0, 10)
+                    .map((node) => (
+                      <DataRow
+                        key={node.address}
+                        title={node.label ?? t("unknown")}
+                        value={`${node.pct.toFixed(2)}%`}
+                        detail={`${short(node.address)} · ${node.source}`}
+                      />
+                    ))}
+                  {Object.entries(data.providerEvidence).slice(0, 10).map(
+                    ([provider, evidence]) => (
+                      <DataRow
+                        key={provider}
+                        title={provider}
+                        value={evidence.status}
+                        detail={evidence.limitation ?? evidence.role}
+                      />
+                    ),
+                  )}
+                  <Limitation
+                    text={t("clusterLimitation", {
+                      history: data.completeness.transactionHistory,
+                    })}
+                  />
+                </>
+              )}
+            </AsyncPanel>
+          </>
         ) : null}
         {tab === "trades" ? (
-          <AsyncPanel query={trades}>
-            {(data) => (
-              <>
-                <EvidenceLine
-                  label={t("dataQuality")}
-                  value={data.dataQuality}
-                />
-                <EvidenceLine
-                  label={t("freshness")}
-                  value={data.quality?.freshness ?? t("unavailable")}
-                />
-                <Text style={styles.sectionTitle}>
-                  {t("observedTransactions")}
-                </Text>
-                {data.txns.slice(0, 50).map((trade) => (
-                  <DataRow
-                    key={trade.signature}
-                    title={`${trade.type.toUpperCase()} · ${compactUsd(trade.amountUsd)}`}
-                    value={trade.finality}
-                    detail={`${short(trade.feePayer)} · ${trade.source}`}
-                    tone={trade.type === "buy" ? "positive" : "negative"}
+          <>
+            <AsyncPanel query={trades}>
+              {(data) => (
+                <>
+                  <EvidenceLine
+                    label={t("dataQuality")}
+                    value={data.dataQuality}
                   />
-                ))}
-                <Limitation text={t("tradeHistoryLimitation")} />
-              </>
-            )}
-          </AsyncPanel>
+                  <EvidenceLine
+                    label={t("freshness")}
+                    value={data.quality?.freshness ?? t("unavailable")}
+                  />
+                  <Text style={styles.sectionTitle}>
+                    {t("observedTransactions")}
+                  </Text>
+                  {data.txns.slice(0, 50).map((trade) => (
+                    <DataRow
+                      key={trade.signature}
+                      title={`${trade.type.toUpperCase()} · ${compactUsd(trade.amountUsd)}`}
+                      value={trade.finality}
+                      detail={`${short(trade.feePayer)} · ${trade.source}`}
+                      tone={trade.type === "buy" ? "positive" : "negative"}
+                    />
+                  ))}
+                  <Limitation text={t("tradeHistoryLimitation")} />
+                </>
+              )}
+            </AsyncPanel>
+            <AsyncPanel query={manipulation}>
+              {(data) => (
+                <>
+                  <Text style={styles.sectionTitle}>
+                    {t("behaviorEvidence")}
+                  </Text>
+                  <View style={styles.score} accessibilityRole="summary">
+                    <Text style={styles.scoreValue}>{data.score}</Text>
+                    <View>
+                      <Text style={styles.scoreLabel}>
+                        {t("observedBehaviorScore")}
+                      </Text>
+                      <Text style={styles.riskLevel}>{data.level}</Text>
+                    </View>
+                  </View>
+                  <EvidenceLine
+                    label={t("indexedSwaps")}
+                    value={data.metrics.indexedSwaps.toLocaleString()}
+                  />
+                  <EvidenceLine
+                    label={t("indexedWallets")}
+                    value={data.metrics.indexedWallets.toLocaleString()}
+                  />
+                  <EvidenceLine
+                    label={t("roundTripWalletShare")}
+                    value={`${data.metrics.roundTripWalletSharePct.toFixed(1)}%`}
+                  />
+                  <EvidenceLine
+                    label={t("topTraderVolumeShare")}
+                    value={`${data.metrics.topTraderVolumeSharePct.toFixed(1)}%`}
+                  />
+                  {data.flags.map((flag) => (
+                    <DataRow
+                      key={flag}
+                      title={flag}
+                      value={t("observedFlag")}
+                      detail={data.provenance.method}
+                    />
+                  ))}
+                  {data.evidence.concentratedTraders.slice(0, 5).map((item) => (
+                    <DataRow
+                      key={item.wallet}
+                      title={short(item.wallet)}
+                      value={`${item.sharePct.toFixed(1)}%`}
+                      detail={compactUsd(item.volumeUsd)}
+                    />
+                  ))}
+                  {data.provenance.limitations.map((limitation) => (
+                    <Limitation key={limitation} text={limitation} />
+                  ))}
+                  <Limitation
+                    text={t("behaviorLimitation", {
+                      unavailable: data.unavailable.join(", ") || t("none"),
+                    })}
+                  />
+                </>
+              )}
+            </AsyncPanel>
+          </>
         ) : null}
         {tab === "risk" ? (
           <AsyncPanel query={risk}>

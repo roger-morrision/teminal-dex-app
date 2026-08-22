@@ -269,11 +269,26 @@ const en = {
   largestHolders: "Largest observed holders",
   holderLimitation:
     "Holder rows may be sampled. Exactness is shown by backend evidence and must not be inferred from row count.",
+  holderClusters: "Holder cluster evidence",
+  graphSource: "Graph source",
+  edgeSemantics: "Edge semantics",
+  observedEdges: "Observed edges",
+  observedNodes: "Observed nodes",
+  clusterLimitation:
+    "Cluster evidence uses {history} transaction history. Transfers or inferred membership indicate observations, not common ownership.",
   dataQuality: "Data quality",
   freshness: "Freshness",
   observedTransactions: "Observed transactions",
   tradeHistoryLimitation:
     "This is observed partial history, not a complete ledger or tax record.",
+  behaviorEvidence: "Indexed transaction behavior",
+  observedBehaviorScore: "OBSERVED BEHAVIOR SCORE",
+  indexedWallets: "Indexed wallets",
+  roundTripWalletShare: "Rapid round-trip wallet share",
+  topTraderVolumeShare: "Top trader volume share",
+  observedFlag: "OBSERVED FLAG",
+  behaviorLimitation:
+    "Heuristics are indicators, not proof. Unavailable analysis: {unavailable}.",
   safetyScore: "SAFETY SCORE",
   riskLimitation:
     "Risk scoring is decision support, not a guarantee. Missing inputs reduce confidence and execution remains locked.",
@@ -920,11 +935,26 @@ const vi: { [K in TranslationKey]: string } = {
   largestHolders: "Người nắm giữ quan sát lớn nhất",
   holderLimitation:
     "Các hàng có thể được lấy mẫu. Độ chính xác do bằng chứng máy chủ thể hiện, không được suy ra từ số hàng.",
+  holderClusters: "Bằng chứng cụm người nắm giữ",
+  graphSource: "Nguồn đồ thị",
+  edgeSemantics: "Ý nghĩa cạnh",
+  observedEdges: "Cạnh quan sát được",
+  observedNodes: "Nút quan sát được",
+  clusterLimitation:
+    "Bằng chứng cụm dùng lịch sử giao dịch {history}. Chuyển khoản hoặc quan hệ thành viên suy luận là quan sát, không chứng minh cùng chủ sở hữu.",
   dataQuality: "Chất lượng dữ liệu",
   freshness: "Độ mới",
   observedTransactions: "Giao dịch quan sát được",
   tradeHistoryLimitation:
     "Đây là lịch sử quan sát một phần, không phải sổ cái hoàn chỉnh hay hồ sơ thuế.",
+  behaviorEvidence: "Hành vi giao dịch đã lập chỉ mục",
+  observedBehaviorScore: "ĐIỂM HÀNH VI QUAN SÁT",
+  indexedWallets: "Ví đã lập chỉ mục",
+  roundTripWalletShare: "Tỷ lệ ví khứ hồi nhanh",
+  topTraderVolumeShare: "Tỷ trọng khối lượng nhà giao dịch lớn nhất",
+  observedFlag: "CỜ QUAN SÁT",
+  behaviorLimitation:
+    "Heuristic là chỉ báo, không phải bằng chứng kết luận. Phân tích chưa có: {unavailable}.",
   safetyScore: "ĐIỂM AN TOÀN",
   riskLimitation:
     "Điểm rủi ro chỉ hỗ trợ quyết định, không phải bảo đảm. Thiếu đầu vào làm giảm độ tin cậy và thực thi vẫn bị khóa.",

@@ -141,6 +141,9 @@ const en = {
   clearLocalData: "Clear local data",
   clearing: "Clearing…",
   disconnectClear: "Disconnect and clear local data",
+  clearComplete: "Wallet disconnected and local app data cleared.",
+  clearFailed:
+    "Could not finish clearing all local data. Review device state and retry.",
   footerSecurity:
     "Terminal DEX Mobile 0.1.0 · non-custodial · no secret keys stored",
   observationDesk: "OBSERVATION DESK",
@@ -788,6 +791,9 @@ const vi: { [K in TranslationKey]: string } = {
   clearLocalData: "Xóa dữ liệu cục bộ",
   clearing: "Đang xóa…",
   disconnectClear: "Ngắt kết nối và xóa dữ liệu cục bộ",
+  clearComplete: "Đã ngắt kết nối ví và xóa dữ liệu ứng dụng cục bộ.",
+  clearFailed:
+    "Không thể hoàn tất việc xóa toàn bộ dữ liệu cục bộ. Hãy kiểm tra trạng thái thiết bị và thử lại.",
   footerSecurity:
     "Terminal DEX Mobile 0.1.0 · không lưu ký · không lưu khóa bí mật",
   observationDesk: "BÀN QUAN SÁT",

@@ -330,3 +330,14 @@
 - Verification evidence: strict TypeScript and warning-free Expo lint passed; Jest 23 suites / 114 tests passed; Expo Doctor passed 21/21; web production export passed all 22 routes; Android and iOS production bundles passed. Generated exports were removed after verification.
 - Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles.
 - Next priority: audit remaining one-off asynchronous surfaces, especially quote review and Settings, before evaluating whether automated dynamic-state coverage can be marked complete; real-device checks and backend-contract blockers remain partial.
+
+## 2026-08-22 — Slice 30: quote and privacy-reset outcomes
+
+- Audited quote review and Settings one-off asynchronous behavior. Quote token identity loading used an unlabeled standalone progressbar, quote failures/reviews were not explicit accessible live containers, and Settings reset disabled its control without exposing busy state or reporting partial failure.
+- Added a polite busy/error quote token state, exposed invalid-link, quote-error, and quote-review containers to assistive technology, and retained the non-executing 15-second quote expiry and transaction lock.
+- Added a reusable Settings reset control with disabled/busy state plus localized English/Vietnamese success and failure outcomes. Reset failures are caught, announced, and return the control to an actionable state rather than becoming unhandled promise rejections.
+- Added direct tests for quote token loading/failure, reset busy/error/success semantics, and the real Settings failure path through confirmation, wallet disconnect, local-storage failure, announcement, and control recovery.
+- Prettier normalized the two previously compressed route files; semantic changes remain scoped to asynchronous evidence and reset outcomes.
+- Verification evidence: strict TypeScript and warning-free Expo lint passed; Jest 24 suites / 117 tests passed; Expo Doctor passed 21/21; web production export passed all 22 routes; Android and iOS production bundles passed. Generated exports were removed after verification.
+- Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles.
+- Next priority: audit the remaining inline spinners and mutation controls for explicit parent busy/error state, then reevaluate automated dynamic-state coverage before the final requirement matrix.

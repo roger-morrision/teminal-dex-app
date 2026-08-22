@@ -1,4 +1,4 @@
-import { tokenDetailSchema, trendingSchema, type TokenDetailResponse, type TrendingResponse } from './schema';
+import { holdersSchema, narrativeSchema, ohlcvSchema, pairsSchema, riskSchema, smartMoneySchema, tokenDetailSchema, transactionsSchema, trendingSchema, type HoldersResponse, type NarrativeResponse, type OhlcvResponse, type PairsResponse, type RiskResponse, type SmartMoneyResponse, type TokenDetailResponse, type TransactionsResponse, type TrendingResponse } from './schema';
 
 export type TrendingPeriod = '1h' | '6h' | '24h';
 export type TrendingSort = 'trending' | 'gainers' | 'losers' | 'volume' | 'new';
@@ -52,5 +52,26 @@ export async function fetchTokenDetail(address: string, signal?: AbortSignal): P
   if (!response.ok) throw new ApiError(`Token detail request failed (${response.status}).`, response.status);
   const result = tokenDetailSchema.safeParse(await response.json());
   if (!result.success) throw new ApiError('Backend returned an incompatible token detail response.');
+  return result.data;
+}
+
+type TokenPanel = 'holders' | 'txns' | 'risk' | 'narrative' | 'smart-money' | 'pairs';
+type TokenPanelResponse = { holders: HoldersResponse; txns: TransactionsResponse; risk: RiskResponse; narrative: NarrativeResponse; 'smart-money': SmartMoneyResponse; pairs: PairsResponse };
+const panelSchemas = { holders: holdersSchema, txns: transactionsSchema, risk: riskSchema, narrative: narrativeSchema, 'smart-money': smartMoneySchema, pairs: pairsSchema } as const;
+
+export async function fetchTokenPanel<T extends TokenPanel>(address: string, panel: T, signal?: AbortSignal): Promise<TokenPanelResponse[T]> {
+  const response = await fetch(`${getApiOrigin()}/api/token/${encodeURIComponent(address)}/${panel}`, { headers: { Accept: 'application/json' }, signal });
+  if (!response.ok) throw new ApiError(`${panel} request failed (${response.status}).`, response.status);
+  const result = panelSchemas[panel].safeParse(await response.json());
+  if (!result.success) throw new ApiError(`Backend returned incompatible ${panel} data.`);
+  return result.data as TokenPanelResponse[T];
+}
+
+export async function fetchOhlcv(address: string, timeframe: '5m' | '15m' | '1h' | '4h' | '1d', signal?: AbortSignal): Promise<OhlcvResponse> {
+  const query = new URLSearchParams({ tf: timeframe });
+  const response = await fetch(`${getApiOrigin()}/api/token/${encodeURIComponent(address)}/ohlcv?${query}`, { headers: { Accept: 'application/json' }, signal });
+  if (!response.ok) throw new ApiError(`Chart request failed (${response.status}).`, response.status);
+  const result = ohlcvSchema.safeParse(await response.json());
+  if (!result.success) throw new ApiError('Backend returned incompatible OHLCV data.');
   return result.data;
 }

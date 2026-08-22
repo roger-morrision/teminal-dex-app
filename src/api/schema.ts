@@ -43,3 +43,26 @@ export const tokenDetailSchema = z.object({
 }).passthrough();
 
 export type TokenDetailResponse = z.infer<typeof tokenDetailSchema>;
+
+export const candleSchema = z.object({ time: z.number(), open: z.number(), high: z.number(), low: z.number(), close: z.number(), volume: z.number() }).passthrough();
+export const ohlcvSchema = z.object({ candles: z.array(candleSchema), tf: z.string(), source: z.string(), dataQuality: z.string(), degraded: z.boolean().optional(), quality: z.record(z.string(), z.unknown()).optional() }).passthrough();
+export type OhlcvResponse = z.infer<typeof ohlcvSchema>;
+
+const evidenceMetricSchema = z.object({ available: z.boolean(), value: z.union([z.string(), z.number(), z.boolean()]).nullable(), confidence: z.string(), source: z.string().nullable().optional() }).passthrough();
+export const holdersSchema = z.object({ holders: z.array(z.object({ address: z.string(), uiAmount: z.number(), pct: z.number(), rank: z.number() }).passthrough()), source: z.string().optional(), evidence: z.record(z.string(), evidenceMetricSchema).optional() }).passthrough();
+export type HoldersResponse = z.infer<typeof holdersSchema>;
+
+export const transactionsSchema = z.object({ txns: z.array(z.object({ signature: z.string(), timestamp: z.number(), type: z.enum(['buy', 'sell']), amount: z.number(), amountUsd: z.number(), price: z.number().nullable(), feePayer: z.string().nullable(), source: z.string(), finality: z.string() }).passthrough()), dataQuality: z.string(), quality: z.object({ freshness: z.string().optional(), completeHistory: z.boolean().optional() }).passthrough().optional() }).passthrough();
+export type TransactionsResponse = z.infer<typeof transactionsSchema>;
+
+export const riskSchema = z.object({ riskScore: z.object({ score: z.number(), riskLevel: z.string(), factors: z.array(z.object({ name: z.string(), description: z.string(), impact: z.string(), scoreImpact: z.number() }).passthrough()), warnings: z.array(z.string()), recommendations: z.array(z.string()) }).passthrough(), riskEvidence: z.record(z.string(), z.unknown()).optional() }).passthrough();
+export type RiskResponse = z.infer<typeof riskSchema>;
+
+export const narrativeSchema = z.object({ narrative: z.object({ primary: z.string(), secondary: z.array(z.string()), confidence: z.number(), sources: z.array(z.string()), description: z.string() }).passthrough(), narrativeEvidence: z.record(z.string(), z.unknown()).optional() }).passthrough();
+export type NarrativeResponse = z.infer<typeof narrativeSchema>;
+
+export const smartMoneySchema = z.object({ signals: z.array(z.object({ wallet: z.string(), action: z.enum(['accumulate', 'distribute']), confidence: z.number(), evidence: z.array(z.object({ description: z.string(), timestamp: z.number(), strength: z.number() }).passthrough()), profitEstimate: z.number().optional() }).passthrough()), walletRankingEvidence: z.record(z.string(), z.unknown()).optional() }).passthrough();
+export type SmartMoneyResponse = z.infer<typeof smartMoneySchema>;
+
+export const pairsSchema = z.object({ pairs: z.array(z.object({ pairAddress: z.string(), quoteSymbol: z.string().nullable(), liquidityUsd: z.number(), volume24hUsd: z.number().nullable(), priceUsd: z.number().nullable(), source: z.string(), freshness: z.string(), quoteIdentity: z.string() }).passthrough()), dataQuality: z.string(), quality: z.object({ limitation: z.string().optional() }).passthrough().optional() }).passthrough();
+export type PairsResponse = z.infer<typeof pairsSchema>;

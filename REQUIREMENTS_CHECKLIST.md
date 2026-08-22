@@ -18,7 +18,7 @@ Status legend: `[x]` verified, `[ ]` incomplete, `[~]` intentionally visible but
 - [x] More catalog preserves AI, Track, CopyTrade, Top Traders, Smart Money, Wallet Tracker, Signals, Heatmap, Snipe List, Analytics, Multicharts, Feed Data, and Claim Monitor destinations.
 - [x] Discover Trending/Gainers/Losers/Volume/New Pairs/Hot Searches/Surge/NextBC/Pump Live/Watchlist, timeframes, server search, refresh, filters, pagination, states, provenance, and token-detail handoff.
 - [x] Non-secret watchlist and Discovery filter persistence with idempotent add/remove and explicit reset.
-- [~] Token detail fetches its live normalized backend contract and exposes market/security automation evidence; chart, swaps, holders, transactions, smart money, narrative, and pairs remain incomplete.
+- [~] Token detail fetches normalized backend contracts for chart, holders, observed transactions, risk/security evidence, smart money, narrative, and pairs with truthful limitations; swap execution and deeper holder/transaction drilldowns remain incomplete.
 - [ ] Trenches launch/migration columns and trade handoff.
 - [ ] Monitor, Track, alerts, delivery evidence and diagnostics.
 - [ ] Portfolio and analytics with owner-scoped backend data.

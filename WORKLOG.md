@@ -22,3 +22,13 @@
 - Replaced snapshot-only detail with `/api/token/[address]` refresh, validated evidence fields, stale-snapshot fallback, retry behavior, and explicit automation readiness labels.
 - Verification evidence: `npm run typecheck` and `npm run lint` passed; Jest 4 suites / 8 tests passed including backend routing, URL hardening, response validation, formatting, and accessible row/watchlist behavior; Expo Doctor passed 21/21; Expo exported all 14 web routes.
 - Next priority: token chart/transactions/holders/security/narrative/pairs vertical slice.
+
+## 2026-08-22 — Slice 3: token intelligence evidence tabs
+
+- Inspected read-only backend contracts for OHLCV, holders, transactions, risk, narrative, smart money, and liquidity pairs.
+- Added runtime schemas and typed clients for all seven contracts; malformed financial values fail closed into explicit errors.
+- Added a real SVG price chart with backend source/quality labels and timeframe switching.
+- Added token tabs for sampled holder distribution, observed partial trades/finality, safety score factors, narrative evidence, smart-money signals, and pair liquidity/freshness.
+- Kept critical limitations adjacent to data: holder sampling, incomplete transaction history, non-guaranteed scoring, probabilistic labels, and reported TVL versus executable depth.
+- Verification evidence: TypeScript and Expo lint passed cleanly; Jest 5 suites / 12 tests passed; Expo Doctor passed 21/21; Expo web export produced all 14 routes with the SVG chart bundle.
+- Next priority: secure wallet/session foundation and read-only portfolio identity flow before any transaction construction.

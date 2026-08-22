@@ -231,3 +231,15 @@
 - Verification evidence: strict TypeScript and warning-free Expo lint passed; Jest 20 suites / 96 tests passed; Expo Doctor passed 21/21; web production export passed all 22 routes; Android and iOS production bundles passed. Generated exports were removed after verification.
 - Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles.
 - Next priority: localize and audit Wallet Intelligence, then Research Workspace and Operations; real-device screen-reader/dynamic-type/connectivity/performance verification remains device-dependent.
+
+## 2026-08-22 — Slice 21: localized watch-only Wallet Intelligence
+
+- Re-established the clean mobile status/history, requirements, tests, and existing non-deprecated wallet evidence contracts before auditing Smart Money and Wallet Tracker.
+- Localized mobile-owned headings, tabs, watch-only safety copy, historical ranking evidence/KPIs, reliability and limitation labels, device-only tracker form/validation/states, public holdings/PnL evidence, and empty/loading states in typed English and Vietnamese.
+- Preserved exact dynamic evidence: provider/source/data-quality values, Smart Money/Whale backend badges, wallet addresses, token symbols/mints, provenance methods, warnings, and backend errors remain untranslated.
+- Added explicit header, summary, alert, selected, disabled, and busy semantics across tabs, safety disclosures, ranking cards, tracker controls, validation, evidence loading, and backend errors. Wallet selection and destructive removal remain distinct actions.
+- Kept authority watch-only: public evidence never proves ownership and the route exposes no follow, CopyTrade, signing, transaction construction, submission, or funds movement action. Tracked labels and exact public addresses remain device-only and bounded to 50.
+- Wrapped TrackedWalletRow tests in the real settings boundary, fixed its promise-faithful AsyncStorage fixture, expanded Vietnamese interpolation/safety assertions, and added Wallet Intelligence to the source-level Pressable/TextInput audit.
+- Verification evidence: strict TypeScript and warning-free Expo lint passed; Jest 20 suites / 98 tests passed; Expo Doctor passed 21/21; web production export passed all 22 routes; Android and iOS production bundles passed. Generated exports were removed after verification.
+- Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles.
+- Next priority: localize and audit Research Workspace, then Operations; real-device screen-reader/dynamic-type/connectivity/performance verification remains device-dependent.

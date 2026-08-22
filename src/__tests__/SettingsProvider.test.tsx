@@ -7,7 +7,7 @@ jest.mock('@react-native-async-storage/async-storage', () => ({ __esModule: true
 
 function Consumer() {
   const settings = useSettings();
-  return <><Text>{settings.t('noLaunches', { lane: settings.t('new').toLowerCase() })}</Text><Text>{settings.t('quoteCheckExactIn', { slippage: '1.00' })}</Text><Text>{settings.t('tradingLocked')}</Text><Text>{settings.t('maxPositions', { count: 2 })}</Text><Text>{settings.t('copyTradeSafety')}</Text><Text>{settings.t('governanceProgress', { trades: 12, days: 3 })}</Text><Text>{settings.t('aiSafety')}</Text><Text>{settings.t('heatmapInclusion', { source: 'rpc', included: 8, excluded: 2 })}</Text><Text>{settings.t('marketIntelSafety')}</Text><Pressable accessibilityRole="button" accessibilityLabel="Vietnamese" onPress={() => settings.setLanguage('vi')}><Text>{settings.t('discover')}</Text></Pressable></>;
+  return <><Text>{settings.t('noLaunches', { lane: settings.t('new').toLowerCase() })}</Text><Text>{settings.t('quoteCheckExactIn', { slippage: '1.00' })}</Text><Text>{settings.t('tradingLocked')}</Text><Text>{settings.t('maxPositions', { count: 2 })}</Text><Text>{settings.t('copyTradeSafety')}</Text><Text>{settings.t('governanceProgress', { trades: 12, days: 3 })}</Text><Text>{settings.t('aiSafety')}</Text><Text>{settings.t('heatmapInclusion', { source: 'rpc', included: 8, excluded: 2 })}</Text><Text>{settings.t('marketIntelSafety')}</Text><Text>{settings.t('rankingEvidence', { source: 'rpc', quality: 'verified', freshness: settings.t('current') })}</Text><Text>{settings.t('walletIntelSafety')}</Text><Pressable accessibilityRole="button" accessibilityLabel="Vietnamese" onPress={() => settings.setLanguage('vi')}><Text>{settings.t('discover')}</Text></Pressable></>;
 }
 
 describe('SettingsProvider localization', () => {
@@ -28,6 +28,8 @@ describe('SettingsProvider localization', () => {
     expect(screen.getByText(/Mọi khuyến nghị chỉ mang tính tham khảo/)).toBeTruthy();
     expect(screen.getByText('rpc · gồm 8 · loại 2')).toBeTruthy();
     expect(screen.getByText(/Quan sát có chữ ký và ảnh chụp thị trường/)).toBeTruthy();
+    expect(screen.getByText('rpc · verified · HIỆN TẠI · xếp hạng là dữ liệu lịch sử')).toBeTruthy();
+    expect(screen.getByText(/Tài sản ví công khai và PnL đã thực hiện/)).toBeTruthy();
     expect(AsyncStorage.setItem).toHaveBeenCalledWith('terminal-dex:settings:v1', expect.stringContaining('"language":"vi"'));
   });
 

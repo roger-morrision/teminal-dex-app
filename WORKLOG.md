@@ -371,3 +371,14 @@
 - Regression evidence remains the full Slice 32 gate: strict TypeScript, warning-free Expo lint, 25 Jest suites / 122 tests, Expo Doctor 21/21, 22-route web export, Android export, and iOS export all passed. Generated exports were removed.
 - Marked the audit activity complete while leaving every implementation or device-dependent blocker partial in the checklist.
 - Next priority: close blockers only when the backend supplies the missing authoritative contracts and supported physical devices/development builds are available; otherwise audit future changes for regressions without weakening safety boundaries.
+
+## 2026-08-22 — Slice 34: AI paper operational-integrity evidence
+
+- Re-audited the actively evolving read-only backend and found that public paper trading now exposes stable operational, mutation-recovery, job-lease, and cycle-history health summaries that mobile previously accepted only as untyped passthrough data and did not display.
+- Added bounded runtime contracts for operational health v1, mutation health v2, job-lease health v1, and cycle-history health v2. Every contract requires `simulationOnly: true` and `executionEnabled: false`; mutation recovery additionally requires the fail-closed `fail_closed_no_automatic_replay` policy.
+- Extended the AI paper tab with localized read-only operational integrity: cycle state/failures/reasons, qualified mutations/manual review, lease qualification/contention, and terminal-cycle history/fencing progress. No POST, training, promotion, configuration, replay, or execution authority was added.
+- Added direct component coverage for degraded health/manual-review evidence and its no-replay boundary, plus schema rejection coverage for any operational payload that enables execution.
+- Preserved unrelated backend user work; the backend repository remained read-only throughout the audit.
+- Verification evidence: strict TypeScript and warning-free Expo lint passed; Jest 26 suites / 123 tests passed; Expo Doctor passed 21/21; web production export passed all 22 routes; Android and iOS production bundles passed. Generated exports were removed after verification.
+- Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles.
+- Next priority: continue auditing newly landed backend contracts and independently closable mobile evidence gaps; transaction/provider and physical-device blockers remain explicit.

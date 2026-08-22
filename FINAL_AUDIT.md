@@ -2,7 +2,7 @@
 
 Audit date: 2026-08-22
 
-Audited mobile commit baseline: `0069a04`
+Audit maintained through: Slice 34
 
 Backend authority: `C:\Tuan\devApps\TERMINAL_DEX_Intelligent` (read-only)
 
@@ -22,10 +22,10 @@ Completion is intentionally not claimed for requirements that need an absent bac
 | Token intelligence | Verified except execution | Real detail, OHLCV, holders, clusters, transactions, behavior heuristics, risk/security, smart money, narrative, and pairs; quote review remains non-executing. |
 | Monitor and alerts | Verified except Track | Indexed observations plus owner-scoped durable rule CRUD/delivery evidence; no connected Track provider exists. |
 | CopyTrade | Verified read-only/paused | Rankings, verified-owner paused strategy lifecycle, readiness, positions, and execution audit; activation/signing/submission remain absent. |
-| AI and auxiliary intelligence | Verified | Advisory-only AI, public simulation evidence, execution-disabled governance, signals, heatmap, claims, smart money, wallet tracker, Snipe List, Multicharts, analytics, and feed operations. |
+| AI and auxiliary intelligence | Verified | Advisory-only AI, public simulation performance/research plus operational, mutation, lease, and cycle-fencing health, execution-disabled governance, signals, heatmap, claims, smart money, wallet tracker, Snipe List, Multicharts, analytics, and feed operations. |
 | Localization, privacy, accessibility | Automated verification passed | Typed English/Vietnamese copy, reduced motion, telemetry default-off, privacy reset, roles/labels/busy/error/empty/retry semantics, and static all-route control audit. |
 | Network and platform hardening | Automated verification passed | React Query online/offline policy, bounded retry behavior, ATS/cleartext/backup configuration, deep-link allowlisting, redaction, Expo Doctor, and web/Android/iOS exports. |
-| Tests and build regression | Verified | TypeScript, Expo lint, 25 Jest suites / 122 tests, Expo Doctor 21/21, 22-route web export, Android export, and iOS export passed on 2026-08-22. |
+| Tests and build regression | Verified | TypeScript, Expo lint, 26 Jest suites / 123 tests, Expo Doctor 21/21, 22-route web export, Android export, and iOS export passed on 2026-08-22. |
 
 ## Remaining blockers
 

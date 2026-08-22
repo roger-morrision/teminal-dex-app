@@ -473,6 +473,22 @@ const en = {
   collecting: "Collecting",
   liveReadinessGate: "Live-readiness gate",
   locked: "LOCKED",
+  operationalIntegrity: "Operational integrity",
+  operationalEvidenceUnavailable: "Operational evidence unavailable.",
+  cycleOperations: "Cycle operations",
+  cycleOperationsDetail:
+    "Cycle {cycle} · failed/abandoned 24h {failures} · reasons {reasons}",
+  mutationRecovery: "Mutation recovery",
+  mutationRecoveryDetail:
+    "Qualified {qualified}/{audited} · manual review {review} · reasons {reasons}",
+  jobLeaseFencing: "Job lease fencing",
+  jobLeaseDetail:
+    "Qualified {qualified}/{observed} · active leases {active}",
+  cycleHistory: "Cycle history",
+  cycleHistoryDetail:
+    "Qualified terminal cycles {qualified}/{required} · running {running}",
+  operationalIntegrityBoundary:
+    "Read-only simulation evidence. Fail-closed recovery never replays an unknown partial operation; every health contract keeps execution disabled.",
   openSimulations: "Open simulations",
   noOpenSimulations: "No simulated positions open.",
   entryMark: "entry {entry} · mark {mark}",
@@ -1139,6 +1155,22 @@ const vi: { [K in TranslationKey]: string } = {
   collecting: "Đang thu thập",
   liveReadinessGate: "Cổng sẵn sàng trực tiếp",
   locked: "ĐÃ KHÓA",
+  operationalIntegrity: "Tính toàn vẹn vận hành",
+  operationalEvidenceUnavailable: "Bằng chứng vận hành không khả dụng.",
+  cycleOperations: "Vận hành chu kỳ",
+  cycleOperationsDetail:
+    "Chu kỳ {cycle} · lỗi/bị bỏ 24 giờ {failures} · lý do {reasons}",
+  mutationRecovery: "Khôi phục thay đổi",
+  mutationRecoveryDetail:
+    "Đạt chuẩn {qualified}/{audited} · xem xét thủ công {review} · lý do {reasons}",
+  jobLeaseFencing: "Hàng rào lease tác vụ",
+  jobLeaseDetail:
+    "Đạt chuẩn {qualified}/{observed} · lease đang hoạt động {active}",
+  cycleHistory: "Lịch sử chu kỳ",
+  cycleHistoryDetail:
+    "Chu kỳ kết thúc đạt chuẩn {qualified}/{required} · đang chạy {running}",
+  operationalIntegrityBoundary:
+    "Bằng chứng mô phỏng chỉ đọc. Khôi phục đóng an toàn không bao giờ phát lại thao tác một phần chưa rõ; mọi hợp đồng sức khỏe đều giữ thực thi ở trạng thái tắt.",
   openSimulations: "Mô phỏng đang mở",
   noOpenSimulations: "Không có vị thế mô phỏng đang mở.",
   entryMark: "vào {entry} · định giá {mark}",

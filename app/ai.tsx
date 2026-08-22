@@ -291,7 +291,7 @@ export function RecommendationCard({
   );
 }
 
-function Paper({
+export function Paper({
   report,
   loading,
   error,
@@ -363,6 +363,56 @@ function Paper({
             ))}
         </View>
       </View>
+      <Ledger
+        title={t("operationalIntegrity")}
+        empty={t("operationalEvidenceUnavailable")}
+        rows={[
+          {
+            key: "operations",
+            title: t("cycleOperations"),
+            detail: t("cycleOperationsDetail", {
+              cycle: report.operations.cycleStatus,
+              failures: report.operations.failedOrAbandoned24h,
+              reasons: report.operations.reasons.join(", ") || t("none"),
+            }),
+            value: report.operations.status,
+          },
+          {
+            key: "mutations",
+            title: t("mutationRecovery"),
+            detail: t("mutationRecoveryDetail", {
+              qualified: report.mutationHealth.qualifiedMutations,
+              audited: report.mutationHealth.auditedMutations,
+              review: report.mutationHealth.manualReview,
+              reasons: report.mutationHealth.reasons.join(", ") || t("none"),
+            }),
+            value: report.mutationHealth.healthy ? t("healthy") : t("degraded"),
+          },
+          {
+            key: "leases",
+            title: t("jobLeaseFencing"),
+            detail: t("jobLeaseDetail", {
+              qualified: report.jobLeaseHealth.qualifiedLeases,
+              observed: report.jobLeaseHealth.observedLeases,
+              active: report.jobLeaseHealth.activeLeases,
+            }),
+            value: report.jobLeaseHealth.status.replaceAll("_", " "),
+          },
+          {
+            key: "cycles",
+            title: t("cycleHistory"),
+            detail: t("cycleHistoryDetail", {
+              qualified: report.cycleHistoryHealth.qualifiedTerminalCycles,
+              required: report.cycleHistoryHealth.minimumHistory,
+              running: report.cycleHistoryHealth.runningCycles,
+            }),
+            value: report.cycleHistoryHealth.status.replaceAll("_", " "),
+          },
+        ]}
+      />
+      <Text accessibilityRole="text" style={styles.readinessNote}>
+        {t("operationalIntegrityBoundary")}
+      </Text>
       <Ledger
         title={t("openSimulations")}
         empty={t("noOpenSimulations")}

@@ -311,3 +311,13 @@
 - Verification evidence: strict TypeScript and warning-free Expo lint passed; Jest 21 suites / 105 tests passed; Expo Doctor passed 21/21; web production export passed all 22 routes; Android and iOS production bundles passed. Generated exports were removed after verification.
 - Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles.
 - Next priority: continue direct dynamic-state coverage across remaining detail and intelligence routes, then resume the final requirement-by-requirement regression audit; transaction execution and deeper drilldowns remain blocked on the authoritative backend contracts documented in Slice 25.
+
+## 2026-08-22 — Slice 28: auxiliary evidence-state accessibility
+
+- Extended the dynamic-state audit to AI, CopyTrade, market intelligence, wallet intelligence, Operations, and Research. Several route helpers assigned roles to non-accessible `View` containers; AI, CopyTrade, and market intelligence also represented loading as a generic progressbar and provider failures as ordinary summaries.
+- Made all six shared helpers accessible polite live regions, represented loading with an explicit busy summary, and classified provider failures as alerts without changing backend evidence, retry behavior, or execution authority.
+- Added parameterized component coverage proving distinct loading, provider-error, and empty-evidence semantics for every affected route. The native wallet dependency remains isolated behind the repository's established wallet-session Jest boundary.
+- Prettier normalized the four previously compressed intelligence route files; Operations and Research received only focused helper edits.
+- Verification evidence: strict TypeScript and warning-free Expo lint passed; Jest 22 suites / 111 tests passed; Expo Doctor passed 21/21; web production export passed all 22 routes; Android and iOS production bundles passed. Generated exports were removed after verification.
+- Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles.
+- Next priority: audit dynamic states in remaining primary/detail flows and close any evidence-backed component coverage gaps before the final regression audit; device-only verification and the backend-contract blockers documented in Slice 25 remain partial.

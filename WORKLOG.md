@@ -219,3 +219,15 @@
 - Verification evidence: strict TypeScript and warning-free Expo lint passed; Jest 20 suites / 94 tests passed; Expo Doctor passed 21/21; web production export passed all 22 routes; Android and iOS production bundles passed. Generated exports were removed after verification.
 - Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles.
 - Next priority: localize and audit Market Intelligence plus Wallet Intelligence, then Research Workspace and Operations; real-device screen-reader/dynamic-type/connectivity/performance verification remains device-dependent.
+
+## 2026-08-22 — Slice 20: localized read-only Market Intelligence
+
+- Re-established the clean mobile status/history, requirements, tests, backend instructions, and existing fail-closed Signals/Heatmap/Claim Monitor contracts before auditing their shared auxiliary route.
+- Localized all mobile-owned headings, tabs, no-action disclosure, signal windows/type filter labels, pagination states, provider/ingestion fallback copy, heatmap inclusion and trust summaries, Claim Monitor KPIs/filters/card labels, freshness status, empty/loading states, and claim boundary in typed English and Vietnamese.
+- Preserved exact dynamic evidence: signal types/descriptions, source/provider names, data quality, ingestion/RPC/health states, transaction signatures, trust flags, instruction names, claim statuses, backend reasons/errors, and token symbols remain untranslated.
+- Added explicit labels and selected/checked/disabled/busy semantics to route tabs, signal window/type filters, pagination, exact-mint navigation, heatmap navigation, and claim filters; added summary/progress/alert semantics to safety/freshness/boundary/load and degraded backend states.
+- Kept authority fail-closed: malformed provider mints remain non-interactive; signals and heatmap hand off only exact Solana mints; Claim Monitor invokes no claim, wallet, URL, message, signing, or transaction action.
+- Wrapped SignalCard tests in the real settings boundary, expanded Vietnamese localization tests for heatmap evidence and the market no-action disclosure, and added Market Intelligence to the source-level Pressable/TextInput audit.
+- Verification evidence: strict TypeScript and warning-free Expo lint passed; Jest 20 suites / 96 tests passed; Expo Doctor passed 21/21; web production export passed all 22 routes; Android and iOS production bundles passed. Generated exports were removed after verification.
+- Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles.
+- Next priority: localize and audit Wallet Intelligence, then Research Workspace and Operations; real-device screen-reader/dynamic-type/connectivity/performance verification remains device-dependent.

@@ -9,12 +9,21 @@ import {
   RefreshControl,
   StyleSheet,
   Text,
+  TextInput,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { fetchTrenches } from "@/api/client";
 import type { MarketToken } from "@/api/schema";
 import { compactUsd, signedPercent, tokenPrice } from "@/lib/format";
+import {
+  applyTrenchFilters,
+  boundedKeyword,
+  boundedNumber,
+  emptyTrenchFilters,
+  trenchFilterCount,
+  type TrenchFilters,
+} from "@/lib/trenches";
 import { useSettings } from "@/settings/SettingsProvider";
 import { colors, spacing } from "@/theme";
 
@@ -33,12 +42,31 @@ export default function TrenchesScreen() {
   const router = useRouter();
   const { t } = useSettings();
   const [lane, setLane] = useState<Lane>("newTokens");
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [filters, setFilters] = useState<TrenchFilters>(emptyTrenchFilters);
   const query = useQuery({
     queryKey: ["trenches"],
     queryFn: ({ signal }) => fetchTrenches(signal),
     refetchInterval: 30_000,
   });
-  const rows = useMemo(() => query.data?.[lane] ?? [], [lane, query.data]);
+  const laneRows = useMemo(() => query.data?.[lane] ?? [], [lane, query.data]);
+  const rows = useMemo(
+    () => applyTrenchFilters(laneRows, filters),
+    [filters, laneRows],
+  );
+  const launchpads = useMemo(
+    () =>
+      [
+        "All",
+        ...new Set(
+          Object.values(query.data ?? {}).flatMap((value) =>
+            Array.isArray(value) ? value.map((token) => token.dex) : [],
+          ),
+        ),
+      ].slice(0, 9),
+    [query.data],
+  );
+  const activeFilterCount = trenchFilterCount(filters);
   function openDetail(token: MarketToken) {
     router.push({
       pathname: "/token/[address]",
@@ -134,6 +162,47 @@ export default function TrenchesScreen() {
                 {query.data?.providers.join(", ") ?? t("launchFeed")}
               </Text>
             </View>
+            <View style={styles.filterHeader}>
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={t("openTrenchFilters")}
+                accessibilityState={{ expanded: filtersOpen }}
+                onPress={() => setFiltersOpen((value) => !value)}
+                style={[
+                  styles.filterButton,
+                  activeFilterCount > 0 && styles.filterButtonActive,
+                ]}
+              >
+                <Ionicons
+                  name="options"
+                  size={14}
+                  color={activeFilterCount ? colors.background : colors.muted}
+                />
+                <Text
+                  style={[
+                    styles.filterButtonText,
+                    activeFilterCount > 0 && styles.filterButtonTextActive,
+                  ]}
+                >
+                  {t("filter")}
+                  {activeFilterCount ? ` · ${activeFilterCount}` : ""}
+                </Text>
+              </Pressable>
+              <Text style={styles.matchCount}>
+                {t("trenchMatches", {
+                  shown: String(rows.length),
+                  total: String(laneRows.length),
+                })}
+              </Text>
+            </View>
+            {filtersOpen ? (
+              <TrenchFilterPanel
+                value={filters}
+                launchpads={launchpads}
+                onChange={setFilters}
+                onReset={() => setFilters(emptyTrenchFilters)}
+              />
+            ) : null}
           </>
         }
         ListEmptyComponent={
@@ -147,11 +216,115 @@ export default function TrenchesScreen() {
               onAction={() => query.refetch()}
             />
           ) : (
-            <State text={t("noLaunches", { lane: laneLabel.toLowerCase() })} />
+            <State
+              text={
+                activeFilterCount
+                  ? t("noTrenchMatches")
+                  : t("noLaunches", { lane: laneLabel.toLowerCase() })
+              }
+            />
           )
         }
       />
     </SafeAreaView>
+  );
+}
+
+function TrenchFilterPanel({
+  value,
+  launchpads,
+  onChange,
+  onReset,
+}: {
+  value: TrenchFilters;
+  launchpads: string[];
+  onChange: (value: TrenchFilters) => void;
+  onReset: () => void;
+}) {
+  const { t } = useSettings();
+  const fields: {
+    key: keyof Pick<
+      TrenchFilters,
+      "minMarketCap" | "minVolume24h" | "maxAgeMinutes" | "minBondingProgress"
+    >;
+    label: string;
+    placeholder: string;
+  }[] = [
+    { key: "minMarketCap", label: t("minMarketCap"), placeholder: "100000" },
+    { key: "minVolume24h", label: t("minVolume24h"), placeholder: "25000" },
+    { key: "maxAgeMinutes", label: t("maxAgeMinutes"), placeholder: "60" },
+    {
+      key: "minBondingProgress",
+      label: t("minBondingProgress"),
+      placeholder: "70",
+    },
+  ];
+  return (
+    <View style={styles.filterPanel}>
+      <TextInput
+        accessibilityLabel={t("trenchKeyword")}
+        value={value.keyword}
+        onChangeText={(keyword) =>
+          onChange({ ...value, keyword: boundedKeyword(keyword) })
+        }
+        placeholder={t("trenchKeyword")}
+        placeholderTextColor={colors.muted}
+        autoCapitalize="none"
+        style={styles.filterInput}
+      />
+      <View accessibilityRole="radiogroup" style={styles.launchpads}>
+        {launchpads.map((launchpad) => (
+          <Pressable
+            key={launchpad}
+            accessibilityRole="radio"
+            accessibilityState={{ checked: value.launchpad === launchpad }}
+            accessibilityLabel={t("selectLaunchpad", {
+              launchpad: launchpad === "All" ? t("all") : launchpad,
+            })}
+            onPress={() => onChange({ ...value, launchpad })}
+            style={[
+              styles.launchpad,
+              value.launchpad === launchpad && styles.launchpadActive,
+            ]}
+          >
+            <Text
+              style={[
+                styles.launchpadText,
+                value.launchpad === launchpad && styles.launchpadTextActive,
+              ]}
+            >
+              {launchpad === "All" ? t("all") : launchpad}
+            </Text>
+          </Pressable>
+        ))}
+      </View>
+      <View style={styles.filterGrid}>
+        {fields.map((field) => (
+          <View key={field.key} style={styles.filterField}>
+            <Text style={styles.fieldLabel}>{field.label}</Text>
+            <TextInput
+              accessibilityLabel={field.label}
+              keyboardType="decimal-pad"
+              value={value[field.key]}
+              onChangeText={(text) =>
+                onChange({ ...value, [field.key]: boundedNumber(text) })
+              }
+              placeholder={field.placeholder}
+              placeholderTextColor={colors.muted}
+              style={styles.filterInput}
+            />
+          </View>
+        ))}
+      </View>
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel={t("reset")}
+        onPress={onReset}
+        style={styles.resetFilters}
+      >
+        <Text style={styles.resetFiltersText}>{t("reset")}</Text>
+      </Pressable>
+    </View>
   );
 }
 
@@ -258,7 +431,10 @@ export function TrenchCard({
         </Pressable>
         <Text style={styles.quality}>
           {token.source ?? t("unknown")} ·{" "}
-          {token.dataQuality ?? t("unavailable")}
+          {token.dataQuality ?? t("unavailable")} ·{" "}
+          {token.sourceFetchedAt
+            ? ageLabel(token.sourceFetchedAt, t)
+            : t("timeUnavailable")}
         </Text>
       </View>
     </Pressable>
@@ -310,6 +486,15 @@ export function State({
 }
 function short(value: string) {
   return `${value.slice(0, 4)}…${value.slice(-4)}`;
+}
+
+function ageLabel(timestamp: number, t: ReturnType<typeof useSettings>["t"]) {
+  const seconds = Math.max(0, Math.floor((Date.now() - timestamp) / 1000));
+  return seconds < 60
+    ? t("secondsAgo", { count: seconds })
+    : seconds < 3600
+      ? t("minutesAgo", { count: Math.floor(seconds / 60) })
+      : t("hoursAgo", { count: Math.floor(seconds / 3600) });
 }
 
 const styles = StyleSheet.create({
@@ -365,6 +550,83 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.border,
   },
   provenanceText: { color: colors.muted, fontSize: 9, textAlign: "right" },
+  filterHeader: {
+    paddingHorizontal: spacing.lg,
+    paddingBottom: spacing.md,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  filterButton: {
+    minHeight: 40,
+    paddingHorizontal: 13,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: colors.border,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+  },
+  filterButtonActive: {
+    backgroundColor: colors.accent,
+    borderColor: colors.accent,
+  },
+  filterButtonText: { color: colors.muted, fontSize: 10, fontWeight: "900" },
+  filterButtonTextActive: { color: colors.background },
+  matchCount: { color: colors.muted, fontSize: 9 },
+  filterPanel: {
+    marginHorizontal: spacing.lg,
+    padding: spacing.md,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: colors.border,
+    backgroundColor: colors.surface,
+    gap: spacing.md,
+  },
+  filterInput: {
+    minHeight: 42,
+    paddingHorizontal: 12,
+    borderRadius: 9,
+    borderWidth: 1,
+    borderColor: colors.border,
+    color: colors.text,
+    backgroundColor: colors.background,
+  },
+  launchpads: { flexDirection: "row", flexWrap: "wrap", gap: spacing.sm },
+  launchpad: {
+    minHeight: 36,
+    justifyContent: "center",
+    paddingHorizontal: 11,
+    borderRadius: 9,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  launchpadActive: {
+    backgroundColor: colors.accent,
+    borderColor: colors.accent,
+  },
+  launchpadText: {
+    color: colors.muted,
+    fontSize: 9,
+    fontWeight: "800",
+    textTransform: "uppercase",
+  },
+  launchpadTextActive: { color: colors.background },
+  filterGrid: { flexDirection: "row", flexWrap: "wrap", gap: spacing.sm },
+  filterField: { width: "48%", flexGrow: 1 },
+  fieldLabel: {
+    color: colors.muted,
+    fontSize: 8,
+    fontWeight: "800",
+    marginBottom: 5,
+  },
+  resetFilters: {
+    alignSelf: "flex-end",
+    minHeight: 38,
+    justifyContent: "center",
+    paddingHorizontal: 14,
+  },
+  resetFiltersText: { color: colors.accent, fontSize: 10, fontWeight: "900" },
   card: {
     marginHorizontal: spacing.lg,
     marginTop: spacing.md,

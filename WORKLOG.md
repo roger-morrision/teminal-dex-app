@@ -404,3 +404,14 @@
 - Verification evidence: strict TypeScript and warning-free Expo lint passed; Jest 29 suites / 135 tests passed; Expo Doctor passed 21/21; web production export passed all 23 routes including `/track`; Android and iOS production bundles passed. Generated exports were removed after verification.
 - Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles.
 - Next priority: continue closing independently actionable requirements; Track cursor/X-TG, transaction execution, native-device, and physical-device evidence remain explicit external-contract blockers.
+
+## 2026-08-22 — Slice 37: bounded Trenches launch filters
+
+- Re-read backend product acceptance and found Trenches lanes were live but lacked the required launchpad, keyword, market-cap, volume, age, and bonding controls even though every metric is present in the validated `/api/trenches` response.
+- Added an expandable localized filter surface over the current bounded server lanes. It supports symbol/name/exact-address search, provider-derived launchpad choices, minimum market cap, minimum 24-hour volume, maximum age, and minimum bonding progress, with an active count, match count, and one-step reset; it does not add a chain selector or issue a mutation.
+- Missing market-cap or bonding evidence is excluded only when its corresponding threshold is active rather than coerced into false evidence. Text and decimal inputs have explicit length/precision bounds, launchpad choices are capped, and server-defined lane membership remains authoritative.
+- Extended each launch row's evidence label from source/quality to source/quality/observation age and kept loading, provider error/retry, unfiltered empty, and filtered-empty states distinct.
+- Added direct unit coverage for combined criteria, case-insensitive launchpad/keyword matching, missing-evidence handling, input bounds, and active-filter counts.
+- Verification evidence: strict TypeScript and warning-free Expo lint passed; Jest 30 suites / 138 tests passed; Expo Doctor passed 21/21; web production export passed all 23 routes; Android and iOS production bundles passed. Generated exports were removed after verification.
+- Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles.
+- Next priority: continue comparing authoritative product acceptance against implemented mobile flows while retaining transaction, native-wallet/device, Track cursor/X-TG, and physical-device blockers.

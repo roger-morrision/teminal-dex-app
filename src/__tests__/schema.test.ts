@@ -1,10 +1,11 @@
 import { aiPaperReportSchema, aiPlatformSchema, aiRecommendationsSchema, alertDeliveriesSchema, claimMonitorSchema, copyTradeConfigSchema, copyTradeHealthSchema, feedConnectionsSchema, feedDiagnosticsSchema, heatmapSchema, monitorAlertsSchema, ohlcvSchema, portfolioAnalyticsSchema, signalsSchema, swapQuoteSchema, topTradersSchema, transactionsSchema, trenchesSchema, trendingSchema, userAlertsSchema, walletHoldingsSchema, walletPnlSchema } from '@/api/schema';
 
 const token = { id: 'pair', symbol: 'DEX', name: 'Terminal', address: 'mint', pairAddress: 'pair', dex: 'raydium', quoteSymbol: 'SOL', price: 1, marketCap: 10, liquidity: 5, volume24h: 4, volume1h: 2, change24h: 3, change1h: 1, txns5m: { buys: 1, sells: 0 }, ageLabel: '1h', ageMinutes: 60 };
-describe('trendingSchema', () => { it('accepts the backend contract and preserves evidence', () => { expect(trendingSchema.parse({ tokens: [token], source: 'database', dataQuality: 'stored_provider_observations', freshness: { isStale: false } }).tokens[0]?.symbol).toBe('DEX'); }); it('rejects unsafe malformed values', () => { expect(trendingSchema.safeParse({ tokens: [{ ...token, price: '1' }] }).success).toBe(false); }); });
+describe('trendingSchema', () => { it('accepts the backend contract and preserves evidence', () => { expect(trendingSchema.parse({ tokens: [token], source: 'database', dataQuality: 'stored_provider_observations', freshness: { isStale: false } }).tokens[0]?.symbol).toBe('DEX'); }); it('rejects unsafe malformed values', () => { expect(trendingSchema.safeParse({ tokens: [{ ...token, price: '1' }] }).success).toBe(false); }); it('fails closed on oversized market pages', () => { expect(trendingSchema.safeParse({ tokens: Array.from({ length: 101 }, (_, index) => ({ ...token, id: `pair-${index}` })) }).success).toBe(false); }); });
 
 describe('token intelligence schemas', () => {
   it('rejects malformed candles instead of drawing invented values', () => { expect(ohlcvSchema.safeParse({ candles: [{ time: 1, close: '1' }], tf: '1h', source: 'x', dataQuality: 'live' }).success).toBe(false); });
+  it('rejects candle payloads beyond the validated render budget', () => { const candle = { time: 1, open: 1, high: 2, low: 0, close: 1, volume: 1 }; expect(ohlcvSchema.safeParse({ candles: Array.from({ length: 1001 }, (_, index) => ({ ...candle, time: index })), tf: '1m', source: 'x', dataQuality: 'live' }).success).toBe(false); });
   it('preserves transaction finality and partial-quality evidence', () => { const result = transactionsSchema.parse({ txns: [{ signature: 's', timestamp: 1, type: 'buy', amount: 2, amountUsd: 3, price: null, feePayer: null, source: 'gmgn', finality: 'provider_reported' }], dataQuality: 'observed_partial', quality: { completeHistory: false } }); expect(result.quality?.completeHistory).toBe(false); });
 });
 
@@ -54,6 +55,7 @@ describe('Market Intelligence evidence schemas', () => {
 describe('Wallet Intelligence evidence schema', () => {
   const address = '11111111111111111111111111111111';
   it('requires exact addresses and preserves unpriced holdings', () => { const base = { wallet: { address, tokens: [{ mint: address, symbol: 'SOL', name: 'Solana', amount: 1, uiAmount: 1, decimals: 9, priceUsd: null, valueUsd: null, pctOfPortfolio: 0 }], totalValueUsd: 0, tokenCount: 1, solBalance: 1, solValueUsd: 0 }, ts: 1 }; expect(walletHoldingsSchema.parse(base).wallet.tokens[0]?.priceUsd).toBeNull(); expect(walletHoldingsSchema.safeParse({ ...base, wallet: { ...base.wallet, address: '111111111111111111111111111111111' } }).success).toBe(false); });
+  it('rejects oversized holdings collections before they reach a list', () => { const holding = { mint: address, symbol: 'SOL', name: 'Solana', amount: 1, uiAmount: 1, decimals: 9, priceUsd: null, valueUsd: null, pctOfPortfolio: 0 }; expect(walletHoldingsSchema.safeParse({ wallet: { address, tokens: Array.from({ length: 501 }, () => holding), totalValueUsd: 0, tokenCount: 501, solBalance: 0, solValueUsd: 0 }, ts: 1 }).success).toBe(false); });
 });
 
 describe('Feed Data operational evidence schemas', () => {

@@ -2,6 +2,11 @@ import { z } from 'zod';
 import { isSolanaAddress } from '@/security/input';
 
 const transactionCount = z.object({ buys: z.number(), sells: z.number() }).catch({ buys: 0, sells: 0 });
+const MAX_PAGE_ROWS = 200;
+const MAX_MARKET_ROWS = 100;
+const MAX_CANDLES = 1000;
+const MAX_EVIDENCE_ROWS = 100;
+const MAX_WALLET_HOLDINGS = 500;
 
 export const tokenSchema = z.object({
   id: z.string(), symbol: z.string(), name: z.string(), address: z.string(), pairAddress: z.string(),
@@ -17,7 +22,7 @@ export const tokenSchema = z.object({
 export type MarketToken = z.infer<typeof tokenSchema>;
 
 export const trendingSchema = z.object({
-  tokens: z.array(tokenSchema),
+  tokens: z.array(tokenSchema).max(MAX_MARKET_ROWS),
   source: z.string().default('unknown'),
   dataQuality: z.string().default('unknown'),
   fetchedAt: z.number().optional(),
@@ -40,21 +45,21 @@ export const tokenDetailSchema = z.object({
   degraded: z.boolean().optional(),
   error: z.string().optional(),
   priceEvidence: z.object({ safeForAutomation: z.boolean().optional(), freshness: z.string().optional() }).passthrough().optional(),
-  securityEvidence: z.object({ safeForAutomation: z.boolean().optional(), flags: z.array(z.string()).optional() }).passthrough().optional(),
+  securityEvidence: z.object({ safeForAutomation: z.boolean().optional(), flags: z.array(z.string()).max(MAX_EVIDENCE_ROWS).optional() }).passthrough().optional(),
   riskEvidence: z.object({ safeForAutomation: z.boolean().optional(), level: z.string().nullable().optional() }).passthrough().optional(),
 }).passthrough();
 
 export type TokenDetailResponse = z.infer<typeof tokenDetailSchema>;
 
 export const candleSchema = z.object({ time: z.number(), open: z.number(), high: z.number(), low: z.number(), close: z.number(), volume: z.number() }).passthrough();
-export const ohlcvSchema = z.object({ candles: z.array(candleSchema), tf: z.string(), source: z.string(), dataQuality: z.string(), degraded: z.boolean().optional(), quality: z.record(z.string(), z.unknown()).optional() }).passthrough();
+export const ohlcvSchema = z.object({ candles: z.array(candleSchema).max(MAX_CANDLES), tf: z.string(), source: z.string(), dataQuality: z.string(), degraded: z.boolean().optional(), quality: z.record(z.string(), z.unknown()).optional() }).passthrough();
 export type OhlcvResponse = z.infer<typeof ohlcvSchema>;
 
 const evidenceMetricSchema = z.object({ available: z.boolean(), value: z.union([z.string(), z.number(), z.boolean()]).nullable(), confidence: z.string(), source: z.string().nullable().optional() }).passthrough();
-export const holdersSchema = z.object({ holders: z.array(z.object({ address: z.string(), uiAmount: z.number(), pct: z.number(), rank: z.number() }).passthrough()), source: z.string().optional(), evidence: z.record(z.string(), evidenceMetricSchema).optional() }).passthrough();
+export const holdersSchema = z.object({ holders: z.array(z.object({ address: z.string(), uiAmount: z.number(), pct: z.number(), rank: z.number() }).passthrough()).max(MAX_PAGE_ROWS), source: z.string().optional(), evidence: z.record(z.string(), evidenceMetricSchema).optional() }).passthrough();
 export type HoldersResponse = z.infer<typeof holdersSchema>;
 
-export const transactionsSchema = z.object({ txns: z.array(z.object({ signature: z.string(), timestamp: z.number(), type: z.enum(['buy', 'sell']), amount: z.number(), amountUsd: z.number(), price: z.number().nullable(), feePayer: z.string().nullable(), source: z.string(), finality: z.string() }).passthrough()), dataQuality: z.string(), quality: z.object({ freshness: z.string().optional(), completeHistory: z.boolean().optional() }).passthrough().optional() }).passthrough();
+export const transactionsSchema = z.object({ txns: z.array(z.object({ signature: z.string(), timestamp: z.number(), type: z.enum(['buy', 'sell']), amount: z.number(), amountUsd: z.number(), price: z.number().nullable(), feePayer: z.string().nullable(), source: z.string(), finality: z.string() }).passthrough()).max(MAX_PAGE_ROWS), dataQuality: z.string(), quality: z.object({ freshness: z.string().optional(), completeHistory: z.boolean().optional() }).passthrough().optional() }).passthrough();
 export type TransactionsResponse = z.infer<typeof transactionsSchema>;
 
 export const riskSchema = z.object({ riskScore: z.object({ score: z.number(), riskLevel: z.string(), factors: z.array(z.object({ name: z.string(), description: z.string(), impact: z.string(), scoreImpact: z.number() }).passthrough()), warnings: z.array(z.string()), recommendations: z.array(z.string()) }).passthrough(), riskEvidence: z.record(z.string(), z.unknown()).optional() }).passthrough();
@@ -70,13 +75,13 @@ export const pairsSchema = z.object({ pairs: z.array(z.object({ pairAddress: z.s
 export type PairsResponse = z.infer<typeof pairsSchema>;
 
 const portfolioHoldingSchema = z.object({ mint: z.string(), symbol: z.string(), name: z.string(), uiAmount: z.number(), priceUsd: z.number().nullable().optional(), valueUsd: z.number().nullable().optional(), pctOfPortfolio: z.number().optional(), riskScore: z.number().nullable().optional() }).passthrough();
-export const portfolioAnalyticsSchema = z.object({ success: z.literal(true), timestamp: z.number(), data: z.object({ address: z.string(), timeframe: z.string(), holdings: z.array(portfolioHoldingSchema), allocation: z.record(z.string(), z.number()), totalValueUsd: z.number(), tokenCount: z.number(), riskScore: z.number().nullable(), performance: z.null() }).passthrough(), provenance: z.object({ source: z.string(), observedAt: z.number().nullable(), dataQuality: z.string(), derived: z.array(z.string()), unavailable: z.array(z.string()) }).passthrough() }).passthrough();
+export const portfolioAnalyticsSchema = z.object({ success: z.literal(true), timestamp: z.number(), data: z.object({ address: z.string(), timeframe: z.string(), holdings: z.array(portfolioHoldingSchema).max(MAX_WALLET_HOLDINGS), allocation: z.record(z.string(), z.number()), totalValueUsd: z.number(), tokenCount: z.number(), riskScore: z.number().nullable(), performance: z.null() }).passthrough(), provenance: z.object({ source: z.string(), observedAt: z.number().nullable(), dataQuality: z.string(), derived: z.array(z.string()).max(MAX_EVIDENCE_ROWS), unavailable: z.array(z.string()).max(MAX_EVIDENCE_ROWS) }).passthrough() }).passthrough();
 export type PortfolioAnalyticsResponse = z.infer<typeof portfolioAnalyticsSchema>;
 
-export const walletPnlSchema = z.object({ pnl: z.object({ status: z.enum(['available', 'unavailable']), realizedPnl: z.number().nullable(), unrealizedPnl: z.number().nullable(), totalPnl: z.number().nullable(), pnl7d: z.number().nullable(), pnl30d: z.number().nullable(), winRate: z.number().nullable(), tradeCount: z.number(), equityCurve: z.array(z.object({ ts: z.number(), value: z.number() })), provenance: z.object({ method: z.string(), sources: z.array(z.string()), indexedSwapCount: z.number() }), warnings: z.array(z.string()) }).nullable(), ts: z.number().optional() }).passthrough();
+export const walletPnlSchema = z.object({ pnl: z.object({ status: z.enum(['available', 'unavailable']), realizedPnl: z.number().nullable(), unrealizedPnl: z.number().nullable(), totalPnl: z.number().nullable(), pnl7d: z.number().nullable(), pnl30d: z.number().nullable(), winRate: z.number().nullable(), tradeCount: z.number(), equityCurve: z.array(z.object({ ts: z.number(), value: z.number() })).max(2000), provenance: z.object({ method: z.string(), sources: z.array(z.string()).max(50), indexedSwapCount: z.number() }), warnings: z.array(z.string()).max(MAX_EVIDENCE_ROWS) }).nullable(), ts: z.number().optional() }).passthrough();
 export type WalletPnlResponse = z.infer<typeof walletPnlSchema>;
 
-export const trenchesSchema = z.object({ newTokens: z.array(tokenSchema), almostBonded: z.array(tokenSchema), migrated: z.array(tokenSchema), fetchedAt: z.number(), recordCount: z.number(), providers: z.array(z.string()), source: z.string(), dataQuality: z.string(), freshness: z.object({ ageMs: z.number().nullable(), staleAfterMs: z.number(), isStale: z.boolean() }).passthrough(), error: z.string().optional() }).passthrough();
+export const trenchesSchema = z.object({ newTokens: z.array(tokenSchema).max(MAX_PAGE_ROWS), almostBonded: z.array(tokenSchema).max(MAX_PAGE_ROWS), migrated: z.array(tokenSchema).max(MAX_PAGE_ROWS), fetchedAt: z.number(), recordCount: z.number(), providers: z.array(z.string()).max(50), source: z.string(), dataQuality: z.string(), freshness: z.object({ ageMs: z.number().nullable(), staleAfterMs: z.number(), isStale: z.boolean() }).passthrough(), error: z.string().optional() }).passthrough();
 export type TrenchesResponse = z.infer<typeof trenchesSchema>;
 
 const publicKeyString = z.string().refine(isSolanaAddress, 'Expected an exact 32-byte Solana address.');
@@ -91,7 +96,7 @@ const monitorAlertSchema = z.object({
   timestamp: z.number(), txHash: z.string(), source: z.string(), read: z.boolean(),
 }).passthrough();
 export const monitorAlertsSchema = z.object({
-  alerts: z.array(monitorAlertSchema), ts: z.number(), fetchedAt: z.number(), source: z.string(),
+  alerts: z.array(monitorAlertSchema).max(MAX_PAGE_ROWS), ts: z.number(), fetchedAt: z.number(), source: z.string(),
   providers: z.array(z.string()), recordCount: z.number(), dataQuality: z.string(),
   freshness: z.object({ isStale: z.boolean(), staleAfterMs: z.number() }).passthrough(), error: z.string().optional(),
 }).passthrough();
@@ -106,12 +111,12 @@ export const userAlertSchema = z.object({
   triggerCount: z.number().int().nonnegative(), createdAt: z.number(), updatedAt: z.number(), persistence: z.literal('database'),
   alertEvidence: z.record(z.string(), z.unknown()).optional(),
 }).passthrough();
-export const userAlertsSchema = z.object({ success: z.literal(true), count: z.number(), data: z.array(userAlertSchema), persistence: z.literal('database') }).passthrough();
+export const userAlertsSchema = z.object({ success: z.literal(true), count: z.number(), data: z.array(userAlertSchema).max(MAX_PAGE_ROWS), persistence: z.literal('database') }).passthrough();
 export const userAlertMutationSchema = z.object({ success: z.literal(true), data: userAlertSchema }).passthrough();
 export const alertDeliveriesSchema = z.object({ success: z.literal(true), count: z.number(), data: z.array(z.object({
   id: z.string(), alertId: z.string(), eventKey: z.string(), channel: z.string(), status: z.enum(['queued', 'processing', 'delivered', 'failed', 'unavailable']),
   reason: z.string().nullable(), deliveredAt: z.string().datetime().nullable(), createdAt: z.string().datetime(), updatedAt: z.string().datetime(),
-}).passthrough()), persistence: z.literal('database') }).passthrough();
+}).passthrough()).max(MAX_WALLET_HOLDINGS), persistence: z.literal('database') }).passthrough();
 export type UserAlert = z.infer<typeof userAlertSchema>;
 export type UserAlertsResponse = z.infer<typeof userAlertsSchema>;
 export type AlertDeliveriesResponse = z.infer<typeof alertDeliveriesSchema>;
@@ -119,10 +124,10 @@ export type AlertDeliveriesResponse = z.infer<typeof alertDeliveriesSchema>;
 export const topTraderSchema = z.object({
   rank: z.number().int().positive(), address: publicKeyString, pnlUsd: z.number(), pnlPct: z.number(), winRate: z.number().min(0).max(100),
   trades: z.number().int().nonnegative(), tokenCount: z.number().int().nonnegative().optional(), maxDrawdownPct: z.number().nonnegative().optional(),
-  reliability: z.number().min(0).max(100).optional(), bestToken: z.string(), bestTokenPct: z.number(), badge: z.string(), sparkline: z.array(z.number()),
+  reliability: z.number().min(0).max(100).optional(), bestToken: z.string(), bestTokenPct: z.number(), badge: z.string(), sparkline: z.array(z.number()).max(MAX_WALLET_HOLDINGS),
 }).passthrough();
 export const topTradersSchema = z.object({
-  traders: z.array(topTraderSchema), fetchedAt: z.number(), recordCount: z.number(), requestedPeriod: z.string().optional(), periodApplied: z.string().optional(),
+  traders: z.array(topTraderSchema).max(MAX_PAGE_ROWS), fetchedAt: z.number(), recordCount: z.number(), requestedPeriod: z.string().optional(), periodApplied: z.string().optional(),
   source: z.string(), dataQuality: z.string(), provenance: z.record(z.string(), z.unknown()).optional(),
   freshness: z.object({ latestSourceFetchedAt: z.number().nullable(), ageMs: z.number().nullable(), staleAfterMs: z.number(), isStale: z.boolean() }).passthrough(),
   traderEvidence: z.array(z.record(z.string(), z.unknown())).optional(), error: z.string().optional(),
@@ -142,16 +147,16 @@ export const copyTradeConfigSchema = z.object({
   sizingMode: z.enum(['fixed_sol', 'percentage', 'proportional']), fixedAmountSol: z.number().positive().optional(), percentage: z.number().positive().max(100).optional(), proportionalRatio: z.number().positive().optional(),
   maxPositionSizeSol: z.number().positive(), maxDailyVolumeSol: z.number().positive(), maxDailyLossSol: z.number().nonnegative(), stopLossPct: z.number().positive().max(100).optional(), takeProfitPct: z.number().positive().optional(),
   maxSlippageBps: z.number().int().min(1).max(5000), maxPriceImpactPct: z.number().positive().max(100), minLiquidityUsd: z.number().nonnegative(), maxMarketCapUsd: z.number().nonnegative(),
-  excludedTokens: z.array(publicKeyString), onlyNewLaunches: z.boolean(), maxTokenAgeMinutes: z.number().nonnegative(), copySells: z.boolean(), copyBuys: z.boolean(), delayMs: z.number().int().nonnegative(), maxConcurrentPositions: z.number().int().positive(),
+  excludedTokens: z.array(publicKeyString).max(MAX_WALLET_HOLDINGS), onlyNewLaunches: z.boolean(), maxTokenAgeMinutes: z.number().nonnegative(), copySells: z.boolean(), copyBuys: z.boolean(), delayMs: z.number().int().nonnegative(), maxConcurrentPositions: z.number().int().positive(),
 }).passthrough();
-export const copyTradeConfigsSchema = z.object({ success: z.literal(true), data: z.array(copyTradeConfigSchema) });
+export const copyTradeConfigsSchema = z.object({ success: z.literal(true), data: z.array(copyTradeConfigSchema).max(MAX_EVIDENCE_ROWS) });
 export const copyTradeConfigMutationSchema = z.object({ success: z.literal(true), data: copyTradeConfigSchema });
 export type CopyTradeConfig = z.infer<typeof copyTradeConfigSchema>;
 
 export const copyPositionSchema = z.object({ id: z.string(), configId: z.string(), tokenAddress: publicKeyString, tokenSymbol: z.string(), tokenName: z.string(), entryPrice: z.number(), entryAmountSol: z.number(), entryTokenAmount: z.number(), entryTxSignature: z.string(), entryTime: z.number(), sourceTxSignature: z.string(), executionMode: z.enum(['paper', 'live']).optional(), currentPrice: z.number(), currentValueSol: z.number(), unrealizedPnlSol: z.number(), unrealizedPnlPct: z.number(), status: z.enum(['open', 'closed', 'partial']), closedAt: z.number().optional(), realizedPnlSol: z.number().optional() }).passthrough();
 export const copyExecutionSchema = z.object({ id: z.string(), userId: z.string(), configId: z.string(), positionId: z.string().optional(), sourceTxSignature: z.string().optional(), executionSignature: z.string().optional(), idempotencyKey: z.string(), eventType: z.enum(['buy', 'sell', 'manual_close', 'stop_loss', 'take_profit']), status: z.enum(['created', 'quoted', 'awaiting_signature', 'submitted', 'confirmed', 'failed', 'expired']), requestedAmountSol: z.number().optional(), quotedAmountSol: z.number().optional(), confirmedAmountSol: z.number().optional(), slippageBps: z.number().optional(), priceImpactPct: z.number().optional(), error: z.string().optional(), createdAt: z.number(), updatedAt: z.number(), executionMode: z.enum(['paper', 'live']).optional() }).passthrough();
-export const copyPositionsSchema = z.object({ success: z.literal(true), data: z.array(copyPositionSchema) });
-export const copyExecutionsSchema = z.object({ success: z.literal(true), data: z.array(copyExecutionSchema), recordCount: z.number(), source: z.literal('database') });
+export const copyPositionsSchema = z.object({ success: z.literal(true), data: z.array(copyPositionSchema).max(MAX_PAGE_ROWS) });
+export const copyExecutionsSchema = z.object({ success: z.literal(true), data: z.array(copyExecutionSchema).max(MAX_WALLET_HOLDINGS), recordCount: z.number(), source: z.literal('database') });
 export type CopyPosition = z.infer<typeof copyPositionSchema>;
 export type CopyExecution = z.infer<typeof copyExecutionSchema>;
 
@@ -159,7 +164,7 @@ const recommendationEvidenceSchema = z.object({ status: z.enum(['invalid_or_inco
 export const aiRecommendationsSchema = z.object({ success: z.literal(true), data: z.object({ recommendations: z.array(z.object({
   tokenAddress: publicKeyString, tokenSymbol: z.string(), chain: z.string(), score: z.number().min(0).max(100), confidence: z.number().min(0).max(100), category: z.string(), modelVersion: z.string(), createdAt: z.string().datetime(), recommendationEvidence: recommendationEvidenceSchema,
   outcomes: z.object({ total: z.number().int().nonnegative(), resolved: z.number().int().nonnegative(), wins: z.number().int().nonnegative(), losses: z.number().int().nonnegative(), avgReturnPct: z.number().nullable() }),
-}).passthrough()), readOnly: z.literal(true) }) });
+}).passthrough()).max(MAX_PAGE_ROWS), readOnly: z.literal(true) }) });
 export type AiRecommendation = z.infer<typeof aiRecommendationsSchema>['data']['recommendations'][number];
 
 const paperPositionSchema = z.object({ id: z.string(), tokenAddress: publicKeyString, tokenSymbol: z.string(), entryPrice: z.number(), notionalUsd: z.number(), currentPrice: z.number().nullable(), markStatus: z.enum(['live', 'unavailable']), unrealizedPnlUsd: z.number().nullable(), returnPct: z.number().nullable() }).passthrough();
@@ -171,9 +176,9 @@ export const aiPaperReportSchema = z.object({ success: z.literal(true), data: z.
   analytics: z.object({ profitFactor: z.number().nullable(), expectancyUsd: z.number().nullable(), totalFeesUsd: z.number(), totalSlippageCostUsd: z.number() }).passthrough(),
   risk: z.object({ entriesAllowed: z.boolean(), dailyLossLimitHit: z.boolean(), cooldownActive: z.boolean() }).passthrough(),
   readiness: z.object({ status: z.string(), executionEnabled: z.literal(false), killSwitch: z.literal(true), note: z.string(), checks: z.record(z.string(), z.boolean()) }).passthrough(),
-  operations: z.object({ status: z.string() }).passthrough(), positions: z.array(paperPositionSchema), closedTrades: z.array(closedPaperPositionSchema),
-  dailyPerformance: z.array(z.object({ date: z.string(), trades: z.number().int().nonnegative(), winRate: z.number(), realizedPnlUsd: z.number(), feesUsd: z.number().optional() }).passthrough()),
-  potentialPool: z.array(z.object({ tokenAddress: publicKeyString, tokenSymbol: z.string().nullable(), score: z.number(), confidence: z.number(), priority: z.number(), observations: z.number(), monitoredMinutes: z.number(), riskScore: z.number().nullable(), socialScore: z.number().nullable(), lifecycle: z.string(), status: z.string(), requiredMonitoringMinutes: z.number() }).passthrough()),
+  operations: z.object({ status: z.string() }).passthrough(), positions: z.array(paperPositionSchema).max(MAX_PAGE_ROWS), closedTrades: z.array(closedPaperPositionSchema).max(MAX_PAGE_ROWS),
+  dailyPerformance: z.array(z.object({ date: z.string(), trades: z.number().int().nonnegative(), winRate: z.number(), realizedPnlUsd: z.number(), feesUsd: z.number().optional() }).passthrough()).max(MAX_WALLET_HOLDINGS),
+  potentialPool: z.array(z.object({ tokenAddress: publicKeyString, tokenSymbol: z.string().nullable(), score: z.number(), confidence: z.number(), priority: z.number(), observations: z.number(), monitoredMinutes: z.number(), riskScore: z.number().nullable(), socialScore: z.number().nullable(), lifecycle: z.string(), status: z.string(), requiredMonitoringMinutes: z.number() }).passthrough()).max(MAX_PAGE_ROWS),
 }).passthrough() });
 export type AiPaperReport = z.infer<typeof aiPaperReportSchema>['data'];
 
@@ -186,24 +191,24 @@ export const marketSignalSchema = z.object({
   token: z.string(), tokenAddress: publicKeyString.optional(), description: z.string(), time: z.string(), ts: z.number().optional(), wallet: publicKeyString.optional(), amount: z.number().optional(), amountUsd: z.number().optional(), amountToken: z.number().optional(), profitEstimate: z.number().optional(), txHash: z.string().optional(), source: z.string().optional(), explorerUrl: z.string().url().optional(), evidence: z.array(z.string()).optional(),
 }).passthrough();
 export const signalsSchema = z.object({
-  signals: z.array(marketSignalSchema), signalEvidence: z.array(z.record(z.string(), z.unknown())).optional(), fetchedAt: z.number(), recordCount: z.number().int().nonnegative(), totalCount: z.number().int().nonnegative(), hasMore: z.boolean(), nextBefore: z.number().nullable(), nextCursor: z.string().nullable(), counts: z.record(z.string(), z.number()), source: z.string(), providers: z.array(z.string()).optional(), dataQuality: z.string(), reason: z.string().nullable(), ingestion: z.object({ status: z.string(), lastStartedAt: z.number().nullable(), lastFinishedAt: z.number().nullable(), lastSuccessAt: z.number().nullable(), processedCount: z.number().nonnegative(), error: z.string().nullable() }).passthrough().optional(), freshness: freshnessSchema, requestId: z.string(),
+  signals: z.array(marketSignalSchema).max(MAX_MARKET_ROWS), signalEvidence: z.array(z.record(z.string(), z.unknown())).max(MAX_EVIDENCE_ROWS).optional(), fetchedAt: z.number(), recordCount: z.number().int().nonnegative(), totalCount: z.number().int().nonnegative(), hasMore: z.boolean(), nextBefore: z.number().nullable(), nextCursor: z.string().nullable(), counts: z.record(z.string(), z.number()), source: z.string(), providers: z.array(z.string()).max(50).optional(), dataQuality: z.string(), reason: z.string().nullable(), ingestion: z.object({ status: z.string(), lastStartedAt: z.number().nullable(), lastFinishedAt: z.number().nullable(), lastSuccessAt: z.number().nullable(), processedCount: z.number().nonnegative(), error: z.string().nullable() }).passthrough().optional(), freshness: freshnessSchema, requestId: z.string(),
 }).passthrough();
 export type MarketSignal = z.infer<typeof marketSignalSchema>;
 export type SignalsResponse = z.infer<typeof signalsSchema>;
 
 export const heatmapSchema = z.object({
-  heatmap: z.array(z.object({ symbol: z.string(), name: z.string(), address: publicKeyString, price: z.number().nonnegative(), change24h: z.number(), volume24h: z.number().nonnegative(), marketCap: z.number().nonnegative().nullable(), liquidity: z.number().nonnegative(), dex: z.string(), imageUrl: z.string().optional(), pairUrl: z.string().optional(), trustFlags: z.array(z.string()), source: z.string().optional() }).passthrough()),
+  heatmap: z.array(z.object({ symbol: z.string(), name: z.string(), address: publicKeyString, price: z.number().nonnegative(), change24h: z.number(), volume24h: z.number().nonnegative(), marketCap: z.number().nonnegative().nullable(), liquidity: z.number().nonnegative(), dex: z.string(), imageUrl: z.string().optional(), pairUrl: z.string().optional(), trustFlags: z.array(z.string()).max(50), source: z.string().optional() }).passthrough()).max(MAX_MARKET_ROWS),
   fetchedAt: z.number(), recordCount: z.number().int().nonnegative(), providers: z.array(z.string()), source: z.string(), trustSummary: z.object({ warningRecordCount: z.number().int().nonnegative(), lowLiquidityCount: z.number().int().nonnegative(), noPriceCount: z.number().int().nonnegative(), transactionCountUnavailable: z.number().int().nonnegative(), suspiciousMetadataCount: z.number().int().nonnegative(), nonCanonicalMintCount: z.number().int().nonnegative(), incompleteMetricCount: z.number().int().nonnegative(), inputRecordCount: z.number().int().nonnegative(), excludedRecordCount: z.number().int().nonnegative() }).passthrough(), freshness: freshnessSchema, error: z.string().nullable().optional(), reason: z.string().nullable(),
 }).passthrough();
 export type HeatmapResponse = z.infer<typeof heatmapSchema>;
 
 export const claimMonitorSchema = z.object({
-  generatedAt: z.number(), health: z.enum(['healthy', 'degraded', 'unhealthy']), source: z.literal('solana-rpc'), mode: z.literal('rpc-polling'), programId: publicKeyString, programIds: z.array(publicKeyString), rpcEndpoint: z.string(), signaturesScanned: z.number().int().nonnegative(), claimsDetected: z.number().int().nonnegative(), firstClaims: z.number().int().nonnegative(), fakeClaims: z.number().int().nonnegative(), events: z.array(z.object({ signature: z.string(), slot: z.number().int().nonnegative(), blockTime: z.number().int().nullable(), programId: publicKeyString, instruction: z.string(), platform: z.enum(['github', 'unknown']), amountLamports: z.number().nonnegative().nullable(), amountSol: z.number().nonnegative().nullable(), feePayer: publicKeyString.nullable(), status: z.enum(['confirmed', 'failed', 'fake_or_unpaid', 'detected']), isFirstClaim: z.boolean(), isFakeClaim: z.boolean(), logs: z.array(z.string()), explorerUrl: z.string().url() }).passthrough()), error: z.string().optional(),
+  generatedAt: z.number(), health: z.enum(['healthy', 'degraded', 'unhealthy']), source: z.literal('solana-rpc'), mode: z.literal('rpc-polling'), programId: publicKeyString, programIds: z.array(publicKeyString).max(20), rpcEndpoint: z.string(), signaturesScanned: z.number().int().nonnegative(), claimsDetected: z.number().int().nonnegative(), firstClaims: z.number().int().nonnegative(), fakeClaims: z.number().int().nonnegative(), events: z.array(z.object({ signature: z.string(), slot: z.number().int().nonnegative(), blockTime: z.number().int().nullable(), programId: publicKeyString, instruction: z.string(), platform: z.enum(['github', 'unknown']), amountLamports: z.number().nonnegative().nullable(), amountSol: z.number().nonnegative().nullable(), feePayer: publicKeyString.nullable(), status: z.enum(['confirmed', 'failed', 'fake_or_unpaid', 'detected']), isFirstClaim: z.boolean(), isFakeClaim: z.boolean(), logs: z.array(z.string()).max(MAX_EVIDENCE_ROWS), explorerUrl: z.string().url() }).passthrough()).max(MAX_EVIDENCE_ROWS), error: z.string().optional(),
 }).passthrough();
 export type ClaimMonitorResponse = z.infer<typeof claimMonitorSchema>;
 
 export const walletHoldingsSchema = z.object({ wallet: z.object({
-  address: publicKeyString, label: z.string().optional(), tokens: z.array(z.object({ mint: publicKeyString, symbol: z.string(), name: z.string(), amount: z.number().nonnegative(), uiAmount: z.number().nonnegative(), decimals: z.number().int().nonnegative().max(18), priceUsd: z.number().nonnegative().nullable(), valueUsd: z.number().nonnegative().nullable(), pctOfPortfolio: z.number().nonnegative().max(100) }).passthrough()), totalValueUsd: z.number().nonnegative(), tokenCount: z.number().int().nonnegative(), solBalance: z.number().nonnegative(), solValueUsd: z.number().nonnegative(),
+  address: publicKeyString, label: z.string().optional(), tokens: z.array(z.object({ mint: publicKeyString, symbol: z.string(), name: z.string(), amount: z.number().nonnegative(), uiAmount: z.number().nonnegative(), decimals: z.number().int().nonnegative().max(18), priceUsd: z.number().nonnegative().nullable(), valueUsd: z.number().nonnegative().nullable(), pctOfPortfolio: z.number().nonnegative().max(100) }).passthrough()).max(MAX_WALLET_HOLDINGS), totalValueUsd: z.number().nonnegative(), tokenCount: z.number().int().nonnegative(), solBalance: z.number().nonnegative(), solValueUsd: z.number().nonnegative(),
 }).passthrough(), ts: z.number() }).passthrough();
 export type WalletHoldingsResponse = z.infer<typeof walletHoldingsSchema>;
 

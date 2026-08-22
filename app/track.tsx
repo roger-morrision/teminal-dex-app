@@ -1,11 +1,11 @@
 import { Ionicons } from "@expo/vector-icons";
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import React from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { fetchAlertDeliveries, fetchTrackFeed } from "@/api/client";
-import type { TrackNotification } from "@/api/schema";
+import { fetchAlertDeliveries, fetchFeedHistory, fetchTrackFeed } from "@/api/client";
+import type { FeedHistoryCursor, FeedHistoryEvent, TrackNotification } from "@/api/schema";
 import { compactUsd } from "@/lib/format";
 import { useWalletSession } from "@/security/WalletSessionProvider";
 import { useSettings } from "@/settings/SettingsProvider";
@@ -35,6 +35,13 @@ export default function TrackScreen() {
   const feed = useQuery({
     queryKey: ["track-feed"],
     queryFn: ({ signal }) => fetchTrackFeed(signal),
+  });
+  const history = useInfiniteQuery({
+    queryKey: ["track-feed-history"],
+    queryFn: ({ pageParam, signal }) => fetchFeedHistory(pageParam, signal),
+    initialPageParam: null as FeedHistoryCursor | null,
+    getNextPageParam: (page) => page.nextCursor ?? undefined,
+    maxPages: 4,
   });
   const deliveries = useQuery({
     queryKey: ["track-deliveries", wallet.session?.wallet],
@@ -158,7 +165,24 @@ export default function TrackScreen() {
             ) : (
               <State text={t("noTrackEvents")} />
             )}
-            <Text style={styles.limit}>{t("trackCursorBoundary")}</Text>
+            <Text style={styles.section}>{t("durableFeedHistory")}</Text>
+            {history.isLoading ? (
+              <State loading text={t("loadingFeedHistory")} />
+            ) : history.isError || !history.data ? (
+              <State error text={history.error?.message ?? t("feedHistoryUnavailable")} onRetry={() => history.refetch()} />
+            ) : history.data.pages.flatMap((page) => page.events).length ? (
+              <>
+                {history.data.pages.flatMap((page) => page.events).slice(0, 200).map((item) => (
+                  <FeedHistoryCard key={item.id} item={item} onOpen={item.mint ? () => router.push({ pathname: "/token/[address]", params: { address: item.mint! } }) : undefined} />
+                ))}
+                {history.hasNextPage ? (
+                  <Pressable accessibilityRole="button" accessibilityLabel={t("loadOlderHistory")} accessibilityState={{ busy: history.isFetchingNextPage }} disabled={history.isFetchingNextPage} onPress={() => history.fetchNextPage()} style={styles.retry}>
+                    <Text style={styles.retryText}>{history.isFetchingNextPage ? t("loadingFeedHistory") : t("loadOlderHistory")}</Text>
+                  </Pressable>
+                ) : <Text style={styles.limit}>{t("feedHistoryEnd")}</Text>}
+              </>
+            ) : <State text={t("noFeedHistory")} />}
+            <Text style={styles.limit}>{t("trackCursorReadyBoundary")}</Text>
           </>
         )}
         <Text style={styles.section}>{t("deliveryEvidence")}</Text>
@@ -201,6 +225,11 @@ export default function TrackScreen() {
       </ScrollView>
     </SafeAreaView>
   );
+}
+
+function FeedHistoryCard({ item, onOpen }: { item: FeedHistoryEvent; onOpen?: () => void }) {
+  const content = <><View style={styles.eventTop}><Text style={styles.type}>{item.kind.replaceAll("_", " ")}</Text><Text style={styles.meta}>{new Date(item.observedAt).toLocaleString()}</Text></View><Text style={styles.eventTitle}>{item.mint ?? item.topic}</Text><Text style={styles.message}>{item.source} · {item.channel} · {item.dataQuality}</Text><Text style={styles.dedupe}>{item.replaySequence} · {item.id}</Text></>;
+  return onOpen ? <Pressable accessibilityRole="button" accessibilityLabel={`Open ${item.kind} history event`} onPress={onOpen} style={styles.event}>{content}</Pressable> : <View accessibilityRole="summary" style={styles.event}>{content}</View>;
 }
 
 export function TrackEventCard({

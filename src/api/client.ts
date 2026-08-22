@@ -12,6 +12,7 @@ import {
   copyTradeHealthSchema,
   feedConnectionsSchema,
   feedDiagnosticsSchema,
+  feedHistorySchema,
   heatmapSchema,
   holdersSchema,
   manipulationSchema,
@@ -48,6 +49,8 @@ import {
   type CopyTradeHealth,
   type FeedConnectionsResponse,
   type FeedDiagnosticsResponse,
+  type FeedHistoryCursor,
+  type FeedHistoryResponse,
   type HeatmapResponse,
   type HoldersResponse,
   type ManipulationResponse,
@@ -470,6 +473,23 @@ export async function fetchTrackFeed(
     "/api/in-app-notifications",
     trackFeedSchema,
     "Track feed request failed",
+    signal,
+  );
+}
+
+export async function fetchFeedHistory(
+  cursor?: FeedHistoryCursor | null,
+  signal?: AbortSignal,
+): Promise<FeedHistoryResponse> {
+  const query = new URLSearchParams({ limit: "50" });
+  if (cursor) {
+    query.set("beforeSequence", cursor.beforeSequence);
+    query.set("beforeId", cursor.beforeId);
+  }
+  return readEvidence(
+    `/api/feed/history?${query}`,
+    feedHistorySchema,
+    "Feed history request failed",
     signal,
   );
 }

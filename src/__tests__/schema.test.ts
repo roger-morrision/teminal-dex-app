@@ -9,6 +9,7 @@ import {
   copyTradeHealthSchema,
   feedConnectionsSchema,
   feedDiagnosticsSchema,
+  feedHistorySchema,
   heatmapSchema,
   manipulationSchema,
   monitorAlertsSchema,
@@ -27,6 +28,32 @@ import {
   walletHoldingsSchema,
   walletPnlSchema,
 } from "@/api/schema";
+
+describe("durable feed history", () => {
+  const event = {
+    id: "solana-rpc:trade:signature",
+    replaySequence: "42",
+    source: "solana-rpc",
+    channel: "rpc",
+    kind: "trade",
+    topic: "market",
+    mint: "11111111111111111111111111111111",
+    signature: "signature",
+    slot: 42,
+    observedAt: "2026-08-22T00:00:00.000Z",
+    dataQuality: "observed",
+    payload: {},
+  } as const;
+  it("accepts a bounded paired older-history cursor", () => {
+    expect(feedHistorySchema.safeParse({ schema: "feed-history-v1", mode: "read-only", generatedAt: 1, events: [event], hasMore: true, nextCursor: { beforeSequence: "42", beforeId: event.id } }).success).toBe(true);
+  });
+  it("rejects duplicate IDs, incomplete cursors, and oversized payloads", () => {
+    const base = { schema: "feed-history-v1", mode: "read-only", generatedAt: 1, events: [event], hasMore: false, nextCursor: null };
+    expect(feedHistorySchema.safeParse({ ...base, events: [event, event] }).success).toBe(false);
+    expect(feedHistorySchema.safeParse({ ...base, hasMore: true }).success).toBe(false);
+    expect(feedHistorySchema.safeParse({ ...base, events: [{ ...event, payload: { value: "x".repeat(20_001) } }] }).success).toBe(false);
+  });
+});
 
 const token = {
   id: "pair",

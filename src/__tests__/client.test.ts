@@ -12,6 +12,7 @@ import {
   fetchDiscovery,
   fetchFeedConnections,
   fetchFeedDiagnostics,
+  fetchFeedHistory,
   fetchHeatmap,
   fetchMonitorAlerts,
   fetchOhlcv,
@@ -393,6 +394,22 @@ describe("backend client routing", () => {
       }),
     ).rejects.toThrow("slippage");
     expect(fetch).toHaveBeenCalledTimes(1);
+  });
+
+  it("loads older durable feed history with a paired cursor", async () => {
+    jest.mocked(fetch).mockResolvedValueOnce(jsonResponse({
+      schema: "feed-history-v1",
+      mode: "read-only",
+      generatedAt: 1,
+      events: [],
+      hasMore: false,
+      nextCursor: null,
+    }));
+    await fetchFeedHistory({ beforeSequence: "42", beforeId: "solana-rpc:trade:signature" });
+    expect(jest.mocked(fetch).mock.calls[0]?.[0]).toBe(
+      "https://terminal.example/api/feed/history?limit=50&beforeSequence=42&beforeId=solana-rpc%3Atrade%3Asignature",
+    );
+    expect("method" in (jest.mocked(fetch).mock.calls[0]?.[1] ?? {})).toBe(false);
   });
 
   it("uses credentialed owner-scoped alert routes and never invokes evaluation", async () => {

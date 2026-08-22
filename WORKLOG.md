@@ -473,3 +473,12 @@
 - Verification evidence: strict TypeScript and direct warning-free ESLint passed; Jest 39 suites / 162 tests passed; Expo Doctor passed 21/21; web production export passed all 23 routes; Android and iOS production bundles passed. Generated exports were removed after verification.
 - Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles.
 - Next priority: re-audit backend changes for a durable Track cursor/social event contract or green transaction readiness. Native-wallet and physical-device evidence remain environment-blocked.
+
+## 2026-08-22 — Slice 43: immutable Track feed history
+
+- With explicit backend write approval, audited the existing replay endpoint and rejected attaching a cursor to `/api/in-app-notifications`: its surge rows are reconstructed from mutable current pair state and cannot truthfully serve as immutable history. The existing replay cursor also moves forward from a recent page and cannot retrieve older retained records.
+- Added an isolated read-only backend `/api/feed/history` contract over durable `FeedEvent` rows. It orders by replay sequence and ID descending, validates paired sequence/ID cursors and limits, fetches one extra row for truthful `hasMore`, returns a paired next cursor, caps pages at 100, exposes no mutation method, and fails closed when storage is unavailable.
+- Added strict mobile validation for schema/mode, allowed sources/channels/kinds/topics, exact mints, timestamps, sequences, cursor pairing, unique IDs, 50-row pages, and 20KB payload budgets. Track keeps current wallet/KOL notifications separate from immutable market/discovery history and renders at most four pages/200 rows with accessible older-history pagination and exact-mint handoff.
+- Added backend static contract coverage plus mobile adversarial schema and GET-only cursor-routing tests. Backend TypeScript, targeted ESLint, and contract test passed. Mobile strict TypeScript and warning-free ESLint passed; Jest 39 suites / 165 tests passed; fresh web export passed all 23 routes; fresh Android and iOS exports passed. Generated verification output was removed. Expo dependencies/config remain unchanged from the prior Doctor 21/21 result.
+- Known upstream Noble hashes Metro subpath fallback warning remains unchanged and non-fatal across all bundles.
+- Next priority: authoritative X/TG source contracts, then transaction readiness and physical-device verification.

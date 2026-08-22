@@ -840,6 +840,48 @@ export const trackFeedSchema = z
 export type TrackFeedResponse = z.infer<typeof trackFeedSchema>;
 export type TrackNotification = TrackFeedResponse["notifications"][number];
 
+const feedHistoryCursorSchema = z
+  .object({
+    beforeSequence: z.string().regex(/^\d{1,20}$/),
+    beforeId: z.string().regex(/^[A-Za-z0-9:._-]{1,128}$/),
+  })
+  .strict();
+export const feedHistorySchema = z
+  .object({
+    schema: z.literal("feed-history-v1"),
+    mode: z.literal("read-only"),
+    generatedAt: z.number().int().nonnegative(),
+    events: z
+      .array(
+        z
+          .object({
+            id: z.string().regex(/^[A-Za-z0-9:._-]{1,128}$/),
+            replaySequence: z.string().regex(/^\d{1,20}$/),
+            source: z.enum(["pumpportal", "solana-rpc", "dexpaprika", "enrichment", "market-ingestion"]),
+            channel: z.enum(["websocket", "rpc", "job"]),
+            kind: z.enum(["new_token", "migration", "trade", "onchain_tick", "token_update", "error"]),
+            topic: z.enum(["market", "discovery", "token", "system"]),
+            mint: publicKeyString.nullable(),
+            signature: z.string().max(200).nullable(),
+            slot: z.number().int().nonnegative().nullable(),
+            observedAt: z.string().datetime(),
+            dataQuality: z.enum(["observed", "enriched", "error"]),
+            payload: z.record(z.string(), z.unknown()),
+          })
+          .strict()
+          .refine((event) => JSON.stringify(event.payload).length <= 20_000, "Feed history payload exceeds render budget."),
+      )
+      .max(50),
+    hasMore: z.boolean(),
+    nextCursor: feedHistoryCursorSchema.nullable(),
+  })
+  .strict()
+  .refine((value) => new Set(value.events.map((item) => item.id)).size === value.events.length, "Feed history IDs must be unique.")
+  .refine((value) => value.hasMore === Boolean(value.nextCursor), "Feed history cursor availability mismatch.");
+export type FeedHistoryResponse = z.infer<typeof feedHistorySchema>;
+export type FeedHistoryCursor = NonNullable<FeedHistoryResponse["nextCursor"]>;
+export type FeedHistoryEvent = FeedHistoryResponse["events"][number];
+
 export const topTraderSchema = z
   .object({
     rank: z.number().int().positive(),

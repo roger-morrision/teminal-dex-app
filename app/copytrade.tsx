@@ -370,15 +370,19 @@ export function StrategyComposer({
   useEffect(() => {
     void loadCopyTradePreviewPreferences().then(setSafety);
   }, []);
-  const result = buildPausedCopyTradeInput(draft, {
-    address: trader.address,
-    label: `${trader.badge} #${trader.rank}`,
-  });
   const update = <K extends keyof CopyTradeDraft>(
     key: K,
     value: CopyTradeDraft[K],
   ) => setDraft((current) => ({ ...current, [key]: value }));
   const safetyResult = validateCopyTradePreviewPreferences(safety);
+  const result = buildPausedCopyTradeInput(
+    draft,
+    {
+      address: trader.address,
+      label: `${trader.badge} #${trader.rank}`,
+    },
+    safetyResult.preview,
+  );
   const persistSafety = (next: CopyTradePreviewPreferences) => {
     const sequence = ++saveSequence.current;
     setSafety(next);

@@ -967,6 +967,21 @@ export const copyTradeConfigSchema = z
     takeProfitPct: z.number().positive().optional(),
     maxSlippageBps: z.number().int().min(1).max(5000),
     maxPriceImpactPct: z.number().positive().max(100),
+    priorityFeeLamports: z.number().int().min(0).max(10_000_000),
+    antiMev: z.boolean(),
+    minHolderCount: z.number().int().min(0).max(10_000_000),
+    trailingStopPct: z.number().positive().lt(100),
+    exitLadder: z
+      .tuple([
+        z.object({ triggerPct: z.number().positive(), sellPct: z.number().positive().max(100) }),
+        z.object({ triggerPct: z.number().positive(), sellPct: z.number().positive().max(100) }),
+      ])
+      .refine(
+        ([first, second]) =>
+          second.triggerPct > first.triggerPct &&
+          first.sellPct + second.sellPct <= 100,
+        "Exit ladder must be ordered and allocate at most 100%.",
+      ),
     minLiquidityUsd: z.number().nonnegative(),
     maxMarketCapUsd: z.number().nonnegative(),
     excludedTokens: z.array(publicKeyString).max(MAX_WALLET_HOLDINGS),

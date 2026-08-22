@@ -491,3 +491,13 @@
 - Backend verification evidence: Prisma schema validation and generation, full TypeScript, targeted ESLint, and the swap-intent contract test passed. Backend commit: `eba0abe`.
 - No mobile signing, confirmation, simulation, submission, activation, or execution path was added. Existing unsafe build/submit routes remain unused by mobile.
 - Next priority: server-side resolved-account mint/amount verification and simulation, followed by explicit owner confirmation and replay-safe managed submission. Authoritative X/TG exposure still requires an explicit privacy decision; physical-device evidence remains environment-blocked.
+
+## 2026-08-22 — Slice 45: durable paused CopyTrade safety controls
+
+- Closed the independently actionable CopyTrade contract gap while transaction simulation awaits explicit external-disclosure approval. Extended the authoritative durable strategy with exact priority-fee lamports, Anti-MEV requirement, minimum holder count, trailing-stop percentage, and an ordered two-level take-profit ladder.
+- Added backend defaults, strict bounds, exactly-two-level ordering/allocation validation, Prisma persistence/migration, and round-trip mapping. The existing verified-owner configuration boundary remains unchanged.
+- Updated the mobile response schema to reject missing, oversized, unordered, over-allocated, or otherwise incompatible controls. The composer converts the validated SOL fee to integer lamports and includes every safety value only in an always-paused strategy request.
+- Updated localized English/Vietnamese disclosures: the controls are persisted for paused review but are not execution-enforced. No activation, quote, transaction construction, protected routing, signature, broadcast, confirmation, close, or submission action was added.
+- Verification evidence: backend Prisma generation/validation, full TypeScript, targeted ESLint, and contract test passed; mobile TypeScript, repository-wide ESLint, 39 Jest suites / 165 tests, Expo Doctor 21/21, 23-route web export, Android export, and iOS export passed. Generated exports were removed.
+- Known upstream Noble hashes Metro subpath fallback warning remains unchanged and non-fatal across all bundles.
+- Backend commit: `e47f09c`. Next priority: transaction simulation after explicit Helius disclosure approval, authoritative X/TG after a privacy decision, then native/physical-device evidence.

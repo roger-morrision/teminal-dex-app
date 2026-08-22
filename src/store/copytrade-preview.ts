@@ -109,7 +109,10 @@ export function validateCopyTradePreviewPreferences(
       minHolderCount,
       antiMev: value.antiMev,
       trailingStopPct,
-      exitLadder: ladder,
+      exitLadder: [ladder[0]!, ladder[1]!] as [
+        { triggerPct: number; sellPct: number },
+        { triggerPct: number; sellPct: number },
+      ],
     },
   };
 }

@@ -30,6 +30,10 @@ describe("CopyTrade paused configuration", () => {
       onlyNewLaunches: true,
       copyBuys: true,
       copySells: false,
+      priorityFeeLamports: 1_000_000,
+      antiMev: true,
+      minHolderCount: 100,
+      trailingStopPct: 10,
     });
   });
   it("validates percentage and proportional sizing independently", () => {

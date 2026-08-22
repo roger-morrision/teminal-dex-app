@@ -542,30 +542,52 @@ describe("CopyTrade evidence schemas", () => {
     expect(health.readiness.walletSignature).toBe(false);
   });
   it("rejects configs with out-of-bounds financial risk fields", () => {
+    const config = {
+      id: "c",
+      userId: address,
+      sourceWallet: address,
+      isActive: false,
+      createdAt: 1,
+      updatedAt: 1,
+      sizingMode: "fixed_sol",
+      fixedAmountSol: 1,
+      maxPositionSizeSol: 1,
+      maxDailyVolumeSol: 1,
+      maxDailyLossSol: 0,
+      maxSlippageBps: 100,
+      maxPriceImpactPct: 5,
+      priorityFeeLamports: 1_000_000,
+      antiMev: true,
+      minHolderCount: 100,
+      trailingStopPct: 10,
+      exitLadder: [
+        { triggerPct: 25, sellPct: 50 },
+        { triggerPct: 50, sellPct: 50 },
+      ],
+      minLiquidityUsd: 0,
+      maxMarketCapUsd: 0,
+      excludedTokens: [],
+      onlyNewLaunches: false,
+      maxTokenAgeMinutes: 60,
+      copySells: true,
+      copyBuys: true,
+      delayMs: 0,
+      maxConcurrentPositions: 1,
+    };
+    expect(copyTradeConfigSchema.safeParse(config).success).toBe(true);
     expect(
       copyTradeConfigSchema.safeParse({
-        id: "c",
-        userId: address,
-        sourceWallet: address,
-        isActive: false,
-        createdAt: 1,
-        updatedAt: 1,
-        sizingMode: "fixed_sol",
-        fixedAmountSol: 1,
-        maxPositionSizeSol: 1,
-        maxDailyVolumeSol: 1,
-        maxDailyLossSol: 0,
+        ...config,
         maxSlippageBps: 5001,
-        maxPriceImpactPct: 5,
-        minLiquidityUsd: 0,
-        maxMarketCapUsd: 0,
-        excludedTokens: [],
-        onlyNewLaunches: false,
-        maxTokenAgeMinutes: 60,
-        copySells: true,
-        copyBuys: true,
-        delayMs: 0,
-        maxConcurrentPositions: 1,
+      }).success,
+    ).toBe(false);
+    expect(
+      copyTradeConfigSchema.safeParse({
+        ...config,
+        exitLadder: [
+          { triggerPct: 50, sellPct: 60 },
+          { triggerPct: 25, sellPct: 60 },
+        ],
       }).success,
     ).toBe(false);
   });

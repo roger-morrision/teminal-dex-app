@@ -55,6 +55,28 @@ export type CopyTradeConfigError =
   | "timing"
   | "direction";
 
+export type CopyTradeSafetyControls = {
+  priorityFeeSol: number;
+  minHolderCount: number;
+  antiMev: boolean;
+  trailingStopPct: number;
+  exitLadder: [
+    { triggerPct: number; sellPct: number },
+    { triggerPct: number; sellPct: number },
+  ];
+};
+
+export const defaultCopyTradeSafetyControls: CopyTradeSafetyControls = {
+  priorityFeeSol: 0.001,
+  minHolderCount: 100,
+  antiMev: true,
+  trailingStopPct: 10,
+  exitLadder: [
+    { triggerPct: 25, sellPct: 50 },
+    { triggerPct: 50, sellPct: 50 },
+  ],
+};
+
 export function boundedCopyNumber(value: string) {
   const cleaned = value.replace(/[^0-9.]/g, "");
   const [whole = "", ...fractions] = cleaned.split(".");
@@ -64,6 +86,7 @@ export function boundedCopyNumber(value: string) {
 export function buildPausedCopyTradeInput(
   draft: CopyTradeDraft,
   trader: { address: string; label: string },
+  safety: CopyTradeSafetyControls = defaultCopyTradeSafetyControls,
 ): { input: CreateCopyTradeInput | null; errors: CopyTradeConfigError[] } {
   const number = (key: keyof CopyTradeDraft) => Number(draft[key]);
   const fixedAmountSol = number("fixedAmountSol");
@@ -131,6 +154,11 @@ export function buildPausedCopyTradeInput(
       takeProfitPct,
       maxSlippageBps,
       maxPriceImpactPct,
+      priorityFeeLamports: Math.round(safety.priorityFeeSol * 1_000_000_000),
+      antiMev: safety.antiMev,
+      minHolderCount: safety.minHolderCount,
+      trailingStopPct: safety.trailingStopPct,
+      exitLadder: safety.exitLadder,
       minLiquidityUsd,
       maxMarketCapUsd,
       excludedTokens: [],

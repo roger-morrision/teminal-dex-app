@@ -29,7 +29,7 @@ const trader = {
 describe("StrategyComposer", () => {
   beforeEach(() => AsyncStorage.clear());
 
-  it("submits durable fields paused while keeping local safety preview values out of the request", async () => {
+  it("submits durable safety fields while keeping the strategy paused", async () => {
     jest.mocked(createPausedCopyTradeConfig).mockResolvedValue({} as never);
     const onCreated = jest.fn();
     const queryClient = new QueryClient({
@@ -71,13 +71,9 @@ describe("StrategyComposer", () => {
     );
     const submitted = jest.mocked(createPausedCopyTradeConfig).mock.calls[0]?.[0];
     expect(submitted).not.toHaveProperty("priorityFeeSol");
-    expect(submitted).not.toHaveProperty("minHolderCount");
-    expect(submitted).not.toHaveProperty("antiMev");
-    expect(submitted).not.toHaveProperty("trailingStopPct");
-    expect(submitted).not.toHaveProperty("exitLadder");
     expect(screen.getByText(/Priority 0.005 SOL · holders ≥ 250/)).toBeTruthy();
     expect(
-      screen.getByText(/not included in the backend strategy request/),
+      screen.getByText(/included only in the paused strategy record/),
     ).toBeTruthy();
     await waitFor(() =>
       expect(
@@ -90,6 +86,14 @@ describe("StrategyComposer", () => {
           stopLossPct: 20,
           takeProfitPct: 50,
           maxSlippageBps: 100,
+          priorityFeeLamports: 5_000_000,
+          minHolderCount: 250,
+          antiMev: true,
+          trailingStopPct: 12,
+          exitLadder: [
+            { triggerPct: 25, sellPct: 50 },
+            { triggerPct: 50, sellPct: 50 },
+          ],
         }),
       ),
     );

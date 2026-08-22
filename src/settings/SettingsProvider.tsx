@@ -529,7 +529,7 @@ const en = {
     "Liquidity ≥ ${liquidity} · MC ≤ ${marketCap} · age ≤ {age}m · SL {stop}% · TP {take}%",
   copyLocalSafetyPreview: "Device-local execution safety preview",
   copyLocalPreviewBoundary:
-    "These controls are saved only on this device for preview validation. The backend strategy contract does not persist or enforce them.",
+    "These controls are saved on this device and persisted with the paused backend strategy for review. Execution enforcement remains unavailable.",
   copyPriorityFeeSol: "PRIORITY FEE SOL (0–0.01)",
   copyMinHolders: "MINIMUM HOLDERS",
   copyTrailingStop: "TRAILING STOP (%)",
@@ -549,7 +549,7 @@ const en = {
   copyPreviewError_ladderAllocation:
     "The exit ladder cannot allocate more than 100% in total.",
   copyPreviewNotSubmitted:
-    "Priority fee, Anti-MEV, holder, trailing-stop, and ladder values are not included in the backend strategy request. Quote, protected-route, signature, broadcast, confirmation, and audit gates remain unavailable.",
+    "Safety values are included only in the paused strategy record. Quote, protected-route, signature, broadcast, confirmation, enforcement, and audit gates remain unavailable.",
   copyPreviewStorageUnavailable:
     "Preview controls changed on screen, but this device could not save them.",
   copyConfigError_sizing:
@@ -1419,7 +1419,7 @@ const vi: { [K in TranslationKey]: string } = {
     "Thanh khoản ≥ ${liquidity} · vốn hóa ≤ ${marketCap} · tuổi ≤ {age} phút · cắt lỗ {stop}% · chốt lời {take}%",
   copyLocalSafetyPreview: "Xem trước an toàn thực thi trên thiết bị",
   copyLocalPreviewBoundary:
-    "Các điều khiển này chỉ được lưu trên thiết bị để kiểm tra bản xem trước. Hợp đồng chiến lược backend không lưu hay thực thi chúng.",
+    "Các điều khiển này được lưu trên thiết bị và trong chiến lược backend đang tạm dừng để xem xét. Việc thực thi vẫn chưa khả dụng.",
   copyPriorityFeeSol: "PHÍ ƯU TIÊN SOL (0–0,01)",
   copyMinHolders: "HOLDER TỐI THIỂU",
   copyTrailingStop: "TRAILING STOP (%)",
@@ -1439,7 +1439,7 @@ const vi: { [K in TranslationKey]: string } = {
   copyPreviewError_ladderAllocation:
     "Thang thoát không được phân bổ tổng cộng quá 100%.",
   copyPreviewNotSubmitted:
-    "Phí ưu tiên, Anti-MEV, holder, trailing stop và thang thoát không được gửi trong yêu cầu chiến lược backend. Các cổng báo giá, tuyến bảo vệ, chữ ký, phát, xác nhận và kiểm toán vẫn chưa khả dụng.",
+    "Các giá trị an toàn chỉ được gửi vào bản ghi chiến lược đang tạm dừng. Các cổng báo giá, tuyến bảo vệ, chữ ký, phát, xác nhận, thực thi và kiểm toán vẫn chưa khả dụng.",
   copyPreviewStorageUnavailable:
     "Điều khiển xem trước đã đổi nhưng thiết bị không thể lưu.",
   copyConfigError_sizing: "Chọn kích thước hợp lệ trong giới hạn vị thế.",

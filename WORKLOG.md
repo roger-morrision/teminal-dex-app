@@ -450,3 +450,15 @@
 - Verification evidence: strict TypeScript and direct warning-free ESLint passed; Jest 36 suites / 154 tests passed; Expo Doctor passed 21/21; web production export passed all 23 routes; Android and iOS production bundles passed. Generated exports and temporary package-manager artifacts were removed after verification.
 - Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles.
 - Next priority: audit Monitor table parity and remaining independently actionable acceptance gaps; transaction execution, unsupported CopyTrade fields, native-wallet/device, Track cursor/X-TG, and physical-device evidence remain explicit blockers.
+
+## 2026-08-22 — Slice 41: rich Monitor token table parity
+
+- Re-read backend PO acceptance `TDX-APP-029` and the authoritative desktop Monitor implementation. Confirmed the rich table consumes validated Trending market records while `/api/monitor/alerts` remains a distinct indexed-signature activity feed.
+- Added a localized provider-backed Monitor token table with saved 1h/6h/24h window, symbol/name/exact-mint search, bounded provider-derived DEX choices, gain/loss direction, minimum liquidity/market-cap/1h-volume evidence, Market/Liquidity/Flow column presets, stable two-level sorting, and compact/comfortable row density.
+- Implemented explicit active-filter counts and reset, bounded decimal and text inputs, at most two unique sort priorities, deterministic missing-market-cap handling, horizontal mobile overflow, exact-mint detail handoff, source/quality/freshness evidence, and 30-second refresh behavior.
+- Kept market-table records explicitly `Monitoring only`; they are never labeled or treated as passed-to-buy. Confirmed indexed transaction signatures remain in a separately labeled activity section, avoiding evidence-class conflation.
+- Persisted only bounded non-secret table preferences, exposed device-save failures accessibly, and added the key to privacy reset.
+- Added pure adversarial tests for persistence sanitization, corrupted storage, combined filters, missing evidence, stable two-level sorting and sort cycling, plus a rendered interaction test for provider provenance, preset switching, horizontal table semantics, and the Monitoring-only boundary.
+- Verification evidence: strict TypeScript and direct warning-free ESLint passed; Jest 38 suites / 159 tests passed; Expo Doctor passed 21/21; web production export passed all 23 routes; Android and iOS production bundles passed. Generated exports were removed after verification.
+- Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles.
+- Next priority: re-audit remaining product acceptance and auxiliary-flow gaps after closing Watchlist and Monitor table parity; transaction execution, unsupported CopyTrade fields, native-wallet/device, Track cursor/X-TG, and physical-device evidence remain explicit blockers.

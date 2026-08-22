@@ -23,6 +23,7 @@ import {
   type CreateAlertInput,
 } from "@/api/client";
 import type { UserAlert } from "@/api/schema";
+import { MonitorTokenTable } from "@/components/MonitorTokenTable";
 import { isSolanaAddress } from "@/security/input";
 import { useWalletSession } from "@/security/WalletSessionProvider";
 import { useSettings } from "@/settings/SettingsProvider";
@@ -116,7 +117,16 @@ export default function MonitorScreen() {
           ))}
         </View>
         {mode === "live" ? (
-          <LiveFeed query={live} />
+          <View>
+            <MonitorTokenTable />
+            <View style={styles.activityHead}>
+              <Text accessibilityRole="header" style={styles.sectionTitle}>
+                {t("signedActivity")}
+              </Text>
+              <Text style={styles.sectionHint}>{t("signedActivityBoundary")}</Text>
+            </View>
+            <LiveFeed query={live} />
+          </View>
         ) : !authorized ? (
           <IdentityGate
             locked={wallet.locked}
@@ -727,6 +737,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
   },
+  activityHead: { marginHorizontal: spacing.lg, marginTop: spacing.sm },
   sectionTitle: { color: colors.text, fontSize: 15, fontWeight: "900" },
   sectionHint: {
     color: colors.muted,

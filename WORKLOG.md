@@ -501,3 +501,14 @@
 - Verification evidence: backend Prisma generation/validation, full TypeScript, targeted ESLint, and contract test passed; mobile TypeScript, repository-wide ESLint, 39 Jest suites / 165 tests, Expo Doctor 21/21, 23-route web export, Android export, and iOS export passed. Generated exports were removed.
 - Known upstream Noble hashes Metro subpath fallback warning remains unchanged and non-fatal across all bundles.
 - Backend commit: `e47f09c`. Next priority: transaction simulation after explicit Helius disclosure approval, authoritative X/TG after a privacy decision, then native/physical-device evidence.
+
+## 2026-08-22 — Slice 46: provider-backed Track social evidence
+
+- Re-audited the evolved backend and found the existing public GET-only `/api/ai/social/radar` contract already exposes provider-backed `social.message` evidence. Consuming it creates no new backend disclosure, so the prior blanket X/TG blocker was stale.
+- Added a strict fail-closed response contract for at most 30 unique exact-mint trends and three message samples per token. It validates every trend metric, provider/freshness/coordination warning, identity match, string/array budget, and rejects duplicates, unexpected fields, or hostile oversized evidence.
+- Track lazily requests social evidence only when the persistent X/TG filter is selected. Cards show token identity, trend state/score, post and author counts, provider/freshness/market-confirmation evidence, bounded message excerpts, and warnings with exact-mint detail handoff.
+- Kept social authority read-only: no account follow, channel subscription, external link, publish/reply, alert mutation, or transaction action exists. Social trends remain a separate current 60-minute window and are not mixed into immutable market history.
+- Updated English/Vietnamese loading, empty, failure, evidence, and boundary copy. Added adversarial schema, incompatible-response routing, GET-only, and rendered navigation/no-external-action tests.
+- Verification evidence: strict TypeScript, repository-wide ESLint, 39 Jest suites / 169 tests, Expo Doctor 21/21, fresh 23-route web export, Android export, and iOS export passed. Generated exports were removed.
+- Known upstream Noble hashes Metro subpath fallback warning remains unchanged and non-fatal across all bundles.
+- Next priority: transaction simulation after explicit Helius disclosure approval, then native-wallet and physical-device evidence.

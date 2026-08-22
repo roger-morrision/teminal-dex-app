@@ -4,8 +4,8 @@ import { useRouter } from "expo-router";
 import React from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { fetchAlertDeliveries, fetchFeedHistory, fetchTrackFeed } from "@/api/client";
-import type { FeedHistoryCursor, FeedHistoryEvent, TrackNotification } from "@/api/schema";
+import { fetchAlertDeliveries, fetchFeedHistory, fetchSocialRadar, fetchTrackFeed } from "@/api/client";
+import type { FeedHistoryCursor, FeedHistoryEvent, SocialRadarTrend, TrackNotification } from "@/api/schema";
 import { compactUsd } from "@/lib/format";
 import { useWalletSession } from "@/security/WalletSessionProvider";
 import { useSettings } from "@/settings/SettingsProvider";
@@ -43,6 +43,11 @@ export default function TrackScreen() {
     getNextPageParam: (page) => page.nextCursor ?? undefined,
     maxPages: 4,
   });
+  const social = useQuery({
+    queryKey: ["track-social-radar"],
+    queryFn: ({ signal }) => fetchSocialRadar(signal),
+    enabled: filter === "social",
+  });
   const deliveries = useQuery({
     queryKey: ["track-deliveries", wallet.session?.wallet],
     queryFn: ({ signal }) => fetchAlertDeliveries(signal),
@@ -78,9 +83,9 @@ export default function TrackScreen() {
           <Pressable
             accessibilityRole="button"
             accessibilityLabel={t("refreshTrack")}
-            accessibilityState={{ busy: feed.isFetching }}
-            disabled={feed.isFetching}
-            onPress={() => feed.refetch()}
+            accessibilityState={{ busy: filter === "social" ? social.isFetching : feed.isFetching }}
+            disabled={filter === "social" ? social.isFetching : feed.isFetching}
+            onPress={() => filter === "social" ? social.refetch() : feed.refetch()}
             style={styles.icon}
           >
             <Ionicons name="refresh" size={18} color={colors.text} />
@@ -148,7 +153,24 @@ export default function TrackScreen() {
             </View>
             <Text style={styles.section}>{t("observedEventHistory")}</Text>
             {filter === "social" ? (
-              <State text={t("socialTrackUnavailable")} />
+              social.isLoading ? (
+                <State loading text={t("loadingSocialTrack")} />
+              ) : social.isError || !social.data ? (
+                <State error text={social.error?.message ?? t("socialTrackUnavailable")} onRetry={() => social.refetch()} />
+              ) : social.data.data.trends.length ? (
+                <>
+                  {social.data.data.trends.map((item) => (
+                    <SocialTrendCard
+                      key={item.token.address}
+                      item={item}
+                      onOpen={() => router.push({ pathname: "/token/[address]", params: { address: item.token.address } })}
+                    />
+                  ))}
+                  <Text style={styles.limit}>{t("socialTrackBoundary")}</Text>
+                </>
+              ) : (
+                <State text={t("noSocialTrackEvents")} />
+              )
             ) : rows.length ? (
               rows.map((item) => (
                 <TrackEventCard
@@ -224,6 +246,44 @@ export default function TrackScreen() {
         )}
       </ScrollView>
     </SafeAreaView>
+  );
+}
+
+export function SocialTrendCard({ item, onOpen }: { item: SocialRadarTrend; onOpen: () => void }) {
+  const { t } = useSettings();
+  const score = item.trend.socialTrendScore;
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={t("openSocialTrend", { symbol: item.token.symbol })}
+      onPress={onOpen}
+      style={styles.event}
+    >
+      <View style={styles.eventTop}>
+        <Text style={[styles.type, { color: score != null && score >= 62 ? colors.positive : colors.warning }]}>
+          {item.trend.trendState.replaceAll("_", " ")}
+        </Text>
+        <Text style={styles.meta}>{new Date(item.trend.observedAt).toLocaleString()}</Text>
+      </View>
+      <Text style={styles.eventTitle}>{item.token.symbol} · {item.token.name}</Text>
+      <Text style={styles.message}>
+        {t("socialTrendEvidence", {
+          posts: item.trend.postCount,
+          authors: item.trend.uniqueAuthors,
+          score: score ?? t("unavailable"),
+        })}
+      </Text>
+      <Text style={styles.meta}>
+        {item.trend.providers.join(" · ") || t("unavailable")} · {item.trend.freshness} · {item.trend.marketConfirmation}
+      </Text>
+      {item.evidence.map((evidence, index) => evidence.text ? (
+        <Text key={`${evidence.provider ?? "social"}:${evidence.externalId ?? index}`} numberOfLines={3} style={styles.socialEvidence}>
+          {evidence.provider ?? t("unavailable")} · {evidence.text}
+        </Text>
+      ) : null)}
+      {item.trend.warnings.length ? <Text style={styles.reason}>{item.trend.warnings.join(" · ")}</Text> : null}
+      <Text style={styles.dedupe}>{item.token.address}</Text>
+    </Pressable>
   );
 }
 
@@ -410,6 +470,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   message: { color: colors.muted, fontSize: 10, lineHeight: 15, marginTop: 3 },
+  socialEvidence: { color: colors.text, fontSize: 9, lineHeight: 14, marginTop: 7 },
   eventBottom: {
     flexDirection: "row",
     justifyContent: "space-between",

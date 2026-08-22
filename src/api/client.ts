@@ -13,6 +13,7 @@ import {
   feedConnectionsSchema,
   feedDiagnosticsSchema,
   feedHistorySchema,
+  socialRadarSchema,
   heatmapSchema,
   holdersSchema,
   manipulationSchema,
@@ -51,6 +52,7 @@ import {
   type FeedDiagnosticsResponse,
   type FeedHistoryCursor,
   type FeedHistoryResponse,
+  type SocialRadarResponse,
   type HeatmapResponse,
   type HoldersResponse,
   type ManipulationResponse,
@@ -492,6 +494,18 @@ export async function fetchFeedHistory(
     "Feed history request failed",
     signal,
   );
+}
+
+export async function fetchSocialRadar(signal?: AbortSignal): Promise<SocialRadarResponse> {
+  const result = socialRadarSchema.safeParse(
+    await jsonRequest(
+      "/api/ai/social/radar",
+      { signal },
+      "Social tracking request failed",
+    ),
+  );
+  if (!result.success) throw new ApiError("Backend returned incompatible social tracking evidence.");
+  return result.data;
 }
 
 export type CreateAlertInput = {

@@ -61,9 +61,14 @@ const en = {
   loadOlderHistory: "Load older history",
   feedHistoryEnd: "End of retained durable history.",
   noFeedHistory: "No durable feed events are retained yet.",
-  trackCursorReadyBoundary: "Stable replay-sequence cursors load older retained feed observations. Wallet/KOL observations above remain a separate bounded current window; X/TG events remain unavailable.",
+  trackCursorReadyBoundary: "Stable replay-sequence cursors load older retained feed observations. Wallet/KOL and current provider-backed social observations remain separate bounded windows.",
+  loadingSocialTrack: "Loading provider-backed social evidence…",
   socialTrackUnavailable:
-    "X/TG source events are not exposed by an authoritative mobile-safe contract. Social-only observations remain unavailable and are not inferred from market activity.",
+    "Provider-backed social evidence is unavailable.",
+  noSocialTrackEvents: "No X/Telegram observations are available in the current 60-minute evidence window.",
+  socialTrackBoundary: "Current read-only evidence from the existing public social radar. At most 30 tokens and three message samples per token are shown; Track does not follow accounts, open external links, or publish messages.",
+  socialTrendEvidence: "{posts} posts · {authors} authors · score {score}",
+  openSocialTrend: "Open {symbol} social trend evidence",
   noTrackEvents: "No matching observed events.",
   trackCursorBoundary:
     "The backend returns one bounded deduplicated observation window without a cursor. Older history and continuous tracking are unavailable.",
@@ -950,9 +955,14 @@ const vi: { [K in TranslationKey]: string } = {
   loadOlderHistory: "Tải lịch sử cũ hơn",
   feedHistoryEnd: "Đã đến cuối lịch sử bền vững được lưu giữ.",
   noFeedHistory: "Chưa có sự kiện nguồn dữ liệu bền vững nào được lưu giữ.",
-  trackCursorReadyBoundary: "Con trỏ replay-sequence ổn định tải các quan sát nguồn dữ liệu cũ hơn. Quan sát ví/KOL ở trên vẫn là cửa sổ hiện tại riêng biệt; sự kiện X/TG vẫn chưa có.",
+  trackCursorReadyBoundary: "Con trỏ replay-sequence ổn định tải các quan sát nguồn dữ liệu cũ hơn. Quan sát ví/KOL và mạng xã hội từ nhà cung cấp vẫn là các cửa sổ giới hạn riêng biệt.",
+  loadingSocialTrack: "Đang tải bằng chứng mạng xã hội từ nhà cung cấp…",
   socialTrackUnavailable:
-    "Sự kiện nguồn X/TG chưa được cung cấp qua hợp đồng an toàn cho di động. Quan sát chỉ từ mạng xã hội vẫn không khả dụng và không được suy diễn từ hoạt động thị trường.",
+    "Bằng chứng mạng xã hội từ nhà cung cấp không khả dụng.",
+  noSocialTrackEvents: "Không có quan sát X/Telegram trong cửa sổ bằng chứng 60 phút hiện tại.",
+  socialTrackBoundary: "Bằng chứng chỉ đọc hiện tại từ social radar công khai sẵn có. Hiển thị tối đa 30 token và ba mẫu tin nhắn mỗi token; Track không theo dõi tài khoản, mở liên kết ngoài hay đăng tin.",
+  socialTrendEvidence: "{posts} bài · {authors} tác giả · điểm {score}",
+  openSocialTrend: "Mở bằng chứng xu hướng mạng xã hội của {symbol}",
   noTrackEvents: "Không có sự kiện quan sát phù hợp.",
   trackCursorBoundary:
     "Backend trả về một cửa sổ quan sát giới hạn đã khử trùng lặp mà không có con trỏ. Lịch sử cũ hơn và theo dõi liên tục không khả dụng.",

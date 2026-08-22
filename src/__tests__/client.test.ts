@@ -18,6 +18,7 @@ import {
   fetchOhlcv,
   fetchPortfolioAnalytics,
   fetchSignals,
+  fetchSocialRadar,
   fetchSwapQuote,
   fetchTokenDetail,
   fetchTokenPanel,
@@ -409,6 +410,13 @@ describe("backend client routing", () => {
     expect(jest.mocked(fetch).mock.calls[0]?.[0]).toBe(
       "https://terminal.example/api/feed/history?limit=50&beforeSequence=42&beforeId=solana-rpc%3Atrade%3Asignature",
     );
+    expect("method" in (jest.mocked(fetch).mock.calls[0]?.[1] ?? {})).toBe(false);
+  });
+
+  it("loads public social radar with GET only and rejects incompatible evidence", async () => {
+    jest.mocked(fetch).mockResolvedValueOnce(jsonResponse({ success: true, data: { trends: [] } }));
+    await expect(fetchSocialRadar()).rejects.toThrow("incompatible social tracking evidence");
+    expect(jest.mocked(fetch).mock.calls[0]?.[0]).toBe("https://terminal.example/api/ai/social/radar");
     expect("method" in (jest.mocked(fetch).mock.calls[0]?.[1] ?? {})).toBe(false);
   });
 

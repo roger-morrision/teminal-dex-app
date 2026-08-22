@@ -1,7 +1,7 @@
 import { fireEvent, render } from "@testing-library/react-native";
-import { TrackEventCard } from "../../app/track";
+import { SocialTrendCard, TrackEventCard } from "../../app/track";
 import { SettingsProvider } from "@/settings/SettingsProvider";
-import type { TrackNotification } from "@/api/schema";
+import type { SocialRadarTrend, TrackNotification } from "@/api/schema";
 
 jest.mock("@/security/WalletSessionProvider", () => ({
   useWalletSession: jest.fn(),
@@ -50,5 +50,34 @@ describe("Track event evidence", () => {
     await fireEvent.press(screen.getByRole("button"));
     expect(onOpen).toHaveBeenCalledTimes(1);
     expect(screen.queryByText(/execute|subscribe|follow wallet/i)).toBeNull();
+  });
+  it("renders bounded provider social evidence with exact-mint navigation and no external action", async () => {
+    const onOpen = jest.fn();
+    const social = {
+      token: { address, symbol: "SOL", name: "Solana" },
+      trend: {
+        tokenAddress: address,
+        providers: ["x-api", "telegram"],
+        postCount: 3,
+        uniqueAuthors: 2,
+        socialTrendScore: 70,
+        trendState: "accelerating",
+        observedAt: 1_787_369_431_000,
+        freshness: "fresh",
+        marketConfirmation: "unconfirmed",
+        warnings: ["single_social_provider"],
+      },
+      evidence: [{ provider: "x-api", externalId: "post-1", text: "Provider-backed social observation" }],
+    } as SocialRadarTrend;
+    const screen = await render(
+      <SettingsProvider>
+        <SocialTrendCard item={social} onOpen={onOpen} />
+      </SettingsProvider>,
+    );
+    expect(screen.getByText("3 posts · 2 authors · score 70")).toBeTruthy();
+    expect(screen.getByText(/x-api · Provider-backed social observation/)).toBeTruthy();
+    await fireEvent.press(screen.getByRole("button"));
+    expect(onOpen).toHaveBeenCalledTimes(1);
+    expect(screen.queryByText(/follow|publish|open x|open telegram/i)).toBeNull();
   });
 });

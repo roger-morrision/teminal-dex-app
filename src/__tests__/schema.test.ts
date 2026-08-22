@@ -16,6 +16,7 @@ import {
   ohlcvSchema,
   portfolioAnalyticsSchema,
   securityHistorySchema,
+  socialRadarSchema,
   signalsSchema,
   snipersSchema,
   swapQuoteSchema,
@@ -28,6 +29,52 @@ import {
   walletHoldingsSchema,
   walletPnlSchema,
 } from "@/api/schema";
+
+const socialTrendRow = {
+  token: { address: "11111111111111111111111111111111", symbol: "SOL", name: "Solana" },
+  trend: {
+    tokenAddress: "11111111111111111111111111111111",
+    providers: ["x-api", "telegram"],
+    postCount: 3,
+    uniqueAuthors: 2,
+    mentions5m: 1,
+    mentions15m: 2,
+    mentions1h: 3,
+    mentionVelocity: 1.5,
+    engagementVelocity: 1,
+    sourceDiversity: 2,
+    authorConcentration: 50,
+    duplicateRatio: 0,
+    socialTrendScore: 70,
+    trendState: "accelerating",
+    organicConfidence: 80,
+    marketConfirmation: "unconfirmed",
+    identityConfidence: 90,
+    dataAgeMs: 1_000,
+    freshness: "fresh",
+    evidenceWindow: "last_60m",
+    observedAt: 1_787_369_431_000,
+    warnings: [],
+    xPotentialScore: null,
+    xRiskScore: null,
+    xPotentialSignals: [],
+    xRiskSignals: [],
+  },
+  evidence: [{ provider: "x-api", externalId: "post-1", text: "Provider observation", observedAt: 1_787_369_430_000 }],
+};
+
+describe("provider-backed social radar", () => {
+  const response = { success: true, data: { generatedAt: 1_787_369_431_000, source: "provider-backed-social-events", trends: [socialTrendRow] } };
+  it("accepts bounded identity-matched social evidence", () => {
+    expect(socialRadarSchema.safeParse(response).success).toBe(true);
+  });
+  it("rejects identity mismatch, duplicate tokens, excess evidence, and hostile fields", () => {
+    expect(socialRadarSchema.safeParse({ ...response, data: { ...response.data, trends: [{ ...socialTrendRow, trend: { ...socialTrendRow.trend, tokenAddress: "So11111111111111111111111111111111111111112" } }] } }).success).toBe(false);
+    expect(socialRadarSchema.safeParse({ ...response, data: { ...response.data, trends: [socialTrendRow, socialTrendRow] } }).success).toBe(false);
+    expect(socialRadarSchema.safeParse({ ...response, data: { ...response.data, trends: [{ ...socialTrendRow, evidence: Array.from({ length: 4 }, () => socialTrendRow.evidence[0]) }] } }).success).toBe(false);
+    expect(socialRadarSchema.safeParse({ ...response, data: { ...response.data, trends: [{ ...socialTrendRow, secret: "unexpected" }] } }).success).toBe(false);
+  });
+});
 
 describe("durable feed history", () => {
   const event = {

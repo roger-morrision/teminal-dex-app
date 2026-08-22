@@ -882,6 +882,88 @@ export type FeedHistoryResponse = z.infer<typeof feedHistorySchema>;
 export type FeedHistoryCursor = NonNullable<FeedHistoryResponse["nextCursor"]>;
 export type FeedHistoryEvent = FeedHistoryResponse["events"][number];
 
+const socialTrendSnapshotSchema = z
+  .object({
+    tokenAddress: publicKeyString,
+    providers: z.array(z.string().min(1).max(64)).max(8),
+    postCount: z.number().int().nonnegative().max(5_000),
+    uniqueAuthors: z.number().int().nonnegative().max(5_000),
+    mentions5m: z.number().int().nonnegative().max(5_000),
+    mentions15m: z.number().int().nonnegative().max(5_000),
+    mentions1h: z.number().int().nonnegative().max(5_000),
+    mentionVelocity: z.number().finite().nonnegative().nullable(),
+    engagementVelocity: z.number().finite().nonnegative().nullable(),
+    sourceDiversity: z.number().int().nonnegative().max(8),
+    authorConcentration: z.number().int().min(0).max(100).nullable(),
+    duplicateRatio: z.number().int().min(0).max(100).nullable(),
+    socialTrendScore: z.number().int().min(0).max(100).nullable(),
+    trendState: z.enum(["surging", "accelerating", "steady", "cooling", "unconfirmed"]),
+    organicConfidence: z.number().int().min(0).max(100).nullable(),
+    marketConfirmation: z.enum(["confirmed", "partial", "divergent", "unconfirmed"]),
+    identityConfidence: z.number().min(0).max(100),
+    dataAgeMs: z.number().int().nonnegative().nullable(),
+    freshness: z.enum(["fresh", "aging", "stale", "unavailable"]),
+    evidenceWindow: z.literal("last_60m"),
+    observedAt: z.number().int().positive(),
+    warnings: z.array(z.string().min(1).max(128)).max(20),
+    xPotentialScore: z.number().min(0).max(100).nullable(),
+    xRiskScore: z.number().min(0).max(100).nullable(),
+    xPotentialSignals: z.array(z.string().min(1).max(256)).max(20),
+    xRiskSignals: z.array(z.string().min(1).max(256)).max(20),
+  })
+  .strict();
+
+export const socialRadarSchema = z
+  .object({
+    success: z.literal(true),
+    data: z
+      .object({
+        generatedAt: z.number().int().positive(),
+        source: z.literal("provider-backed-social-events"),
+        trends: z
+          .array(
+            z
+              .object({
+                token: z
+                  .object({
+                    address: publicKeyString,
+                    symbol: z.string().min(1).max(32),
+                    name: z.string().min(1).max(128),
+                  })
+                  .strict(),
+                trend: socialTrendSnapshotSchema,
+                evidence: z
+                  .array(
+                    z
+                      .object({
+                        provider: z.string().min(1).max(64).optional(),
+                        externalId: z.string().min(1).max(256).optional(),
+                        text: z.string().min(1).max(2_000).optional(),
+                        createdAt: z.string().datetime().optional(),
+                        observedAt: z.number().int().positive().optional(),
+                      })
+                      .strict(),
+                  )
+                  .max(3),
+              })
+              .strict()
+              .refine((row) => row.token.address === row.trend.tokenAddress, "Social token identity mismatch."),
+          )
+          .max(30)
+          .superRefine((rows, context) => {
+            const addresses = new Set<string>();
+            for (const [index, row] of rows.entries()) {
+              if (addresses.has(row.token.address)) context.addIssue({ code: "custom", path: [index, "token", "address"], message: "Duplicate social token." });
+              addresses.add(row.token.address);
+            }
+          }),
+      })
+      .strict(),
+  })
+  .strict();
+export type SocialRadarResponse = z.infer<typeof socialRadarSchema>;
+export type SocialRadarTrend = SocialRadarResponse["data"]["trends"][number];
+
 export const topTraderSchema = z
   .object({
     rank: z.number().int().positive(),

@@ -482,3 +482,12 @@
 - Added backend static contract coverage plus mobile adversarial schema and GET-only cursor-routing tests. Backend TypeScript, targeted ESLint, and contract test passed. Mobile strict TypeScript and warning-free ESLint passed; Jest 39 suites / 165 tests passed; fresh web export passed all 23 routes; fresh Android and iOS exports passed. Generated verification output was removed. Expo dependencies/config remain unchanged from the prior Doctor 21/21 result.
 - Known upstream Noble hashes Metro subpath fallback warning remains unchanged and non-fatal across all bundles.
 - Next priority: authoritative X/TG source contracts, then transaction readiness and physical-device verification.
+
+## 2026-08-22 — Slice 44: owner-bound swap intent inspection gate
+
+- With explicit backend write approval, added an isolated non-executing `/api/swap/intents/inspect` gate over fresh validated Jupiter quotes and unsigned versioned transactions.
+- The gate requires verified owner identity, exact owner/fee-payer binding, exactly one required signer, zero populated signatures, bounded transaction complexity, resolvable allowlisted top-level programs, and durable owner-scoped idempotency. Reusing a key with different quote or transaction hashes fails closed.
+- Added durable `SwapIntent` records containing request, quote, and transaction hashes plus bounded decoded evidence; raw serialized transactions and signatures are not retained. The response explicitly reports execution disabled and requires server simulation plus mint/amount verification next.
+- Backend verification evidence: Prisma schema validation and generation, full TypeScript, targeted ESLint, and the swap-intent contract test passed. Backend commit: `eba0abe`.
+- No mobile signing, confirmation, simulation, submission, activation, or execution path was added. Existing unsafe build/submit routes remain unused by mobile.
+- Next priority: server-side resolved-account mint/amount verification and simulation, followed by explicit owner confirmation and replay-safe managed submission. Authoritative X/TG exposure still requires an explicit privacy decision; physical-device evidence remains environment-blocked.

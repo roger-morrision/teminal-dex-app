@@ -1,4 +1,4 @@
-import { ohlcvSchema, portfolioAnalyticsSchema, swapQuoteSchema, transactionsSchema, trenchesSchema, trendingSchema, walletPnlSchema } from '@/api/schema';
+import { alertDeliveriesSchema, monitorAlertsSchema, ohlcvSchema, portfolioAnalyticsSchema, swapQuoteSchema, transactionsSchema, trenchesSchema, trendingSchema, userAlertsSchema, walletPnlSchema } from '@/api/schema';
 
 const token = { id: 'pair', symbol: 'DEX', name: 'Terminal', address: 'mint', pairAddress: 'pair', dex: 'raydium', quoteSymbol: 'SOL', price: 1, marketCap: 10, liquidity: 5, volume24h: 4, volume1h: 2, change24h: 3, change1h: 1, txns5m: { buys: 1, sells: 0 }, ageLabel: '1h', ageMinutes: 60 };
 describe('trendingSchema', () => { it('accepts the backend contract and preserves evidence', () => { expect(trendingSchema.parse({ tokens: [token], source: 'database', dataQuality: 'stored_provider_observations', freshness: { isStale: false } }).tokens[0]?.symbol).toBe('DEX'); }); it('rejects unsafe malformed values', () => { expect(trendingSchema.safeParse({ tokens: [{ ...token, price: '1' }] }).success).toBe(false); }); });
@@ -16,4 +16,13 @@ describe('portfolio evidence schemas', () => {
 describe('Trenches and quote safety schemas', () => {
   it('requires all three launch lanes and freshness evidence', () => { expect(trenchesSchema.safeParse({ newTokens: [], almostBonded: [], migrated: [], fetchedAt: 1, recordCount: 0, providers: [], source: 'none', dataQuality: 'unavailable', freshness: { ageMs: null, staleAfterMs: 60_000, isStale: true } }).success).toBe(true); });
   it('rejects a nominal quote without exact raw amounts and context', () => { expect(swapQuoteSchema.safeParse({ quote: { side: 'buy', real: true }, jupQuote: {}, quotedAt: 1, ts: 1 }).success).toBe(false); });
+});
+
+describe('Monitor and alert evidence schemas', () => {
+  const address = '11111111111111111111111111111111';
+  it('requires signed observation provenance and durable alert ownership', () => {
+    expect(monitorAlertsSchema.safeParse({ alerts: [{ id: 'sig', type: 'onchain_buy', tokenAddress: address, tokenSymbol: 'SOL', message: 'confirmed', timestamp: 1, txHash: 'sig', source: 'rpc', read: false }], ts: 1, fetchedAt: 1, source: 'database', providers: ['solana_token_transactions'], recordCount: 1, dataQuality: 'onchain_signatures_only', freshness: { isStale: false, staleAfterMs: 300000 } }).success).toBe(true);
+    expect(userAlertsSchema.safeParse({ success: true, count: 1, persistence: 'database', data: [{ id: 'a', userId: address, chainId: 'solana', address, type: 'price', name: 'Breakout', description: '', conditions: { condition: 'above', targetPrice: 10 }, channels: ['inApp'], cooldownMinutes: 60, active: true, lastTriggered: null, triggerCount: 0, createdAt: 1, updatedAt: 1, persistence: 'database' }] }).success).toBe(true);
+  });
+  it('rejects fabricated delivery success without timestamps', () => { expect(alertDeliveriesSchema.safeParse({ success: true, count: 1, persistence: 'database', data: [{ id: 'd', alertId: 'a', eventKey: 'e', channel: 'inApp', status: 'delivered', reason: null, deliveredAt: null }] }).success).toBe(false); });
 });

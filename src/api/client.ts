@@ -1,4 +1,4 @@
-import { holdersSchema, narrativeSchema, ohlcvSchema, pairsSchema, portfolioAnalyticsSchema, riskSchema, smartMoneySchema, swapQuoteSchema, tokenDetailSchema, transactionsSchema, trenchesSchema, trendingSchema, walletPnlSchema, type HoldersResponse, type NarrativeResponse, type OhlcvResponse, type PairsResponse, type PortfolioAnalyticsResponse, type RiskResponse, type SmartMoneyResponse, type SwapQuoteResponse, type TokenDetailResponse, type TransactionsResponse, type TrenchesResponse, type TrendingResponse, type WalletPnlResponse } from './schema';
+import { alertDeliveriesSchema, holdersSchema, monitorAlertsSchema, narrativeSchema, ohlcvSchema, pairsSchema, portfolioAnalyticsSchema, riskSchema, smartMoneySchema, swapQuoteSchema, tokenDetailSchema, transactionsSchema, trenchesSchema, trendingSchema, userAlertMutationSchema, userAlertsSchema, walletPnlSchema, type AlertDeliveriesResponse, type HoldersResponse, type MonitorAlertsResponse, type NarrativeResponse, type OhlcvResponse, type PairsResponse, type PortfolioAnalyticsResponse, type RiskResponse, type SmartMoneyResponse, type SwapQuoteResponse, type TokenDetailResponse, type TransactionsResponse, type TrenchesResponse, type TrendingResponse, type UserAlert, type UserAlertsResponse, type WalletPnlResponse } from './schema';
 
 export type TrendingPeriod = '1h' | '6h' | '24h';
 export type TrendingSort = 'trending' | 'gainers' | 'losers' | 'volume' | 'new';
@@ -109,4 +109,45 @@ export async function fetchSwapQuote(input: { token: string; side: 'buy' | 'sell
   const result = swapQuoteSchema.safeParse(await response.json());
   if (!result.success) throw new ApiError('Backend returned an incompatible swap quote.');
   return result.data;
+}
+
+async function jsonRequest(path: string, init: RequestInit, failure: string) {
+  const response = await fetch(`${getApiOrigin()}${path}`, { credentials: 'include', headers: { Accept: 'application/json', ...(init.body ? { 'Content-Type': 'application/json' } : {}) }, ...init });
+  if (!response.ok) throw new ApiError(`${failure} (${response.status}).`, response.status);
+  return response.json();
+}
+
+export async function fetchMonitorAlerts(signal?: AbortSignal): Promise<MonitorAlertsResponse> {
+  const result = monitorAlertsSchema.safeParse(await jsonRequest('/api/monitor/alerts', { signal }, 'Monitor feed request failed'));
+  if (!result.success) throw new ApiError('Backend returned incompatible monitor evidence.');
+  return result.data;
+}
+
+export async function fetchUserAlerts(signal?: AbortSignal): Promise<UserAlertsResponse> {
+  const result = userAlertsSchema.safeParse(await jsonRequest('/api/alerts?limit=100', { signal }, 'Alert definitions request failed'));
+  if (!result.success) throw new ApiError('Backend returned incompatible alert definitions.');
+  return result.data;
+}
+
+export async function fetchAlertDeliveries(signal?: AbortSignal): Promise<AlertDeliveriesResponse> {
+  const result = alertDeliveriesSchema.safeParse(await jsonRequest('/api/alerts/deliveries?limit=100', { signal }, 'Delivery evidence request failed'));
+  if (!result.success) throw new ApiError('Backend returned incompatible delivery evidence.');
+  return result.data;
+}
+
+export type CreateAlertInput = { address: string; type: 'price' | 'percentageChange' | 'volumeSpike'; name: string; conditions: Record<string, unknown>; cooldownMinutes: number; channels: ['inApp'] };
+export async function createUserAlert(input: CreateAlertInput): Promise<UserAlert> {
+  const result = userAlertMutationSchema.safeParse(await jsonRequest('/api/alerts', { method: 'POST', body: JSON.stringify(input) }, 'Alert creation failed'));
+  if (!result.success) throw new ApiError('Backend returned an incompatible created alert.');
+  return result.data.data;
+}
+
+export async function setUserAlertActive(id: string, active: boolean): Promise<UserAlert> {
+  const result = userAlertMutationSchema.safeParse(await jsonRequest('/api/alerts', { method: 'PUT', body: JSON.stringify({ id, active }) }, 'Alert update failed'));
+  if (!result.success) throw new ApiError('Backend returned an incompatible updated alert.');
+  return result.data.data;
+}
+
+export async function deleteUserAlert(id: string): Promise<void> {
+  await jsonRequest(`/api/alerts?id=${encodeURIComponent(id)}`, { method: 'DELETE' }, 'Alert deletion failed');
 }

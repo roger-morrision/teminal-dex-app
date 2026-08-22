@@ -84,3 +84,33 @@ export const swapQuoteSchema = z.object({
   jupQuote: z.record(z.string(), z.unknown()), quotedAt: z.number(), ts: z.number(),
 }).passthrough();
 export type SwapQuoteResponse = z.infer<typeof swapQuoteSchema>;
+
+const monitorAlertSchema = z.object({
+  id: z.string(), type: z.string(), tokenAddress: publicKeyString, tokenSymbol: z.string(), message: z.string(),
+  timestamp: z.number(), txHash: z.string(), source: z.string(), read: z.boolean(),
+}).passthrough();
+export const monitorAlertsSchema = z.object({
+  alerts: z.array(monitorAlertSchema), ts: z.number(), fetchedAt: z.number(), source: z.string(),
+  providers: z.array(z.string()), recordCount: z.number(), dataQuality: z.string(),
+  freshness: z.object({ isStale: z.boolean(), staleAfterMs: z.number() }).passthrough(), error: z.string().optional(),
+}).passthrough();
+export type MonitorAlertsResponse = z.infer<typeof monitorAlertsSchema>;
+
+export const userAlertSchema = z.object({
+  id: z.string(), userId: z.string().nullable(), chainId: z.literal('solana'), address: publicKeyString,
+  type: z.enum(['price', 'percentageChange', 'volumeSpike', 'newPair', 'customFilter']), name: z.string(),
+  description: z.string(), conditions: z.record(z.string(), z.unknown()),
+  channels: z.array(z.enum(['push', 'email', 'inApp', 'webhook', 'telegram'])).min(1),
+  cooldownMinutes: z.number().int().nonnegative(), active: z.boolean(), lastTriggered: z.number().nullable(),
+  triggerCount: z.number().int().nonnegative(), createdAt: z.number(), updatedAt: z.number(), persistence: z.literal('database'),
+  alertEvidence: z.record(z.string(), z.unknown()).optional(),
+}).passthrough();
+export const userAlertsSchema = z.object({ success: z.literal(true), count: z.number(), data: z.array(userAlertSchema), persistence: z.literal('database') }).passthrough();
+export const userAlertMutationSchema = z.object({ success: z.literal(true), data: userAlertSchema }).passthrough();
+export const alertDeliveriesSchema = z.object({ success: z.literal(true), count: z.number(), data: z.array(z.object({
+  id: z.string(), alertId: z.string(), eventKey: z.string(), channel: z.string(), status: z.enum(['queued', 'processing', 'delivered', 'failed', 'unavailable']),
+  reason: z.string().nullable(), deliveredAt: z.string().datetime().nullable(), createdAt: z.string().datetime(), updatedAt: z.string().datetime(),
+}).passthrough()), persistence: z.literal('database') }).passthrough();
+export type UserAlert = z.infer<typeof userAlertSchema>;
+export type UserAlertsResponse = z.infer<typeof userAlertsSchema>;
+export type AlertDeliveriesResponse = z.infer<typeof alertDeliveriesSchema>;

@@ -20,7 +20,7 @@ Status legend: `[x]` verified, `[ ]` incomplete, `[~]` intentionally visible but
 - [x] Non-secret watchlist and Discovery filter persistence with idempotent add/remove and explicit reset.
 - [~] Token detail fetches normalized backend contracts for chart, holders, observed transactions, risk/security evidence, smart money, narrative, and pairs with truthful limitations; swap execution and deeper holder/transaction drilldowns remain incomplete.
 - [x] Trenches uses real New/Almost Bonded/Migrated launch lanes with progress, market evidence, detail navigation, refresh, and non-executing quote-review handoff.
-- [ ] Monitor, Track, alerts, delivery evidence and diagnostics.
+- [~] Monitor uses real indexed Solana observations; owner-scoped price/change/volume alert CRUD and durable delivery diagnostics are complete. Track remains unavailable because the backend exposes no connected live tracker provider.
 - [x] Portfolio and analytics use provider-backed holdings, explicit watch-only versus verified ownership, allocation/risk evidence, and truthful realized/unavailable PnL provenance.
 - [ ] CopyTrade, rankings, config, review and execution truth.
 - [ ] AI Intelligence and paper-trading/governance surfaces.
@@ -29,6 +29,6 @@ Status legend: `[x]` verified, `[ ]` incomplete, `[~]` intentionally visible but
 ## Verification
 
 - [x] Unit tests for response validation and financial formatting.
-- [~] Component interaction coverage started for accessible token navigation/watchlist controls; complete screen-state coverage remains incomplete.
+- [~] Component interaction coverage includes accessible token navigation/watchlist controls, Trenches quote handoff, and alert financial-input gating; complete screen-state coverage remains incomplete.
 - [~] Android, iOS, and web production bundles pass; accessibility tests cover key controls, while device runtime, offline/recovery, performance, and full security regression remain incomplete.
 - [ ] Final full requirement and regression audit.

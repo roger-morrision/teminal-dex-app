@@ -55,3 +55,14 @@
 - The screen never calls `/api/swap/build` or `/api/swap/submit`; execution remains disabled until decoded simulation, explicit final confirmation, block-height checks, idempotency/replay protection, and guarded signing are implemented.
 - Verification evidence: strict TypeScript and lint passed; Jest 7 suites / 22 tests passed without interaction warnings; Expo Doctor passed 21/21; web production export passed with all 15 routes including `/trade/[address]`; Android and iOS production bundles also passed.
 - Next priority: Monitor/Track alerts, runtime evidence, and delivery status.
+
+## 2026-08-22 — Slice 6: Monitor alerts and delivery truth
+
+- Re-audited the clean mobile history and inspected the read-only backend monitor feed, owner-scoped alert CRUD, evaluator, delivery ledger, resource ownership, and tracker surfaces.
+- Replaced the Monitor placeholder with a 30-second provider-evidenced Solana observation feed and direct token-detail handoff; empty and failed feeds never become synthetic activity.
+- Added verified-wallet-only alert management for price, one-hour percentage change, and volume-spike rules with bounded positive inputs, in-app delivery, a 60-minute cooldown, pause/resume, and deletion.
+- Added durable per-channel delivery diagnostics that distinguish queued, processing, delivered, failed, and unavailable outcomes with explicit reasons; a configured rule is never represented as delivered.
+- Kept evaluator authority server-side: the mobile client never calls `/api/alerts/evaluate` and does not claim operating-system background monitoring. The Track destination remains queued because the backend explicitly has no connected live tracker provider and suppresses its historical screenshot fixtures.
+- Verification evidence: strict TypeScript and lint passed; Jest 8 suites / 26 tests passed including alert schema, credentialed routing, evaluator isolation, delivery timestamp requirements, and financial-input gating; Expo Doctor passed 21/21; web production export passed all 15 routes; Android and iOS production bundles passed.
+- Known upstream warning remains unchanged: Metro falls back to file resolution for the current Solana wallet stack's unexported Noble hashes crypto subpath; all production bundles complete successfully.
+- Next priority: complete CopyTrade rankings/config/review truth without enabling unsafe automatic execution.

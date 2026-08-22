@@ -11,6 +11,7 @@
       "expo-status-bar",
       "expo-font",
       "expo-secure-store",
+      "./plugins/withNetworkSecurity",
       [
         "expo-local-authentication",
         { "faceIDPermission": "Allow Terminal DEX to re-authenticate before showing verified wallet data." }
@@ -19,7 +20,8 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "app.terminaldex.mobile"
+      "bundleIdentifier": "app.terminaldex.mobile",
+      "infoPlist": { "NSAppTransportSecurity": { "NSAllowsArbitraryLoads": false } }
     },
     "android": {
       "package": "app.terminaldex.mobile",

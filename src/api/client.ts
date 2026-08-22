@@ -12,8 +12,11 @@ export class ApiError extends Error {
 export function getApiOrigin(): string {
   const configured = process.env.EXPO_PUBLIC_API_URL?.trim().replace(/\/$/, '');
   if (!configured) throw new ApiError('Backend URL is not configured. Set EXPO_PUBLIC_API_URL.');
-  if (!/^https?:\/\//i.test(configured)) throw new ApiError('Backend URL must use HTTP or HTTPS.');
-  return configured;
+  let url: URL; try { url = new URL(configured); } catch { throw new ApiError('Backend URL must be a valid absolute URL.'); }
+  const loopback = ['localhost', '127.0.0.1', '::1'].includes(url.hostname);
+  if (url.protocol !== 'https:' && !(typeof __DEV__ !== 'undefined' && __DEV__ && url.protocol === 'http:' && loopback)) throw new ApiError('Backend URL must use HTTPS; HTTP is limited to loopback development.');
+  if (url.username || url.password || url.pathname !== '/' || url.search || url.hash) throw new ApiError('Backend URL must be an origin without credentials, paths, query parameters, or fragments.');
+  return url.origin;
 }
 
 async function getValidated(url: string, signal?: AbortSignal): Promise<TrendingResponse> {

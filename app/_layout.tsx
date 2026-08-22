@@ -8,11 +8,12 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { colors } from '@/theme';
 import { WalletSessionProvider } from '@/security/WalletSessionProvider';
 import { secureWalletCache } from '@/security/wallet-cache';
+import { SettingsProvider } from '@/settings/SettingsProvider';
 
 const cluster = { id: 'solana:mainnet', url: 'https://api.mainnet-beta.solana.com' } as const;
 const identity = { name: 'Terminal DEX' } as const;
 
 export default function RootLayout() {
   const [queryClient] = useState(() => new QueryClient({ defaultOptions: { queries: { retry: 2, staleTime: 15_000, gcTime: 5 * 60_000 } } }));
-  return <SafeAreaProvider><MobileWalletProvider cluster={cluster} identity={identity} cache={secureWalletCache}><WalletSessionProvider><QueryClientProvider client={queryClient}><StatusBar style="light" /><Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.background } }} /></QueryClientProvider></WalletSessionProvider></MobileWalletProvider></SafeAreaProvider>;
+  return <SafeAreaProvider><SettingsProvider><MobileWalletProvider cluster={cluster} identity={identity} cache={secureWalletCache}><WalletSessionProvider><QueryClientProvider client={queryClient}><StatusBar style="light" /><Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.background } }} /></QueryClientProvider></WalletSessionProvider></MobileWalletProvider></SettingsProvider></SafeAreaProvider>;
 }

@@ -89,3 +89,14 @@
 - Verification evidence: strict TypeScript and lint passed; Jest 10 suites / 38 tests passed including execution-disabled contract rejection, simulation/kill-switch/read-only enforcement, GET-only routing, advisory qualification, and absence of execution affordances; Expo Doctor passed 21/21; web export passed all 17 routes including `/ai`; Android and iOS production bundles passed.
 - Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles.
 - Next priority: remaining More destinations, settings, accessibility, localization, and deep-link/network/privacy hardening.
+
+## 2026-08-22 — Slice 9: privacy, deep-link, and transport hardening
+
+- Re-audited the clean mobile state, routes, storage keys, API-origin handling, app transport configuration, checklist, worklog, and existing tests.
+- Added a durable Settings destination with English/Vietnamese navigation labels, reduced-motion preference, explicit default-off diagnostic consent, accessibility roles/states, security evidence, and a confirmed device-local privacy reset.
+- Privacy reset disconnects and revokes the verified wallet session, clears secure authorization/cookies through the existing wallet boundary, removes all known watchlist/filter/watch-only/preference keys, and clears the in-memory query cache without claiming to delete server-owned records.
+- Hardened API origins to HTTPS in production with loopback HTTP allowed only for development, removed path/query/fragment/credential smuggling, kept iOS ATS arbitrary loads disabled, and added an introspected Android manifest policy denying cleartext traffic and app-data backup.
+- Hardened token/trade deep links with exact 32-byte base58 validation, UTF-8 byte-bounded snapshots, strict route/snapshot address equality, and zero backend requests for invalid addresses. Added bounded credential/signature/address redaction for any future opted-in diagnostics; no telemetry transport is configured.
+- Verification evidence: strict TypeScript and Expo lint passed; Jest 11 suites / 43 tests passed; Expo Doctor passed 21/21; Expo config introspection confirmed `NSAllowsArbitraryLoads=false`, `android:usesCleartextTraffic=false`, and `android:allowBackup=false`; web export passed all 18 routes including `/settings`; Android and iOS production bundles passed.
+- Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles. Generated export directories were removed after verification.
+- Next priority: implement the highest-value remaining More destination whose read-only backend contract can be proven without enabling unsafe execution, then expand full-screen localization and device accessibility evidence.

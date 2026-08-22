@@ -9,6 +9,7 @@ import { tokenSchema, type MarketToken, type NarrativeResponse, type SmartMoneyR
 import { PriceChart } from '@/components/PriceChart';
 import { compactUsd, signedPercent, tokenPrice } from '@/lib/format';
 import { colors, spacing } from '@/theme';
+import { isSolanaAddress, parseBoundedJson } from '@/security/input';
 
 type Tab = 'overview' | 'chart' | 'holders' | 'trades' | 'risk' | 'intel' | 'pairs';
 const tabs: { id: Tab; label: string }[] = [{ id: 'overview', label: 'Overview' }, { id: 'chart', label: 'Chart' }, { id: 'holders', label: 'Holders' }, { id: 'trades', label: 'Trades' }, { id: 'risk', label: 'Risk' }, { id: 'intel', label: 'Intel' }, { id: 'pairs', label: 'Pairs' }];
@@ -16,18 +17,18 @@ const timeframes = ['5m', '15m', '1h', '4h', '1d'] as const;
 
 export default function TokenDetail() {
   const router = useRouter(); const { address, snapshot } = useLocalSearchParams<{ address: string; snapshot?: string }>();
-  let parsed: unknown; try { parsed = snapshot ? JSON.parse(snapshot) : null; } catch { parsed = null; }
-  const snapshotResult = tokenSchema.safeParse(parsed); const [tab, setTab] = React.useState<Tab>('overview'); const [timeframe, setTimeframe] = React.useState<(typeof timeframes)[number]>('1h');
-  const detail = useQuery({ queryKey: ['token-detail', address], queryFn: ({ signal }) => fetchTokenDetail(address, signal), enabled: Boolean(address), retry: 2 });
-  const chart = useQuery({ queryKey: ['ohlcv', address, timeframe], queryFn: ({ signal }) => fetchOhlcv(address, timeframe, signal), enabled: tab === 'chart' });
-  const holders = useQuery({ queryKey: ['token-panel', address, 'holders'], queryFn: ({ signal }) => fetchTokenPanel(address, 'holders', signal), enabled: tab === 'holders' });
-  const trades = useQuery({ queryKey: ['token-panel', address, 'txns'], queryFn: ({ signal }) => fetchTokenPanel(address, 'txns', signal), enabled: tab === 'trades' });
-  const risk = useQuery({ queryKey: ['token-panel', address, 'risk'], queryFn: ({ signal }) => fetchTokenPanel(address, 'risk', signal), enabled: tab === 'risk' });
-  const narrative = useQuery({ queryKey: ['token-panel', address, 'narrative'], queryFn: ({ signal }) => fetchTokenPanel(address, 'narrative', signal), enabled: tab === 'intel' });
-  const smartMoney = useQuery({ queryKey: ['token-panel', address, 'smart-money'], queryFn: ({ signal }) => fetchTokenPanel(address, 'smart-money', signal), enabled: tab === 'intel' });
-  const pairs = useQuery({ queryKey: ['token-panel', address, 'pairs'], queryFn: ({ signal }) => fetchTokenPanel(address, 'pairs', signal), enabled: tab === 'pairs' });
-  const token = detail.data?.token ?? (snapshotResult.success ? snapshotResult.data : null);
+  const validAddress = isSolanaAddress(address); const snapshotResult = tokenSchema.safeParse(parseBoundedJson(snapshot)); const snapshotMatches = snapshotResult.success && snapshotResult.data.address === address; const [tab, setTab] = React.useState<Tab>('overview'); const [timeframe, setTimeframe] = React.useState<(typeof timeframes)[number]>('1h');
+  const detail = useQuery({ queryKey: ['token-detail', address], queryFn: ({ signal }) => fetchTokenDetail(address, signal), enabled: validAddress, retry: 2 });
+  const chart = useQuery({ queryKey: ['ohlcv', address, timeframe], queryFn: ({ signal }) => fetchOhlcv(address, timeframe, signal), enabled: validAddress && tab === 'chart' });
+  const holders = useQuery({ queryKey: ['token-panel', address, 'holders'], queryFn: ({ signal }) => fetchTokenPanel(address, 'holders', signal), enabled: validAddress && tab === 'holders' });
+  const trades = useQuery({ queryKey: ['token-panel', address, 'txns'], queryFn: ({ signal }) => fetchTokenPanel(address, 'txns', signal), enabled: validAddress && tab === 'trades' });
+  const risk = useQuery({ queryKey: ['token-panel', address, 'risk'], queryFn: ({ signal }) => fetchTokenPanel(address, 'risk', signal), enabled: validAddress && tab === 'risk' });
+  const narrative = useQuery({ queryKey: ['token-panel', address, 'narrative'], queryFn: ({ signal }) => fetchTokenPanel(address, 'narrative', signal), enabled: validAddress && tab === 'intel' });
+  const smartMoney = useQuery({ queryKey: ['token-panel', address, 'smart-money'], queryFn: ({ signal }) => fetchTokenPanel(address, 'smart-money', signal), enabled: validAddress && tab === 'intel' });
+  const pairs = useQuery({ queryKey: ['token-panel', address, 'pairs'], queryFn: ({ signal }) => fetchTokenPanel(address, 'pairs', signal), enabled: validAddress && tab === 'pairs' });
+  const token = validAddress ? detail.data?.token ?? (snapshotMatches ? snapshotResult.data : null) : null;
 
+  if (!validAddress) return <SafeAreaView style={styles.safe}><PanelState title="Invalid link" message="This token link does not contain a valid 32-byte Solana address." /></SafeAreaView>;
   if (!token && detail.isLoading) return <SafeAreaView style={styles.safe}><PanelState loading message="Loading verified token detail…" /></SafeAreaView>;
   if (!token) return <SafeAreaView style={styles.safe}><PanelState title="Token unavailable" message={detail.error?.message ?? 'No validated token record was returned.'} onRetry={() => detail.refetch()} /></SafeAreaView>;
 

@@ -6,12 +6,12 @@ import { ActivityIndicator, Pressable, RefreshControl, ScrollView, StyleSheet, T
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { createUserAlert, deleteUserAlert, fetchAlertDeliveries, fetchMonitorAlerts, fetchUserAlerts, setUserAlertActive, type CreateAlertInput } from '@/api/client';
 import type { UserAlert } from '@/api/schema';
+import { isSolanaAddress } from '@/security/input';
 import { useWalletSession } from '@/security/WalletSessionProvider';
 import { colors, spacing } from '@/theme';
 
 type ViewMode = 'live' | 'rules' | 'delivery';
 type AlertType = CreateAlertInput['type'];
-const ADDRESS = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
 const modes: { id: ViewMode; label: string }[] = [{ id: 'live', label: 'Live' }, { id: 'rules', label: 'Rules' }, { id: 'delivery', label: 'Delivery' }];
 
 export default function MonitorScreen() {
@@ -44,7 +44,7 @@ function Rules({ data, loading, error, onChanged }: { data: UserAlert[]; loading
 
 export function AlertComposer({ onCreated }: { onCreated: () => void }) {
   const [address, setAddress] = useState(''); const [type, setType] = useState<AlertType>('price'); const [condition, setCondition] = useState<'above' | 'below'>('above'); const [value, setValue] = useState(''); const [name, setName] = useState('');
-  const mutation = useMutation({ mutationFn: createUserAlert, onSuccess: onCreated }); const numeric = Number(value); const valid = ADDRESS.test(address.trim()) && Number.isFinite(numeric) && numeric > 0 && name.trim().length > 0;
+  const mutation = useMutation({ mutationFn: createUserAlert, onSuccess: onCreated }); const numeric = Number(value); const valid = isSolanaAddress(address.trim()) && Number.isFinite(numeric) && numeric > 0 && name.trim().length > 0;
   const conditions = type === 'price' ? { condition, targetPrice: numeric } : type === 'percentageChange' ? { condition, threshold: numeric, timeframe: 'h1' } : { threshold: numeric, timeframe: '1h' };
   return <View style={styles.composer}><Text style={styles.label}>RULE NAME</Text><TextInput accessibilityLabel="Alert name" value={name} onChangeText={setName} maxLength={100} placeholder="e.g. SOL breakout" placeholderTextColor={colors.muted} style={styles.input} /><Text style={styles.label}>TOKEN ADDRESS</Text><TextInput accessibilityLabel="Alert token address" value={address} onChangeText={setAddress} autoCapitalize="none" autoCorrect={false} placeholder="Solana mint address" placeholderTextColor={colors.muted} style={styles.input} /><Text style={styles.label}>SIGNAL</Text><View style={styles.choiceRow}>{(['price', 'percentageChange', 'volumeSpike'] as AlertType[]).map((item) => <Choice key={item} label={item === 'percentageChange' ? '1h change' : item === 'volumeSpike' ? 'Volume spike' : 'Price'} active={type === item} onPress={() => setType(item)} />)}</View>{type !== 'volumeSpike' ? <View style={styles.choiceRow}><Choice label="Above" active={condition === 'above'} onPress={() => setCondition('above')} /><Choice label="Below" active={condition === 'below'} onPress={() => setCondition('below')} /></View> : null}<Text style={styles.label}>{type === 'price' ? 'TARGET USD' : type === 'percentageChange' ? 'CHANGE %' : 'VOLUME MULTIPLIER'}</Text><TextInput accessibilityLabel="Alert threshold" value={value} onChangeText={setValue} keyboardType="decimal-pad" placeholder="Positive value" placeholderTextColor={colors.muted} style={styles.input} /><Text style={styles.disclosure}>Channel: in-app · Cooldown: 60 minutes · Delivery is proven only after a recorded outcome.</Text>{mutation.error ? <Text style={styles.error}>{mutation.error.message}</Text> : null}<Pressable accessibilityRole="button" accessibilityLabel="Save alert rule" disabled={!valid || mutation.isPending} onPress={() => mutation.mutate({ address: address.trim(), type, name: name.trim(), conditions, cooldownMinutes: 60, channels: ['inApp'] })} style={[styles.save, (!valid || mutation.isPending) && styles.disabled]}><Text style={styles.saveText}>{mutation.isPending ? 'Saving…' : 'Save database rule'}</Text></Pressable></View>;
 }

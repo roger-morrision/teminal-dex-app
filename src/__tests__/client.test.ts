@@ -1,4 +1,4 @@
-import { createPausedCopyTradeConfig, createUserAlert, fetchAiPaperReport, fetchAiPlatform, fetchAiRecommendations, fetchAlertDeliveries, fetchCopyExecutions, fetchCopyTradeConfigs, fetchCopyTradeHealth, fetchDiscovery, fetchMonitorAlerts, fetchOhlcv, fetchPortfolioAnalytics, fetchSwapQuote, fetchTokenDetail, fetchTokenPanel, fetchTopTraders, fetchTrenches, fetchUserAlerts, fetchWalletPnl, pauseCopyTradeConfig, searchTokens, setUserAlertActive, type CreateCopyTradeInput } from '@/api/client';
+import { createPausedCopyTradeConfig, createUserAlert, fetchAiPaperReport, fetchAiPlatform, fetchAiRecommendations, fetchAlertDeliveries, fetchCopyExecutions, fetchCopyTradeConfigs, fetchCopyTradeHealth, fetchDiscovery, fetchMonitorAlerts, fetchOhlcv, fetchPortfolioAnalytics, fetchSwapQuote, fetchTokenDetail, fetchTokenPanel, fetchTopTraders, fetchTrenches, fetchUserAlerts, fetchWalletPnl, getApiOrigin, pauseCopyTradeConfig, searchTokens, setUserAlertActive, type CreateCopyTradeInput } from '@/api/client';
 
 const token = { id: 'pair', symbol: 'DEX', name: 'Terminal', address: 'mint', pairAddress: 'pair', dex: 'raydium', quoteSymbol: 'SOL', price: 1, marketCap: 10, liquidity: 5, volume24h: 4, volume1h: 2, change24h: 3, change1h: 1, txns5m: { buys: 1, sells: 0 }, ageLabel: '1h', ageMinutes: 60 };
 const jsonResponse = (body: unknown, ok = true, status = 200) => ({ ok, status, json: jest.fn().mockResolvedValue(body) }) as unknown as Response;
@@ -23,8 +23,17 @@ describe('backend client routing', () => {
 
   it('rejects an invalid configured origin before a request', async () => {
     process.env.EXPO_PUBLIC_API_URL = 'javascript:alert(1)';
-    await expect(searchTokens('DEX')).rejects.toThrow('must use HTTP or HTTPS');
+    await expect(searchTokens('DEX')).rejects.toThrow('must use HTTPS');
     expect(fetch).not.toHaveBeenCalled();
+  });
+
+  it('normalizes a trusted origin and rejects URL smuggling', () => {
+    process.env.EXPO_PUBLIC_API_URL = 'https://terminal.example/';
+    expect(getApiOrigin()).toBe('https://terminal.example');
+    for (const unsafe of ['http://terminal.example', 'https://user:secret@terminal.example', 'https://terminal.example/some/path', 'https://terminal.example?next=https://evil.example', 'https://terminal.example#evil']) {
+      process.env.EXPO_PUBLIC_API_URL = unsafe;
+      expect(() => getApiOrigin()).toThrow(/HTTPS|origin/);
+    }
   });
 
   it('routes token panels and chart timeframes without leaking parameters', async () => {

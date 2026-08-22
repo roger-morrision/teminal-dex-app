@@ -9,7 +9,7 @@ Status legend: `[x]` verified, `[ ]` incomplete, `[~]` intentionally visible but
 - [x] Public backend origin is environment-configured; secrets, native credentials, logs, build output, and local env files are ignored.
 - [x] Real responses are runtime-validated; failures never silently become synthetic market data.
 - [~] Android secure wallet connection uses official Mobile Wallet Adapter, encrypted authorization/session storage, backend ownership challenge, 24h expiry, cookie/cache revocation, and biometric re-authentication; native wallet support remains unavailable on iOS/web and requires a development build.
-- [ ] Transaction quote/build/simulation/confirmation/submission flow with replay and double-submit protection.
+- [~] Real Jupiter ExactIn quote review validates exact amounts, route, mint identities, impact, slippage, context slot, and 15-second expiry; build/simulation/decoded confirmation/submission/replay protection remain deliberately locked.
 - [~] Explicit app scheme/intent filter and development/preview/production EAS profiles are configured; URL payload allowlisting, certificate/network policy, telemetry redaction, and privacy controls remain incomplete.
 
 ## Approved mobile information architecture
@@ -19,7 +19,7 @@ Status legend: `[x]` verified, `[ ]` incomplete, `[~]` intentionally visible but
 - [x] Discover Trending/Gainers/Losers/Volume/New Pairs/Hot Searches/Surge/NextBC/Pump Live/Watchlist, timeframes, server search, refresh, filters, pagination, states, provenance, and token-detail handoff.
 - [x] Non-secret watchlist and Discovery filter persistence with idempotent add/remove and explicit reset.
 - [~] Token detail fetches normalized backend contracts for chart, holders, observed transactions, risk/security evidence, smart money, narrative, and pairs with truthful limitations; swap execution and deeper holder/transaction drilldowns remain incomplete.
-- [ ] Trenches launch/migration columns and trade handoff.
+- [x] Trenches uses real New/Almost Bonded/Migrated launch lanes with progress, market evidence, detail navigation, refresh, and non-executing quote-review handoff.
 - [ ] Monitor, Track, alerts, delivery evidence and diagnostics.
 - [x] Portfolio and analytics use provider-backed holdings, explicit watch-only versus verified ownership, allocation/risk evidence, and truthful realized/unavailable PnL provenance.
 - [ ] CopyTrade, rankings, config, review and execution truth.

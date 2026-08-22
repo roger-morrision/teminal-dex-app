@@ -1,4 +1,4 @@
-import { fetchDiscovery, fetchOhlcv, fetchPortfolioAnalytics, fetchTokenDetail, fetchTokenPanel, fetchWalletPnl, searchTokens } from '@/api/client';
+import { fetchDiscovery, fetchOhlcv, fetchPortfolioAnalytics, fetchSwapQuote, fetchTokenDetail, fetchTokenPanel, fetchTrenches, fetchWalletPnl, searchTokens } from '@/api/client';
 
 const token = { id: 'pair', symbol: 'DEX', name: 'Terminal', address: 'mint', pairAddress: 'pair', dex: 'raydium', quoteSymbol: 'SOL', price: 1, marketCap: 10, liquidity: 5, volume24h: 4, volume1h: 2, change24h: 3, change1h: 1, txns5m: { buys: 1, sells: 0 }, ageLabel: '1h', ageMinutes: 60 };
 const jsonResponse = (body: unknown, ok = true, status = 200) => ({ ok, status, json: jest.fn().mockResolvedValue(body) }) as unknown as Response;
@@ -39,5 +39,12 @@ describe('backend client routing', () => {
     await fetchPortfolioAnalytics('wallet', '30d'); await fetchWalletPnl('wallet');
     expect(jest.mocked(fetch).mock.calls[0]?.[0]).toBe('https://terminal.example/api/analytics/portfolio?address=wallet&timeframe=30d');
     expect(jest.mocked(fetch).mock.calls[1]?.[0]).toBe('https://terminal.example/api/wallet/wallet/pnl');
+  });
+
+  it('loads Trenches and bounds quote parameters before network access', async () => {
+    jest.mocked(fetch).mockResolvedValueOnce(jsonResponse({ newTokens: [], almostBonded: [], migrated: [], fetchedAt: 1, recordCount: 0, providers: [], source: 'none', dataQuality: 'unavailable', freshness: { ageMs: null, staleAfterMs: 60_000, isStale: true } }));
+    await fetchTrenches(); expect(jest.mocked(fetch).mock.calls[0]?.[0]).toBe('https://terminal.example/api/trenches');
+    await expect(fetchSwapQuote({ token: 'mint', side: 'buy', amount: '1', unit: 'usd', slippageBps: 501 })).rejects.toThrow('slippage');
+    expect(fetch).toHaveBeenCalledTimes(1);
   });
 });

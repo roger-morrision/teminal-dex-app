@@ -7,14 +7,14 @@ describe('TokenRow', () => {
   it('opens token detail from the accessible row', async () => {
     const onPress = jest.fn();
     const screen = await render(<TokenRow token={token} onPress={onPress} />);
-    fireEvent.press(screen.getByLabelText('Open DEX details'));
+    await fireEvent.press(screen.getByLabelText('Open DEX details'));
     expect(onPress).toHaveBeenCalledTimes(1);
   });
 
   it('exposes idempotent watchlist intent separately', async () => {
     const onPress = jest.fn(); const onToggleWatch = jest.fn();
     const screen = await render(<TokenRow token={token} onPress={onPress} watched onToggleWatch={onToggleWatch} />);
-    fireEvent.press(screen.getByLabelText('Remove DEX from watchlist'));
+    await fireEvent.press(screen.getByLabelText('Remove DEX from watchlist'));
     expect(onToggleWatch).toHaveBeenCalledTimes(1);
     expect(onPress).not.toHaveBeenCalled();
   });

@@ -1,4 +1,4 @@
-import { holdersSchema, narrativeSchema, ohlcvSchema, pairsSchema, portfolioAnalyticsSchema, riskSchema, smartMoneySchema, tokenDetailSchema, transactionsSchema, trendingSchema, walletPnlSchema, type HoldersResponse, type NarrativeResponse, type OhlcvResponse, type PairsResponse, type PortfolioAnalyticsResponse, type RiskResponse, type SmartMoneyResponse, type TokenDetailResponse, type TransactionsResponse, type TrendingResponse, type WalletPnlResponse } from './schema';
+import { holdersSchema, narrativeSchema, ohlcvSchema, pairsSchema, portfolioAnalyticsSchema, riskSchema, smartMoneySchema, swapQuoteSchema, tokenDetailSchema, transactionsSchema, trenchesSchema, trendingSchema, walletPnlSchema, type HoldersResponse, type NarrativeResponse, type OhlcvResponse, type PairsResponse, type PortfolioAnalyticsResponse, type RiskResponse, type SmartMoneyResponse, type SwapQuoteResponse, type TokenDetailResponse, type TransactionsResponse, type TrenchesResponse, type TrendingResponse, type WalletPnlResponse } from './schema';
 
 export type TrendingPeriod = '1h' | '6h' | '24h';
 export type TrendingSort = 'trending' | 'gainers' | 'losers' | 'volume' | 'new';
@@ -90,5 +90,23 @@ export async function fetchWalletPnl(address: string, signal?: AbortSignal): Pro
   if (!response.ok) throw new ApiError(`Wallet PnL request failed (${response.status}).`, response.status);
   const result = walletPnlSchema.safeParse(await response.json());
   if (!result.success) throw new ApiError('Backend returned incompatible wallet PnL evidence.');
+  return result.data;
+}
+
+export async function fetchTrenches(signal?: AbortSignal): Promise<TrenchesResponse> {
+  const response = await fetch(`${getApiOrigin()}/api/trenches`, { headers: { Accept: 'application/json' }, signal });
+  if (!response.ok) throw new ApiError(`Trenches request failed (${response.status}).`, response.status);
+  const result = trenchesSchema.safeParse(await response.json());
+  if (!result.success) throw new ApiError('Backend returned incompatible Trenches data.');
+  return result.data;
+}
+
+export async function fetchSwapQuote(input: { token: string; side: 'buy' | 'sell'; amount: string; unit: 'usd' | 'sol' | 'token'; slippageBps: number }, signal?: AbortSignal): Promise<SwapQuoteResponse> {
+  if (!/^(?:0|[1-9]\d*)(?:\.\d+)?$/.test(input.amount) || Number(input.amount) <= 0 || !Number.isInteger(input.slippageBps) || input.slippageBps < 1 || input.slippageBps > 500) throw new ApiError('Enter a valid amount and slippage from 0.01% to 5%.');
+  const query = new URLSearchParams({ token: input.token, side: input.side, amount: input.amount, unit: input.unit, slippageBps: String(input.slippageBps) });
+  const response = await fetch(`${getApiOrigin()}/api/swap/quote?${query}`, { credentials: 'include', headers: { Accept: 'application/json' }, signal });
+  if (!response.ok) throw new ApiError(`Quote request failed (${response.status}).`, response.status);
+  const result = swapQuoteSchema.safeParse(await response.json());
+  if (!result.success) throw new ApiError('Backend returned an incompatible swap quote.');
   return result.data;
 }

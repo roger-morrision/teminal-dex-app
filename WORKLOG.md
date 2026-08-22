@@ -45,3 +45,13 @@
 - Verification evidence: strict TypeScript and lint passed; Jest 6 suites / 18 tests passed including expiry, biometric, secure-storage payload, portfolio provenance, and client routing; Expo Doctor passed 21/21; production bundles exported successfully for web (14 routes), Android, and iOS.
 - Known upstream warning: Metro falls back to file resolution for an unexported Noble hashes crypto subpath used transitively by the current Solana wallet stack; all three bundles complete successfully.
 - Next priority: Trenches launch/migration boards and safe trade handoff into a non-executing quote review.
+
+## 2026-08-22 — Slice 5: Trenches and safe quote review
+
+- Re-audited the clean mobile tree and inspected backend Trenches, Jupiter quote/build, submission, quote-integrity, readiness, and freshness contracts.
+- Replaced the Trenches placeholder with real New, Almost Bonded, and Migrated lanes, 30-second refresh, bonding progress, dense launch metrics, provider quality, detail navigation, and explicit quote-review actions.
+- Added a dedicated non-executing trade review route with buy/sell modes, USD/SOL/token units, bounded amount syntax, and a safer client slippage ceiling of 5%.
+- Validated exact raw/UI amounts, real-route identity, minimum received, context slot, price impact, backend route plan, and the exact 15-second quote build window.
+- The screen never calls `/api/swap/build` or `/api/swap/submit`; execution remains disabled until decoded simulation, explicit final confirmation, block-height checks, idempotency/replay protection, and guarded signing are implemented.
+- Verification evidence: strict TypeScript and lint passed; Jest 7 suites / 22 tests passed without interaction warnings; Expo Doctor passed 21/21; web production export passed with all 15 routes including `/trade/[address]`; Android and iOS production bundles also passed.
+- Next priority: Monitor/Track alerts, runtime evidence, and delivery status.

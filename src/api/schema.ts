@@ -10,6 +10,7 @@ export const tokenSchema = z.object({
   imageUrl: z.string().url().optional(), source: z.string().optional(), dataQuality: z.string().optional(),
   sourceFetchedAt: z.number().optional(), holderCount: z.number().nullable().optional(),
   topHolderPct: z.number().nullable().optional(), sniperPct: z.number().nullable().optional(),
+  bondingProgress: z.number().nullable().optional(), progress: z.number().optional(),
 }).passthrough();
 
 export type MarketToken = z.infer<typeof tokenSchema>;
@@ -73,3 +74,13 @@ export type PortfolioAnalyticsResponse = z.infer<typeof portfolioAnalyticsSchema
 
 export const walletPnlSchema = z.object({ pnl: z.object({ status: z.enum(['available', 'unavailable']), realizedPnl: z.number().nullable(), unrealizedPnl: z.number().nullable(), totalPnl: z.number().nullable(), pnl7d: z.number().nullable(), pnl30d: z.number().nullable(), winRate: z.number().nullable(), tradeCount: z.number(), equityCurve: z.array(z.object({ ts: z.number(), value: z.number() })), provenance: z.object({ method: z.string(), sources: z.array(z.string()), indexedSwapCount: z.number() }), warnings: z.array(z.string()) }).nullable(), ts: z.number().optional() }).passthrough();
 export type WalletPnlResponse = z.infer<typeof walletPnlSchema>;
+
+export const trenchesSchema = z.object({ newTokens: z.array(tokenSchema), almostBonded: z.array(tokenSchema), migrated: z.array(tokenSchema), fetchedAt: z.number(), recordCount: z.number(), providers: z.array(z.string()), source: z.string(), dataQuality: z.string(), freshness: z.object({ ageMs: z.number().nullable(), staleAfterMs: z.number(), isStale: z.boolean() }).passthrough(), error: z.string().optional() }).passthrough();
+export type TrenchesResponse = z.infer<typeof trenchesSchema>;
+
+const publicKeyString = z.string().regex(/^[1-9A-HJ-NP-Za-km-z]{32,44}$/);
+export const swapQuoteSchema = z.object({
+  quote: z.object({ side: z.enum(['buy', 'sell']), token: z.object({ address: publicKeyString, symbol: z.string(), name: z.string(), price: z.number().positive() }), inputMint: publicKeyString, outputMint: publicKeyString, inAmount: z.string().regex(/^\d+$/), inAmountUi: z.number().positive(), inAmountUiExact: z.string(), inSymbol: z.string(), outAmount: z.string().regex(/^\d+$/), outAmountUi: z.number().positive(), outAmountUiExact: z.string(), outSymbol: z.string(), minOutAmount: z.string().regex(/^\d+$/), minOutUi: z.number().positive(), minOutUiExact: z.string(), priceImpactPct: z.number().nonnegative(), slippageBps: z.number().int().min(1).max(5000), swapUsdValue: z.number().nullable(), route: z.array(z.string()).min(1), contextSlot: z.number().int().positive(), real: z.literal(true) }).passthrough(),
+  jupQuote: z.record(z.string(), z.unknown()), quotedAt: z.number(), ts: z.number(),
+}).passthrough();
+export type SwapQuoteResponse = z.infer<typeof swapQuoteSchema>;

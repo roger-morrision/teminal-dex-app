@@ -114,3 +114,42 @@ export const alertDeliveriesSchema = z.object({ success: z.literal(true), count:
 export type UserAlert = z.infer<typeof userAlertSchema>;
 export type UserAlertsResponse = z.infer<typeof userAlertsSchema>;
 export type AlertDeliveriesResponse = z.infer<typeof alertDeliveriesSchema>;
+
+export const topTraderSchema = z.object({
+  rank: z.number().int().positive(), address: publicKeyString, pnlUsd: z.number(), pnlPct: z.number(), winRate: z.number().min(0).max(100),
+  trades: z.number().int().nonnegative(), tokenCount: z.number().int().nonnegative().optional(), maxDrawdownPct: z.number().nonnegative().optional(),
+  reliability: z.number().min(0).max(100).optional(), bestToken: z.string(), bestTokenPct: z.number(), badge: z.string(), sparkline: z.array(z.number()),
+}).passthrough();
+export const topTradersSchema = z.object({
+  traders: z.array(topTraderSchema), fetchedAt: z.number(), recordCount: z.number(), requestedPeriod: z.string().optional(), periodApplied: z.string().optional(),
+  source: z.string(), dataQuality: z.string(), provenance: z.record(z.string(), z.unknown()).optional(),
+  freshness: z.object({ latestSourceFetchedAt: z.number().nullable(), ageMs: z.number().nullable(), staleAfterMs: z.number(), isStale: z.boolean() }).passthrough(),
+  traderEvidence: z.array(z.record(z.string(), z.unknown())).optional(), error: z.string().optional(),
+}).passthrough();
+export type TopTrader = z.infer<typeof topTraderSchema>;
+export type TopTradersResponse = z.infer<typeof topTradersSchema>;
+
+export const copyTradeHealthSchema = z.object({
+  service: z.literal('copytrade'), chain: z.literal('solana'), mode: z.enum(['live-awaiting-signature', 'simulation', 'unavailable']),
+  readiness: z.object({ traderData: z.boolean(), walletMonitor: z.boolean(), quote: z.boolean(), walletSignature: z.boolean(), broadcast: z.boolean(), confirmation: z.boolean(), durableStorage: z.boolean(), automationWorker: z.boolean() }),
+  providers: z.object({ helius: z.boolean(), gmgn: z.boolean() }), recordCount: z.number(), checkedAt: z.number(),
+}).passthrough();
+export type CopyTradeHealth = z.infer<typeof copyTradeHealthSchema>;
+
+export const copyTradeConfigSchema = z.object({
+  id: z.string(), userId: z.string(), targetWallet: publicKeyString.optional(), sourceWallet: publicKeyString, sourceWalletLabel: z.string().optional(), isActive: z.boolean(), createdAt: z.number(), updatedAt: z.number(),
+  sizingMode: z.enum(['fixed_sol', 'percentage', 'proportional']), fixedAmountSol: z.number().positive().optional(), percentage: z.number().positive().max(100).optional(), proportionalRatio: z.number().positive().optional(),
+  maxPositionSizeSol: z.number().positive(), maxDailyVolumeSol: z.number().positive(), maxDailyLossSol: z.number().nonnegative(), stopLossPct: z.number().positive().max(100).optional(), takeProfitPct: z.number().positive().optional(),
+  maxSlippageBps: z.number().int().min(1).max(5000), maxPriceImpactPct: z.number().positive().max(100), minLiquidityUsd: z.number().nonnegative(), maxMarketCapUsd: z.number().nonnegative(),
+  excludedTokens: z.array(publicKeyString), onlyNewLaunches: z.boolean(), maxTokenAgeMinutes: z.number().nonnegative(), copySells: z.boolean(), copyBuys: z.boolean(), delayMs: z.number().int().nonnegative(), maxConcurrentPositions: z.number().int().positive(),
+}).passthrough();
+export const copyTradeConfigsSchema = z.object({ success: z.literal(true), data: z.array(copyTradeConfigSchema) });
+export const copyTradeConfigMutationSchema = z.object({ success: z.literal(true), data: copyTradeConfigSchema });
+export type CopyTradeConfig = z.infer<typeof copyTradeConfigSchema>;
+
+export const copyPositionSchema = z.object({ id: z.string(), configId: z.string(), tokenAddress: publicKeyString, tokenSymbol: z.string(), tokenName: z.string(), entryPrice: z.number(), entryAmountSol: z.number(), entryTokenAmount: z.number(), entryTxSignature: z.string(), entryTime: z.number(), sourceTxSignature: z.string(), executionMode: z.enum(['paper', 'live']).optional(), currentPrice: z.number(), currentValueSol: z.number(), unrealizedPnlSol: z.number(), unrealizedPnlPct: z.number(), status: z.enum(['open', 'closed', 'partial']), closedAt: z.number().optional(), realizedPnlSol: z.number().optional() }).passthrough();
+export const copyExecutionSchema = z.object({ id: z.string(), userId: z.string(), configId: z.string(), positionId: z.string().optional(), sourceTxSignature: z.string().optional(), executionSignature: z.string().optional(), idempotencyKey: z.string(), eventType: z.enum(['buy', 'sell', 'manual_close', 'stop_loss', 'take_profit']), status: z.enum(['created', 'quoted', 'awaiting_signature', 'submitted', 'confirmed', 'failed', 'expired']), requestedAmountSol: z.number().optional(), quotedAmountSol: z.number().optional(), confirmedAmountSol: z.number().optional(), slippageBps: z.number().optional(), priceImpactPct: z.number().optional(), error: z.string().optional(), createdAt: z.number(), updatedAt: z.number(), executionMode: z.enum(['paper', 'live']).optional() }).passthrough();
+export const copyPositionsSchema = z.object({ success: z.literal(true), data: z.array(copyPositionSchema) });
+export const copyExecutionsSchema = z.object({ success: z.literal(true), data: z.array(copyExecutionSchema), recordCount: z.number(), source: z.literal('database') });
+export type CopyPosition = z.infer<typeof copyPositionSchema>;
+export type CopyExecution = z.infer<typeof copyExecutionSchema>;

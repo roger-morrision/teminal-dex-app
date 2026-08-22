@@ -66,3 +66,14 @@
 - Verification evidence: strict TypeScript and lint passed; Jest 8 suites / 26 tests passed including alert schema, credentialed routing, evaluator isolation, delivery timestamp requirements, and financial-input gating; Expo Doctor passed 21/21; web production export passed all 15 routes; Android and iOS production bundles passed.
 - Known upstream warning remains unchanged: Metro falls back to file resolution for the current Solana wallet stack's unexported Noble hashes crypto subpath; all production bundles complete successfully.
 - Next priority: complete CopyTrade rankings/config/review truth without enabling unsafe automatic execution.
+
+## 2026-08-22 — Slice 7: guarded CopyTrade strategy review
+
+- Re-audited the clean mobile state and inspected the read-only backend Top Traders ranking, wallet-ranking evidence, CopyTrade readiness, owner-scoped durable configs, positions, executions, validation, and live execution endpoints.
+- Activated CopyTrade and Top Traders from More with a dedicated dense Rank/Strategies/Activity route backed by real provider or indexed realized-PnL evidence and explicit source/quality limitations.
+- Added verified-wallet, durable-storage-gated strategy review with bounded fixed size, position/daily risk caps, slippage capped at 5%, price impact capped at 5%, liquidity/age filters, stop/take-profit policy, and a maximum of two positions.
+- Enforced a fail-closed mobile invariant: new strategies must be persisted paused, active responses are rejected, and existing active strategies can only be paused or deleted. Mobile exposes no activate/toggle, copy, confirm, close, sign, or submit call.
+- Added read-only durable positions and execution audit with paper/live mode, idempotency, status, amounts, errors, and explicit readiness; ranking evidence is never represented as expected future performance.
+- Verification evidence: strict TypeScript and lint passed; Jest 9 suites / 32 tests passed including provenance, readiness, risk bounds, paused-state enforcement, forbidden endpoint isolation, and accessible review gating; Expo Doctor passed 21/21; web export passed all 16 routes including `/copytrade`; Android and iOS production bundles passed.
+- Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles.
+- Next priority: AI Intelligence and paper-trading/governance surfaces, keeping every recommendation advisory-only.

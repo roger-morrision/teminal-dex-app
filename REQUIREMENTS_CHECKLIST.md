@@ -22,7 +22,7 @@ Status legend: `[x]` verified, `[ ]` incomplete, `[~]` intentionally visible but
 - [x] Trenches uses real New/Almost Bonded/Migrated launch lanes with progress, market evidence, detail navigation, refresh, and non-executing quote-review handoff.
 - [~] Monitor uses real indexed Solana observations; owner-scoped price/change/volume alert CRUD and durable delivery diagnostics are complete. Track remains unavailable because the backend exposes no connected live tracker provider.
 - [x] Portfolio and analytics use provider-backed holdings, explicit watch-only versus verified ownership, allocation/risk evidence, and truthful realized/unavailable PnL provenance.
-- [ ] CopyTrade, rankings, config, review and execution truth.
+- [~] CopyTrade provides provenance-aware Top Traders rankings, verified-wallet durable strategy review/create, pause/delete, readiness, positions, and execution audit. Mobile always creates paused strategies and deliberately omits activation, confirmation, signing, closing, and submission pending the full transaction safety gate.
 - [ ] AI Intelligence and paper-trading/governance surfaces.
 - [ ] Remaining More destinations and settings/accessibility/localization.
 

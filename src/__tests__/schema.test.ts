@@ -1,4 +1,4 @@
-import { alertDeliveriesSchema, monitorAlertsSchema, ohlcvSchema, portfolioAnalyticsSchema, swapQuoteSchema, transactionsSchema, trenchesSchema, trendingSchema, userAlertsSchema, walletPnlSchema } from '@/api/schema';
+import { alertDeliveriesSchema, copyTradeConfigSchema, copyTradeHealthSchema, monitorAlertsSchema, ohlcvSchema, portfolioAnalyticsSchema, swapQuoteSchema, topTradersSchema, transactionsSchema, trenchesSchema, trendingSchema, userAlertsSchema, walletPnlSchema } from '@/api/schema';
 
 const token = { id: 'pair', symbol: 'DEX', name: 'Terminal', address: 'mint', pairAddress: 'pair', dex: 'raydium', quoteSymbol: 'SOL', price: 1, marketCap: 10, liquidity: 5, volume24h: 4, volume1h: 2, change24h: 3, change1h: 1, txns5m: { buys: 1, sells: 0 }, ageLabel: '1h', ageMinutes: 60 };
 describe('trendingSchema', () => { it('accepts the backend contract and preserves evidence', () => { expect(trendingSchema.parse({ tokens: [token], source: 'database', dataQuality: 'stored_provider_observations', freshness: { isStale: false } }).tokens[0]?.symbol).toBe('DEX'); }); it('rejects unsafe malformed values', () => { expect(trendingSchema.safeParse({ tokens: [{ ...token, price: '1' }] }).success).toBe(false); }); });
@@ -25,4 +25,14 @@ describe('Monitor and alert evidence schemas', () => {
     expect(userAlertsSchema.safeParse({ success: true, count: 1, persistence: 'database', data: [{ id: 'a', userId: address, chainId: 'solana', address, type: 'price', name: 'Breakout', description: '', conditions: { condition: 'above', targetPrice: 10 }, channels: ['inApp'], cooldownMinutes: 60, active: true, lastTriggered: null, triggerCount: 0, createdAt: 1, updatedAt: 1, persistence: 'database' }] }).success).toBe(true);
   });
   it('rejects fabricated delivery success without timestamps', () => { expect(alertDeliveriesSchema.safeParse({ success: true, count: 1, persistence: 'database', data: [{ id: 'd', alertId: 'a', eventKey: 'e', channel: 'inApp', status: 'delivered', reason: null, deliveredAt: null }] }).success).toBe(false); });
+});
+
+describe('CopyTrade evidence schemas', () => {
+  const address = '11111111111111111111111111111111';
+  it('preserves ranking provenance and execution readiness limitations', () => {
+    expect(topTradersSchema.safeParse({ traders: [{ rank: 1, address, pnlUsd: 5, pnlPct: 2, winRate: 50, trades: 2, bestToken: 'SOL', bestTokenPct: 2, badge: 'Degen', sparkline: [1, 5] }], fetchedAt: 1, recordCount: 1, source: 'indexed Solana swaps', dataQuality: 'indexed_observed', freshness: { latestSourceFetchedAt: 1, ageMs: 0, staleAfterMs: 120000, isStale: false } }).success).toBe(true);
+    const health = copyTradeHealthSchema.parse({ service: 'copytrade', chain: 'solana', mode: 'simulation', readiness: { traderData: true, walletMonitor: false, quote: false, walletSignature: false, broadcast: false, confirmation: false, durableStorage: true, automationWorker: false }, providers: { helius: false, gmgn: false }, recordCount: 1, checkedAt: 1 });
+    expect(health.readiness.walletSignature).toBe(false);
+  });
+  it('rejects configs with out-of-bounds financial risk fields', () => { expect(copyTradeConfigSchema.safeParse({ id: 'c', userId: address, sourceWallet: address, isActive: false, createdAt: 1, updatedAt: 1, sizingMode: 'fixed_sol', fixedAmountSol: 1, maxPositionSizeSol: 1, maxDailyVolumeSol: 1, maxDailyLossSol: 0, maxSlippageBps: 5001, maxPriceImpactPct: 5, minLiquidityUsd: 0, maxMarketCapUsd: 0, excludedTokens: [], onlyNewLaunches: false, maxTokenAgeMinutes: 60, copySells: true, copyBuys: true, delayMs: 0, maxConcurrentPositions: 1 }).success).toBe(false); });
 });

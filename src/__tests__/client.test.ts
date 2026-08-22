@@ -1,4 +1,4 @@
-import { createUserAlert, fetchAlertDeliveries, fetchDiscovery, fetchMonitorAlerts, fetchOhlcv, fetchPortfolioAnalytics, fetchSwapQuote, fetchTokenDetail, fetchTokenPanel, fetchTrenches, fetchUserAlerts, fetchWalletPnl, searchTokens, setUserAlertActive } from '@/api/client';
+import { createPausedCopyTradeConfig, createUserAlert, fetchAlertDeliveries, fetchCopyExecutions, fetchCopyTradeConfigs, fetchCopyTradeHealth, fetchDiscovery, fetchMonitorAlerts, fetchOhlcv, fetchPortfolioAnalytics, fetchSwapQuote, fetchTokenDetail, fetchTokenPanel, fetchTopTraders, fetchTrenches, fetchUserAlerts, fetchWalletPnl, pauseCopyTradeConfig, searchTokens, setUserAlertActive, type CreateCopyTradeInput } from '@/api/client';
 
 const token = { id: 'pair', symbol: 'DEX', name: 'Terminal', address: 'mint', pairAddress: 'pair', dex: 'raydium', quoteSymbol: 'SOL', price: 1, marketCap: 10, liquidity: 5, volume24h: 4, volume1h: 2, change24h: 3, change1h: 1, txns5m: { buys: 1, sells: 0 }, ageLabel: '1h', ageMinutes: 60 };
 const jsonResponse = (body: unknown, ok = true, status = 200) => ({ ok, status, json: jest.fn().mockResolvedValue(body) }) as unknown as Response;
@@ -56,5 +56,19 @@ describe('backend client routing', () => {
     expect(jest.mocked(fetch).mock.calls.map((call) => call[0])).toEqual(['https://terminal.example/api/monitor/alerts', 'https://terminal.example/api/alerts?limit=100', 'https://terminal.example/api/alerts', 'https://terminal.example/api/alerts', 'https://terminal.example/api/alerts/deliveries?limit=100']);
     expect(jest.mocked(fetch).mock.calls.some((call) => String(call[0]).includes('/evaluate'))).toBe(false);
     expect(jest.mocked(fetch).mock.calls[2]?.[1]).toEqual(expect.objectContaining({ credentials: 'include', method: 'POST' }));
+  });
+
+  it('keeps CopyTrade configuration paused and execution APIs read-only', async () => {
+    const address = '11111111111111111111111111111111'; const health = { service: 'copytrade', chain: 'solana', mode: 'unavailable', readiness: { traderData: false, walletMonitor: false, quote: false, walletSignature: false, broadcast: false, confirmation: false, durableStorage: true, automationWorker: false }, providers: { helius: false, gmgn: false }, recordCount: 0, checkedAt: 1 };
+    const config = { id: 'c', userId: address, sourceWallet: address, isActive: false, createdAt: 1, updatedAt: 1, sizingMode: 'fixed_sol', fixedAmountSol: 0.05, maxPositionSizeSol: 0.1, maxDailyVolumeSol: 0.5, maxDailyLossSol: 0.1, maxSlippageBps: 100, maxPriceImpactPct: 3, minLiquidityUsd: 10000, maxMarketCapUsd: 1000000, excludedTokens: [], onlyNewLaunches: false, maxTokenAgeMinutes: 60, copySells: true, copyBuys: true, delayMs: 1000, maxConcurrentPositions: 2 };
+    const input = { ...config, id: undefined, userId: undefined, createdAt: undefined, updatedAt: undefined } as unknown as CreateCopyTradeInput;
+    jest.mocked(fetch).mockResolvedValueOnce(jsonResponse({ traders: [], fetchedAt: 1, recordCount: 0, source: 'none', dataQuality: 'unavailable', freshness: { latestSourceFetchedAt: null, ageMs: null, staleAfterMs: 120000, isStale: true } })).mockResolvedValueOnce(jsonResponse(health)).mockResolvedValueOnce(jsonResponse({ success: true, data: [config] })).mockResolvedValueOnce(jsonResponse({ success: true, data: config })).mockResolvedValueOnce(jsonResponse({ success: true, data: config })).mockResolvedValueOnce(jsonResponse({ success: true, data: [], recordCount: 0, source: 'database' }));
+    await fetchTopTraders('30D'); await fetchCopyTradeHealth(); await fetchCopyTradeConfigs(); await createPausedCopyTradeConfig(input); await pauseCopyTradeConfig('c'); await fetchCopyExecutions();
+    const urls = jest.mocked(fetch).mock.calls.map((call) => String(call[0])); expect(urls.some((url) => /copytrade\/(copy|confirm|submit)|positions\/.*close/.test(url))).toBe(false);
+    expect(jest.mocked(fetch).mock.calls[3]?.[1]).toEqual(expect.objectContaining({ credentials: 'include', method: 'POST' }));
+  });
+
+  it('rejects active mobile strategies before network access', async () => {
+    await expect(createPausedCopyTradeConfig({ isActive: true } as CreateCopyTradeInput)).rejects.toThrow('must be created paused'); expect(fetch).not.toHaveBeenCalled();
   });
 });

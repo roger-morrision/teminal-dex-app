@@ -1,4 +1,4 @@
-import { alertDeliveriesSchema, holdersSchema, monitorAlertsSchema, narrativeSchema, ohlcvSchema, pairsSchema, portfolioAnalyticsSchema, riskSchema, smartMoneySchema, swapQuoteSchema, tokenDetailSchema, transactionsSchema, trenchesSchema, trendingSchema, userAlertMutationSchema, userAlertsSchema, walletPnlSchema, type AlertDeliveriesResponse, type HoldersResponse, type MonitorAlertsResponse, type NarrativeResponse, type OhlcvResponse, type PairsResponse, type PortfolioAnalyticsResponse, type RiskResponse, type SmartMoneyResponse, type SwapQuoteResponse, type TokenDetailResponse, type TransactionsResponse, type TrenchesResponse, type TrendingResponse, type UserAlert, type UserAlertsResponse, type WalletPnlResponse } from './schema';
+import { alertDeliveriesSchema, copyExecutionsSchema, copyPositionsSchema, copyTradeConfigMutationSchema, copyTradeConfigsSchema, copyTradeHealthSchema, holdersSchema, monitorAlertsSchema, narrativeSchema, ohlcvSchema, pairsSchema, portfolioAnalyticsSchema, riskSchema, smartMoneySchema, swapQuoteSchema, tokenDetailSchema, topTradersSchema, transactionsSchema, trenchesSchema, trendingSchema, userAlertMutationSchema, userAlertsSchema, walletPnlSchema, type AlertDeliveriesResponse, type CopyExecution, type CopyPosition, type CopyTradeConfig, type CopyTradeHealth, type HoldersResponse, type MonitorAlertsResponse, type NarrativeResponse, type OhlcvResponse, type PairsResponse, type PortfolioAnalyticsResponse, type RiskResponse, type SmartMoneyResponse, type SwapQuoteResponse, type TokenDetailResponse, type TopTradersResponse, type TransactionsResponse, type TrenchesResponse, type TrendingResponse, type UserAlert, type UserAlertsResponse, type WalletPnlResponse } from './schema';
 
 export type TrendingPeriod = '1h' | '6h' | '24h';
 export type TrendingSort = 'trending' | 'gainers' | 'losers' | 'volume' | 'new';
@@ -151,3 +151,40 @@ export async function setUserAlertActive(id: string, active: boolean): Promise<U
 export async function deleteUserAlert(id: string): Promise<void> {
   await jsonRequest(`/api/alerts?id=${encodeURIComponent(id)}`, { method: 'DELETE' }, 'Alert deletion failed');
 }
+
+export async function fetchTopTraders(period: '1D' | '7D' | '30D', signal?: AbortSignal): Promise<TopTradersResponse> {
+  const query = new URLSearchParams({ period, sort: 'pnlUsd' });
+  const result = topTradersSchema.safeParse(await jsonRequest(`/api/top-traders?${query}`, { signal }, 'Trader rankings request failed'));
+  if (!result.success) throw new ApiError('Backend returned incompatible trader ranking evidence.');
+  return result.data;
+}
+
+export async function fetchCopyTradeHealth(signal?: AbortSignal): Promise<CopyTradeHealth> {
+  const result = copyTradeHealthSchema.safeParse(await jsonRequest('/api/copytrade/health', { signal }, 'CopyTrade readiness request failed'));
+  if (!result.success) throw new ApiError('Backend returned incompatible CopyTrade readiness.');
+  return result.data;
+}
+
+export async function fetchCopyTradeConfigs(signal?: AbortSignal): Promise<CopyTradeConfig[]> {
+  const result = copyTradeConfigsSchema.safeParse(await jsonRequest('/api/copytrade/configs', { signal }, 'CopyTrade strategies request failed'));
+  if (!result.success) throw new ApiError('Backend returned incompatible CopyTrade strategies.');
+  return result.data.data;
+}
+
+export type CreateCopyTradeInput = Omit<CopyTradeConfig, 'id' | 'userId' | 'createdAt' | 'updatedAt'>;
+export async function createPausedCopyTradeConfig(input: CreateCopyTradeInput): Promise<CopyTradeConfig> {
+  if (input.isActive) throw new ApiError('New mobile CopyTrade strategies must be created paused for explicit safety review.');
+  const result = copyTradeConfigMutationSchema.safeParse(await jsonRequest('/api/copytrade/configs', { method: 'POST', body: JSON.stringify(input) }, 'CopyTrade strategy creation failed'));
+  if (!result.success || result.data.data.isActive) throw new ApiError('Backend did not preserve the paused strategy safety gate.');
+  return result.data.data;
+}
+
+export async function pauseCopyTradeConfig(id: string): Promise<CopyTradeConfig> {
+  const result = copyTradeConfigMutationSchema.safeParse(await jsonRequest(`/api/copytrade/configs/${encodeURIComponent(id)}`, { method: 'PUT', body: JSON.stringify({ isActive: false }) }, 'CopyTrade pause failed'));
+  if (!result.success || result.data.data.isActive) throw new ApiError('Backend did not confirm the strategy is paused.');
+  return result.data.data;
+}
+
+export async function deleteCopyTradeConfig(id: string): Promise<void> { await jsonRequest(`/api/copytrade/configs/${encodeURIComponent(id)}`, { method: 'DELETE' }, 'CopyTrade deletion failed'); }
+export async function fetchCopyPositions(signal?: AbortSignal): Promise<CopyPosition[]> { const result = copyPositionsSchema.safeParse(await jsonRequest('/api/copytrade/positions', { signal }, 'CopyTrade positions request failed')); if (!result.success) throw new ApiError('Backend returned incompatible CopyTrade positions.'); return result.data.data; }
+export async function fetchCopyExecutions(signal?: AbortSignal): Promise<CopyExecution[]> { const result = copyExecutionsSchema.safeParse(await jsonRequest('/api/copytrade/executions', { signal }, 'CopyTrade executions request failed')); if (!result.success) throw new ApiError('Backend returned incompatible CopyTrade execution evidence.'); return result.data.data; }

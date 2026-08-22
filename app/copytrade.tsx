@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -41,6 +41,13 @@ import {
 import { useWalletSession } from "@/security/WalletSessionProvider";
 import { colors, spacing } from "@/theme";
 import { useSettings } from "@/settings/SettingsProvider";
+import {
+  defaultCopyTradePreviewPreferences,
+  loadCopyTradePreviewPreferences,
+  saveCopyTradePreviewPreferences,
+  validateCopyTradePreviewPreferences,
+  type CopyTradePreviewPreferences,
+} from "@/store/copytrade-preview";
 
 type Tab = "rank" | "strategies" | "activity";
 const tabs = [
@@ -357,6 +364,12 @@ export function StrategyComposer({
 }) {
   const { t } = useSettings();
   const [draft, setDraft] = useState<CopyTradeDraft>(defaultCopyTradeDraft);
+  const [safety, setSafety] = useState(defaultCopyTradePreviewPreferences);
+  const [safetyStorageError, setSafetyStorageError] = useState(false);
+  const saveSequence = useRef(0);
+  useEffect(() => {
+    void loadCopyTradePreviewPreferences().then(setSafety);
+  }, []);
   const result = buildPausedCopyTradeInput(draft, {
     address: trader.address,
     label: `${trader.badge} #${trader.rank}`,
@@ -365,6 +378,33 @@ export function StrategyComposer({
     key: K,
     value: CopyTradeDraft[K],
   ) => setDraft((current) => ({ ...current, [key]: value }));
+  const safetyResult = validateCopyTradePreviewPreferences(safety);
+  const persistSafety = (next: CopyTradePreviewPreferences) => {
+    const sequence = ++saveSequence.current;
+    setSafety(next);
+    void saveCopyTradePreviewPreferences(next).then(
+      () => {
+        if (sequence === saveSequence.current) setSafetyStorageError(false);
+      },
+      () => {
+        if (sequence === saveSequence.current) setSafetyStorageError(true);
+      },
+    );
+  };
+  const updateSafety = <K extends Exclude<keyof CopyTradePreviewPreferences, "exitLadder">>(
+    key: K,
+    value: CopyTradePreviewPreferences[K],
+  ) => persistSafety({ ...safety, [key]: value });
+  const updateLadder = (
+    index: 0 | 1,
+    key: "triggerPct" | "sellPct",
+    value: string,
+  ) => {
+    const exitLadder = safety.exitLadder.map((level, levelIndex) =>
+      levelIndex === index ? { ...level, [key]: value } : level,
+    ) as CopyTradePreviewPreferences["exitLadder"];
+    persistSafety({ ...safety, exitLadder });
+  };
   const mutation = useMutation({
     mutationFn: createPausedCopyTradeConfig,
     onSuccess: onCreated,
@@ -502,6 +542,55 @@ export function StrategyComposer({
           </Pressable>
         ))}
       </View>
+      <Text style={styles.localPreviewTitle}>{t("copyLocalSafetyPreview")}</Text>
+      <Text style={styles.localPreviewHint}>{t("copyLocalPreviewBoundary")}</Text>
+      <View style={styles.grid}>
+        <Input
+          label={t("copyPriorityFeeSol")}
+          value={safety.priorityFeeSol}
+          onChange={(value) => updateSafety("priorityFeeSol", value)}
+        />
+        <Input
+          label={t("copyMinHolders")}
+          value={safety.minHolderCount}
+          onChange={(value) => updateSafety("minHolderCount", value)}
+        />
+        <Input
+          label={t("copyTrailingStop")}
+          value={safety.trailingStopPct}
+          onChange={(value) => updateSafety("trailingStopPct", value)}
+        />
+      </View>
+      <View style={styles.toggleRow}>
+        <Pressable
+          accessibilityRole="checkbox"
+          accessibilityState={{ checked: safety.antiMev }}
+          accessibilityLabel={t("copyAntiMevPreview")}
+          onPress={() => updateSafety("antiMev", !safety.antiMev)}
+          style={[styles.toggle, safety.antiMev && styles.toggleActive]}
+        >
+          <Text style={[styles.toggleText, safety.antiMev && styles.toggleTextActive]}>
+            {t("copyAntiMevPreview")}
+          </Text>
+        </Pressable>
+      </View>
+      <Text style={styles.ladderTitle}>{t("copyExitLadder")}</Text>
+      <View style={styles.grid}>
+        {safety.exitLadder.flatMap((level, index) => [
+          <Input
+            key={`trigger-${index}`}
+            label={t("copyLadderTrigger", { level: index + 1 })}
+            value={level.triggerPct}
+            onChange={(value) => updateLadder(index as 0 | 1, "triggerPct", value)}
+          />,
+          <Input
+            key={`sell-${index}`}
+            label={t("copyLadderSell", { level: index + 1 })}
+            value={level.sellPct}
+            onChange={(value) => updateLadder(index as 0 | 1, "sellPct", value)}
+          />,
+        ])}
+      </View>
       <View accessibilityRole="summary" style={styles.preview}>
         <Text style={styles.sectionTitle}>{t("copyPreview")}</Text>
         <Text style={styles.ruleMeta}>
@@ -510,6 +599,17 @@ export function StrategyComposer({
             daily: draft.maxDailyVolumeSol,
             slippage: draft.maxSlippageBps,
             impact: draft.maxPriceImpactPct,
+          })}
+        </Text>
+        <Text style={styles.ruleMeta}>
+          {t("copyPreviewSafety", {
+            fee: safety.priorityFeeSol,
+            holders: safety.minHolderCount,
+            antiMev: safety.antiMev ? t("copyRequired") : t("copyOff"),
+            trailing: safety.trailingStopPct,
+            ladder: safety.exitLadder
+              .map((level) => `${level.triggerPct}%/${level.sellPct}%`)
+              .join(" · "),
           })}
         </Text>
         <Text style={styles.ruleMeta}>
@@ -526,9 +626,19 @@ export function StrategyComposer({
             {t(`copyConfigError_${error}`)}
           </Text>
         ))}
+        {safetyResult.errors.map((error) => (
+          <Text accessibilityRole="alert" key={error} style={styles.error}>
+            {t(`copyPreviewError_${error}`)}
+          </Text>
+        ))}
       </View>
       <Text style={styles.disclosure}>{t("strategyDisclosure")}</Text>
-      <Text style={styles.disclosure}>{t("unsupportedCopyControls")}</Text>
+      <Text style={styles.disclosure}>{t("copyPreviewNotSubmitted")}</Text>
+      {safetyStorageError ? (
+        <Text accessibilityRole="alert" style={styles.error}>
+          {t("copyPreviewStorageUnavailable")}
+        </Text>
+      ) : null}
       {mutation.error ? (
         <Text accessibilityRole="alert" style={styles.error}>
           {mutation.error.message}
@@ -538,14 +648,14 @@ export function StrategyComposer({
         accessibilityRole="button"
         accessibilityLabel={t("savePausedStrategyLabel")}
         accessibilityState={{
-          disabled: !result.input || mutation.isPending,
+          disabled: !result.input || !safetyResult.valid || mutation.isPending,
           busy: mutation.isPending,
         }}
-        disabled={!result.input || mutation.isPending}
+        disabled={!result.input || !safetyResult.valid || mutation.isPending}
         onPress={() => result.input && mutation.mutate(result.input)}
         style={[
           styles.save,
-          (!result.input || mutation.isPending) && styles.disabled,
+          (!result.input || !safetyResult.valid || mutation.isPending) && styles.disabled,
         ]}
       >
         <Text style={styles.saveText}>
@@ -1204,6 +1314,27 @@ const styles = StyleSheet.create({
     fontSize: 9,
     lineHeight: 14,
     marginTop: spacing.lg,
+  },
+  localPreviewTitle: {
+    color: colors.text,
+    fontSize: 12,
+    fontWeight: "900",
+    marginHorizontal: spacing.lg,
+    marginTop: spacing.lg,
+  },
+  localPreviewHint: {
+    color: colors.warning,
+    fontSize: 9,
+    lineHeight: 14,
+    marginHorizontal: spacing.lg,
+    marginTop: spacing.sm,
+  },
+  ladderTitle: {
+    color: colors.muted,
+    fontSize: 8,
+    fontWeight: "900",
+    marginHorizontal: spacing.lg,
+    marginTop: spacing.md,
   },
   save: {
     alignItems: "center",

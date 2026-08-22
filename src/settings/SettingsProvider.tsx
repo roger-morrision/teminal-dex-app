@@ -520,6 +520,31 @@ const en = {
     "Cap {cap} SOL · daily {daily} SOL · slippage {slippage} bps · impact {impact}%",
   copyPreviewMarket:
     "Liquidity ≥ ${liquidity} · MC ≤ ${marketCap} · age ≤ {age}m · SL {stop}% · TP {take}%",
+  copyLocalSafetyPreview: "Device-local execution safety preview",
+  copyLocalPreviewBoundary:
+    "These controls are saved only on this device for preview validation. The backend strategy contract does not persist or enforce them.",
+  copyPriorityFeeSol: "PRIORITY FEE SOL (0–0.01)",
+  copyMinHolders: "MINIMUM HOLDERS",
+  copyTrailingStop: "TRAILING STOP (%)",
+  copyAntiMevPreview: "Require Anti-MEV route in preview",
+  copyExitLadder: "TAKE-PROFIT LADDER",
+  copyLadderTrigger: "LEVEL {level} TRIGGER (%)",
+  copyLadderSell: "LEVEL {level} SELL (%)",
+  copyPreviewSafety:
+    "Priority {fee} SOL · holders ≥ {holders} · Anti-MEV {antiMev} · trailing {trailing}% · ladder {ladder}",
+  copyRequired: "required",
+  copyOff: "off",
+  copyPreviewError_priorityFee: "Priority fee must be between 0 and 0.01 SOL.",
+  copyPreviewError_holders: "Minimum holders must be a whole non-negative number.",
+  copyPreviewError_trailingStop: "Trailing stop must be above 0% and below 100%.",
+  copyPreviewError_ladderOrder:
+    "Ladder levels must be positive and the second trigger must exceed the first.",
+  copyPreviewError_ladderAllocation:
+    "The exit ladder cannot allocate more than 100% in total.",
+  copyPreviewNotSubmitted:
+    "Priority fee, Anti-MEV, holder, trailing-stop, and ladder values are not included in the backend strategy request. Quote, protected-route, signature, broadcast, confirmation, and audit gates remain unavailable.",
+  copyPreviewStorageUnavailable:
+    "Preview controls changed on screen, but this device could not save them.",
   copyConfigError_sizing:
     "Choose a valid sizing value within its position cap.",
   copyConfigError_positionCap: "Position cap must be greater than zero.",
@@ -1378,6 +1403,31 @@ const vi: { [K in TranslationKey]: string } = {
     "Giới hạn {cap} SOL · ngày {daily} SOL · trượt {slippage} bps · tác động {impact}%",
   copyPreviewMarket:
     "Thanh khoản ≥ ${liquidity} · vốn hóa ≤ ${marketCap} · tuổi ≤ {age} phút · cắt lỗ {stop}% · chốt lời {take}%",
+  copyLocalSafetyPreview: "Xem trước an toàn thực thi trên thiết bị",
+  copyLocalPreviewBoundary:
+    "Các điều khiển này chỉ được lưu trên thiết bị để kiểm tra bản xem trước. Hợp đồng chiến lược backend không lưu hay thực thi chúng.",
+  copyPriorityFeeSol: "PHÍ ƯU TIÊN SOL (0–0,01)",
+  copyMinHolders: "HOLDER TỐI THIỂU",
+  copyTrailingStop: "TRAILING STOP (%)",
+  copyAntiMevPreview: "Yêu cầu tuyến Anti-MEV trong bản xem trước",
+  copyExitLadder: "THANG CHỐT LỜI",
+  copyLadderTrigger: "MỨC {level} KÍCH HOẠT (%)",
+  copyLadderSell: "MỨC {level} BÁN (%)",
+  copyPreviewSafety:
+    "Ưu tiên {fee} SOL · holder ≥ {holders} · Anti-MEV {antiMev} · trailing {trailing}% · thang {ladder}",
+  copyRequired: "bắt buộc",
+  copyOff: "tắt",
+  copyPreviewError_priorityFee: "Phí ưu tiên phải từ 0 đến 0,01 SOL.",
+  copyPreviewError_holders: "Holder tối thiểu phải là số nguyên không âm.",
+  copyPreviewError_trailingStop: "Trailing stop phải trên 0% và dưới 100%.",
+  copyPreviewError_ladderOrder:
+    "Các mức phải dương và kích hoạt thứ hai phải lớn hơn mức đầu.",
+  copyPreviewError_ladderAllocation:
+    "Thang thoát không được phân bổ tổng cộng quá 100%.",
+  copyPreviewNotSubmitted:
+    "Phí ưu tiên, Anti-MEV, holder, trailing stop và thang thoát không được gửi trong yêu cầu chiến lược backend. Các cổng báo giá, tuyến bảo vệ, chữ ký, phát, xác nhận và kiểm toán vẫn chưa khả dụng.",
+  copyPreviewStorageUnavailable:
+    "Điều khiển xem trước đã đổi nhưng thiết bị không thể lưu.",
   copyConfigError_sizing: "Chọn kích thước hợp lệ trong giới hạn vị thế.",
   copyConfigError_positionCap: "Giới hạn vị thế phải lớn hơn 0.",
   copyConfigError_dailyLimits:

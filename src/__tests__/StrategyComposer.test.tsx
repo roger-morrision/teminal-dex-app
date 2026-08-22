@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { StrategyComposer } from "../../app/copytrade";
 import { createPausedCopyTradeConfig } from "@/api/client";
 import { SettingsProvider } from "@/settings/SettingsProvider";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 jest.mock("@/api/client", () => ({
   ...jest.requireActual("@/api/client"),
@@ -26,7 +27,9 @@ const trader = {
 };
 
 describe("StrategyComposer", () => {
-  it("submits reviewed durable fields paused and never exposes an activation action", async () => {
+  beforeEach(() => AsyncStorage.clear());
+
+  it("submits durable fields paused while keeping local safety preview values out of the request", async () => {
     jest.mocked(createPausedCopyTradeConfig).mockResolvedValue({} as never);
     const onCreated = jest.fn();
     const queryClient = new QueryClient({
@@ -51,9 +54,31 @@ describe("StrategyComposer", () => {
       "25000",
     );
     await fireEvent.press(screen.getByLabelText("Only new launches"));
+    await fireEvent.changeText(
+      screen.getByLabelText("PRIORITY FEE SOL (0–0.01)"),
+      "0.005",
+    );
+    await fireEvent.changeText(
+      screen.getByLabelText("MINIMUM HOLDERS"),
+      "250",
+    );
+    await fireEvent.changeText(
+      screen.getByLabelText("TRAILING STOP (%)"),
+      "12",
+    );
     await fireEvent.press(
       screen.getByLabelText("Save paused CopyTrade strategy"),
     );
+    const submitted = jest.mocked(createPausedCopyTradeConfig).mock.calls[0]?.[0];
+    expect(submitted).not.toHaveProperty("priorityFeeSol");
+    expect(submitted).not.toHaveProperty("minHolderCount");
+    expect(submitted).not.toHaveProperty("antiMev");
+    expect(submitted).not.toHaveProperty("trailingStopPct");
+    expect(submitted).not.toHaveProperty("exitLadder");
+    expect(screen.getByText(/Priority 0.005 SOL · holders ≥ 250/)).toBeTruthy();
+    expect(
+      screen.getByText(/not included in the backend strategy request/),
+    ).toBeTruthy();
     await waitFor(() =>
       expect(
         jest.mocked(createPausedCopyTradeConfig).mock.calls[0]?.[0],

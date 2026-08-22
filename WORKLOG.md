@@ -461,4 +461,15 @@
 - Added pure adversarial tests for persistence sanitization, corrupted storage, combined filters, missing evidence, stable two-level sorting and sort cycling, plus a rendered interaction test for provider provenance, preset switching, horizontal table semantics, and the Monitoring-only boundary.
 - Verification evidence: strict TypeScript and direct warning-free ESLint passed; Jest 38 suites / 159 tests passed; Expo Doctor passed 21/21; web production export passed all 23 routes; Android and iOS production bundles passed. Generated exports were removed after verification.
 - Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles.
-- Next priority: re-audit remaining product acceptance and auxiliary-flow gaps after closing Watchlist and Monitor table parity; transaction execution, unsupported CopyTrade fields, native-wallet/device, Track cursor/X-TG, and physical-device evidence remain explicit blockers.
+- Next priority: re-audit remaining product acceptance and auxiliary-flow gaps after closing Watchlist and Monitor table parity; transaction execution, preview-only CopyTrade fields, native-wallet/device, Track cursor/X-TG, and physical-device evidence remain explicit blockers.
+
+## 2026-08-22 — Slice 42: device-local CopyTrade safety preview
+
+- Re-audited the clean mobile tree against backend commit `983339e`. Swap readiness still reports execution disabled and Track still has no cursor/social event API, but the authoritative desktop CopyTrade UI now defines priority fee, Anti-MEV, minimum holders, trailing stop, and a two-level take-profit ladder as validated preview-only state.
+- Added localized device-local preview controls matching that source contract: 0–0.01 SOL priority fee, whole non-negative holder floor, Anti-MEV preview requirement, 0–100% exclusive trailing stop, ordered positive ladder triggers, and a maximum 100% combined ladder allocation.
+- Added bounded two-level preference persistence with corrupted-data recovery, sequenced save/error state, privacy-reset participation, and explicit language that these values are neither persisted nor enforced by the backend strategy contract.
+- Kept the real strategy POST unchanged and always paused. The interaction test edits priority fee, holders, and trailing stop, then proves priority fee, holder, Anti-MEV, trailing, and ladder properties are absent from the submitted server payload; no quote, protected route, activation, approval, signature, broadcast, confirmation, or audit authority was added.
+- Added pure tests for sanitization, fixed ladder bounds, round-trip/corruption recovery, fee/holder/trailing/order/allocation failures, and valid defaults.
+- Verification evidence: strict TypeScript and direct warning-free ESLint passed; Jest 39 suites / 162 tests passed; Expo Doctor passed 21/21; web production export passed all 23 routes; Android and iOS production bundles passed. Generated exports were removed after verification.
+- Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles.
+- Next priority: re-audit backend changes for a durable Track cursor/social event contract or green transaction readiness. Native-wallet and physical-device evidence remain environment-blocked.

@@ -23,7 +23,6 @@ import {
   fetchCopyTradeHealth,
   fetchTopTraders,
   pauseCopyTradeConfig,
-  type CreateCopyTradeInput,
 } from "@/api/client";
 import type {
   CopyExecution,
@@ -32,6 +31,13 @@ import type {
   TopTrader,
 } from "@/api/schema";
 import { compactUsd, signedPercent } from "@/lib/format";
+import {
+  boundedCopyNumber,
+  buildPausedCopyTradeInput,
+  defaultCopyTradeDraft,
+  type CopySizingMode,
+  type CopyTradeDraft,
+} from "@/lib/copytrade-config";
 import { useWalletSession } from "@/security/WalletSessionProvider";
 import { colors, spacing } from "@/theme";
 import { useSettings } from "@/settings/SettingsProvider";
@@ -340,7 +346,7 @@ export function TraderCard({
   );
 }
 
-function StrategyComposer({
+export function StrategyComposer({
   trader,
   onClose,
   onCreated,
@@ -350,60 +356,50 @@ function StrategyComposer({
   onCreated: () => void;
 }) {
   const { t } = useSettings();
-  const [amount, setAmount] = useState("0.05");
-  const [maxPosition, setMaxPosition] = useState("0.1");
-  const [dailyVolume, setDailyVolume] = useState("0.5");
-  const [dailyLoss, setDailyLoss] = useState("0.1");
-  const [slippage, setSlippage] = useState("100");
-  const [impact, setImpact] = useState("3");
-  const numeric = {
-    amount: Number(amount),
-    maxPosition: Number(maxPosition),
-    dailyVolume: Number(dailyVolume),
-    dailyLoss: Number(dailyLoss),
-    slippage: Number(slippage),
-    impact: Number(impact),
-  };
-  const valid =
-    Object.values(numeric).every(Number.isFinite) &&
-    numeric.amount > 0 &&
-    numeric.maxPosition >= numeric.amount &&
-    numeric.dailyVolume > 0 &&
-    numeric.dailyLoss >= 0 &&
-    Number.isInteger(numeric.slippage) &&
-    numeric.slippage >= 1 &&
-    numeric.slippage <= 500 &&
-    numeric.impact > 0 &&
-    numeric.impact <= 5;
+  const [draft, setDraft] = useState<CopyTradeDraft>(defaultCopyTradeDraft);
+  const result = buildPausedCopyTradeInput(draft, {
+    address: trader.address,
+    label: `${trader.badge} #${trader.rank}`,
+  });
+  const update = <K extends keyof CopyTradeDraft>(
+    key: K,
+    value: CopyTradeDraft[K],
+  ) => setDraft((current) => ({ ...current, [key]: value }));
   const mutation = useMutation({
     mutationFn: createPausedCopyTradeConfig,
     onSuccess: onCreated,
   });
-  const input: CreateCopyTradeInput = {
-    sourceWallet: trader.address,
-    sourceWalletLabel: `${trader.badge} #${trader.rank}`,
-    isActive: false,
-    sizingMode: "fixed_sol",
-    fixedAmountSol: numeric.amount,
-    percentage: 5,
-    proportionalRatio: 0.1,
-    maxPositionSizeSol: numeric.maxPosition,
-    maxDailyVolumeSol: numeric.dailyVolume,
-    maxDailyLossSol: numeric.dailyLoss,
-    stopLossPct: 20,
-    takeProfitPct: 50,
-    maxSlippageBps: numeric.slippage,
-    maxPriceImpactPct: numeric.impact,
-    minLiquidityUsd: 10_000,
-    maxMarketCapUsd: 1_000_000,
-    excludedTokens: [],
-    onlyNewLaunches: false,
-    maxTokenAgeMinutes: 60,
-    copySells: true,
-    copyBuys: true,
-    delayMs: 1000,
-    maxConcurrentPositions: 2,
-  };
+  const fields: {
+    key: keyof Pick<
+      CopyTradeDraft,
+      | "maxPositionSizeSol"
+      | "maxDailyVolumeSol"
+      | "maxDailyLossSol"
+      | "stopLossPct"
+      | "takeProfitPct"
+      | "maxSlippageBps"
+      | "maxPriceImpactPct"
+      | "minLiquidityUsd"
+      | "maxMarketCapUsd"
+      | "maxTokenAgeMinutes"
+      | "delayMs"
+      | "maxConcurrentPositions"
+    >;
+    label: string;
+  }[] = [
+    { key: "maxPositionSizeSol", label: t("positionCapSol") },
+    { key: "maxDailyVolumeSol", label: t("dailyVolumeSol") },
+    { key: "maxDailyLossSol", label: t("dailyLossSol") },
+    { key: "stopLossPct", label: t("stopLossPct") },
+    { key: "takeProfitPct", label: t("takeProfitPct") },
+    { key: "maxSlippageBps", label: t("slippageBps") },
+    { key: "maxPriceImpactPct", label: t("priceImpactLimit") },
+    { key: "minLiquidityUsd", label: t("copyMinLiquidity") },
+    { key: "maxMarketCapUsd", label: t("copyMaxMarketCap") },
+    { key: "maxTokenAgeMinutes", label: t("copyMaxAge") },
+    { key: "delayMs", label: t("copyDelayMs") },
+    { key: "maxConcurrentPositions", label: t("copyMaxConcurrent") },
+  ];
   return (
     <View style={styles.composer}>
       <View style={styles.composerHead}>
@@ -421,35 +417,118 @@ function StrategyComposer({
           <Ionicons name="close" size={20} color={colors.muted} />
         </Pressable>
       </View>
+      <Text style={styles.inputLabel}>{t("copySizingMode")}</Text>
+      <View accessibilityRole="radiogroup" style={styles.modeRow}>
+        {(["fixed_sol", "percentage", "proportional"] as CopySizingMode[]).map(
+          (mode) => (
+            <Pressable
+              key={mode}
+              accessibilityRole="radio"
+              accessibilityState={{ checked: draft.sizingMode === mode }}
+              accessibilityLabel={t("selectCopySizing", {
+                mode: t(`copySizing_${mode}`),
+              })}
+              onPress={() => update("sizingMode", mode)}
+              style={[
+                styles.modePill,
+                draft.sizingMode === mode && styles.modePillActive,
+              ]}
+            >
+              <Text
+                style={[
+                  styles.modePillText,
+                  draft.sizingMode === mode && styles.modePillTextActive,
+                ]}
+              >
+                {t(`copySizing_${mode}`)}
+              </Text>
+            </Pressable>
+          ),
+        )}
+      </View>
       <View style={styles.grid}>
-        <Input label={t("copySizeSol")} value={amount} onChange={setAmount} />
         <Input
-          label={t("positionCapSol")}
-          value={maxPosition}
-          onChange={setMaxPosition}
+          label={
+            draft.sizingMode === "fixed_sol"
+              ? t("copySizeSol")
+              : draft.sizingMode === "percentage"
+                ? t("copyPercentage")
+                : t("copyRatio")
+          }
+          value={
+            draft[
+              draft.sizingMode === "fixed_sol"
+                ? "fixedAmountSol"
+                : draft.sizingMode === "percentage"
+                  ? "percentage"
+                  : "proportionalRatio"
+            ]
+          }
+          onChange={(value) =>
+            update(
+              draft.sizingMode === "fixed_sol"
+                ? "fixedAmountSol"
+                : draft.sizingMode === "percentage"
+                  ? "percentage"
+                  : "proportionalRatio",
+              value,
+            )
+          }
         />
-        <Input
-          label={t("dailyVolumeSol")}
-          value={dailyVolume}
-          onChange={setDailyVolume}
-        />
-        <Input
-          label={t("dailyLossSol")}
-          value={dailyLoss}
-          onChange={setDailyLoss}
-        />
-        <Input
-          label={t("slippageBps")}
-          value={slippage}
-          onChange={setSlippage}
-        />
-        <Input
-          label={t("priceImpactLimit")}
-          value={impact}
-          onChange={setImpact}
-        />
+        {fields.map((field) => (
+          <Input
+            key={field.key}
+            label={field.label}
+            value={draft[field.key]}
+            onChange={(value) => update(field.key, value)}
+          />
+        ))}
+      </View>
+      <View style={styles.toggleRow}>
+        {(["copyBuys", "copySells", "onlyNewLaunches"] as const).map((key) => (
+          <Pressable
+            key={key}
+            accessibilityRole="checkbox"
+            accessibilityState={{ checked: draft[key] }}
+            accessibilityLabel={t(`copyToggle_${key}`)}
+            onPress={() => update(key, !draft[key])}
+            style={[styles.toggle, draft[key] && styles.toggleActive]}
+          >
+            <Text
+              style={[styles.toggleText, draft[key] && styles.toggleTextActive]}
+            >
+              {t(`copyToggle_${key}`)}
+            </Text>
+          </Pressable>
+        ))}
+      </View>
+      <View accessibilityRole="summary" style={styles.preview}>
+        <Text style={styles.sectionTitle}>{t("copyPreview")}</Text>
+        <Text style={styles.ruleMeta}>
+          {t("copyPreviewLimits", {
+            cap: draft.maxPositionSizeSol,
+            daily: draft.maxDailyVolumeSol,
+            slippage: draft.maxSlippageBps,
+            impact: draft.maxPriceImpactPct,
+          })}
+        </Text>
+        <Text style={styles.ruleMeta}>
+          {t("copyPreviewMarket", {
+            liquidity: draft.minLiquidityUsd,
+            marketCap: draft.maxMarketCapUsd,
+            age: draft.maxTokenAgeMinutes,
+            stop: draft.stopLossPct,
+            take: draft.takeProfitPct,
+          })}
+        </Text>
+        {result.errors.map((error) => (
+          <Text accessibilityRole="alert" key={error} style={styles.error}>
+            {t(`copyConfigError_${error}`)}
+          </Text>
+        ))}
       </View>
       <Text style={styles.disclosure}>{t("strategyDisclosure")}</Text>
+      <Text style={styles.disclosure}>{t("unsupportedCopyControls")}</Text>
       {mutation.error ? (
         <Text accessibilityRole="alert" style={styles.error}>
           {mutation.error.message}
@@ -459,12 +538,15 @@ function StrategyComposer({
         accessibilityRole="button"
         accessibilityLabel={t("savePausedStrategyLabel")}
         accessibilityState={{
-          disabled: !valid || mutation.isPending,
+          disabled: !result.input || mutation.isPending,
           busy: mutation.isPending,
         }}
-        disabled={!valid || mutation.isPending}
-        onPress={() => mutation.mutate(input)}
-        style={[styles.save, (!valid || mutation.isPending) && styles.disabled]}
+        disabled={!result.input || mutation.isPending}
+        onPress={() => result.input && mutation.mutate(result.input)}
+        style={[
+          styles.save,
+          (!result.input || mutation.isPending) && styles.disabled,
+        ]}
       >
         <Text style={styles.saveText}>
           {mutation.isPending ? t("saving") : t("savePausedStrategy")}
@@ -565,7 +647,13 @@ function StrategyCard({
       <View style={styles.metrics}>
         <Metric
           label={t("copySize")}
-          value={`${config.fixedAmountSol ?? "—"} SOL`}
+          value={
+            config.sizingMode === "percentage"
+              ? `${config.percentage ?? "—"}%`
+              : config.sizingMode === "proportional"
+                ? `${config.proportionalRatio ?? "—"}×`
+                : `${config.fixedAmountSol ?? "—"} SOL`
+          }
         />
         <Metric
           label={t("positionCap")}
@@ -589,6 +677,16 @@ function StrategyCard({
           <Text style={styles.delete}>{t("delete")}</Text>
         </Pressable>
       </View>
+      <Text style={styles.disclosure}>
+        {t("savedCopyRules", {
+          liquidity: config.minLiquidityUsd,
+          marketCap: config.maxMarketCapUsd,
+          age: config.maxTokenAgeMinutes,
+          stop: config.stopLossPct ?? "—",
+          take: config.takeProfitPct ?? "—",
+          delay: config.delayMs,
+        })}
+      </Text>
       {pause.error || remove.error ? (
         <Text accessibilityRole="alert" style={styles.error}>
           {(pause.error ?? remove.error)?.message}
@@ -777,7 +875,7 @@ function Input({
       <TextInput
         accessibilityLabel={label}
         value={value}
-        onChangeText={onChange}
+        onChangeText={(value) => onChange(boundedCopyNumber(value))}
         keyboardType="decimal-pad"
         style={styles.input}
       />
@@ -1028,6 +1126,56 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     gap: spacing.md,
+  },
+  modeRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: spacing.sm,
+    marginHorizontal: spacing.lg,
+    marginBottom: spacing.md,
+  },
+  modePill: {
+    minHeight: 38,
+    justifyContent: "center",
+    paddingHorizontal: 12,
+    borderRadius: 9,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  modePillActive: {
+    backgroundColor: colors.accent,
+    borderColor: colors.accent,
+  },
+  modePillText: { color: colors.muted, fontSize: 9, fontWeight: "900" },
+  modePillTextActive: { color: colors.background },
+  toggleRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: spacing.sm,
+    paddingHorizontal: spacing.lg,
+  },
+  toggle: {
+    minHeight: 38,
+    justifyContent: "center",
+    paddingHorizontal: 11,
+    borderRadius: 9,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  toggleActive: {
+    borderColor: colors.accent,
+    backgroundColor: colors.accentDim,
+  },
+  toggleText: { color: colors.muted, fontSize: 9, fontWeight: "800" },
+  toggleTextActive: { color: colors.accent },
+  preview: {
+    margin: spacing.lg,
+    padding: spacing.md,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: colors.border,
+    backgroundColor: colors.background,
+    gap: spacing.sm,
   },
   inputWrap: {
     flexGrow: 1,

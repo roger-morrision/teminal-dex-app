@@ -437,13 +437,51 @@ const en = {
   savesPaused: "{wallet} · saves paused",
   closeStrategyReview: "Close strategy review",
   copySizeSol: "COPY SIZE SOL",
+  copySizingMode: "SIZING MODE",
+  copySizing_fixed_sol: "Fixed SOL",
+  copySizing_percentage: "Wallet percentage",
+  copySizing_proportional: "Source proportional",
+  selectCopySizing: "Select CopyTrade sizing {mode}",
+  copyPercentage: "WALLET PERCENTAGE (%)",
+  copyRatio: "SOURCE PROPORTION RATIO",
   positionCapSol: "POSITION CAP SOL",
   dailyVolumeSol: "DAILY VOLUME SOL",
   dailyLossSol: "DAILY LOSS SOL",
   slippageBps: "SLIPPAGE BPS (≤500)",
   priceImpactLimit: "PRICE IMPACT % (≤5)",
+  stopLossPct: "STOP LOSS (%)",
+  takeProfitPct: "TAKE PROFIT (%)",
+  copyMinLiquidity: "MIN LIQUIDITY (USD)",
+  copyMaxMarketCap: "MAX MARKET CAP (USD)",
+  copyMaxAge: "MAX TOKEN AGE (MIN)",
+  copyDelayMs: "COPY DELAY (MS)",
+  copyMaxConcurrent: "MAX OPEN POSITIONS (≤20)",
+  copyToggle_copyBuys: "Copy buys",
+  copyToggle_copySells: "Copy sells",
+  copyToggle_onlyNewLaunches: "Only new launches",
+  copyPreview: "Paused configuration preview",
+  copyPreviewLimits:
+    "Cap {cap} SOL · daily {daily} SOL · slippage {slippage} bps · impact {impact}%",
+  copyPreviewMarket:
+    "Liquidity ≥ ${liquidity} · MC ≤ ${marketCap} · age ≤ {age}m · SL {stop}% · TP {take}%",
+  copyConfigError_sizing:
+    "Choose a valid sizing value within its position cap.",
+  copyConfigError_positionCap: "Position cap must be greater than zero.",
+  copyConfigError_dailyLimits:
+    "Daily volume must cover the position cap and daily loss cannot be negative.",
+  copyConfigError_exitLimits:
+    "Stop loss must be below 100%; take profit must be positive.",
+  copyConfigError_quoteLimits:
+    "Slippage must be 1–500 bps and price impact must be above 0% and at most 5%.",
+  copyConfigError_marketFilters:
+    "Liquidity and age cannot be negative; maximum market cap must be positive.",
+  copyConfigError_timing:
+    "Delay must be a whole non-negative millisecond value and open positions must be 1–20.",
+  copyConfigError_direction: "Enable at least Copy buys or Copy sells.",
   strategyDisclosure:
-    "Fixed size · buys and sells observed · 20% stop · 50% take profit · $10K minimum liquidity · maximum 2 positions. Saving does not activate or authorize a transaction.",
+    "Preview is persisted paused. Saving does not quote, approve, activate, sign, broadcast, confirm, or authorize a transaction.",
+  unsupportedCopyControls:
+    "Unavailable in the backend config contract: priority fee, Anti-MEV, holder filters, trailing stops, and ladder exits. They are not saved or implied.",
   savePausedStrategyLabel: "Save paused CopyTrade strategy",
   saving: "Saving…",
   savePausedStrategy: "Save paused strategy",
@@ -468,6 +506,8 @@ const en = {
   buys: "Buys",
   sells: "sells",
   maxPositions: "{count} max positions",
+  savedCopyRules:
+    "Liq ≥ ${liquidity} · MC ≤ ${marketCap} · age ≤ {age}m · SL {stop}% · TP {take}% · delay {delay}ms",
   deleteStrategy: "Delete {strategy}",
   delete: "Delete",
   loadingExecutionAudit: "Loading execution audit…",
@@ -1199,13 +1239,49 @@ const vi: { [K in TranslationKey]: string } = {
   savesPaused: "{wallet} · lưu ở trạng thái tạm dừng",
   closeStrategyReview: "Đóng xem xét chiến lược",
   copySizeSol: "KÍCH THƯỚC SAO CHÉP SOL",
+  copySizingMode: "CHẾ ĐỘ KÍCH THƯỚC",
+  copySizing_fixed_sol: "SOL cố định",
+  copySizing_percentage: "Phần trăm ví",
+  copySizing_proportional: "Tỷ lệ theo nguồn",
+  selectCopySizing: "Chọn kích thước CopyTrade {mode}",
+  copyPercentage: "PHẦN TRĂM VÍ (%)",
+  copyRatio: "TỶ LỆ THEO VÍ NGUỒN",
   positionCapSol: "GIỚI HẠN VỊ THẾ SOL",
   dailyVolumeSol: "KHỐI LƯỢNG NGÀY SOL",
   dailyLossSol: "THUA LỖ NGÀY SOL",
   slippageBps: "TRƯỢT GIÁ BPS (≤500)",
   priceImpactLimit: "TÁC ĐỘNG GIÁ % (≤5)",
+  stopLossPct: "CẮT LỖ (%)",
+  takeProfitPct: "CHỐT LỜI (%)",
+  copyMinLiquidity: "THANH KHOẢN TỐI THIỂU (USD)",
+  copyMaxMarketCap: "VỐN HÓA TỐI ĐA (USD)",
+  copyMaxAge: "TUỔI TOKEN TỐI ĐA (PHÚT)",
+  copyDelayMs: "TRỄ SAO CHÉP (MS)",
+  copyMaxConcurrent: "VỊ THẾ MỞ TỐI ĐA (≤20)",
+  copyToggle_copyBuys: "Sao chép mua",
+  copyToggle_copySells: "Sao chép bán",
+  copyToggle_onlyNewLaunches: "Chỉ token mới",
+  copyPreview: "Xem trước cấu hình tạm dừng",
+  copyPreviewLimits:
+    "Giới hạn {cap} SOL · ngày {daily} SOL · trượt {slippage} bps · tác động {impact}%",
+  copyPreviewMarket:
+    "Thanh khoản ≥ ${liquidity} · vốn hóa ≤ ${marketCap} · tuổi ≤ {age} phút · cắt lỗ {stop}% · chốt lời {take}%",
+  copyConfigError_sizing: "Chọn kích thước hợp lệ trong giới hạn vị thế.",
+  copyConfigError_positionCap: "Giới hạn vị thế phải lớn hơn 0.",
+  copyConfigError_dailyLimits:
+    "Khối lượng ngày phải đủ giới hạn vị thế và lỗ ngày không được âm.",
+  copyConfigError_exitLimits: "Cắt lỗ phải dưới 100%; chốt lời phải dương.",
+  copyConfigError_quoteLimits:
+    "Trượt giá phải từ 1–500 bps và tác động giá trên 0%, tối đa 5%.",
+  copyConfigError_marketFilters:
+    "Thanh khoản và tuổi không được âm; vốn hóa tối đa phải dương.",
+  copyConfigError_timing:
+    "Độ trễ phải là mili giây nguyên không âm và vị thế mở phải từ 1–20.",
+  copyConfigError_direction: "Bật ít nhất sao chép mua hoặc sao chép bán.",
   strategyDisclosure:
-    "Kích thước cố định · quan sát mua và bán · dừng lỗ 20% · chốt lời 50% · thanh khoản tối thiểu $10K · tối đa 2 vị thế. Lưu không kích hoạt hoặc cho phép giao dịch.",
+    "Bản xem trước được lưu ở trạng thái tạm dừng. Lưu không báo giá, phê duyệt, kích hoạt, ký, phát, xác nhận hay cấp quyền giao dịch.",
+  unsupportedCopyControls:
+    "Không có trong hợp đồng cấu hình backend: phí ưu tiên, Anti-MEV, bộ lọc holder, trailing stop và thoát theo bậc. Chúng không được lưu hay ngụ ý.",
   savePausedStrategyLabel: "Lưu chiến lược CopyTrade tạm dừng",
   saving: "Đang lưu…",
   savePausedStrategy: "Lưu chiến lược tạm dừng",
@@ -1230,6 +1306,8 @@ const vi: { [K in TranslationKey]: string } = {
   buys: "Mua",
   sells: "bán",
   maxPositions: "tối đa {count} vị thế",
+  savedCopyRules:
+    "TK ≥ ${liquidity} · vốn hóa ≤ ${marketCap} · tuổi ≤ {age} phút · CL {stop}% · lời {take}% · trễ {delay}ms",
   deleteStrategy: "Xóa {strategy}",
   delete: "Xóa",
   loadingExecutionAudit: "Đang tải kiểm tra thực thi…",

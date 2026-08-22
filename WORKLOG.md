@@ -427,3 +427,15 @@
 - Verification evidence: strict TypeScript and warning-free Expo lint passed; Jest 31 suites / 143 tests passed; Expo Doctor passed 21/21; web production export passed all 23 routes; Android and iOS production bundles passed. Generated exports were removed after verification.
 - Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles.
 - Next priority: continue auditing independently actionable acceptance gaps; unsupported CopyTrade controls, transaction execution, native-wallet/device, Track cursor/X-TG, and physical-device evidence remain explicit contract or environment blockers.
+
+## 2026-08-22 — Slice 39: preview-first CopyTrade configuration
+
+- Re-audited the backend CopyTrade config route, validator, defaults, schema, and durable store after Slice 38. The prior mobile composer persisted real strategies but hardcoded most market, exit, and timing safety fields.
+- Added localized verified-owner configuration for every supported durable field: fixed SOL, wallet-percentage, or source-proportional sizing; position, daily-volume, and daily-loss caps; stop loss and take profit; mobile-bounded slippage and price impact; minimum liquidity, maximum market cap, maximum token age; buy/sell/new-launch direction; delay; and maximum concurrent positions.
+- Added a paused preview that summarizes quote and market limits before saving. Validation fails closed across sizing, caps, daily limits, exits, quote thresholds, market filters, timing, concurrency, and direction; numeric input length and precision are bounded.
+- The submitted backend payload always sets `isActive: false`. Saving does not quote, approve, activate, sign, broadcast, confirm, close, or submit any transaction, and the screen exposes no activation control.
+- Explicitly labels priority fee, Anti-MEV, holder-count filters, trailing stops, and ladder exits unavailable because the authoritative backend config contract does not persist them; the mobile app does not store or imply those fields.
+- Added pure tests for all sizing modes, complete supported payload construction, cross-field failures, and input bounds, plus a component test proving edited market controls and new-launch state reach the paused create request without an activation action.
+- Verification evidence: strict TypeScript and warning-free Expo lint passed; Jest 33 suites / 148 tests passed; Expo Doctor passed 21/21; web production export passed all 23 routes; Android and iOS production bundles passed. Generated exports were removed after verification.
+- Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles.
+- Next priority: audit durable watchlist/alert-status acceptance and Monitor table parity for independently actionable mobile gaps; execution, unsupported CopyTrade fields, native-wallet/device, Track cursor/X-TG, and physical-device evidence remain explicit blockers.

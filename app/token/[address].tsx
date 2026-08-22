@@ -538,7 +538,7 @@ function AsyncPanel<T>({
     );
   return <View style={styles.panel}>{children(query.data)}</View>;
 }
-function PanelState({
+export function PanelState({
   loading,
   error,
   title,
@@ -554,6 +554,7 @@ function PanelState({
   const { t } = useSettings();
   return (
     <View
+      accessible
       accessibilityRole={error ? "alert" : "summary"}
       accessibilityLiveRegion="polite"
       accessibilityState={loading ? { busy: true } : undefined}

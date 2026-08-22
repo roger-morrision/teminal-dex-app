@@ -321,3 +321,12 @@
 - Verification evidence: strict TypeScript and warning-free Expo lint passed; Jest 22 suites / 111 tests passed; Expo Doctor passed 21/21; web production export passed all 22 routes; Android and iOS production bundles passed. Generated exports were removed after verification.
 - Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles.
 - Next priority: audit dynamic states in remaining primary/detail flows and close any evidence-backed component coverage gaps before the final regression audit; device-only verification and the backend-contract blockers documented in Slice 25 remain partial.
+
+## 2026-08-22 — Slice 29: primary and token-detail state exposure
+
+- Audited the remaining shared state helpers in Monitor, Portfolio, and Token Detail. Each already carried correct alert/summary, live-region, and busy semantics, but its role-bearing `View` was not explicitly exposed as an accessible element.
+- Made all three helpers accessible without changing query, retry, wallet, financial-evidence, or execution behavior.
+- Added direct component coverage for Monitor and Portfolio loading/error/empty transitions plus Token Detail provider-failure, retry, and loading semantics through the real Settings boundary.
+- Verification evidence: strict TypeScript and warning-free Expo lint passed; Jest 23 suites / 114 tests passed; Expo Doctor passed 21/21; web production export passed all 22 routes; Android and iOS production bundles passed. Generated exports were removed after verification.
+- Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles.
+- Next priority: audit remaining one-off asynchronous surfaces, especially quote review and Settings, before evaluating whether automated dynamic-state coverage can be marked complete; real-device checks and backend-contract blockers remain partial.

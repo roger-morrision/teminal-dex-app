@@ -422,7 +422,7 @@ function Action({
     </Pressable>
   );
 }
-function State({
+export function State({
   loading,
   error,
   text,
@@ -437,6 +437,7 @@ function State({
 }) {
   return (
     <View
+      accessible
       accessibilityRole={error ? "alert" : "summary"}
       accessibilityLiveRegion="polite"
       accessibilityState={loading ? { busy: true } : undefined}

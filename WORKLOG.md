@@ -267,3 +267,15 @@
 - Verification evidence: strict TypeScript and warning-free Expo lint passed; Jest 20 suites / 102 tests passed; Expo Doctor passed 21/21; web production export passed all 22 routes; Android and iOS production bundles passed. Generated exports were removed after verification.
 - Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles.
 - Next priority: execute the final requirement-by-requirement regression audit and continue implementing any evidence-backed gaps; real-device screen-reader/dynamic-type/connectivity/performance checks remain device-dependent.
+
+## 2026-08-22 — Slice 24: final-audit Monitor localization remediation
+
+- The requirement audit contradicted the broad localization claim by finding English-only mobile copy in Monitor rules, the alert composer, persisted rule lifecycle, owner gate, and durable delivery ledger; corrected the implementation rather than weakening the checklist.
+- Localized all remaining mobile-owned Monitor copy, financial field labels/placeholders, scheduler and delivery boundaries, relative times, condition summaries, mutation states, owner-gate text, and empty/loading/error states in typed English and Vietnamese.
+- Preserved exact backend evidence: observation types/sources/signatures, alert types, channels, delivery statuses/reasons, and backend errors remain untranslated.
+- Added explicit labels plus selected/checked/disabled/busy, header, summary, alert, and live-region semantics across token handoff, rules, financial input validation, switches, deletion, owner gating, and delivery outcomes.
+- Retained authority boundaries: mobile mutates only authenticated durable alert CRUD; the backend scheduler evaluates rules, an enabled rule does not prove delivery, and queued/unavailable outcomes remain visibly distinct.
+- Wrapped AlertComposer tests in the real settings boundary and expanded Vietnamese persisted-rule/delivery-ledger interpolation assertions. Existing tests continue proving positive finite values and exact mints are required before persistence.
+- Verification evidence: strict TypeScript and warning-free Expo lint passed; Jest 20 suites / 102 tests passed; Expo Doctor passed 21/21; web production export passed all 22 routes; Android and iOS production bundles passed. Generated exports were removed after verification.
+- Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles.
+- Next priority: resume the requirement-by-requirement audit, especially token-detail drilldowns, transaction safety gate, dynamic state coverage, and device-dependent verification evidence.

@@ -4,9 +4,10 @@ import { join } from 'node:path';
 const primaryScreens = [
   'app/(tabs)/discover.tsx', 'app/(tabs)/trenches.tsx', 'app/(tabs)/monitor.tsx',
   'app/(tabs)/portfolio.tsx', 'app/(tabs)/more.tsx', 'app/settings.tsx',
+  'app/token/[address].tsx', 'app/trade/[address].tsx',
 ];
 
-describe('primary-screen accessibility contract', () => {
+describe('audited-screen accessibility contract', () => {
   it.each(primaryScreens)('%s gives every Pressable an explicit role', (file) => {
     const source = readFileSync(join(process.cwd(), file), 'utf8');
     const unlabeledRoles = [...source.matchAll(/<Pressable\b([^>]*)>/g)].filter((match) => !match[1]?.includes('accessibilityRole'));

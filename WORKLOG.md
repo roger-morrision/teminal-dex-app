@@ -184,3 +184,14 @@
 - Production dependency audit still reports 10 moderate vulnerabilities in Expo's transitive CLI/Xcode build chain. npm proposes a breaking forced downgrade to Expo 46 for full remediation; no forced audit fix was applied because Expo Doctor and all current SDK 57 bundles pass and the affected chain is not app runtime code.
 - Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles.
 - Next priority: auxiliary tool/detail localization and automated accessibility expansion, followed by the device-dependent screen-reader, dynamic-type, connectivity, and performance evidence that cannot be proven by bundling alone.
+
+## 2026-08-22 — Slice 17: localized token-to-quote journey
+
+- Re-established the clean mobile status/history, durable checklist/worklog, tests, route inventory, and read-only backend instructions before selecting the central Discover/Trenches token-detail-to-quote path from the remaining auxiliary localization scope.
+- Localized token detail states, seven panel tabs, evidence labels, limitations, chart timeframes, holder/transaction/risk/intelligence/pair panels, refresh/retry controls, and live/degraded status in typed interpolation-safe English and Vietnamese. Dynamic provider values, token identity, risk factors, finality, and backend errors remain untranslated to preserve exact evidence.
+- Localized every quote-review control, state, route field, validation check, expiry warning, and execution boundary. The safety semantics remain unchanged: quote retrieval is real and explicit, while build/sign/submit stays disabled regardless of wallet verification.
+- Added explicit button/tab/radio roles, labels, selected/checked/disabled/busy states, alerts, summaries, progress states, and headers across both routes. Replaced rigid metric, evidence, amount, slippage, quote, and notice layouts with wrapping and minimum-width behavior so larger system text and longer Vietnamese copy can reflow instead of clipping.
+- Expanded the source-level accessibility contract from the primary screens to both dynamic detail routes and expanded live localization tests to cover auxiliary quote interpolation and the translated execution gate.
+- Verification evidence: strict TypeScript and warning-free Expo lint passed; Jest 20 suites / 90 tests passed; Expo Doctor passed 21/21; web production export passed all 22 routes; Android and iOS production bundles passed. Generated exports were removed after verification.
+- Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles.
+- Next priority: localize and audit the remaining high-authority auxiliary screens, beginning with CopyTrade and AI, while real-device screen-reader/dynamic-type/connectivity/performance verification remains device-dependent.

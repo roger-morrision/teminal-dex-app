@@ -7,7 +7,7 @@ jest.mock('@react-native-async-storage/async-storage', () => ({ __esModule: true
 
 function Consumer() {
   const settings = useSettings();
-  return <><Text>{settings.t('noLaunches', { lane: settings.t('new').toLowerCase() })}</Text><Pressable accessibilityRole="button" accessibilityLabel="Vietnamese" onPress={() => settings.setLanguage('vi')}><Text>{settings.t('discover')}</Text></Pressable></>;
+  return <><Text>{settings.t('noLaunches', { lane: settings.t('new').toLowerCase() })}</Text><Text>{settings.t('quoteCheckExactIn', { slippage: '1.00' })}</Text><Text>{settings.t('tradingLocked')}</Text><Pressable accessibilityRole="button" accessibilityLabel="Vietnamese" onPress={() => settings.setLanguage('vi')}><Text>{settings.t('discover')}</Text></Pressable></>;
 }
 
 describe('SettingsProvider localization', () => {
@@ -20,6 +20,8 @@ describe('SettingsProvider localization', () => {
     await fireEvent.press(screen.getByLabelText('Vietnamese'));
     await waitFor(() => expect(screen.getByText('Khám phá')).toBeTruthy());
     expect(screen.getByText('Không có token mới đã xác minh.')).toBeTruthy();
+    expect(screen.getByText('Báo giá ExactIn với trượt giá 1.00%')).toBeTruthy();
+    expect(screen.getByText(/Giao dịch bị khóa/)).toBeTruthy();
     expect(AsyncStorage.setItem).toHaveBeenCalledWith('terminal-dex:settings:v1', expect.stringContaining('"language":"vi"'));
   });
 

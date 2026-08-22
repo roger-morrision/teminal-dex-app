@@ -1,0 +1,29 @@
+{
+  "expo": {
+    "name": "Terminal DEX",
+    "slug": "terminal-dex",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "scheme": "terminaldex",
+    "plugins": [
+      "expo-router",
+      "expo-status-bar",
+      "expo-font"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "app.terminaldex.mobile"
+    },
+    "android": {
+      "package": "app.terminaldex.mobile"
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static"
+    },
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}

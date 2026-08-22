@@ -7,7 +7,7 @@ jest.mock('@react-native-async-storage/async-storage', () => ({ __esModule: true
 
 function Consumer() {
   const settings = useSettings();
-  return <><Text>{settings.t('noLaunches', { lane: settings.t('new').toLowerCase() })}</Text><Text>{settings.t('quoteCheckExactIn', { slippage: '1.00' })}</Text><Text>{settings.t('tradingLocked')}</Text><Text>{settings.t('maxPositions', { count: 2 })}</Text><Text>{settings.t('copyTradeSafety')}</Text><Text>{settings.t('governanceProgress', { trades: 12, days: 3 })}</Text><Text>{settings.t('aiSafety')}</Text><Text>{settings.t('heatmapInclusion', { source: 'rpc', included: 8, excluded: 2 })}</Text><Text>{settings.t('marketIntelSafety')}</Text><Text>{settings.t('rankingEvidence', { source: 'rpc', quality: 'verified', freshness: settings.t('current') })}</Text><Text>{settings.t('walletIntelSafety')}</Text><Text>{settings.t('deviceCandidates', { count: 3 })}</Text><Text>{settings.t('researchSafety')}</Text><Text>{settings.t('operationsEvidence', { source: 'rpc', quality: 'verified', included: 9, excluded: 2 })}</Text><Text>{settings.t('operationsSafety')}</Text><Text>{settings.t('alertHistory', { count: 4, last: settings.t('never') })}</Text><Text>{settings.t('deliveryLedgerBoundary')}</Text><Pressable accessibilityRole="button" accessibilityLabel="Vietnamese" onPress={() => settings.setLanguage('vi')}><Text>{settings.t('discover')}</Text></Pressable></>;
+  return <><Text>{settings.t('noLaunches', { lane: settings.t('new').toLowerCase() })}</Text><Text>{settings.t('quoteCheckExactIn', { slippage: '1.00' })}</Text><Text>{settings.t('tradingLocked')}</Text><Text>{settings.t('maxPositions', { count: 2 })}</Text><Text>{settings.t('copyTradeSafety')}</Text><Text>{settings.t('governanceProgress', { trades: 12, days: 3 })}</Text><Text>{settings.t('aiSafety')}</Text><Text>{settings.t('heatmapInclusion', { source: 'rpc', included: 8, excluded: 2 })}</Text><Text>{settings.t('marketIntelSafety')}</Text><Text>{settings.t('rankingEvidence', { source: 'rpc', quality: 'verified', freshness: settings.t('current') })}</Text><Text>{settings.t('walletIntelSafety')}</Text><Text>{settings.t('deviceCandidates', { count: 3 })}</Text><Text>{settings.t('researchSafety')}</Text><Text>{settings.t('operationsEvidence', { source: 'rpc', quality: 'verified', included: 9, excluded: 2 })}</Text><Text>{settings.t('operationsSafety')}</Text><Text>{settings.t('alertHistory', { count: 4, last: settings.t('never') })}</Text><Text>{settings.t('deliveryLedgerBoundary')}</Text><Text>{settings.t('openToolStatus', { tool: settings.t('topTraders'), status: settings.t('available') })}</Text><Text>{settings.t('privacyAccessibilityLanguages')}</Text><Pressable accessibilityRole="button" accessibilityLabel="Vietnamese" onPress={() => settings.setLanguage('vi')}><Text>{settings.t('discover')}</Text></Pressable></>;
 }
 
 describe('SettingsProvider localization', () => {
@@ -36,6 +36,8 @@ describe('SettingsProvider localization', () => {
     expect(screen.getByText(/không kích hoạt thăm dò/)).toBeTruthy();
     expect(screen.getByText('4 lần kích hoạt · gần nhất chưa bao giờ · đã lưu DB')).toBeTruthy();
     expect(screen.getByText(/đang chờ không phải đã giao/)).toBeTruthy();
+    expect(screen.getByText('Nhà giao dịch hàng đầu khả dụng')).toBeTruthy();
+    expect(screen.getByText('RIÊNG TƯ · TRỢ NĂNG · VI/EN')).toBeTruthy();
     expect(AsyncStorage.setItem).toHaveBeenCalledWith('terminal-dex:settings:v1', expect.stringContaining('"language":"vi"'));
   });
 

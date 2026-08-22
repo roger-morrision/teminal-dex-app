@@ -279,3 +279,14 @@
 - Verification evidence: strict TypeScript and warning-free Expo lint passed; Jest 20 suites / 102 tests passed; Expo Doctor passed 21/21; web production export passed all 22 routes; Android and iOS production bundles passed. Generated exports were removed after verification.
 - Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles.
 - Next priority: resume the requirement-by-requirement audit, especially token-detail drilldowns, transaction safety gate, dynamic state coverage, and device-dependent verification evidence.
+
+## 2026-08-22 — Slice 25: audit-safe More catalog and authority evidence
+
+- Audited the highest-risk execution partial directly against the read-only backend. `/api/swap/build` validates quote shape/freshness but does not decode the returned serialized transaction against quote mints, amounts, user, program allowlists, or writable accounts. `/api/swap/submit` accepts any bounded signed base64 transaction without verified-owner intent binding, explicit confirmation token, idempotency, or replay protection. No independent simulation/decoded-confirmation contract exists. Mobile execution therefore remains correctly locked.
+- Audited token holders and transactions against authoritative routes. The backend exposes bounded token-level holder and observed-transaction collections already rendered by mobile, but no stronger owner/transaction detail resource suitable for a deeper in-app drilldown. External explorer handoff was not invented because it would not satisfy backend-connected detail authority.
+- Found and fixed another localization contradiction: the More catalog still keyed routing and displayed names from English literals. Replaced it with stable route descriptors and typed localized labels/status interpolation for every catalog entry and the Settings privacy/accessibility/language badge.
+- Preserved product names and exact route identities while localizing mobile-owned labels; Track remains visibly disabled because no live tracker contract exists, while every implemented destination retains its direct tab handoff.
+- Expanded Vietnamese tests for catalog labels/status and privacy/accessibility copy.
+- Verification evidence: strict TypeScript and warning-free Expo lint passed; Jest 20 suites / 102 tests passed; Expo Doctor passed 21/21; web production export passed all 22 routes; Android and iOS production bundles passed. Generated exports were removed after verification.
+- Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles.
+- Next priority: continue the audit with dynamic screen-state coverage and remaining hardcoded primary/detail copy; transaction execution and deeper drilldowns stay blocked on new authoritative backend contracts rather than unsafe mobile inference.

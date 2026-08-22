@@ -148,3 +148,14 @@
 - Verification evidence: strict TypeScript and warning-free Expo lint passed; Jest 17 suites / 65 tests passed and exited cleanly; Expo Doctor passed 21/21; web production export passed all 22 routes including `/operations`; Android and iOS production bundles passed.
 - Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles. Generated exports were removed after verification.
 - Next priority: full-screen localization and accessibility audit, followed by offline/recovery and performance/security regression evidence.
+
+## 2026-08-22 — Slice 14: primary-screen localization and accessibility contract
+
+- Re-audited the clean mobile history, durable requirements, Settings persistence contract, every app route, and all React Native interactive primitives. The audit proved translation previously stopped at eight navigation labels and found implicit Pressable semantics on primary screens.
+- Expanded Settings into a typed, interpolation-safe English/Vietnamese catalog with immediate persisted switching and safe English fallback for missing or malformed stored preferences. Dynamic market symbols, addresses, provider provenance, backend errors, and evidence values remain deliberately untranslated.
+- Localized Discover navigation, search, filters, empty/loading/error states and labels; Trenches lanes, launch evidence, metrics, handoff controls, and states; Portfolio ownership/watch-only gates, holdings/PnL sections, controls, and core states; Monitor headings, tabs, observed-feed provenance, and core states; More safety copy/statuses; and every Settings section, security explanation, reset confirmation, and control label.
+- Added explicit roles plus selected, checked, disabled, progress, modal, alert, and summary semantics throughout the audited primary surfaces. Every Pressable in the five tabs and Settings now declares a role, and every TextInput declares an accessible label; provider data and financial boundaries retain exact semantics.
+- Added a shared AsyncStorage Jest boundary, localization tests for live EN-to-VI switching, interpolation, persistence, and malformed-storage fallback, plus a source-level primary-screen regression gate for Pressable roles and TextInput labels.
+- Verification evidence: strict TypeScript and warning-free Expo lint passed; Jest 19 suites / 79 tests passed and exited cleanly; Expo Doctor passed 21/21; web production export passed all 22 routes; Android and iOS production bundles passed.
+- Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles. Generated exports were removed after verification.
+- Remaining localization/accessibility scope is explicit: translate auxiliary tool/detail routes, then verify real screen readers and large dynamic type on Android/iOS hardware or emulators. Next independent code slice: offline/recovery behavior and query-cache policy.

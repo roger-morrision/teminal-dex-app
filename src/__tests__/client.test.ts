@@ -1,4 +1,4 @@
-import { createPausedCopyTradeConfig, createUserAlert, fetchAiPaperReport, fetchAiPlatform, fetchAiRecommendations, fetchAlertDeliveries, fetchClaimMonitor, fetchCopyExecutions, fetchCopyTradeConfigs, fetchCopyTradeHealth, fetchDiscovery, fetchHeatmap, fetchMonitorAlerts, fetchOhlcv, fetchPortfolioAnalytics, fetchSignals, fetchSwapQuote, fetchTokenDetail, fetchTokenPanel, fetchTopTraders, fetchTrenches, fetchUserAlerts, fetchWalletPnl, getApiOrigin, pauseCopyTradeConfig, searchTokens, setUserAlertActive, type CreateCopyTradeInput } from '@/api/client';
+import { createPausedCopyTradeConfig, createUserAlert, fetchAiPaperReport, fetchAiPlatform, fetchAiRecommendations, fetchAlertDeliveries, fetchClaimMonitor, fetchCopyExecutions, fetchCopyTradeConfigs, fetchCopyTradeHealth, fetchDiscovery, fetchHeatmap, fetchMonitorAlerts, fetchOhlcv, fetchPortfolioAnalytics, fetchSignals, fetchSwapQuote, fetchTokenDetail, fetchTokenPanel, fetchTopTraders, fetchTrenches, fetchUserAlerts, fetchWalletHoldings, fetchWalletPnl, getApiOrigin, pauseCopyTradeConfig, searchTokens, setUserAlertActive, type CreateCopyTradeInput } from '@/api/client';
 
 const token = { id: 'pair', symbol: 'DEX', name: 'Terminal', address: 'mint', pairAddress: 'pair', dex: 'raydium', quoteSymbol: 'SOL', price: 1, marketCap: 10, liquidity: 5, volume24h: 4, volume1h: 2, change24h: 3, change1h: 1, txns5m: { buys: 1, sells: 0 }, ageLabel: '1h', ageMinutes: 60 };
 const jsonResponse = (body: unknown, ok = true, status = 200) => ({ ok, status, json: jest.fn().mockResolvedValue(body) }) as unknown as Response;
@@ -94,5 +94,11 @@ describe('backend client routing', () => {
     await fetchSignals({ hours: 24, type: 'Whale Move', cursor: 'opaque_cursor' }); await fetchHeatmap(); const claim = await fetchClaimMonitor();
     expect(jest.mocked(fetch).mock.calls.map((call) => call[0])).toEqual(['https://terminal.example/api/signals?limit=40&hours=24&type=Whale+Move&cursor=opaque_cursor', 'https://terminal.example/api/heatmap', 'https://terminal.example/api/claim-monitor?limit=30']);
     expect(claim.health).toBe('unhealthy'); expect(jest.mocked(fetch).mock.calls.every((call) => !call[1]?.method || call[1]?.method === 'GET')).toBe(true);
+  });
+
+  it('loads only an exact public wallet and verifies response identity', async () => {
+    const address = '11111111111111111111111111111111'; jest.mocked(fetch).mockResolvedValue(jsonResponse({ wallet: { address, tokens: [], totalValueUsd: 0, tokenCount: 0, solBalance: 0, solValueUsd: 0 }, ts: 1 }));
+    await fetchWalletHoldings(address); expect(jest.mocked(fetch).mock.calls[0]?.[0]).toBe(`https://terminal.example/api/wallet/${address}`);
+    await expect(fetchWalletHoldings('111111111111111111111111111111111')).rejects.toThrow('exactly 32 bytes'); expect(fetch).toHaveBeenCalledTimes(1);
   });
 });

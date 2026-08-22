@@ -112,3 +112,15 @@
 - Verification evidence: strict TypeScript and warning-free Expo lint passed; Jest 12 suites / 49 tests passed; Expo Doctor passed 21/21; web production export passed all 19 routes including `/market-intelligence`; Android and iOS production bundles passed.
 - Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles. Generated exports were removed after verification.
 - Next priority: Smart Money and Wallet Tracker using provider/indexed wallet evidence, while preserving verified ownership and no automatic execution boundaries.
+
+## 2026-08-22 — Slice 11: watch-only Wallet Intelligence
+
+- Re-audited the clean mobile state and authoritative backend instructions, non-deprecated Top Traders evidence, deprecated CopyTrade wallet discovery, public wallet holdings aggregation, indexed FIFO PnL, and desktop Smart Money/Wallet Tracker behavior.
+- Activated Smart Money and Wallet Tracker from More through a dedicated watch-only Wallet Intelligence route; no deprecated `/api/copytrade/wallets` call is used.
+- Smart Money filters the real 30-day rankings to backend-classified Smart Money and Whale records, retains source/quality/freshness, and labels PnL, win rate, drawdown, reliability, and best-token results as historical observations rather than expected returns.
+- Added selected-wallet detail from the real `/api/wallet/[address]` and `/api/wallet/[address]/pnl` contracts: SOL balance, enriched holdings, available DEX marks, token-account count, indexed realized FIFO PnL, warnings, and unavailable unrealized PnL remain explicit.
+- Wallet Tracker stores only public addresses and sanitized 40-character labels in AsyncStorage, deduplicates by exact address, caps the list at 50, rejects noncanonical keys before storage/network access, and separates inspect from destructive remove controls. The tracked-wallet key is included in privacy reset.
+- Kept public research distinct from ownership: there is no verify, follow, import/export, CopyTrade create, signing, closing, or transaction submission action on this screen.
+- Verification evidence: strict TypeScript and warning-free Expo lint passed; Jest 14 suites / 55 tests passed; Expo Doctor passed 21/21; web production export passed all 20 routes including `/wallet-intelligence`; Android and iOS production bundles passed.
+- Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles. Generated exports were removed after verification.
+- Next priority: Snipe List and Multicharts using durable local research state and existing real token/chart contracts, without automatic execution.

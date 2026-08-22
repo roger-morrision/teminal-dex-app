@@ -27,11 +27,13 @@ Status legend: `[x]` verified, `[ ]` incomplete, `[~]` intentionally visible but
 - [x] Signals provides filterable 24h/7d signature-backed events with cursor pagination, ingestion/freshness evidence, exact-mint detail handoff, and no export or transaction authority; valid degraded backend evidence remains visible.
 - [x] Heatmap provides trustworthy provider market rows ordered by volume, gain/loss intensity, liquidity, trust warnings, excluded-row counts, freshness, and exact-mint detail handoff.
 - [x] Claim Monitor provides read-only Solana RPC health, confirmed/detected/unpaid claim evidence, first-observed status, signature provenance, and explicit no-claim/no-wallet-action boundaries.
-- [~] Settings provides persistent English/Vietnamese navigation labels, reduced-motion preference, accessible control roles/states, telemetry consent default-off, and privacy reset. Smart Money, Wallet Tracker, Snipe List, standalone Analytics, Multicharts, and Feed Data remain queued; full-screen localization and device screen-reader/dynamic-type audit remain incomplete.
+- [x] Smart Money uses non-deprecated provider/indexed Top Traders evidence, filters only Smart Money/Whale classifications, presents historical PnL/win-rate/drawdown/reliability limitations, and joins public holdings plus indexed realized PnL without copy or follow actions.
+- [x] Wallet Tracker persists at most 50 sanitized, deduplicated public addresses and labels on-device, validates exact Solana keys, shows real backend holdings/prices and indexed PnL limitations, and participates in privacy reset without implying ownership.
+- [~] Settings provides persistent English/Vietnamese navigation labels, reduced-motion preference, accessible control roles/states, telemetry consent default-off, and privacy reset. Snipe List, standalone Analytics, Multicharts, and Feed Data remain queued; full-screen localization and device screen-reader/dynamic-type audit remain incomplete.
 
 ## Verification
 
 - [x] Unit tests for response validation and financial formatting.
-- [~] Component interaction coverage includes accessible token navigation/watchlist controls, Trenches quote handoff, alert financial-input gating, CopyTrade eligibility, AI advisory qualification, hostile input/privacy boundaries, and exact-mint Signal handoff; complete screen-state coverage remains incomplete.
+- [~] Component interaction coverage includes accessible token navigation/watchlist controls, Trenches quote handoff, alert financial-input gating, CopyTrade eligibility, AI advisory qualification, hostile input/privacy boundaries, exact-mint Signal handoff, and distinct tracked-wallet inspect/remove controls; complete screen-state coverage remains incomplete.
 - [~] Android, iOS, and web production bundles pass; Expo native-config introspection proves ATS/cleartext/backup policy and accessibility tests cover key controls, while device runtime, offline/recovery, performance, and full security regression remain incomplete.
 - [ ] Final full requirement and regression audit.

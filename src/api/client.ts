@@ -1,4 +1,4 @@
-import { holdersSchema, narrativeSchema, ohlcvSchema, pairsSchema, riskSchema, smartMoneySchema, tokenDetailSchema, transactionsSchema, trendingSchema, type HoldersResponse, type NarrativeResponse, type OhlcvResponse, type PairsResponse, type RiskResponse, type SmartMoneyResponse, type TokenDetailResponse, type TransactionsResponse, type TrendingResponse } from './schema';
+import { holdersSchema, narrativeSchema, ohlcvSchema, pairsSchema, portfolioAnalyticsSchema, riskSchema, smartMoneySchema, tokenDetailSchema, transactionsSchema, trendingSchema, walletPnlSchema, type HoldersResponse, type NarrativeResponse, type OhlcvResponse, type PairsResponse, type PortfolioAnalyticsResponse, type RiskResponse, type SmartMoneyResponse, type TokenDetailResponse, type TransactionsResponse, type TrendingResponse, type WalletPnlResponse } from './schema';
 
 export type TrendingPeriod = '1h' | '6h' | '24h';
 export type TrendingSort = 'trending' | 'gainers' | 'losers' | 'volume' | 'new';
@@ -73,5 +73,22 @@ export async function fetchOhlcv(address: string, timeframe: '5m' | '15m' | '1h'
   if (!response.ok) throw new ApiError(`Chart request failed (${response.status}).`, response.status);
   const result = ohlcvSchema.safeParse(await response.json());
   if (!result.success) throw new ApiError('Backend returned incompatible OHLCV data.');
+  return result.data;
+}
+
+export async function fetchPortfolioAnalytics(address: string, timeframe: '7d' | '30d' | '90d' | '1y', signal?: AbortSignal): Promise<PortfolioAnalyticsResponse> {
+  const query = new URLSearchParams({ address, timeframe });
+  const response = await fetch(`${getApiOrigin()}/api/analytics/portfolio?${query}`, { credentials: 'include', headers: { Accept: 'application/json' }, signal });
+  if (!response.ok) throw new ApiError(`Portfolio request failed (${response.status}).`, response.status);
+  const result = portfolioAnalyticsSchema.safeParse(await response.json());
+  if (!result.success) throw new ApiError('Backend returned incompatible portfolio analytics.');
+  return result.data;
+}
+
+export async function fetchWalletPnl(address: string, signal?: AbortSignal): Promise<WalletPnlResponse> {
+  const response = await fetch(`${getApiOrigin()}/api/wallet/${encodeURIComponent(address)}/pnl`, { credentials: 'include', headers: { Accept: 'application/json' }, signal });
+  if (!response.ok) throw new ApiError(`Wallet PnL request failed (${response.status}).`, response.status);
+  const result = walletPnlSchema.safeParse(await response.json());
+  if (!result.success) throw new ApiError('Backend returned incompatible wallet PnL evidence.');
   return result.data;
 }

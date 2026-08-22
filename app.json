@@ -9,14 +9,28 @@
     "plugins": [
       "expo-router",
       "expo-status-bar",
-      "expo-font"
+      "expo-font",
+      "expo-secure-store",
+      [
+        "expo-local-authentication",
+        { "faceIDPermission": "Allow Terminal DEX to re-authenticate before showing verified wallet data." }
+      ],
+      "@preeternal/react-native-cookie-manager"
     ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "app.terminaldex.mobile"
     },
     "android": {
-      "package": "app.terminaldex.mobile"
+      "package": "app.terminaldex.mobile",
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": false,
+          "data": [{ "scheme": "terminaldex" }],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+      ]
     },
     "web": {
       "bundler": "metro",

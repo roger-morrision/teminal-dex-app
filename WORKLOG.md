@@ -32,3 +32,16 @@
 - Kept critical limitations adjacent to data: holder sampling, incomplete transaction history, non-guaranteed scoring, probabilistic labels, and reported TVL versus executable depth.
 - Verification evidence: TypeScript and Expo lint passed cleanly; Jest 5 suites / 12 tests passed; Expo Doctor passed 21/21; Expo web export produced all 14 routes with the SVG chart bundle.
 - Next priority: secure wallet/session foundation and read-only portfolio identity flow before any transaction construction.
+
+## 2026-08-22 — Slice 4: secure wallet identity and Portfolio
+
+- Re-audited the clean mobile repo and inspected backend CopyTrade challenge/verification, ownership, wallet, PnL, Portfolio, and analytics contracts.
+- Integrated the current official Solana Mobile Wallet Adapter kit for Android custom development builds; no private key, mnemonic, seed phrase, or signing material enters app storage.
+- Implemented backend ownership challenge signing with credentialed HTTP-only cookie handling and exact wallet confirmation.
+- Stored wallet authorization and verified-session metadata in Expo SecureStore, aligned expiry to the backend's 24-hour cookie, re-locked after one minute backgrounded, and required biometric/device authentication to unlock.
+- Disconnect clears local verification, secure MWA authorization, native app cookies, and wallet authorization. iOS/web explicitly offer watch-only mode because current native MWA support is Android-only.
+- Built Portfolio with verified/watch-only identity labels, provider-backed holdings/allocation/risk, real PnL evidence, explicit unavailable cost basis/unrealized metrics, periods, refresh, and error states.
+- Added custom-development and production EAS profiles, deep-link scheme configuration, secure-store/local-auth/cookie plugins, and Expo dev-client workflow.
+- Verification evidence: strict TypeScript and lint passed; Jest 6 suites / 18 tests passed including expiry, biometric, secure-storage payload, portfolio provenance, and client routing; Expo Doctor passed 21/21; production bundles exported successfully for web (14 routes), Android, and iOS.
+- Known upstream warning: Metro falls back to file resolution for an unexported Noble hashes crypto subpath used transitively by the current Solana wallet stack; all three bundles complete successfully.
+- Next priority: Trenches launch/migration boards and safe trade handoff into a non-executing quote review.

@@ -5,6 +5,8 @@ import { State as MarketIntelligenceState } from "../../app/market-intelligence"
 import { State as OperationsState } from "../../app/operations";
 import { State as ResearchState } from "../../app/research-workspace";
 import { State as WalletIntelligenceState } from "../../app/wallet-intelligence";
+import { State as TrackState } from "../../app/track";
+import { SettingsProvider } from "@/settings/SettingsProvider";
 
 jest.mock("@/security/WalletSessionProvider", () => ({
   useWalletSession: jest.fn(),
@@ -17,19 +19,20 @@ const states = [
   ["operations", OperationsState],
   ["research", ResearchState],
   ["wallet intelligence", WalletIntelligenceState],
+  ["Track", TrackState],
 ] as const;
 
 describe.each(states)("%s dynamic state", (_name, State) => {
   it("announces loading, errors, and empty evidence distinctly", async () => {
-    const screen = await render(<State loading text="Loading evidence" />);
+    const screen = await render(<SettingsProvider><State loading text="Loading evidence" /></SettingsProvider>);
     const loading = screen.getByRole("summary");
     expect(loading.props.accessibilityLiveRegion).toBe("polite");
     expect(loading.props.accessibilityState).toEqual({ busy: true });
 
-    await screen.rerender(<State error text="Provider failed" />);
+    await screen.rerender(<SettingsProvider><State error text="Provider failed" /></SettingsProvider>);
     expect(screen.getByRole("alert")).toBeTruthy();
 
-    await screen.rerender(<State text="No evidence" />);
+    await screen.rerender(<SettingsProvider><State text="No evidence" /></SettingsProvider>);
     expect(
       screen.getByRole("summary").props.accessibilityState,
     ).toBeUndefined();

@@ -159,6 +159,28 @@ export type UserAlert = z.infer<typeof userAlertSchema>;
 export type UserAlertsResponse = z.infer<typeof userAlertsSchema>;
 export type AlertDeliveriesResponse = z.infer<typeof alertDeliveriesSchema>;
 
+const trackTypeSchema = z.enum(['pumpfun_live', 'surge', 'smart_buy', 'smart_take_profit', 'kol_buy', 'kol_take_profit', 'whale_buy', 'whale_sell']);
+export const trackFeedSchema = z.object({
+  notifications: z.array(z.object({
+    id: z.string().max(300), type: trackTypeSchema, title: z.string().max(200), message: z.string().max(1000), tokenAddress: publicKeyString, tokenSymbol: z.string().max(100),
+    wallet: publicKeyString.optional(), amountUsd: z.number().nullable().optional(), confidence: z.number().nullable().optional(), profitEstimateUsd: z.number().nullable().optional(), transactionType: z.string().max(50).optional(),
+    observedAt: z.number().nonnegative(), source: z.string().max(200), dataQuality: z.string().max(200), txHash: z.string().max(200).optional(),
+    market: z.object({ symbol: z.string().max(100).nullable(), imageUrl: z.string().url().nullable(), sourceFetchedAt: z.number().nullable(), freshnessSeconds: z.number().nonnegative().nullable(), priceUsd: z.number().nonnegative().nullable(), marketCap: z.number().nonnegative().nullable(), holders: z.number().int().nonnegative().nullable(), volume1h: z.number().nonnegative().nullable(), change1h: z.number().nullable() }).passthrough(),
+  }).passthrough()).max(100),
+  ts: z.number(), generatedAt: z.string().datetime().optional(),
+  thresholds: z.object({ surgeMinChange1h: z.number(), whaleMinUsd: z.number().nonnegative() }).passthrough().optional(),
+  gates: z.object({ surgeMinLiquidityUsd: z.number().nonnegative(), surgeMinVolume1hUsd: z.number().nonnegative(), surgeMaxDataAgeSeconds: z.number().nonnegative() }).passthrough().optional(),
+  coverage: z.object({
+    pumpfunLive: z.object({ recordCount: z.number().int().nonnegative(), source: z.string(), dataQuality: z.string(), latestObservedAt: z.number().nullable() }).passthrough(),
+    smartMoney: z.object({ recordCount: z.number().int().nonnegative(), source: z.string(), dataQuality: z.string(), latestObservedAt: z.number().nullable() }).passthrough(),
+    whaleTransactions: z.object({ recordCount: z.number().int().nonnegative(), source: z.string(), dataQuality: z.string(), latestObservedAt: z.number().nullable() }).passthrough(),
+    suppressed: z.object({ surge: z.number().int().nonnegative() }).passthrough(),
+  }).passthrough().optional(),
+  error: z.string().max(200).optional(), detail: z.string().max(500).optional(),
+}).passthrough().refine((value) => new Set(value.notifications.map((item) => item.id)).size === value.notifications.length, 'Track event IDs must be unique.');
+export type TrackFeedResponse = z.infer<typeof trackFeedSchema>;
+export type TrackNotification = TrackFeedResponse['notifications'][number];
+
 export const topTraderSchema = z.object({
   rank: z.number().int().positive(), address: publicKeyString, pnlUsd: z.number(), pnlPct: z.number(), winRate: z.number().min(0).max(100),
   trades: z.number().int().nonnegative(), tokenCount: z.number().int().nonnegative().optional(), maxDrawdownPct: z.number().nonnegative().optional(),

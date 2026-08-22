@@ -2,7 +2,7 @@
 
 Audit date: 2026-08-22
 
-Audit maintained through: Slice 35
+Audit maintained through: Slice 36
 
 Backend authority: `C:\Tuan\devApps\TERMINAL_DEX_Intelligent` (read-only)
 
@@ -16,16 +16,16 @@ Completion is intentionally not claimed for requirements that need an absent bac
 
 | Area | Status | Evidence |
 | --- | --- | --- |
-| Foundation, routing, visual system | Verified | Expo Router five-tab shell and all approved auxiliary destinations; 22 static web routes; Moby-inspired dense dark UI without Moby branding or protected assets. |
+| Foundation, routing, visual system | Verified | Expo Router five-tab shell and all approved auxiliary destinations; 23 static web routes; Moby-inspired dense dark UI without Moby branding or protected assets. |
 | Backend contracts and data truthfulness | Verified | Central HTTPS-origin client, exact Solana identity checks, Zod response contracts, explicit degraded/unavailable/provenance states, no synthetic production fallback. |
 | Discovery, Trenches, Portfolio | Verified | Real discovery/search/filter/pagination/watchlist flows, launch lanes and quote handoff, provider-backed holdings and watch-only/ownership/PnL boundaries. |
 | Token intelligence | Verified except execution | Real detail, OHLCV, holders, clusters, transactions, behavior heuristics, provider-derived early buyers, current and historical security evidence, smart money, narrative, and pairs; quote review remains non-executing. |
-| Monitor and alerts | Verified except Track | Indexed observations plus owner-scoped durable rule CRUD/delivery evidence; no connected Track provider exists. |
+| Monitor and alerts | Verified except cursor/social coverage | Indexed observations, owner-scoped durable rule CRUD/delivery evidence, and a bounded deduplicated Track event window with persistent All/Wallet/KOL/X-TG filters and source status; cursor history and authoritative X/TG events remain unavailable. |
 | CopyTrade | Verified read-only/paused | Rankings, verified-owner paused strategy lifecycle, readiness, positions, and execution audit; activation/signing/submission remain absent. |
 | AI and auxiliary intelligence | Verified | Advisory-only AI, public simulation performance/research plus operational, mutation, lease, and cycle-fencing health, execution-disabled governance, signals, heatmap, claims, smart money, wallet tracker, Snipe List, Multicharts, analytics, and feed operations. |
 | Localization, privacy, accessibility | Automated verification passed | Typed English/Vietnamese copy, reduced motion, telemetry default-off, privacy reset, roles/labels/busy/error/empty/retry semantics, and static all-route control audit. |
 | Network and platform hardening | Automated verification passed | React Query online/offline policy, bounded retry behavior, ATS/cleartext/backup configuration, deep-link allowlisting, redaction, Expo Doctor, and web/Android/iOS exports. |
-| Tests and build regression | Verified | TypeScript, Expo lint, 27 Jest suites / 128 tests, Expo Doctor 21/21, 22-route web export, Android export, and iOS export passed on 2026-08-22. |
+| Tests and build regression | Verified | TypeScript, Expo lint, 29 Jest suites / 135 tests, Expo Doctor 21/21, 23-route web export, Android export, and iOS export passed on 2026-08-22. |
 
 ## Remaining blockers
 
@@ -33,7 +33,7 @@ Completion is intentionally not claimed for requirements that need an absent bac
 | --- | --- | --- |
 | Native wallet availability and device validation | Mobile Wallet Adapter is Android-only and requires a development build; iOS/web cannot supply that native contract. | Android development-build tests with a supported wallet, including challenge expiry, biometric re-authentication, revocation, cancellation, and background/restore behavior. |
 | Swap execution | Backend v2 readiness explicitly reports blocked execution. Build/submit still lack a complete decoded-intent, owner-bound confirmation, idempotency, and replay-protection contract suitable for mobile authorization. | Backend readiness green plus adversarial integration tests for decoded instructions/accounts/programs/mints/amounts, simulation, explicit confirmation, owner binding, idempotency, replay rejection, broadcast, and confirmation. |
-| Track destination | No connected live tracker provider/contract is exposed by the backend. | Authoritative provider contract with freshness, lifecycle, failure, privacy, and bounded collection semantics. |
+| Track cursor and social coverage | The backend notification feed exposes one bounded deduplicated window without a cursor and no authoritative X/TG event family. Mobile persists the filters and reports those gaps rather than inferring social events or continuous tracking. | A bounded cursor contract with stable ordering/dedupe semantics plus authoritative X/TG source health and event contracts that distinguish social-only observations from market events. |
 | CopyTrade activation and execution | Readiness remains environment/provider/signature gated and depends on the same incomplete transaction authority boundary. | Full transaction safety gate, explicit verified-owner activation contract, kill switch, idempotency/replay guarantees, and device confirmation tests. |
 | Physical-device accessibility and resilience | Automated semantics and simulated connectivity pass, but no physical-device session was available in this environment. | TalkBack and VoiceOver traversal, large dynamic type, reduced motion, offline/reconnect, background/restore, and representative low/mid-tier performance evidence. |
 

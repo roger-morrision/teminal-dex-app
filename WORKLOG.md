@@ -393,3 +393,14 @@
 - Verification evidence: strict TypeScript and warning-free Expo lint passed; Jest 27 suites / 128 tests passed; Expo Doctor passed 21/21; web production export passed all 22 routes; Android and iOS production bundles passed. Generated exports were removed after verification.
 - Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles.
 - Next priority: continue comparing authoritative backend route families against implemented mobile evidence while retaining transaction/provider and physical-device blockers.
+
+## 2026-08-22 — Slice 36: bounded read-only Track activation
+
+- Re-read backend product acceptance for Track and found the prior blanket blocker stale: `/api/in-app-notifications` now supplies deterministic wallet/KOL/smart/whale/launch observations with source, event time, data quality, market freshness, and bounded dedupe identities, while the existing owner delivery ledger supplies durable delivery outcomes.
+- Activated the More → Track destination and added a dedicated localized read-only route with persistent All/Wallet/KOL/X-TG filters, source-status summaries, bounded event history, exact-mint Token Detail handoff, dedupe IDs, and verified-owner delivery evidence.
+- Kept the remaining gaps explicit: the backend provides a single 100-row bounded window without cursor pagination and no authoritative X/TG event family. The X/TG filter therefore reports unavailable evidence and never infers social events from market activity.
+- Added a fail-closed Track schema with exact token/wallet identities, unique bounded event IDs, bounded text/market evidence, coverage/threshold contracts, and valid degraded-response handling. The client performs GET only; no subscription, follow, dispatch, alert mutation, or transaction action exists.
+- Added sanitized filter persistence and privacy-reset participation, plus tests for corrupted/unsupported filters, GET-only routing, duplicate/oversized/malformed evidence, source/quality/dedupe rendering, exact-mint handoff, and Track loading/error/empty accessibility states through the real Settings boundary.
+- Verification evidence: strict TypeScript and warning-free Expo lint passed; Jest 29 suites / 135 tests passed; Expo Doctor passed 21/21; web production export passed all 23 routes including `/track`; Android and iOS production bundles passed. Generated exports were removed after verification.
+- Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles.
+- Next priority: continue closing independently actionable requirements; Track cursor/X-TG, transaction execution, native-device, and physical-device evidence remain explicit external-contract blockers.

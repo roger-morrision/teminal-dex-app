@@ -5,7 +5,7 @@ import { colors, spacing } from "@/theme";
 import { useSettings } from "@/settings/SettingsProvider";
 const groups = [
   { id: "ai", key: "aiIntelligence", pathname: "/ai" },
-  { id: "track", key: "track" },
+  { id: "track", key: "track", pathname: "/track" },
   { id: "copytrade", key: "copyTrade", pathname: "/copytrade" },
   { id: "top-traders", key: "topTraders", pathname: "/copytrade" },
   {

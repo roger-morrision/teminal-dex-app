@@ -7,7 +7,7 @@ jest.mock('@react-native-async-storage/async-storage', () => ({ __esModule: true
 
 function Consumer() {
   const settings = useSettings();
-  return <><Text>{settings.t('noLaunches', { lane: settings.t('new').toLowerCase() })}</Text><Text>{settings.t('quoteCheckExactIn', { slippage: '1.00' })}</Text><Text>{settings.t('tradingLocked')}</Text><Text>{settings.t('maxPositions', { count: 2 })}</Text><Text>{settings.t('copyTradeSafety')}</Text><Pressable accessibilityRole="button" accessibilityLabel="Vietnamese" onPress={() => settings.setLanguage('vi')}><Text>{settings.t('discover')}</Text></Pressable></>;
+  return <><Text>{settings.t('noLaunches', { lane: settings.t('new').toLowerCase() })}</Text><Text>{settings.t('quoteCheckExactIn', { slippage: '1.00' })}</Text><Text>{settings.t('tradingLocked')}</Text><Text>{settings.t('maxPositions', { count: 2 })}</Text><Text>{settings.t('copyTradeSafety')}</Text><Text>{settings.t('governanceProgress', { trades: 12, days: 3 })}</Text><Text>{settings.t('aiSafety')}</Text><Pressable accessibilityRole="button" accessibilityLabel="Vietnamese" onPress={() => settings.setLanguage('vi')}><Text>{settings.t('discover')}</Text></Pressable></>;
 }
 
 describe('SettingsProvider localization', () => {
@@ -24,6 +24,8 @@ describe('SettingsProvider localization', () => {
     expect(screen.getByText(/Giao dịch bị khóa/)).toBeTruthy();
     expect(screen.getByText('tối đa 2 vị thế')).toBeTruthy();
     expect(screen.getByText(/Di động tạo chiến lược ở trạng thái tạm dừng/)).toBeTruthy();
+    expect(screen.getByText('12/500 giao dịch đã đóng · 3/60 ngày vận hành')).toBeTruthy();
+    expect(screen.getByText(/Mọi khuyến nghị chỉ mang tính tham khảo/)).toBeTruthy();
     expect(AsyncStorage.setItem).toHaveBeenCalledWith('terminal-dex:settings:v1', expect.stringContaining('"language":"vi"'));
   });
 

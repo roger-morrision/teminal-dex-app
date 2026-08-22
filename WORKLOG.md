@@ -207,3 +207,15 @@
 - Verification evidence: strict TypeScript and warning-free Expo lint passed; Jest 20 suites / 92 tests passed; Expo Doctor passed 21/21; web production export passed all 22 routes; Android and iOS production bundles passed. Generated exports were removed after verification.
 - Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles.
 - Next priority: localize and audit AI Intelligence, then continue through the remaining auxiliary research/operations screens; real-device screen-reader/dynamic-type/connectivity/performance verification remains device-dependent.
+
+## 2026-08-22 — Slice 19: localized execution-disabled AI Intelligence
+
+- Re-established the clean mobile status/history, requirements, tests, AI runtime schemas, and backend instructions before auditing the advisory, public paper-simulation, and owner-scoped governance route.
+- Localized all mobile-owned AI headings, tabs, execution-off safety disclosure, advisory evidence labels and qualification reasons, outcome summaries, paper KPIs, simulation ledgers, live-readiness gate, empty/loading states, governance progress, evidence counts, wallet gate, and unavailable states in typed English and Vietnamese.
+- Preserved exact dynamic evidence: token/model identity, provider families, backend category/status, readiness notes/check names, exit reasons, candidate lifecycle/status, phase titles/statuses, blockers, and backend errors remain untranslated. Runtime schemas still independently reject recommendation execution, non-simulation paper mode, disabled kill switches, or enabled Phase 31 execution.
+- Added explicit labels and selected/disabled/busy semantics to AI tabs, recommendation navigation, unlock, and verify controls; added summary/progress/alert semantics to execution state, safety disclosure, simulation/readiness/governance evidence, load states, and wallet errors.
+- Allowed KPI cards to grow from a safe minimum width under longer Vietnamese or larger system text instead of retaining a rigid three-column-only footprint.
+- Wrapped RecommendationCard tests in the real settings boundary, expanded Vietnamese localization tests for governance interpolation and advisory safety copy, and added AI to the source-level Pressable/TextInput audit. Existing tests still prove expired evidence is visibly disqualified and no execution action is presented.
+- Verification evidence: strict TypeScript and warning-free Expo lint passed; Jest 20 suites / 94 tests passed; Expo Doctor passed 21/21; web production export passed all 22 routes; Android and iOS production bundles passed. Generated exports were removed after verification.
+- Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles.
+- Next priority: localize and audit Market Intelligence plus Wallet Intelligence, then Research Workspace and Operations; real-device screen-reader/dynamic-type/connectivity/performance verification remains device-dependent.

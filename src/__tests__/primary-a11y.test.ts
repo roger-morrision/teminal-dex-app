@@ -6,6 +6,7 @@ const primaryScreens = [
   'app/(tabs)/portfolio.tsx', 'app/(tabs)/more.tsx', 'app/settings.tsx',
   'app/token/[address].tsx', 'app/trade/[address].tsx',
   'app/copytrade.tsx',
+  'app/ai.tsx',
 ];
 
 describe('audited-screen accessibility contract', () => {

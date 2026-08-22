@@ -2,6 +2,10 @@ import { fireEvent, render } from "@testing-library/react-native";
 import { State as DiscoverState } from "../../app/(tabs)/discover";
 import { State as TrenchesState } from "../../app/(tabs)/trenches";
 
+jest.mock("@/security/WalletSessionProvider", () => ({
+  useWalletSession: jest.fn(),
+}));
+
 describe("primary market dynamic states", () => {
   it("announces Discover loading as a polite busy summary", async () => {
     const screen = await render(

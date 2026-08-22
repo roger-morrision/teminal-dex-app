@@ -98,6 +98,16 @@ const en = {
   watchlistEmpty: "Your watchlist is empty",
   noMatchingTokens: "No matching tokens",
   watchlistHint: "Star tokens from any Discovery list to keep them here.",
+  watchlistMarketEvidence: "{source} · {quality} · observed {freshness}",
+  watchlistAlertsVerify:
+    "Verify and unlock your wallet to read owner alert status.",
+  watchlistAlertsLoading: "Loading durable alert status…",
+  watchlistAlertsUnavailable: "Alert status unavailable: {error}",
+  watchlistAlertStatus:
+    "Alerts {active}/{total} active · {triggered} triggers · latest delivery {delivery}",
+  watchlistNoAlerts: "No durable owner alert is configured for this token.",
+  watchlistStorageUnavailable:
+    "Watchlist changed on this screen, but this device could not save it.",
   filtersHint: "Adjust filters, search, or choose another market window.",
   marketFilters: "Market filters",
   closeFilters: "Close market filters",
@@ -899,6 +909,16 @@ const vi: { [K in TranslationKey]: string } = {
   watchlistEmpty: "Danh sách theo dõi đang trống",
   noMatchingTokens: "Không có token phù hợp",
   watchlistHint: "Đánh dấu token từ danh sách Khám phá để lưu tại đây.",
+  watchlistMarketEvidence: "{source} · {quality} · quan sát {freshness}",
+  watchlistAlertsVerify:
+    "Xác minh và mở khóa ví để đọc trạng thái cảnh báo của chủ sở hữu.",
+  watchlistAlertsLoading: "Đang tải trạng thái cảnh báo bền vững…",
+  watchlistAlertsUnavailable: "Không có trạng thái cảnh báo: {error}",
+  watchlistAlertStatus:
+    "Cảnh báo {active}/{total} đang bật · {triggered} lần kích hoạt · phân phối gần nhất {delivery}",
+  watchlistNoAlerts: "Không có cảnh báo bền vững của chủ sở hữu cho token này.",
+  watchlistStorageUnavailable:
+    "Danh sách theo dõi đã đổi trên màn hình này nhưng thiết bị không thể lưu.",
   filtersHint: "Điều chỉnh bộ lọc, tìm kiếm hoặc chọn khung thị trường khác.",
   marketFilters: "Bộ lọc thị trường",
   closeFilters: "Đóng bộ lọc thị trường",

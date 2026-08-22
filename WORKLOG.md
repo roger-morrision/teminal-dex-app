@@ -439,3 +439,14 @@
 - Verification evidence: strict TypeScript and warning-free Expo lint passed; Jest 33 suites / 148 tests passed; Expo Doctor passed 21/21; web production export passed all 23 routes; Android and iOS production bundles passed. Generated exports were removed after verification.
 - Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles.
 - Next priority: audit durable watchlist/alert-status acceptance and Monitor table parity for independently actionable mobile gaps; execution, unsupported CopyTrade fields, native-wallet/device, Track cursor/X-TG, and physical-device evidence remain explicit blockers.
+
+## 2026-08-22 — Slice 40: durable Watchlist status surface
+
+- Re-audited Watchlist acceptance and found saved addresses were filtered against only the currently loaded Discovery page, so a valid saved token could disappear after reload or market-window changes. The selected Watchlist window also was not durable.
+- Added bounded exact-address storage for at most 100 validated public token snapshots and the supported 1h/6h/24h window. Current live feed rows override stored snapshots when available; validated snapshots provide a truthful durable fallback without fabricating market records.
+- Extended every saved row with source, data quality, observation age, and verified-owner exact-token alert status joined to the latest durable delivery outcome/reason. Alert and delivery queries remain owner-scoped and are not attempted until the wallet session is verified and unlocked.
+- Watchlist add/remove remains idempotent and now persists the address and snapshot together. Failed device writes produce a visible accessible warning, and all new non-secret keys participate in privacy reset.
+- Made TypeScript's ambient Jest/React types explicit and isolated the existing Market state test from the native wallet module so clean dependency layouts retain deterministic static and Jest gates.
+- Verification evidence: strict TypeScript and direct warning-free ESLint passed; Jest 36 suites / 154 tests passed; Expo Doctor passed 21/21; web production export passed all 23 routes; Android and iOS production bundles passed. Generated exports and temporary package-manager artifacts were removed after verification.
+- Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles.
+- Next priority: audit Monitor table parity and remaining independently actionable acceptance gaps; transaction execution, unsupported CopyTrade fields, native-wallet/device, Track cursor/X-TG, and physical-device evidence remain explicit blockers.

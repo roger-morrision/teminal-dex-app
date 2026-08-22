@@ -17,21 +17,33 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
   fetchDiscovery,
+  fetchAlertDeliveries,
+  fetchUserAlerts,
   searchTokens,
   type DiscoveryFilters,
   type DiscoveryMode,
   type TrendingPeriod,
 } from "@/api/client";
-import type { MarketToken } from "@/api/schema";
+import type {
+  AlertDeliveriesResponse,
+  MarketToken,
+  UserAlert,
+} from "@/api/schema";
 import { TokenRow } from "@/components/TokenRow";
 import { BusyIndicator } from "@/components/BusyIndicator";
 import {
   defaultFilters,
   loadFilters,
   loadWatchlist,
+  loadWatchlistSnapshots,
+  loadWatchlistWindow,
   saveFilters,
   saveWatchlist,
+  saveWatchlistSnapshots,
+  saveWatchlistWindow,
 } from "@/store/discovery";
+import { watchlistAlertStatus } from "@/lib/watchlist-status";
+import { useWalletSession } from "@/security/WalletSessionProvider";
 import { useSettings } from "@/settings/SettingsProvider";
 import { colors, spacing } from "@/theme";
 
@@ -74,6 +86,7 @@ function useDebouncedValue(value: string, delay = 350) {
 export default function DiscoverScreen() {
   const router = useRouter();
   const { t } = useSettings();
+  const wallet = useWalletSession();
   const [period, setPeriod] = useState<TrendingPeriod>("24h");
   const [mode, setMode] = useState<DiscoveryMode>("trending");
   const [search, setSearch] = useState("");
@@ -82,14 +95,27 @@ export default function DiscoverScreen() {
     useState<DiscoveryFilters>(defaultFilters);
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [watchlist, setWatchlist] = useState<string[]>([]);
+  const [watchSnapshots, setWatchSnapshots] = useState<
+    Record<string, MarketToken>
+  >({});
+  const [watchStorageError, setWatchStorageError] = useState<
+    "list" | "window" | null
+  >(null);
   const debouncedSearch = useDebouncedValue(search.trim());
 
   useEffect(() => {
-    void Promise.all([loadWatchlist(), loadFilters()]).then(
-      ([storedWatchlist, storedFilters]) => {
+    void Promise.all([
+      loadWatchlist(),
+      loadFilters(),
+      loadWatchlistSnapshots(),
+      loadWatchlistWindow(),
+    ]).then(
+      ([storedWatchlist, storedFilters, storedSnapshots, storedWindow]) => {
         setWatchlist(storedWatchlist);
         setFilters(storedFilters);
         setDraftFilters(storedFilters);
+        setWatchSnapshots(storedSnapshots);
+        setPeriod(storedWindow);
       },
     );
   }, []);
@@ -118,6 +144,17 @@ export default function DiscoverScreen() {
     queryFn: ({ signal }) => searchTokens(debouncedSearch, signal),
     enabled: debouncedSearch.length >= 2,
   });
+  const authorized = Boolean(wallet.session && !wallet.locked);
+  const alerts = useQuery({
+    queryKey: ["watchlist-alerts"],
+    queryFn: ({ signal }) => fetchUserAlerts(signal),
+    enabled: mode === "watchlist" && authorized,
+  });
+  const deliveries = useQuery({
+    queryKey: ["watchlist-deliveries"],
+    queryFn: ({ signal }) => fetchAlertDeliveries(signal),
+    enabled: mode === "watchlist" && authorized,
+  });
 
   const feedRows = useMemo(() => {
     const seen = new Set<string>();
@@ -125,11 +162,24 @@ export default function DiscoverScreen() {
       (token) => !seen.has(token.address) && Boolean(seen.add(token.address)),
     );
   }, [feed.data]);
+  const currentByAddress = useMemo(
+    () => new Map(feedRows.map((token) => [token.address, token])),
+    [feedRows],
+  );
+  const watchRows = useMemo(
+    () =>
+      watchlist
+        .map(
+          (address) => currentByAddress.get(address) ?? watchSnapshots[address],
+        )
+        .filter((token): token is MarketToken => Boolean(token)),
+    [currentByAddress, watchSnapshots, watchlist],
+  );
   const rows =
     debouncedSearch.length >= 2
       ? (remoteSearch.data?.tokens ?? [])
       : mode === "watchlist"
-        ? feedRows.filter((token) => watchlist.includes(token.address))
+        ? watchRows
         : feedRows;
   const current = debouncedSearch.length >= 2 ? remoteSearch : feed;
   const firstPage = feed.data?.pages[0];
@@ -139,12 +189,26 @@ export default function DiscoverScreen() {
     Boolean(filters.minMarketCap),
   ].filter(Boolean).length;
 
-  function toggleWatch(address: string) {
-    const next = watchlist.includes(address)
-      ? watchlist.filter((item) => item !== address)
-      : [address, ...watchlist].slice(0, 100);
+  function toggleWatch(token: MarketToken) {
+    const removing = watchlist.includes(token.address);
+    const next = removing
+      ? watchlist.filter((item) => item !== token.address)
+      : [token.address, ...watchlist].slice(0, 100);
+    const nextSnapshots = { ...watchSnapshots };
+    if (removing) delete nextSnapshots[token.address];
+    else nextSnapshots[token.address] = token;
     setWatchlist(next);
-    void saveWatchlist(next);
+    setWatchSnapshots(nextSnapshots);
+    void Promise.all([
+      saveWatchlist(next),
+      saveWatchlistSnapshots(nextSnapshots),
+    ]).then(
+      () =>
+        setWatchStorageError((current) =>
+          current === "list" ? null : current,
+        ),
+      () => setWatchStorageError("list"),
+    );
   }
   function applyFilters() {
     setFilters(draftFilters);
@@ -168,14 +232,28 @@ export default function DiscoverScreen() {
     <SafeAreaView style={styles.safe} edges={["top"]}>
       <FlatList
         data={rows}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) =>
+          mode === "watchlist" ? item.address : item.id
+        }
         renderItem={({ item }) => (
-          <TokenRow
-            token={item}
-            onPress={() => openToken(item)}
-            watched={watchlist.includes(item.address)}
-            onToggleWatch={() => toggleWatch(item.address)}
-          />
+          <View>
+            <TokenRow
+              token={item}
+              onPress={() => openToken(item)}
+              watched={watchlist.includes(item.address)}
+              onToggleWatch={() => toggleWatch(item)}
+            />
+            {mode === "watchlist" ? (
+              <WatchlistEvidence
+                token={item}
+                authorized={authorized}
+                loading={alerts.isLoading || deliveries.isLoading}
+                alerts={alerts.data?.data ?? []}
+                deliveries={deliveries.data?.data ?? []}
+                error={alerts.error?.message ?? deliveries.error?.message}
+              />
+            ) : null}
+          </View>
         )}
         refreshControl={
           <RefreshControl
@@ -266,6 +344,14 @@ export default function DiscoverScreen() {
                     onPress={() => {
                       setMode(item.id);
                       setSearch("");
+                      if (item.id === "watchlist")
+                        void saveWatchlistWindow(period).then(
+                          () =>
+                            setWatchStorageError((current) =>
+                              current === "window" ? null : current,
+                            ),
+                          () => setWatchStorageError("window"),
+                        );
                     }}
                     style={[styles.pill, mode === item.id && styles.activePill]}
                   >
@@ -288,7 +374,17 @@ export default function DiscoverScreen() {
                   accessibilityRole="radio"
                   accessibilityLabel={t("selectPeriod", { period: item })}
                   accessibilityState={{ checked: period === item }}
-                  onPress={() => setPeriod(item)}
+                  onPress={() => {
+                    setPeriod(item);
+                    if (mode === "watchlist")
+                      void saveWatchlistWindow(item).then(
+                        () =>
+                          setWatchStorageError((current) =>
+                            current === "window" ? null : current,
+                          ),
+                        () => setWatchStorageError("window"),
+                      );
+                  }}
                 >
                   <Text
                     style={[
@@ -330,6 +426,11 @@ export default function DiscoverScreen() {
                   : (firstPage?.source ?? t("marketFeed"))}
               </Text>
             </View>
+            {mode === "watchlist" && watchStorageError ? (
+              <Text accessibilityRole="alert" style={styles.watchWarning}>
+                {t("watchlistStorageUnavailable")}
+              </Text>
+            ) : null}
           </View>
         }
         ListEmptyComponent={
@@ -377,6 +478,69 @@ export default function DiscoverScreen() {
       />
     </SafeAreaView>
   );
+}
+
+export function WatchlistEvidence({
+  token,
+  authorized,
+  loading,
+  alerts,
+  deliveries,
+  error,
+}: {
+  token: MarketToken;
+  authorized: boolean;
+  loading: boolean;
+  alerts: UserAlert[];
+  deliveries: AlertDeliveriesResponse["data"];
+  error?: string;
+}) {
+  const { t } = useSettings();
+  const status = watchlistAlertStatus(token.address, alerts, deliveries);
+  return (
+    <View accessibilityRole="summary" style={styles.watchEvidence}>
+      <Text style={styles.watchEvidenceText}>
+        {t("watchlistMarketEvidence", {
+          source: token.source ?? t("sourceUnavailable"),
+          quality: token.dataQuality ?? t("qualityUnavailable"),
+          freshness: token.sourceFetchedAt
+            ? relativeAge(token.sourceFetchedAt, t)
+            : t("freshnessUnavailable"),
+        })}
+      </Text>
+      <Text style={styles.watchEvidenceText}>
+        {!authorized
+          ? t("watchlistAlertsVerify")
+          : loading
+            ? t("watchlistAlertsLoading")
+            : error
+              ? t("watchlistAlertsUnavailable", { error })
+              : status.total
+                ? t("watchlistAlertStatus", {
+                    active: status.active,
+                    total: status.total,
+                    triggered: status.triggered,
+                    delivery: status.latestDelivery ?? t("noDeliveryEvidence"),
+                  })
+                : t("watchlistNoAlerts")}
+      </Text>
+      {authorized && status.latestReason ? (
+        <Text style={styles.watchWarning}>{status.latestReason}</Text>
+      ) : null}
+    </View>
+  );
+}
+
+function relativeAge(
+  timestamp: number,
+  t: ReturnType<typeof useSettings>["t"],
+) {
+  const seconds = Math.max(0, Math.floor((Date.now() - timestamp) / 1000));
+  return seconds < 60
+    ? t("secondsAgo", { count: seconds })
+    : seconds < 3600
+      ? t("minutesAgo", { count: Math.floor(seconds / 60) })
+      : t("hoursAgo", { count: Math.floor(seconds / 3600) });
 }
 
 export function State({
@@ -633,6 +797,22 @@ const styles = StyleSheet.create({
   filterActive: { backgroundColor: colors.accent, borderColor: colors.accent },
   filterText: { color: colors.muted, fontSize: 10, fontWeight: "800" },
   filterTextActive: { color: colors.background },
+  watchEvidence: {
+    marginHorizontal: spacing.lg,
+    marginTop: -2,
+    marginBottom: spacing.sm,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+    borderWidth: 1,
+    borderTopWidth: 0,
+    borderColor: colors.border,
+    borderBottomLeftRadius: 10,
+    borderBottomRightRadius: 10,
+    backgroundColor: colors.surface,
+    gap: 3,
+  },
+  watchEvidenceText: { color: colors.muted, fontSize: 9 },
+  watchWarning: { color: colors.warning, fontSize: 9 },
   source: { color: colors.muted, fontSize: 9, flex: 1, textAlign: "right" },
   state: {
     flex: 1,

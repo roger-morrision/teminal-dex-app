@@ -1,44 +1,719 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Ionicons } from '@expo/vector-icons';
-import { useQuery } from '@tanstack/react-query';
-import { useEffect, useMemo, useState } from 'react';
-import { ActivityIndicator, Pressable, RefreshControl, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { fetchPortfolioAnalytics, fetchWalletPnl } from '@/api/client';
-import { compactUsd } from '@/lib/format';
-import { isSolanaAddress } from '@/security/input';
-import { useWalletSession } from '@/security/WalletSessionProvider';
-import { useSettings } from '@/settings/SettingsProvider';
-import { colors, spacing } from '@/theme';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Ionicons } from "@expo/vector-icons";
+import { useQuery } from "@tanstack/react-query";
+import { useEffect, useMemo, useState } from "react";
+import {
+  ActivityIndicator,
+  Pressable,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { fetchPortfolioAnalytics, fetchWalletPnl } from "@/api/client";
+import { compactUsd } from "@/lib/format";
+import { isSolanaAddress } from "@/security/input";
+import { useWalletSession } from "@/security/WalletSessionProvider";
+import { useSettings } from "@/settings/SettingsProvider";
+import { colors, spacing } from "@/theme";
 
-const WATCH_KEY = 'terminal-dex:watch-only-wallet:v1';
-const periods = ['7d', '30d', '90d', '1y'] as const;
+const WATCH_KEY = "terminal-dex:watch-only-wallet:v1";
+const periods = ["7d", "30d", "90d", "1y"] as const;
 
 export default function PortfolioScreen() {
-  const wallet = useWalletSession(); const { t } = useSettings(); const [watchAddress, setWatchAddress] = useState(''); const [draft, setDraft] = useState(''); const [period, setPeriod] = useState<(typeof periods)[number]>('30d');
-  useEffect(() => { void AsyncStorage.getItem(WATCH_KEY).then((value) => { if (isSolanaAddress(value)) { setWatchAddress(value); setDraft(value); } }); }, []);
-  const verifiedAddress = wallet.session && !wallet.locked ? wallet.session.wallet : null; const address = verifiedAddress ?? watchAddress; const valid = isSolanaAddress(address);
-  const analytics = useQuery({ queryKey: ['portfolio', address, period], queryFn: ({ signal }) => fetchPortfolioAnalytics(address, period, signal), enabled: valid });
-  const pnl = useQuery({ queryKey: ['wallet-pnl', address], queryFn: ({ signal }) => fetchWalletPnl(address, signal), enabled: valid });
-  const refreshing = analytics.isRefetching || pnl.isRefetching; const holdings = analytics.data?.data.holdings ?? [];
-  const allocations = useMemo(() => Object.entries(analytics.data?.data.allocation ?? {}).sort((a, b) => b[1] - a[1]).slice(0, 8), [analytics.data]);
+  const wallet = useWalletSession();
+  const { t } = useSettings();
+  const [watchAddress, setWatchAddress] = useState("");
+  const [draft, setDraft] = useState("");
+  const [period, setPeriod] = useState<(typeof periods)[number]>("30d");
+  useEffect(() => {
+    void AsyncStorage.getItem(WATCH_KEY).then((value) => {
+      if (isSolanaAddress(value)) {
+        setWatchAddress(value);
+        setDraft(value);
+      }
+    });
+  }, []);
+  const verifiedAddress =
+    wallet.session && !wallet.locked ? wallet.session.wallet : null;
+  const address = verifiedAddress ?? watchAddress;
+  const valid = isSolanaAddress(address);
+  const analytics = useQuery({
+    queryKey: ["portfolio", address, period],
+    queryFn: ({ signal }) => fetchPortfolioAnalytics(address, period, signal),
+    enabled: valid,
+  });
+  const pnl = useQuery({
+    queryKey: ["wallet-pnl", address],
+    queryFn: ({ signal }) => fetchWalletPnl(address, signal),
+    enabled: valid,
+  });
+  const refreshing = analytics.isRefetching || pnl.isRefetching;
+  const holdings = analytics.data?.data.holdings ?? [];
+  const allocations = useMemo(
+    () =>
+      Object.entries(analytics.data?.data.allocation ?? {})
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 8),
+    [analytics.data],
+  );
 
-  function saveWatchOnly() { const value = draft.trim(); if (!isSolanaAddress(value)) return; setWatchAddress(value); void AsyncStorage.setItem(WATCH_KEY, value); }
-  function clearWatchOnly() { setWatchAddress(''); setDraft(''); void AsyncStorage.removeItem(WATCH_KEY); }
-  if (wallet.session && wallet.locked) return <SafeAreaView style={styles.safe}><View style={styles.gate}><View style={styles.gateIcon}><Ionicons name="lock-closed" size={28} color={colors.accent} /></View><Text accessibilityRole="header" style={styles.gateTitle}>{t('portfolioLocked')}</Text><Text style={styles.gateText}>{t('portfolioLockedHint')}</Text><Action label={wallet.busy ? t('unlocking') : t('unlockPortfolio')} onPress={wallet.unlock} disabled={wallet.busy} />{wallet.error ? <Text accessibilityRole="alert" style={styles.error}>{wallet.error}</Text> : null}<Pressable accessibilityRole="button" accessibilityLabel={t('revokeSession')} onPress={wallet.disconnect}><Text style={styles.link}>{t('revokeSession')}</Text></Pressable></View></SafeAreaView>;
+  function saveWatchOnly() {
+    const value = draft.trim();
+    if (!isSolanaAddress(value)) return;
+    setWatchAddress(value);
+    void AsyncStorage.setItem(WATCH_KEY, value);
+  }
+  function clearWatchOnly() {
+    setWatchAddress("");
+    setDraft("");
+    void AsyncStorage.removeItem(WATCH_KEY);
+  }
+  if (wallet.session && wallet.locked)
+    return (
+      <SafeAreaView style={styles.safe}>
+        <View style={styles.gate}>
+          <View style={styles.gateIcon}>
+            <Ionicons name="lock-closed" size={28} color={colors.accent} />
+          </View>
+          <Text accessibilityRole="header" style={styles.gateTitle}>
+            {t("portfolioLocked")}
+          </Text>
+          <Text style={styles.gateText}>{t("portfolioLockedHint")}</Text>
+          <Action
+            label={wallet.busy ? t("unlocking") : t("unlockPortfolio")}
+            onPress={wallet.unlock}
+            disabled={wallet.busy}
+          />
+          {wallet.error ? (
+            <Text accessibilityRole="alert" style={styles.error}>
+              {wallet.error}
+            </Text>
+          ) : null}
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={t("revokeSession")}
+            onPress={wallet.disconnect}
+          >
+            <Text style={styles.link}>{t("revokeSession")}</Text>
+          </Pressable>
+        </View>
+      </SafeAreaView>
+    );
 
-  return <SafeAreaView style={styles.safe} edges={['top']}><ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { void analytics.refetch(); void pnl.refetch(); }} tintColor={colors.accent} />} contentContainerStyle={styles.content}>
-    <View style={styles.header}><View><Text style={styles.eyebrow}>TERMINAL DEX</Text><Text accessibilityRole="header" style={styles.title}>{t('portfolio')}</Text></View>{verifiedAddress ? <View accessibilityRole="summary" style={styles.verified}><Ionicons name="shield-checkmark" size={13} color={colors.accent} /><Text style={styles.verifiedText}>{t('ownershipVerified')}</Text></View> : null}</View>
-    {!verifiedAddress ? <View style={styles.connectCard}><Text style={styles.cardTitle}>{t('connectSecurely')}</Text><Text style={styles.hint}>{t('walletSafety')}</Text><Action label={wallet.busy ? t('openingWallet') : t('connectVerify')} onPress={wallet.connectAndVerify} disabled={wallet.busy} />{wallet.error ? <Text accessibilityRole="alert" style={styles.error}>{wallet.error}</Text> : null}<View style={styles.divider}><View style={styles.dividerLine} /><Text style={styles.dividerText}>{t('orWatchOnly')}</Text><View style={styles.dividerLine} /></View><View style={styles.inputRow}><TextInput accessibilityLabel={t('watchAddress')} value={draft} onChangeText={setDraft} placeholder={t('walletPlaceholder')} placeholderTextColor={colors.muted} autoCapitalize="none" autoCorrect={false} style={styles.input} /><Pressable accessibilityRole="button" accessibilityLabel={t('loadWatchWallet')} accessibilityState={{ disabled: !isSolanaAddress(draft.trim()) }} onPress={saveWatchOnly} disabled={!isSolanaAddress(draft.trim())} style={[styles.load, !isSolanaAddress(draft.trim()) && styles.disabled]}><Text style={styles.loadText}>{t('load')}</Text></Pressable></View><Text style={styles.watchNote}>{t('watchOnlyHint')}</Text></View> : <View style={styles.identityRow}><View><Text style={styles.identityLabel}>{t('verifiedWallet')}</Text><Text style={styles.walletAddress}>{short(verifiedAddress)}</Text></View><Pressable accessibilityRole="button" accessibilityLabel={t('disconnectRevoke')} onPress={wallet.disconnect}><Text style={styles.disconnect}>{t('disconnectRevoke')}</Text></Pressable></View>}
-    {watchAddress && !verifiedAddress ? <View style={styles.identityRow}><View><Text style={styles.identityLabel}>{t('watchOnly')}</Text><Text style={styles.walletAddress}>{short(watchAddress)}</Text></View><Pressable accessibilityRole="button" accessibilityLabel={t('remove')} onPress={clearWatchOnly}><Text style={styles.disconnect}>{t('remove')}</Text></Pressable></View> : null}
-    {valid ? <><View style={styles.periods}>{periods.map((item) => <Pressable key={item} accessibilityRole="radio" accessibilityLabel={t('selectPeriod', { period: item })} accessibilityState={{ checked: period === item }} onPress={() => setPeriod(item)} style={[styles.period, period === item && styles.activePeriod]}><Text style={[styles.periodText, period === item && styles.activePeriodText]}>{item}</Text></Pressable>)}</View>{analytics.isLoading ? <State loading text={t('loadingHoldings')} /> : analytics.isError ? <State text={analytics.error.message} action={t('retry')} onAction={() => analytics.refetch()} /> : analytics.data ? <><View style={styles.summary}><Summary label={t('portfolioValue')} value={compactUsd(analytics.data.data.totalValueUsd)} /><Summary label={t('tokens')} value={String(analytics.data.data.tokenCount)} /><Summary label={t('weightedRisk')} value={analytics.data.data.riskScore == null ? '—' : analytics.data.data.riskScore.toFixed(0)} /></View><Text style={styles.sectionTitle}>{t('allocation')}</Text><View style={styles.card}>{allocations.length ? allocations.map(([symbol, pct]) => <View key={symbol} style={styles.allocation}><View style={styles.allocationLabels}><Text style={styles.rowTitle}>{symbol}</Text><Text style={styles.rowValue}>{pct.toFixed(1)}%</Text></View><View accessibilityRole="progressbar" accessibilityValue={{ min: 0, max: 100, now: pct }} style={styles.track}><View style={[styles.fill, { width: `${Math.min(100, Math.max(0, pct))}%` }]} /></View></View>) : <Text style={styles.hint}>{t('noPricedHoldings')}</Text>}</View><Text style={styles.sectionTitle}>{t('holdings')}</Text><View style={styles.card}>{holdings.map((holding) => <View key={holding.mint} style={styles.holding}><View style={styles.holdingMain}><Text style={styles.rowTitle}>{holding.symbol}</Text><Text style={styles.rowMeta}>{holding.uiAmount.toLocaleString()} · {short(holding.mint)}</Text></View><View><Text style={styles.rowValue}>{compactUsd(holding.valueUsd)}</Text><Text style={styles.rowMeta}>{holding.pctOfPortfolio == null ? '—' : `${holding.pctOfPortfolio.toFixed(1)}%`}</Text></View></View>)}</View><Text style={styles.sectionTitle}>{t('pnlEvidence')}</Text><View style={styles.card}>{pnl.isLoading ? <ActivityIndicator color={colors.accent} /> : pnl.data?.pnl ? <><Evidence label={t('status')} value={pnl.data.pnl.status} /><Evidence label={t('realizedPnl')} value={compactUsd(pnl.data.pnl.realizedPnl)} /><Evidence label={t('unrealizedPnl')} value={t('unavailable')} warning /><Evidence label={t('indexedSwaps')} value={String(pnl.data.pnl.provenance.indexedSwapCount)} />{pnl.data.pnl.warnings.map((warning) => <Text key={warning} style={styles.warning}>• {warning}</Text>)}</> : <Text style={styles.warning}>{pnl.error?.message ?? `${t('pnlEvidence')} ${t('unavailable')}.`}</Text>}</View><View style={styles.provenance}><Ionicons name="information-circle" size={18} color={colors.warning} /><Text style={styles.provenanceText}>{t('source')}: {analytics.data.provenance.source} · Quality: {analytics.data.provenance.dataQuality}. {t('unavailable')}: {analytics.data.provenance.unavailable.join(', ')}.</Text></View></> : null}</> : <View style={styles.empty}><Text style={styles.hint}>{t('connectPortfolioHint')}</Text></View>}
-  </ScrollView></SafeAreaView>;
+  return (
+    <SafeAreaView style={styles.safe} edges={["top"]}>
+      <ScrollView
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={() => {
+              void analytics.refetch();
+              void pnl.refetch();
+            }}
+            tintColor={colors.accent}
+          />
+        }
+        contentContainerStyle={styles.content}
+      >
+        <View style={styles.header}>
+          <View>
+            <Text style={styles.eyebrow}>TERMINAL DEX</Text>
+            <Text accessibilityRole="header" style={styles.title}>
+              {t("portfolio")}
+            </Text>
+          </View>
+          {verifiedAddress ? (
+            <View accessibilityRole="summary" style={styles.verified}>
+              <Ionicons
+                name="shield-checkmark"
+                size={13}
+                color={colors.accent}
+              />
+              <Text style={styles.verifiedText}>{t("ownershipVerified")}</Text>
+            </View>
+          ) : null}
+        </View>
+        {!verifiedAddress ? (
+          <View style={styles.connectCard}>
+            <Text style={styles.cardTitle}>{t("connectSecurely")}</Text>
+            <Text style={styles.hint}>{t("walletSafety")}</Text>
+            <Action
+              label={wallet.busy ? t("openingWallet") : t("connectVerify")}
+              onPress={wallet.connectAndVerify}
+              disabled={wallet.busy}
+            />
+            {wallet.error ? (
+              <Text accessibilityRole="alert" style={styles.error}>
+                {wallet.error}
+              </Text>
+            ) : null}
+            <View style={styles.divider}>
+              <View style={styles.dividerLine} />
+              <Text style={styles.dividerText}>{t("orWatchOnly")}</Text>
+              <View style={styles.dividerLine} />
+            </View>
+            <View style={styles.inputRow}>
+              <TextInput
+                accessibilityLabel={t("watchAddress")}
+                value={draft}
+                onChangeText={setDraft}
+                placeholder={t("walletPlaceholder")}
+                placeholderTextColor={colors.muted}
+                autoCapitalize="none"
+                autoCorrect={false}
+                style={styles.input}
+              />
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={t("loadWatchWallet")}
+                accessibilityState={{
+                  disabled: !isSolanaAddress(draft.trim()),
+                }}
+                onPress={saveWatchOnly}
+                disabled={!isSolanaAddress(draft.trim())}
+                style={[
+                  styles.load,
+                  !isSolanaAddress(draft.trim()) && styles.disabled,
+                ]}
+              >
+                <Text style={styles.loadText}>{t("load")}</Text>
+              </Pressable>
+            </View>
+            <Text style={styles.watchNote}>{t("watchOnlyHint")}</Text>
+          </View>
+        ) : (
+          <View style={styles.identityRow}>
+            <View>
+              <Text style={styles.identityLabel}>{t("verifiedWallet")}</Text>
+              <Text style={styles.walletAddress}>{short(verifiedAddress)}</Text>
+            </View>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={t("disconnectRevoke")}
+              onPress={wallet.disconnect}
+            >
+              <Text style={styles.disconnect}>{t("disconnectRevoke")}</Text>
+            </Pressable>
+          </View>
+        )}
+        {watchAddress && !verifiedAddress ? (
+          <View style={styles.identityRow}>
+            <View>
+              <Text style={styles.identityLabel}>{t("watchOnly")}</Text>
+              <Text style={styles.walletAddress}>{short(watchAddress)}</Text>
+            </View>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={t("remove")}
+              onPress={clearWatchOnly}
+            >
+              <Text style={styles.disconnect}>{t("remove")}</Text>
+            </Pressable>
+          </View>
+        ) : null}
+        {valid ? (
+          <>
+            <View accessibilityRole="radiogroup" style={styles.periods}>
+              {periods.map((item) => (
+                <Pressable
+                  key={item}
+                  accessibilityRole="radio"
+                  accessibilityLabel={t("selectPeriod", { period: item })}
+                  accessibilityState={{ checked: period === item }}
+                  onPress={() => setPeriod(item)}
+                  style={[
+                    styles.period,
+                    period === item && styles.activePeriod,
+                  ]}
+                >
+                  <Text
+                    style={[
+                      styles.periodText,
+                      period === item && styles.activePeriodText,
+                    ]}
+                  >
+                    {item}
+                  </Text>
+                </Pressable>
+              ))}
+            </View>
+            {analytics.isLoading ? (
+              <State loading text={t("loadingHoldings")} />
+            ) : analytics.isError ? (
+              <State
+                error
+                text={analytics.error.message}
+                action={t("retry")}
+                onAction={() => analytics.refetch()}
+              />
+            ) : analytics.data ? (
+              <>
+                <View style={styles.summary}>
+                  <Summary
+                    label={t("portfolioValue")}
+                    value={compactUsd(analytics.data.data.totalValueUsd)}
+                  />
+                  <Summary
+                    label={t("tokens")}
+                    value={String(analytics.data.data.tokenCount)}
+                  />
+                  <Summary
+                    label={t("weightedRisk")}
+                    value={
+                      analytics.data.data.riskScore == null
+                        ? "—"
+                        : analytics.data.data.riskScore.toFixed(0)
+                    }
+                  />
+                </View>
+                <Text style={styles.sectionTitle}>{t("allocation")}</Text>
+                <View style={styles.card}>
+                  {allocations.length ? (
+                    allocations.map(([symbol, pct]) => (
+                      <View key={symbol} style={styles.allocation}>
+                        <View style={styles.allocationLabels}>
+                          <Text style={styles.rowTitle}>{symbol}</Text>
+                          <Text style={styles.rowValue}>{pct.toFixed(1)}%</Text>
+                        </View>
+                        <View
+                          accessibilityRole="progressbar"
+                          accessibilityValue={{ min: 0, max: 100, now: pct }}
+                          style={styles.track}
+                        >
+                          <View
+                            style={[
+                              styles.fill,
+                              { width: `${Math.min(100, Math.max(0, pct))}%` },
+                            ]}
+                          />
+                        </View>
+                      </View>
+                    ))
+                  ) : (
+                    <Text style={styles.hint}>{t("noPricedHoldings")}</Text>
+                  )}
+                </View>
+                <Text style={styles.sectionTitle}>{t("holdings")}</Text>
+                <View style={styles.card}>
+                  {holdings.map((holding) => (
+                    <View key={holding.mint} style={styles.holding}>
+                      <View style={styles.holdingMain}>
+                        <Text style={styles.rowTitle}>{holding.symbol}</Text>
+                        <Text style={styles.rowMeta}>
+                          {holding.uiAmount.toLocaleString()} ·{" "}
+                          {short(holding.mint)}
+                        </Text>
+                      </View>
+                      <View>
+                        <Text style={styles.rowValue}>
+                          {compactUsd(holding.valueUsd)}
+                        </Text>
+                        <Text style={styles.rowMeta}>
+                          {holding.pctOfPortfolio == null
+                            ? "—"
+                            : `${holding.pctOfPortfolio.toFixed(1)}%`}
+                        </Text>
+                      </View>
+                    </View>
+                  ))}
+                </View>
+                <Text style={styles.sectionTitle}>{t("pnlEvidence")}</Text>
+                <View style={styles.card}>
+                  {pnl.isLoading ? (
+                    <ActivityIndicator
+                      accessibilityRole="progressbar"
+                      accessibilityLabel={t("pnlEvidence")}
+                      color={colors.accent}
+                    />
+                  ) : pnl.data?.pnl ? (
+                    <>
+                      <Evidence
+                        label={t("status")}
+                        value={pnl.data.pnl.status}
+                      />
+                      <Evidence
+                        label={t("realizedPnl")}
+                        value={compactUsd(pnl.data.pnl.realizedPnl)}
+                      />
+                      <Evidence
+                        label={t("unrealizedPnl")}
+                        value={t("unavailable")}
+                        warning
+                      />
+                      <Evidence
+                        label={t("indexedSwaps")}
+                        value={String(pnl.data.pnl.provenance.indexedSwapCount)}
+                      />
+                      {pnl.data.pnl.warnings.map((warning) => (
+                        <Text key={warning} style={styles.warning}>
+                          • {warning}
+                        </Text>
+                      ))}
+                    </>
+                  ) : (
+                    <Text
+                      accessibilityRole={pnl.error ? "alert" : undefined}
+                      style={styles.warning}
+                    >
+                      {pnl.error?.message ??
+                        `${t("pnlEvidence")} ${t("unavailable")}.`}
+                    </Text>
+                  )}
+                </View>
+                <View style={styles.provenance}>
+                  <Ionicons
+                    name="information-circle"
+                    size={18}
+                    color={colors.warning}
+                  />
+                  <Text style={styles.provenanceText}>
+                    {t("portfolioProvenance", {
+                      source: analytics.data.provenance.source,
+                      quality: analytics.data.provenance.dataQuality,
+                      unavailable:
+                        analytics.data.provenance.unavailable.join(", ") ||
+                        t("none"),
+                    })}
+                  </Text>
+                </View>
+              </>
+            ) : null}
+          </>
+        ) : (
+          <View style={styles.empty}>
+            <Text style={styles.hint}>{t("connectPortfolioHint")}</Text>
+          </View>
+        )}
+      </ScrollView>
+    </SafeAreaView>
+  );
 }
 
-function Action({ label, onPress, disabled }: { label: string; onPress: () => void; disabled?: boolean }) { return <Pressable accessibilityRole="button" accessibilityLabel={label} accessibilityState={{ disabled: Boolean(disabled) }} onPress={onPress} disabled={disabled} style={[styles.action, disabled && styles.disabled]}>{disabled ? <ActivityIndicator color={colors.background} /> : <Text style={styles.actionText}>{label}</Text>}</Pressable>; }
-function State({ loading, text, action, onAction }: { loading?: boolean; text: string; action?: string; onAction?: () => void }) { return <View accessibilityRole={loading ? 'progressbar' : 'summary'} style={styles.state}>{loading ? <ActivityIndicator color={colors.accent} /> : null}<Text style={styles.hint}>{text}</Text>{action ? <Action label={action} onPress={onAction ?? (() => undefined)} /> : null}</View>; }
-function Summary({ label, value }: { label: string; value: string }) { return <View style={styles.summaryItem}><Text style={styles.summaryLabel}>{label}</Text><Text style={styles.summaryValue}>{value}</Text></View>; }
-function Evidence({ label, value, warning }: { label: string; value: string; warning?: boolean }) { return <View style={styles.evidence}><Text style={styles.hint}>{label}</Text><Text style={[styles.rowValue, warning && styles.warning]}>{value}</Text></View>; }
-function short(value: string) { return `${value.slice(0, 7)}…${value.slice(-6)}`; }
+function Action({
+  label,
+  onPress,
+  disabled,
+}: {
+  label: string;
+  onPress: () => void;
+  disabled?: boolean;
+}) {
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      accessibilityState={{
+        disabled: Boolean(disabled),
+        busy: Boolean(disabled),
+      }}
+      onPress={onPress}
+      disabled={disabled}
+      style={[styles.action, disabled && styles.disabled]}
+    >
+      {disabled ? (
+        <ActivityIndicator color={colors.background} />
+      ) : (
+        <Text style={styles.actionText}>{label}</Text>
+      )}
+    </Pressable>
+  );
+}
+function State({
+  loading,
+  error,
+  text,
+  action,
+  onAction,
+}: {
+  loading?: boolean;
+  error?: boolean;
+  text: string;
+  action?: string;
+  onAction?: () => void;
+}) {
+  return (
+    <View
+      accessibilityRole={error ? "alert" : "summary"}
+      accessibilityLiveRegion="polite"
+      accessibilityState={loading ? { busy: true } : undefined}
+      style={styles.state}
+    >
+      {loading ? <ActivityIndicator color={colors.accent} /> : null}
+      <Text style={styles.hint}>{text}</Text>
+      {action ? (
+        <Action label={action} onPress={onAction ?? (() => undefined)} />
+      ) : null}
+    </View>
+  );
+}
+function Summary({ label, value }: { label: string; value: string }) {
+  return (
+    <View style={styles.summaryItem}>
+      <Text style={styles.summaryLabel}>{label}</Text>
+      <Text style={styles.summaryValue}>{value}</Text>
+    </View>
+  );
+}
+function Evidence({
+  label,
+  value,
+  warning,
+}: {
+  label: string;
+  value: string;
+  warning?: boolean;
+}) {
+  return (
+    <View style={styles.evidence}>
+      <Text style={styles.hint}>{label}</Text>
+      <Text style={[styles.rowValue, warning && styles.warning]}>{value}</Text>
+    </View>
+  );
+}
+function short(value: string) {
+  return `${value.slice(0, 7)}…${value.slice(-6)}`;
+}
 
-const styles = StyleSheet.create({ safe: { flex: 1, backgroundColor: colors.background }, content: { padding: spacing.lg, paddingBottom: 80 }, header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }, eyebrow: { color: colors.accent, fontSize: 10, fontWeight: '900', letterSpacing: 2 }, title: { color: colors.text, fontSize: 28, fontWeight: '900' }, verified: { flexDirection: 'row', alignItems: 'center', gap: 5, padding: 7, borderRadius: 9, backgroundColor: colors.accentDim }, verifiedText: { color: colors.accent, fontSize: 8, fontWeight: '900' }, connectCard: { marginTop: spacing.xl, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border, borderRadius: 16, padding: spacing.lg }, cardTitle: { color: colors.text, fontSize: 18, fontWeight: '900' }, hint: { color: colors.muted, fontSize: 12, lineHeight: 18, textAlign: 'center' }, action: { minHeight: 44, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.accent, borderRadius: 11, marginTop: spacing.lg }, actionText: { color: colors.background, fontWeight: '900' }, disabled: { opacity: 0.45 }, error: { color: colors.negative, fontSize: 11, textAlign: 'center', marginTop: spacing.md }, divider: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm, marginVertical: spacing.lg }, dividerLine: { flex: 1, height: StyleSheet.hairlineWidth, backgroundColor: colors.border }, dividerText: { color: colors.muted, fontSize: 9, fontWeight: '900' }, inputRow: { flexDirection: 'row', gap: spacing.sm }, input: { flex: 1, height: 44, borderRadius: 10, borderWidth: 1, borderColor: colors.border, paddingHorizontal: spacing.md, color: colors.text, backgroundColor: colors.background }, load: { width: 64, alignItems: 'center', justifyContent: 'center', borderRadius: 10, backgroundColor: colors.accent }, loadText: { color: colors.background, fontWeight: '900' }, watchNote: { color: colors.warning, fontSize: 10, marginTop: spacing.sm }, identityRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: spacing.lg, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border, borderRadius: 14, marginTop: spacing.lg }, identityLabel: { color: colors.muted, fontSize: 9, fontWeight: '900', letterSpacing: 1 }, walletAddress: { color: colors.text, fontWeight: '800', marginTop: 4 }, disconnect: { color: colors.negative, fontSize: 11, fontWeight: '800' }, periods: { flexDirection: 'row', gap: spacing.sm, marginVertical: spacing.lg }, period: { flex: 1, alignItems: 'center', padding: 9, borderRadius: 9, backgroundColor: colors.surface }, activePeriod: { backgroundColor: colors.accent }, periodText: { color: colors.muted, fontWeight: '800', fontSize: 10 }, activePeriodText: { color: colors.background }, summary: { flexDirection: 'row', gap: spacing.sm }, summaryItem: { flex: 1, padding: spacing.md, borderRadius: 12, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border }, summaryLabel: { color: colors.muted, fontSize: 9 }, summaryValue: { color: colors.text, fontSize: 16, fontWeight: '900', marginTop: 6 }, sectionTitle: { color: colors.text, fontSize: 16, fontWeight: '900', marginTop: spacing.xl, marginBottom: spacing.sm }, card: { padding: spacing.lg, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border, borderRadius: 14, gap: spacing.md }, allocation: { gap: 6 }, allocationLabels: { flexDirection: 'row', justifyContent: 'space-between' }, track: { height: 5, borderRadius: 3, backgroundColor: colors.border, overflow: 'hidden' }, fill: { height: 5, borderRadius: 3, backgroundColor: colors.accent }, rowTitle: { color: colors.text, fontSize: 12, fontWeight: '800' }, rowValue: { color: colors.text, fontSize: 12, fontWeight: '800', textAlign: 'right' }, rowMeta: { color: colors.muted, fontSize: 9, marginTop: 3, textAlign: 'right' }, holding: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border, paddingBottom: spacing.md }, holdingMain: { flex: 1 }, evidence: { flexDirection: 'row', justifyContent: 'space-between' }, warning: { color: colors.warning, fontSize: 10, lineHeight: 16 }, provenance: { flexDirection: 'row', gap: spacing.md, padding: spacing.lg, backgroundColor: '#2d2715', borderRadius: 14, marginTop: spacing.xl }, provenanceText: { flex: 1, color: colors.warning, fontSize: 10, lineHeight: 16 }, empty: { paddingVertical: 80 }, state: { minHeight: 220, alignItems: 'center', justifyContent: 'center', gap: spacing.md }, gate: { flex: 1, alignItems: 'center', justifyContent: 'center', padding: spacing.xl }, gateIcon: { width: 64, height: 64, borderRadius: 20, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.accentDim }, gateTitle: { color: colors.text, fontSize: 24, fontWeight: '900', marginTop: spacing.lg }, gateText: { color: colors.muted, textAlign: 'center', lineHeight: 20, marginTop: spacing.sm }, link: { color: colors.negative, fontSize: 11, fontWeight: '800', marginTop: spacing.lg } });
+const styles = StyleSheet.create({
+  safe: { flex: 1, backgroundColor: colors.background },
+  content: { padding: spacing.lg, paddingBottom: 80 },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  eyebrow: {
+    color: colors.accent,
+    fontSize: 10,
+    fontWeight: "900",
+    letterSpacing: 2,
+  },
+  title: { color: colors.text, fontSize: 28, fontWeight: "900" },
+  verified: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+    padding: 7,
+    borderRadius: 9,
+    backgroundColor: colors.accentDim,
+  },
+  verifiedText: { color: colors.accent, fontSize: 8, fontWeight: "900" },
+  connectCard: {
+    marginTop: spacing.xl,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: 16,
+    padding: spacing.lg,
+  },
+  cardTitle: { color: colors.text, fontSize: 18, fontWeight: "900" },
+  hint: {
+    color: colors.muted,
+    fontSize: 12,
+    lineHeight: 18,
+    textAlign: "center",
+  },
+  action: {
+    minHeight: 44,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: colors.accent,
+    borderRadius: 11,
+    marginTop: spacing.lg,
+  },
+  actionText: { color: colors.background, fontWeight: "900" },
+  disabled: { opacity: 0.45 },
+  error: {
+    color: colors.negative,
+    fontSize: 11,
+    textAlign: "center",
+    marginTop: spacing.md,
+  },
+  divider: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.sm,
+    marginVertical: spacing.lg,
+  },
+  dividerLine: {
+    flex: 1,
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: colors.border,
+  },
+  dividerText: { color: colors.muted, fontSize: 9, fontWeight: "900" },
+  inputRow: { flexDirection: "row", gap: spacing.sm },
+  input: {
+    flex: 1,
+    height: 44,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: colors.border,
+    paddingHorizontal: spacing.md,
+    color: colors.text,
+    backgroundColor: colors.background,
+  },
+  load: {
+    width: 64,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 10,
+    backgroundColor: colors.accent,
+  },
+  loadText: { color: colors.background, fontWeight: "900" },
+  watchNote: { color: colors.warning, fontSize: 10, marginTop: spacing.sm },
+  identityRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: spacing.lg,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: 14,
+    marginTop: spacing.lg,
+  },
+  identityLabel: {
+    color: colors.muted,
+    fontSize: 9,
+    fontWeight: "900",
+    letterSpacing: 1,
+  },
+  walletAddress: { color: colors.text, fontWeight: "800", marginTop: 4 },
+  disconnect: { color: colors.negative, fontSize: 11, fontWeight: "800" },
+  periods: {
+    flexDirection: "row",
+    gap: spacing.sm,
+    marginVertical: spacing.lg,
+  },
+  period: {
+    flex: 1,
+    alignItems: "center",
+    padding: 9,
+    borderRadius: 9,
+    backgroundColor: colors.surface,
+  },
+  activePeriod: { backgroundColor: colors.accent },
+  periodText: { color: colors.muted, fontWeight: "800", fontSize: 10 },
+  activePeriodText: { color: colors.background },
+  summary: { flexDirection: "row", gap: spacing.sm },
+  summaryItem: {
+    flex: 1,
+    padding: spacing.md,
+    borderRadius: 12,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  summaryLabel: { color: colors.muted, fontSize: 9 },
+  summaryValue: {
+    color: colors.text,
+    fontSize: 16,
+    fontWeight: "900",
+    marginTop: 6,
+  },
+  sectionTitle: {
+    color: colors.text,
+    fontSize: 16,
+    fontWeight: "900",
+    marginTop: spacing.xl,
+    marginBottom: spacing.sm,
+  },
+  card: {
+    padding: spacing.lg,
+    backgroundColor: colors.surface,
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: 14,
+    gap: spacing.md,
+  },
+  allocation: { gap: 6 },
+  allocationLabels: { flexDirection: "row", justifyContent: "space-between" },
+  track: {
+    height: 5,
+    borderRadius: 3,
+    backgroundColor: colors.border,
+    overflow: "hidden",
+  },
+  fill: { height: 5, borderRadius: 3, backgroundColor: colors.accent },
+  rowTitle: { color: colors.text, fontSize: 12, fontWeight: "800" },
+  rowValue: {
+    color: colors.text,
+    fontSize: 12,
+    fontWeight: "800",
+    textAlign: "right",
+  },
+  rowMeta: {
+    color: colors.muted,
+    fontSize: 9,
+    marginTop: 3,
+    textAlign: "right",
+  },
+  holding: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: colors.border,
+    paddingBottom: spacing.md,
+  },
+  holdingMain: { flex: 1 },
+  evidence: { flexDirection: "row", justifyContent: "space-between" },
+  warning: { color: colors.warning, fontSize: 10, lineHeight: 16 },
+  provenance: {
+    flexDirection: "row",
+    gap: spacing.md,
+    padding: spacing.lg,
+    backgroundColor: "#2d2715",
+    borderRadius: 14,
+    marginTop: spacing.xl,
+  },
+  provenanceText: {
+    flex: 1,
+    color: colors.warning,
+    fontSize: 10,
+    lineHeight: 16,
+  },
+  empty: { paddingVertical: 80 },
+  state: {
+    minHeight: 220,
+    alignItems: "center",
+    justifyContent: "center",
+    gap: spacing.md,
+  },
+  gate: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    padding: spacing.xl,
+  },
+  gateIcon: {
+    width: 64,
+    height: 64,
+    borderRadius: 20,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: colors.accentDim,
+  },
+  gateTitle: {
+    color: colors.text,
+    fontSize: 24,
+    fontWeight: "900",
+    marginTop: spacing.lg,
+  },
+  gateText: {
+    color: colors.muted,
+    textAlign: "center",
+    lineHeight: 20,
+    marginTop: spacing.sm,
+  },
+  link: {
+    color: colors.negative,
+    fontSize: 11,
+    fontWeight: "800",
+    marginTop: spacing.lg,
+  },
+});

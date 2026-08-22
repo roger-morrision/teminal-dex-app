@@ -290,3 +290,14 @@
 - Verification evidence: strict TypeScript and warning-free Expo lint passed; Jest 20 suites / 102 tests passed; Expo Doctor passed 21/21; web production export passed all 22 routes; Android and iOS production bundles passed. Generated exports were removed after verification.
 - Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles.
 - Next priority: continue the audit with dynamic screen-state coverage and remaining hardcoded primary/detail copy; transaction execution and deeper drilldowns stay blocked on new authoritative backend contracts rather than unsafe mobile inference.
+
+## 2026-08-22 — Slice 26: financial provenance and detail-state audit remediation
+
+- Audited Portfolio and Token Detail for untranslated mobile-owned financial/risk copy and weak asynchronous semantics while preserving backend evidence exactly.
+- Localized Portfolio provenance as one interpolation-safe source/quality/unavailable statement, plus Token Detail early-wallet concentration and 24-hour change labels in typed English and Vietnamese.
+- Preserved exact wallet/token identities, DEX names, provider sources, data-quality values, unavailable field identifiers, risk levels/factors, transaction finality, and backend errors.
+- Added explicit radiogroup semantics to Portfolio periods; busy semantics to unlock/connect actions and PnL loading; alert/live-region semantics to portfolio analytics failures, PnL failures, invalid token links, missing token records, chart failures, and asynchronous token panels.
+- Expanded Vietnamese tests for financial provenance and early-wallet concentration copy.
+- Verification evidence: strict TypeScript and warning-free Expo lint passed; Jest 20 suites / 102 tests passed; Expo Doctor passed 21/21; web production export passed all 22 routes; Android and iOS production bundles passed. Generated exports were removed after verification.
+- Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles.
+- Next priority: continue dynamic-state coverage and audit remaining hardcoded copy in Discovery/Trenches/market evidence without translating protocol identifiers.

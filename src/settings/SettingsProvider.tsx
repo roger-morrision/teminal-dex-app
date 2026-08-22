@@ -241,6 +241,8 @@ const en = {
   indexedSwaps: "Indexed swaps",
   connectPortfolioHint:
     "Connect a wallet or load a watch-only address to view real holdings.",
+  portfolioProvenance:
+    "Source: {source} · Quality: {quality}. Unavailable: {unavailable}.",
   goBack: "Go back",
   refreshToken: "Refresh token details",
   invalidLink: "Invalid link",
@@ -272,6 +274,8 @@ const en = {
     "Risk scoring is decision support, not a guarantee. Missing inputs reduce confidence and execution remains locked.",
   reportedDepthLimitation:
     "Reported liquidity is not guaranteed executable depth.",
+  snipers: "Snipers",
+  dayChange: "24h change",
   dataEvidence: "Data evidence",
   quality: "Quality",
   priceAutomation: "Price automation",
@@ -884,6 +888,8 @@ const vi: { [K in TranslationKey]: string } = {
   indexedSwaps: "Swap đã lập chỉ mục",
   connectPortfolioHint:
     "Kết nối ví hoặc tải địa chỉ chỉ theo dõi để xem tài sản thật.",
+  portfolioProvenance:
+    "Nguồn: {source} · Chất lượng: {quality}. Không có: {unavailable}.",
   goBack: "Quay lại",
   refreshToken: "Làm mới chi tiết token",
   invalidLink: "Liên kết không hợp lệ",
@@ -914,6 +920,8 @@ const vi: { [K in TranslationKey]: string } = {
     "Điểm rủi ro chỉ hỗ trợ quyết định, không phải bảo đảm. Thiếu đầu vào làm giảm độ tin cậy và thực thi vẫn bị khóa.",
   reportedDepthLimitation:
     "Thanh khoản báo cáo không bảo đảm độ sâu có thể thực thi.",
+  snipers: "Ví mua sớm",
+  dayChange: "Thay đổi 24 giờ",
   dataEvidence: "Bằng chứng dữ liệu",
   quality: "Chất lượng",
   priceAutomation: "Tự động hóa giá",

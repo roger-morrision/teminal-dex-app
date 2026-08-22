@@ -341,3 +341,13 @@
 - Verification evidence: strict TypeScript and warning-free Expo lint passed; Jest 24 suites / 117 tests passed; Expo Doctor passed 21/21; web production export passed all 22 routes; Android and iOS production bundles passed. Generated exports were removed after verification.
 - Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles.
 - Next priority: audit the remaining inline spinners and mutation controls for explicit parent busy/error state, then reevaluate automated dynamic-state coverage before the final requirement matrix.
+
+## 2026-08-22 — Slice 31: inline busy-control completion
+
+- Audited every remaining `ActivityIndicator`, numeric progressbar, query-pagination state, and mutation pending control. Bonding and allocation bars remain valid numeric progress evidence; quote, wallet, alert, CopyTrade, and identity mutation controls already expose explicit busy/disabled/error state.
+- Replaced spinner-only Discovery pagination and Portfolio PnL loading with a reusable accessible polite busy summary and localized English/Vietnamese labels.
+- Guarded Research chart refresh with disabled/busy semantics while either provider refetch is active, preventing duplicate refresh requests and restoring actionability afterward.
+- Added direct tests for the reusable inline busy summary and Research refresh pending/ready transitions. Combined with Slices 27–30 and the static all-route semantics gate, the automated component dynamic-state audit is now complete and the checklist item is marked verified.
+- Verification evidence: strict TypeScript and warning-free Expo lint passed; Jest 25 suites / 119 tests passed; Expo Doctor passed 21/21; web production export passed all 22 routes; Android and iOS production bundles passed. Generated exports were removed after verification.
+- Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles.
+- Next priority: begin the final requirement-by-requirement matrix, separating implementation-complete requirements from backend-contract and physical-device verification blockers without overstating either.

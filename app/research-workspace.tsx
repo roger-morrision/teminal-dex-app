@@ -481,22 +481,14 @@ function ChartPanel({
               : (token.error?.message ?? t("loadingTokenIdentity"))}
           </Text>
         </Pressable>
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel={t("refreshChart")}
-          accessibilityState={{ busy: refreshing }}
+        <RefreshChartButton
+          refreshing={refreshing}
+          label={t("refreshChart")}
           onPress={() => {
             void token.refetch();
             void chart.refetch();
           }}
-          style={styles.iconButton}
-        >
-          {refreshing ? (
-            <ActivityIndicator size="small" color={colors.accent} />
-          ) : (
-            <Ionicons name="refresh" size={14} color={colors.accent} />
-          )}
-        </Pressable>
+        />
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={t("removeChart")}
@@ -514,6 +506,33 @@ function ChartPanel({
         <PriceChart data={chart.data} compact />
       ) : null}
     </View>
+  );
+}
+
+export function RefreshChartButton({
+  refreshing,
+  label,
+  onPress,
+}: {
+  refreshing: boolean;
+  label: string;
+  onPress: () => void;
+}) {
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      accessibilityState={{ disabled: refreshing, busy: refreshing }}
+      disabled={refreshing}
+      onPress={onPress}
+      style={styles.iconButton}
+    >
+      {refreshing ? (
+        <ActivityIndicator size="small" color={colors.accent} />
+      ) : (
+        <Ionicons name="refresh" size={14} color={colors.accent} />
+      )}
+    </Pressable>
   );
 }
 

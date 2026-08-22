@@ -24,6 +24,7 @@ import {
 } from "@/api/client";
 import type { MarketToken } from "@/api/schema";
 import { TokenRow } from "@/components/TokenRow";
+import { BusyIndicator } from "@/components/BusyIndicator";
 import {
   defaultFilters,
   loadFilters,
@@ -195,7 +196,10 @@ export default function DiscoverScreen() {
         contentContainerStyle={rows.length ? undefined : styles.grow}
         ListFooterComponent={
           feed.isFetchingNextPage ? (
-            <ActivityIndicator style={styles.footer} color={colors.accent} />
+            <BusyIndicator
+              label={t("loadingMoreMarkets")}
+              style={styles.footer}
+            />
           ) : null
         }
         ListHeaderComponent={

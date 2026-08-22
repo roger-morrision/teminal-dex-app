@@ -18,6 +18,7 @@ import { compactUsd } from "@/lib/format";
 import { isSolanaAddress } from "@/security/input";
 import { useWalletSession } from "@/security/WalletSessionProvider";
 import { useSettings } from "@/settings/SettingsProvider";
+import { BusyIndicator } from "@/components/BusyIndicator";
 import { colors, spacing } from "@/theme";
 
 const WATCH_KEY = "terminal-dex:watch-only-wallet:v1";
@@ -324,11 +325,7 @@ export default function PortfolioScreen() {
                 <Text style={styles.sectionTitle}>{t("pnlEvidence")}</Text>
                 <View style={styles.card}>
                   {pnl.isLoading ? (
-                    <ActivityIndicator
-                      accessibilityRole="progressbar"
-                      accessibilityLabel={t("pnlEvidence")}
-                      color={colors.accent}
-                    />
+                    <BusyIndicator label={t("loadingPnlEvidence")} />
                   ) : pnl.data?.pnl ? (
                     <>
                       <Evidence

@@ -362,3 +362,12 @@
 - Verification evidence: strict TypeScript and warning-free Expo lint passed; Jest 25 suites / 122 tests passed; Expo Doctor passed 21/21; web production export passed all 22 routes; Android and iOS production bundles passed. Generated exports were removed after verification.
 - Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles.
 - Next priority: finish the final requirement-by-requirement evidence matrix and regression audit, retaining explicit backend-contract and physical-device blockers without overstating completion.
+
+## 2026-08-22 — Slice 33: final requirement and regression matrix
+
+- Completed the requirement-by-requirement audit and recorded its durable evidence matrix in `FINAL_AUDIT.md`.
+- Separated verified implementation from five closure categories that cannot be honestly completed in this environment: Android development-build wallet validation, transaction execution safety, an absent Track provider contract, CopyTrade activation/execution authority, and physical-device accessibility/connectivity/performance evidence.
+- Confirmed that each blocked capability remains visibly unavailable or non-executing; no hidden mobile transaction, activation, mock-data, or provider-mutation path was introduced.
+- Regression evidence remains the full Slice 32 gate: strict TypeScript, warning-free Expo lint, 25 Jest suites / 122 tests, Expo Doctor 21/21, 22-route web export, Android export, and iOS export all passed. Generated exports were removed.
+- Marked the audit activity complete while leaving every implementation or device-dependent blocker partial in the checklist.
+- Next priority: close blockers only when the backend supplies the missing authoritative contracts and supported physical devices/development builds are available; otherwise audit future changes for regressions without weakening safety boundaries.

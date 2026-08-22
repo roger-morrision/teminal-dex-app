@@ -1,7 +1,9 @@
 # Terminal DEX Mobile Final Audit
 
-Audit date: 2026-08-22  
-Audited mobile commit baseline: `0069a04`  
+Audit date: 2026-08-22
+
+Audited mobile commit baseline: `0069a04`
+
 Backend authority: `C:\Tuan\devApps\TERMINAL_DEX_Intelligent` (read-only)
 
 ## Outcome

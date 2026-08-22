@@ -23,12 +23,12 @@ Status legend: `[x]` verified, `[ ]` incomplete, `[~]` intentionally visible but
 - [~] Monitor uses real indexed Solana observations; owner-scoped price/change/volume alert CRUD and durable delivery diagnostics are complete. Track remains unavailable because the backend exposes no connected live tracker provider.
 - [x] Portfolio and analytics use provider-backed holdings, explicit watch-only versus verified ownership, allocation/risk evidence, and truthful realized/unavailable PnL provenance.
 - [~] CopyTrade provides provenance-aware Top Traders rankings, verified-wallet durable strategy review/create, pause/delete, readiness, positions, and execution audit. Mobile always creates paused strategies and deliberately omits activation, confirmation, signing, closing, and submission pending the full transaction safety gate.
-- [ ] AI Intelligence and paper-trading/governance surfaces.
+- [x] AI Intelligence provides fail-closed advisory recommendations, public read-only paper performance/positions/research, and verified-wallet 31-phase governance evidence with simulation-only, kill-switch, and execution-disabled contracts enforced at runtime.
 - [ ] Remaining More destinations and settings/accessibility/localization.
 
 ## Verification
 
 - [x] Unit tests for response validation and financial formatting.
-- [~] Component interaction coverage includes accessible token navigation/watchlist controls, Trenches quote handoff, and alert financial-input gating; complete screen-state coverage remains incomplete.
+- [~] Component interaction coverage includes accessible token navigation/watchlist controls, Trenches quote handoff, alert financial-input gating, CopyTrade eligibility, and AI advisory qualification; complete screen-state coverage remains incomplete.
 - [~] Android, iOS, and web production bundles pass; accessibility tests cover key controls, while device runtime, offline/recovery, performance, and full security regression remain incomplete.
 - [ ] Final full requirement and regression audit.

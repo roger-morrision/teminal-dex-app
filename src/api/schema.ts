@@ -153,3 +153,28 @@ export const copyPositionsSchema = z.object({ success: z.literal(true), data: z.
 export const copyExecutionsSchema = z.object({ success: z.literal(true), data: z.array(copyExecutionSchema), recordCount: z.number(), source: z.literal('database') });
 export type CopyPosition = z.infer<typeof copyPositionSchema>;
 export type CopyExecution = z.infer<typeof copyExecutionSchema>;
+
+const recommendationEvidenceSchema = z.object({ status: z.enum(['invalid_or_incomplete', 'expired', 'incomplete', 'advisory_current']), safeForAdvisoryUse: z.boolean(), executionEnabled: z.literal(false), providerFamilies: z.array(z.string()), missingFeatures: z.array(z.string()), expired: z.boolean(), costsIncluded: z.boolean(), pointInTime: z.boolean() }).passthrough();
+export const aiRecommendationsSchema = z.object({ success: z.literal(true), data: z.object({ recommendations: z.array(z.object({
+  tokenAddress: publicKeyString, tokenSymbol: z.string(), chain: z.string(), score: z.number().min(0).max(100), confidence: z.number().min(0).max(100), category: z.string(), modelVersion: z.string(), createdAt: z.string().datetime(), recommendationEvidence: recommendationEvidenceSchema,
+  outcomes: z.object({ total: z.number().int().nonnegative(), resolved: z.number().int().nonnegative(), wins: z.number().int().nonnegative(), losses: z.number().int().nonnegative(), avgReturnPct: z.number().nullable() }),
+}).passthrough()), readOnly: z.literal(true) }) });
+export type AiRecommendation = z.infer<typeof aiRecommendationsSchema>['data']['recommendations'][number];
+
+const paperPositionSchema = z.object({ id: z.string(), tokenAddress: publicKeyString, tokenSymbol: z.string(), entryPrice: z.number(), notionalUsd: z.number(), currentPrice: z.number().nullable(), markStatus: z.enum(['live', 'unavailable']), unrealizedPnlUsd: z.number().nullable(), returnPct: z.number().nullable() }).passthrough();
+const closedPaperPositionSchema = z.object({ id: z.string(), tokenAddress: publicKeyString, tokenSymbol: z.string(), realizedPnlUsd: z.number(), returnPct: z.number(), exitReason: z.string() }).passthrough();
+export const aiPaperReportSchema = z.object({ success: z.literal(true), data: z.object({
+  mode: z.literal('simulation'), executionEnabled: z.literal(false), readOnly: z.literal(true), generatedAt: z.number(),
+  config: z.object({ enabled: z.boolean(), startingCashUsd: z.number(), positionSizeUsd: z.number(), maxOpenPositions: z.number().int(), minScore: z.number(), minConfidence: z.number(), takeProfitPct: z.number(), stopLossPct: z.number(), feeBps: z.number(), slippageBps: z.number() }).passthrough(),
+  summary: z.object({ equityUsd: z.number(), totalPnlUsd: z.number(), realizedPnlUsd: z.number(), unrealizedPnlUsd: z.number(), openPositions: z.number().int().nonnegative(), closedTrades: z.number().int().nonnegative(), winRate: z.number().nullable(), maxDrawdownPct: z.number().nonnegative(), markCoverage: z.number().min(0).max(1), unavailableMarks: z.number().int().nonnegative() }).passthrough(),
+  analytics: z.object({ profitFactor: z.number().nullable(), expectancyUsd: z.number().nullable(), totalFeesUsd: z.number(), totalSlippageCostUsd: z.number() }).passthrough(),
+  risk: z.object({ entriesAllowed: z.boolean(), dailyLossLimitHit: z.boolean(), cooldownActive: z.boolean() }).passthrough(),
+  readiness: z.object({ status: z.string(), executionEnabled: z.literal(false), killSwitch: z.literal(true), note: z.string(), checks: z.record(z.string(), z.boolean()) }).passthrough(),
+  operations: z.object({ status: z.string() }).passthrough(), positions: z.array(paperPositionSchema), closedTrades: z.array(closedPaperPositionSchema),
+  dailyPerformance: z.array(z.object({ date: z.string(), trades: z.number().int().nonnegative(), winRate: z.number(), realizedPnlUsd: z.number(), feesUsd: z.number().optional() }).passthrough()),
+  potentialPool: z.array(z.object({ tokenAddress: publicKeyString, tokenSymbol: z.string().nullable(), score: z.number(), confidence: z.number(), priority: z.number(), observations: z.number(), monitoredMinutes: z.number(), riskScore: z.number().nullable(), socialScore: z.number().nullable(), lifecycle: z.string(), status: z.string(), requiredMonitoringMinutes: z.number() }).passthrough()),
+}).passthrough() });
+export type AiPaperReport = z.infer<typeof aiPaperReportSchema>['data'];
+
+export const aiPlatformSchema = z.object({ success: z.literal(true), data: z.object({ schema: z.literal('ai-platform-readiness-v1'), phases: z.array(z.object({ phase: z.number().int(), title: z.string(), status: z.string(), evidenceCount: z.number().int().nonnegative(), simulationOnly: z.literal(true) })), metrics: z.record(z.string(), z.number().nullable()), phase31: z.object({ status: z.string(), blockers: z.array(z.string()), checks: z.record(z.string(), z.boolean()), executionEnabled: z.literal(false) }).passthrough() }).passthrough(), executionEnabled: z.literal(false) });
+export type AiPlatform = z.infer<typeof aiPlatformSchema>['data'];

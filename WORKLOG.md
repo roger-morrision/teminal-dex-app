@@ -77,3 +77,15 @@
 - Verification evidence: strict TypeScript and lint passed; Jest 9 suites / 32 tests passed including provenance, readiness, risk bounds, paused-state enforcement, forbidden endpoint isolation, and accessible review gating; Expo Doctor passed 21/21; web export passed all 16 routes including `/copytrade`; Android and iOS production bundles passed.
 - Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles.
 - Next priority: AI Intelligence and paper-trading/governance surfaces, keeping every recommendation advisory-only.
+
+## 2026-08-22 — Slice 8: advisory AI and paper governance
+
+- Re-audited the clean mobile state and inspected the read-only backend recommendation evidence, public paper report, wallet-owned 31-phase platform governance, readiness, kill-switch, and approval/tool/mutation boundaries.
+- Activated AI Intelligence from More with Advisories, Paper, and Governance views using real persisted data; no generated or fixture recommendations are used.
+- Added fail-closed recommendation validation for point-in-time evidence, feature completeness, expiry, provider-family diversity, cost inclusion, advisory eligibility, model version, historical outcomes, and explicit `executionEnabled: false`.
+- Added public read-only simulation reporting for equity/PnL/costs/drawdown, open and closed paper positions, adaptive research candidates, mark availability, operational status, readiness checks, and the mandatory kill switch.
+- Added verified-wallet governance evidence for phases 8–31, evidence counts, blockers, operating history, and closed-trade progress. Both the platform envelope and Phase 31 must independently declare execution disabled.
+- Mobile performs GET requests only for AI. It exposes no paper configuration/run/train/promote/reconcile, approval, tool, chat, model, wallet-signing, transaction-construction, or submission action.
+- Verification evidence: strict TypeScript and lint passed; Jest 10 suites / 38 tests passed including execution-disabled contract rejection, simulation/kill-switch/read-only enforcement, GET-only routing, advisory qualification, and absence of execution affordances; Expo Doctor passed 21/21; web export passed all 17 routes including `/ai`; Android and iOS production bundles passed.
+- Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles.
+- Next priority: remaining More destinations, settings, accessibility, localization, and deep-link/network/privacy hardening.

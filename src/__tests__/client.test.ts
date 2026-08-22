@@ -1,4 +1,4 @@
-import { createPausedCopyTradeConfig, createUserAlert, fetchAlertDeliveries, fetchCopyExecutions, fetchCopyTradeConfigs, fetchCopyTradeHealth, fetchDiscovery, fetchMonitorAlerts, fetchOhlcv, fetchPortfolioAnalytics, fetchSwapQuote, fetchTokenDetail, fetchTokenPanel, fetchTopTraders, fetchTrenches, fetchUserAlerts, fetchWalletPnl, pauseCopyTradeConfig, searchTokens, setUserAlertActive, type CreateCopyTradeInput } from '@/api/client';
+import { createPausedCopyTradeConfig, createUserAlert, fetchAiPaperReport, fetchAiPlatform, fetchAiRecommendations, fetchAlertDeliveries, fetchCopyExecutions, fetchCopyTradeConfigs, fetchCopyTradeHealth, fetchDiscovery, fetchMonitorAlerts, fetchOhlcv, fetchPortfolioAnalytics, fetchSwapQuote, fetchTokenDetail, fetchTokenPanel, fetchTopTraders, fetchTrenches, fetchUserAlerts, fetchWalletPnl, pauseCopyTradeConfig, searchTokens, setUserAlertActive, type CreateCopyTradeInput } from '@/api/client';
 
 const token = { id: 'pair', symbol: 'DEX', name: 'Terminal', address: 'mint', pairAddress: 'pair', dex: 'raydium', quoteSymbol: 'SOL', price: 1, marketCap: 10, liquidity: 5, volume24h: 4, volume1h: 2, change24h: 3, change1h: 1, txns5m: { buys: 1, sells: 0 }, ageLabel: '1h', ageMinutes: 60 };
 const jsonResponse = (body: unknown, ok = true, status = 200) => ({ ok, status, json: jest.fn().mockResolvedValue(body) }) as unknown as Response;
@@ -70,5 +70,12 @@ describe('backend client routing', () => {
 
   it('rejects active mobile strategies before network access', async () => {
     await expect(createPausedCopyTradeConfig({ isActive: true } as CreateCopyTradeInput)).rejects.toThrow('must be created paused'); expect(fetch).not.toHaveBeenCalled();
+  });
+
+  it('uses only read-only AI evidence endpoints', async () => {
+    jest.mocked(fetch).mockResolvedValueOnce(jsonResponse({ success: true, data: { recommendations: [], readOnly: true } })).mockResolvedValueOnce(jsonResponse({ success: true, data: { mode: 'simulation', executionEnabled: false, readOnly: true, generatedAt: 1, config: { enabled: false, startingCashUsd: 1000, positionSizeUsd: 10, maxOpenPositions: 2, minScore: 70, minConfidence: 70, takeProfitPct: 20, stopLossPct: 10, feeBps: 10, slippageBps: 20 }, summary: { equityUsd: 1000, totalPnlUsd: 0, realizedPnlUsd: 0, unrealizedPnlUsd: 0, openPositions: 0, closedTrades: 0, winRate: null, maxDrawdownPct: 0, markCoverage: 1, unavailableMarks: 0 }, analytics: { profitFactor: null, expectancyUsd: null, totalFeesUsd: 0, totalSlippageCostUsd: 0 }, risk: { entriesAllowed: false, dailyLossLimitHit: false, cooldownActive: false }, readiness: { status: 'collecting', executionEnabled: false, killSwitch: true, note: 'advisory', checks: {} }, operations: { status: 'healthy' }, positions: [], closedTrades: [], dailyPerformance: [], potentialPool: [] } })).mockResolvedValueOnce(jsonResponse({ success: true, executionEnabled: false, data: { schema: 'ai-platform-readiness-v1', phases: [], metrics: {}, phase31: { status: 'blocked', blockers: [], checks: {}, executionEnabled: false } } }));
+    await fetchAiRecommendations(); await fetchAiPaperReport(); await fetchAiPlatform();
+    expect(jest.mocked(fetch).mock.calls.map((call) => call[0])).toEqual(['https://terminal.example/api/ai/recommendations?view=public&limit=50', 'https://terminal.example/api/ai/paper-trading?view=public', 'https://terminal.example/api/ai/platform']);
+    expect(jest.mocked(fetch).mock.calls.every((call) => !call[1]?.method || call[1]?.method === 'GET')).toBe(true);
   });
 });

@@ -195,3 +195,15 @@
 - Verification evidence: strict TypeScript and warning-free Expo lint passed; Jest 20 suites / 90 tests passed; Expo Doctor passed 21/21; web production export passed all 22 routes; Android and iOS production bundles passed. Generated exports were removed after verification.
 - Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles.
 - Next priority: localize and audit the remaining high-authority auxiliary screens, beginning with CopyTrade and AI, while real-device screen-reader/dynamic-type/connectivity/performance verification remains device-dependent.
+
+## 2026-08-22 — Slice 18: localized guarded CopyTrade
+
+- Re-established the clean mobile status/history, durable requirements, tests, and backend authority before auditing the highest-risk remaining untranslated route: CopyTrade rankings, paused strategy creation, wallet-owned configuration, and read-only activity evidence.
+- Localized all mobile-owned CopyTrade headings, tabs, ranking limitations, period controls, eligibility labels, paused-strategy fields/disclosure, mutation progress, durable-strategy provenance, pause/delete controls and confirmation, wallet gate, empty/loading states, and activity limitations in typed English and Vietnamese. Wallet labels, addresses, provider sources, backend statuses/errors, and execution evidence remain exact.
+- Preserved the fail-closed authority boundary: the composer still emits `isActive: false`; mobile exposes pause/remove only for durable configuration and no activation, copy, confirmation, signature, close, or submit call. The translated safety banner and strategy disclosure state those limits directly.
+- Added labels and selected/checked/disabled/busy semantics to tabs, ranking periods, eligibility review, save, pause, delete, unlock, and verify controls; added summary/progress/alert semantics to readiness, safety, gates, states, and mutation failures.
+- Reworked dense headers, ranking cards, metrics, strategy fields, footers, and audit rows with wrapping, flexible minimum widths, and 44-point interactive minimums so Vietnamese and larger system text can reflow without hiding financial constraints.
+- Expanded localization tests for CopyTrade interpolation/safety copy, wrapped TraderCard tests in the real settings boundary, and added CopyTrade to the source-level Pressable/TextInput semantics audit.
+- Verification evidence: strict TypeScript and warning-free Expo lint passed; Jest 20 suites / 92 tests passed; Expo Doctor passed 21/21; web production export passed all 22 routes; Android and iOS production bundles passed. Generated exports were removed after verification.
+- Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles.
+- Next priority: localize and audit AI Intelligence, then continue through the remaining auxiliary research/operations screens; real-device screen-reader/dynamic-type/connectivity/performance verification remains device-dependent.

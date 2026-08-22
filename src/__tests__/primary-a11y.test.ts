@@ -9,6 +9,7 @@ const primaryScreens = [
   'app/ai.tsx',
   'app/market-intelligence.tsx',
   'app/wallet-intelligence.tsx',
+  'app/research-workspace.tsx',
 ];
 
 describe('audited-screen accessibility contract', () => {

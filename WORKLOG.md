@@ -243,3 +243,15 @@
 - Verification evidence: strict TypeScript and warning-free Expo lint passed; Jest 20 suites / 98 tests passed; Expo Doctor passed 21/21; web production export passed all 22 routes; Android and iOS production bundles passed. Generated exports were removed after verification.
 - Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles.
 - Next priority: localize and audit Research Workspace, then Operations; real-device screen-reader/dynamic-type/connectivity/performance verification remains device-dependent.
+
+## 2026-08-22 — Slice 22: localized device-only Research Workspace
+
+- Re-established the clean status/history, durable requirements, tests, and existing bounded device research contracts before auditing Snipe List and Multicharts.
+- Localized all mobile-owned workspace headings, tabs, device-only/no-execution disclosure, candidate and chart counts, exact-mint forms, validation, visual thresholds, notes, chart controls, loading/empty/storage states, and background-monitoring boundary in typed English and Vietnamese.
+- Preserved exact dynamic evidence: token names/symbols/mints, prices, changes, backend errors, candle source/quality, and supported timeframe identifiers remain untranslated.
+- Added header, summary, alert, selected/checked/disabled/busy semantics across tabs, exact-mint inputs, Snipe actions, threshold evidence, timeframe radios, chart refresh/removal, load errors, and local persistence failures.
+- Retained strict authority boundaries: workspace configuration remains device-only and bounded; thresholds evaluate only while open; no synthetic markets, background delivery claim, durable alert mutation, signing, or execution action was introduced.
+- Wrapped SnipeCard tests in the real settings boundary, expanded Vietnamese research interpolation/safety coverage, and added Research Workspace to the source-level Pressable/TextInput semantics audit.
+- Verification evidence: strict TypeScript and warning-free Expo lint passed; Jest 20 suites / 100 tests passed; Expo Doctor passed 21/21; web production export passed all 22 routes; Android and iOS production bundles passed. Generated exports were removed after verification.
+- Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles.
+- Next priority: localize and audit Operations, then perform the final requirement/regression audit while device-only screen-reader/dynamic-type/connectivity/performance evidence remains explicit.

@@ -136,3 +136,15 @@
 - Verification evidence: strict TypeScript and warning-free Expo lint passed; Jest 16 suites / 61 tests passed and exited cleanly; Expo Doctor passed 21/21; web production export passed all 21 routes including `/research-workspace`; Android and iOS production bundles passed.
 - Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles. Generated exports were removed after verification.
 - Next priority: standalone Analytics and Feed Data operational evidence, then full localization/accessibility/offline/performance audits.
+
+## 2026-08-22 — Slice 13: read-only Analytics and Feed Data
+
+- Re-audited the clean mobile history, checklist, tests, and read-only backend instructions plus the desktop Analytics and Feed Data implementations, provider inventory, diagnostics, runtime, and portfolio contracts. Preserved unrelated untracked backend image evidence.
+- Activated Analytics and Feed Data from More through a combined read-only Operations route with direct tab handoff and no inserted runtime fixtures.
+- Analytics derives breadth, positive momentum, liquidity, one-hour volume, fresh pairs, and 30-day historical trader activity from existing real Trending, Gainers, New Pairs, and Top Traders endpoints. Noncanonical token identities are excluded and counted rather than made navigable or silently trusted.
+- Feed Data validates and displays Solana provider health, receiving state, configured state, delivery classification, persisted record counts/freshness, durable-versus-local runtime scope, runtime quality, persistence/observability/replay evidence availability, bounded remediation guidance, and recent durable ingestion jobs.
+- Kept every operational call observational and GET-only. Mobile does not call provider probes, health POSTs, replay routes, incident reconciliation, provider rotation, schedulers, or ingestion mutations, and deliberately omits credentials, raw persisted record tables, and endpoint-control surfaces.
+- Added fail-closed runtime schemas, API routing coverage, evidence-separation schema tests, and an accessible component test proving that configured, receiving, delivery, and persistence states remain distinct.
+- Verification evidence: strict TypeScript and warning-free Expo lint passed; Jest 17 suites / 65 tests passed and exited cleanly; Expo Doctor passed 21/21; web production export passed all 22 routes including `/operations`; Android and iOS production bundles passed.
+- Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles. Generated exports were removed after verification.
+- Next priority: full-screen localization and accessibility audit, followed by offline/recovery and performance/security regression evidence.

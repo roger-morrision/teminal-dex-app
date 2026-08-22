@@ -206,3 +206,32 @@ export const walletHoldingsSchema = z.object({ wallet: z.object({
   address: publicKeyString, label: z.string().optional(), tokens: z.array(z.object({ mint: publicKeyString, symbol: z.string(), name: z.string(), amount: z.number().nonnegative(), uiAmount: z.number().nonnegative(), decimals: z.number().int().nonnegative().max(18), priceUsd: z.number().nonnegative().nullable(), valueUsd: z.number().nonnegative().nullable(), pctOfPortfolio: z.number().nonnegative().max(100) }).passthrough()), totalValueUsd: z.number().nonnegative(), tokenCount: z.number().int().nonnegative(), solBalance: z.number().nonnegative(), solValueUsd: z.number().nonnegative(),
 }).passthrough(), ts: z.number() }).passthrough();
 export type WalletHoldingsResponse = z.infer<typeof walletHoldingsSchema>;
+
+const feedRecordsSchema = z.object({
+  pairs: z.number().int().nonnegative(), transactions: z.number().int().nonnegative(),
+  candles: z.number().int().nonnegative(), total: z.number().int().nonnegative(),
+  lastPersistedAt: z.number().nullable().optional(), persistenceAgeMs: z.number().nonnegative().nullable().optional(),
+  freshness: z.enum(['fresh', 'stale', 'unavailable']).optional(),
+}).passthrough();
+export const feedConnectionsSchema = z.object({
+  success: z.literal(true), chain: z.literal('solana'), generatedAt: z.number(),
+  source: z.literal('runtime_provider_inventory'), runtimeScope: z.enum(['durable-indexer-heartbeat', 'local-process']),
+  healthSummary: z.object({ healthy: z.number().int().nonnegative(), degraded: z.number().int().nonnegative(), unhealthy: z.number().int().nonnegative(), receiving: z.number().int().nonnegative() }),
+  connections: z.array(z.object({
+    id: z.string(), label: z.string(), method: z.enum(['api', 'websocket', 'rpc', 'storage']),
+    status: z.string(), health: z.string(), receiving: z.boolean(), deliveryStatus: z.string(), configured: z.boolean(), records: feedRecordsSchema,
+  }).passthrough()).max(50),
+  ingestionJobs: z.array(z.object({ id: z.string(), jobType: z.string(), providerLabel: z.string(), status: z.string(), tokensProcessed: z.number().int().nonnegative(), tokensFailed: z.number().int().nonnegative(), startedAt: z.union([z.string(), z.date()]) }).passthrough()).max(100),
+}).passthrough();
+export type FeedConnectionsResponse = z.infer<typeof feedConnectionsSchema>;
+
+export const feedDiagnosticsSchema = z.object({
+  generatedAt: z.number(), runtimeScope: z.enum(['durable-indexer-heartbeat', 'local-process']),
+  realtimeEvidence: z.object({ timestamp: z.string().nullable(), timestampValid: z.boolean() }).passthrough(),
+  quality: z.object({ rpc: z.string(), websocket: z.string(), eventPersistence: z.string(), decoder: z.string() }).passthrough(),
+  persistenceEvidence: z.object({ status: z.enum(['complete', 'unavailable']), error: z.string().nullable() }).passthrough(),
+  observabilityEvidence: z.object({ status: z.enum(['complete', 'unavailable']), error: z.string().nullable() }).passthrough(),
+  replayEvidence: z.object({ status: z.enum(['complete', 'unavailable']), error: z.string().nullable() }).passthrough(),
+  actions: z.array(z.string()).max(100), degraded: z.boolean(),
+}).passthrough();
+export type FeedDiagnosticsResponse = z.infer<typeof feedDiagnosticsSchema>;

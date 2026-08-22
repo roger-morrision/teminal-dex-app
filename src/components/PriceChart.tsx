@@ -3,9 +3,9 @@ import Svg, { Defs, LinearGradient, Path, Stop } from 'react-native-svg';
 import type { OhlcvResponse } from '@/api/schema';
 import { colors } from '@/theme';
 
-export function PriceChart({ data }: { data: OhlcvResponse }) {
+export function PriceChart({ data, compact = false }: { data: OhlcvResponse; compact?: boolean }) {
   const { width } = useWindowDimensions();
-  const chartWidth = Math.max(240, width - 32); const height = 190;
+  const chartWidth = Math.max(240, width - (compact ? 64 : 32)); const height = compact ? 150 : 190;
   const candles = data.candles.slice(-120);
   if (candles.length < 2) return <View style={styles.empty}><Text style={styles.emptyText}>Not enough verified candles for this timeframe.</Text></View>;
   const closes = candles.map((item) => item.close); const min = Math.min(...closes); const max = Math.max(...closes); const span = max - min || 1;

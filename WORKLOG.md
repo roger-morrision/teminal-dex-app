@@ -124,3 +124,15 @@
 - Verification evidence: strict TypeScript and warning-free Expo lint passed; Jest 14 suites / 55 tests passed; Expo Doctor passed 21/21; web production export passed all 20 routes including `/wallet-intelligence`; Android and iOS production bundles passed.
 - Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles. Generated exports were removed after verification.
 - Next priority: Snipe List and Multicharts using durable local research state and existing real token/chart contracts, without automatic execution.
+
+## 2026-08-22 — Slice 12: local research workspace with real markets
+
+- Re-audited the clean mobile state and authoritative backend instructions, desktop Snipe List/Multicharts behavior, absence of a durable Snipe API, and existing real token-detail/OHLCV contracts.
+- Activated Snipe List and Multicharts from More through one Research Workspace route. Device-only configuration is explicit and all market identity, price, change, candle, source, and quality values come from validated backend responses.
+- Snipe List stores at most 20 deduplicated exact mints, sanitized 120-character notes, positive bounded visual-above/below thresholds, and added timestamps. It refreshes real token evidence every 30 seconds and evaluates thresholds only while open.
+- Refused false notification semantics: local threshold hits are labeled visual-only, no operating-system notification permission is requested, and the screen directs durable database rules/delivery evidence to verified-wallet Monitor alerts. No quote, transaction, signing, or automatic execution action exists.
+- Multicharts stores at most four unique exact token mints and one of five supported backend timeframes, starts empty rather than inserting hardcoded markets, and renders vertically contained real OHLCV panels with token identity, independent refresh/error states, and source/quality legends.
+- Added a normalized research store with exact-address filtering, deduplication, threshold/note bounds, safe timeframe fallback, and privacy-reset integration. Fixed the new component test harness so React Query leaves no Jest timer/open handle.
+- Verification evidence: strict TypeScript and warning-free Expo lint passed; Jest 16 suites / 61 tests passed and exited cleanly; Expo Doctor passed 21/21; web production export passed all 21 routes including `/research-workspace`; Android and iOS production bundles passed.
+- Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles. Generated exports were removed after verification.
+- Next priority: standalone Analytics and Feed Data operational evidence, then full localization/accessibility/offline/performance audits.

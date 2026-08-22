@@ -15,10 +15,10 @@ describe('backend client routing', () => {
   });
 
   it('encodes search terms and validates token detail', async () => {
-    jest.mocked(fetch).mockResolvedValueOnce(jsonResponse({ tokens: [token], source: 'search', dataQuality: 'provider_live' })).mockResolvedValueOnce(jsonResponse({ token, receivedAt: 1 }));
-    await searchTokens('DEX token'); await fetchTokenDetail('mint');
+    const address = '11111111111111111111111111111111'; jest.mocked(fetch).mockResolvedValueOnce(jsonResponse({ tokens: [token], source: 'search', dataQuality: 'provider_live' })).mockResolvedValueOnce(jsonResponse({ token: { ...token, address }, receivedAt: 1 }));
+    await searchTokens('DEX token'); await fetchTokenDetail(address);
     expect(jest.mocked(fetch).mock.calls[0]?.[0]).toBe('https://terminal.example/api/search?q=DEX+token');
-    expect(jest.mocked(fetch).mock.calls[1]?.[0]).toBe('https://terminal.example/api/token/mint');
+    expect(jest.mocked(fetch).mock.calls[1]?.[0]).toBe(`https://terminal.example/api/token/${address}`);
   });
 
   it('rejects an invalid configured origin before a request', async () => {
@@ -37,10 +37,11 @@ describe('backend client routing', () => {
   });
 
   it('routes token panels and chart timeframes without leaking parameters', async () => {
+    const address = '11111111111111111111111111111111';
     jest.mocked(fetch).mockResolvedValueOnce(jsonResponse({ pairs: [], dataQuality: 'unavailable' })).mockResolvedValueOnce(jsonResponse({ candles: [], tf: '4h', source: 'none', dataQuality: 'unavailable' }));
-    await fetchTokenPanel('mint', 'pairs'); await fetchOhlcv('mint', '4h');
-    expect(jest.mocked(fetch).mock.calls[0]?.[0]).toBe('https://terminal.example/api/token/mint/pairs');
-    expect(jest.mocked(fetch).mock.calls[1]?.[0]).toBe('https://terminal.example/api/token/mint/ohlcv?tf=4h');
+    await fetchTokenPanel(address, 'pairs'); await fetchOhlcv(address, '4h');
+    expect(jest.mocked(fetch).mock.calls[0]?.[0]).toBe(`https://terminal.example/api/token/${address}/pairs`);
+    expect(jest.mocked(fetch).mock.calls[1]?.[0]).toBe(`https://terminal.example/api/token/${address}/ohlcv?tf=4h`);
   });
 
   it('requests portfolio and PnL evidence with encoded bounded parameters', async () => {

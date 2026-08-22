@@ -1,0 +1,19 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { isSolanaAddress } from '@/security/input';
+
+export type ResearchTimeframe = '5m' | '15m' | '1h' | '4h' | '1d';
+export type SnipeEntry = { address: string; notes: string; above: number | null; below: number | null; addedAt: number };
+export type ResearchWorkspace = { snipe: SnipeEntry[]; charts: string[]; timeframe: ResearchTimeframe };
+export const RESEARCH_STORAGE_KEY = 'terminal-dex:research-workspace:v1';
+export const MAX_SNIPE_ENTRIES = 20;
+const frames = new Set<ResearchTimeframe>(['5m', '15m', '1h', '4h', '1d']);
+const empty: ResearchWorkspace = { snipe: [], charts: [], timeframe: '15m' };
+
+function threshold(value: unknown): number | null { return typeof value === 'number' && Number.isFinite(value) && value > 0 && value <= 1e12 ? value : null; }
+function entry(value: unknown): SnipeEntry | null { if (!value || typeof value !== 'object') return null; const item = value as Record<string, unknown>; if (!isSolanaAddress(item.address)) return null; return { address: item.address, notes: typeof item.notes === 'string' ? item.notes.replace(/[\u0000-\u001f\u007f]/g, '').trim().slice(0, 120) : '', above: threshold(item.above), below: threshold(item.below), addedAt: typeof item.addedAt === 'number' && Number.isFinite(item.addedAt) ? item.addedAt : 0 }; }
+export async function loadResearchWorkspace(): Promise<ResearchWorkspace> { try { const parsed = JSON.parse(await AsyncStorage.getItem(RESEARCH_STORAGE_KEY) ?? '{}') as Record<string, unknown>; const snipe = Array.isArray(parsed.snipe) ? [...new Map(parsed.snipe.map(entry).filter((item): item is SnipeEntry => Boolean(item)).map((item) => [item.address, item])).values()].slice(0, MAX_SNIPE_ENTRIES) : []; const charts = Array.isArray(parsed.charts) ? [...new Set(parsed.charts.filter(isSolanaAddress))].slice(0, 4) : []; const timeframe = frames.has(parsed.timeframe as ResearchTimeframe) ? parsed.timeframe as ResearchTimeframe : '15m'; return { snipe, charts, timeframe }; } catch { return empty; } }
+export async function saveResearchWorkspace(value: ResearchWorkspace): Promise<void> { const safe: ResearchWorkspace = { snipe: value.snipe.map(entry).filter((item): item is SnipeEntry => Boolean(item)).slice(0, MAX_SNIPE_ENTRIES), charts: [...new Set(value.charts.filter(isSolanaAddress))].slice(0, 4), timeframe: frames.has(value.timeframe) ? value.timeframe : '15m' }; await AsyncStorage.setItem(RESEARCH_STORAGE_KEY, JSON.stringify(safe)); }
+export function addSnipeEntry(current: ResearchWorkspace, address: string): ResearchWorkspace { if (!isSolanaAddress(address)) throw new Error('Enter an exact 32-byte Solana token address.'); const existing = current.snipe.find((item) => item.address === address); return { ...current, snipe: [existing ?? { address, notes: '', above: null, below: null, addedAt: Date.now() }, ...current.snipe.filter((item) => item.address !== address)].slice(0, MAX_SNIPE_ENTRIES) }; }
+export function updateSnipeEntry(current: ResearchWorkspace, address: string, patch: Partial<Pick<SnipeEntry, 'notes' | 'above' | 'below'>>): ResearchWorkspace { return { ...current, snipe: current.snipe.map((item) => item.address === address ? entry({ ...item, ...patch }) ?? item : item) }; }
+export function removeSnipeEntry(current: ResearchWorkspace, address: string): ResearchWorkspace { return { ...current, snipe: current.snipe.filter((item) => item.address !== address) }; }
+export function setChartSlot(current: ResearchWorkspace, index: number, address: string): ResearchWorkspace { if (!Number.isInteger(index) || index < 0 || index > 3 || !isSolanaAddress(address)) throw new Error('Choose a valid chart slot and exact Solana token address.'); const next = [...current.charts]; next[index] = address; return { ...current, charts: next.filter((item, itemIndex) => itemIndex === index || item !== address).slice(0, 4) }; }

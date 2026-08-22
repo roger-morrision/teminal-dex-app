@@ -52,10 +52,12 @@ export async function searchTokens(queryText: string, signal?: AbortSignal): Pro
 }
 
 export async function fetchTokenDetail(address: string, signal?: AbortSignal): Promise<TokenDetailResponse> {
+  if (!isSolanaAddress(address)) throw new ApiError('Token address must decode to exactly 32 bytes.');
   const response = await fetch(`${getApiOrigin()}/api/token/${encodeURIComponent(address)}`, { headers: { Accept: 'application/json' }, signal });
   if (!response.ok) throw new ApiError(`Token detail request failed (${response.status}).`, response.status);
   const result = tokenDetailSchema.safeParse(await response.json());
   if (!result.success) throw new ApiError('Backend returned an incompatible token detail response.');
+  if (result.data.token && result.data.token.address !== address) throw new ApiError('Backend token identity did not match the requested address.');
   return result.data;
 }
 
@@ -64,6 +66,7 @@ type TokenPanelResponse = { holders: HoldersResponse; txns: TransactionsResponse
 const panelSchemas = { holders: holdersSchema, txns: transactionsSchema, risk: riskSchema, narrative: narrativeSchema, 'smart-money': smartMoneySchema, pairs: pairsSchema } as const;
 
 export async function fetchTokenPanel<T extends TokenPanel>(address: string, panel: T, signal?: AbortSignal): Promise<TokenPanelResponse[T]> {
+  if (!isSolanaAddress(address)) throw new ApiError('Token address must decode to exactly 32 bytes.');
   const response = await fetch(`${getApiOrigin()}/api/token/${encodeURIComponent(address)}/${panel}`, { headers: { Accept: 'application/json' }, signal });
   if (!response.ok) throw new ApiError(`${panel} request failed (${response.status}).`, response.status);
   const result = panelSchemas[panel].safeParse(await response.json());
@@ -72,6 +75,7 @@ export async function fetchTokenPanel<T extends TokenPanel>(address: string, pan
 }
 
 export async function fetchOhlcv(address: string, timeframe: '5m' | '15m' | '1h' | '4h' | '1d', signal?: AbortSignal): Promise<OhlcvResponse> {
+  if (!isSolanaAddress(address)) throw new ApiError('Token address must decode to exactly 32 bytes.');
   const query = new URLSearchParams({ tf: timeframe });
   const response = await fetch(`${getApiOrigin()}/api/token/${encodeURIComponent(address)}/ohlcv?${query}`, { headers: { Accept: 'application/json' }, signal });
   if (!response.ok) throw new ApiError(`Chart request failed (${response.status}).`, response.status);

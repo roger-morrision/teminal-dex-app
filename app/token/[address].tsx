@@ -16,7 +16,9 @@ import {
   tokenSchema,
   type MarketToken,
   type NarrativeResponse,
+  type SecurityHistoryResponse,
   type SmartMoneyResponse,
+  type SnipersResponse,
   type TokenDetailResponse,
 } from "@/api/schema";
 import { PriceChart } from "@/components/PriceChart";
@@ -83,9 +85,20 @@ export default function TokenDetail() {
     queryFn: ({ signal }) => fetchTokenPanel(address, "manipulation", signal),
     enabled: validAddress && tab === "trades",
   });
+  const snipers = useQuery({
+    queryKey: ["token-panel", address, "snipers"],
+    queryFn: ({ signal }) => fetchTokenPanel(address, "snipers", signal),
+    enabled: validAddress && tab === "trades",
+  });
   const risk = useQuery({
     queryKey: ["token-panel", address, "risk"],
     queryFn: ({ signal }) => fetchTokenPanel(address, "risk", signal),
+    enabled: validAddress && tab === "risk",
+  });
+  const securityHistory = useQuery({
+    queryKey: ["token-panel", address, "security-history"],
+    queryFn: ({ signal }) =>
+      fetchTokenPanel(address, "security-history", signal),
     enabled: validAddress && tab === "risk",
   });
   const narrative = useQuery({
@@ -277,16 +290,16 @@ export default function TokenDetail() {
                         detail={`${short(node.address)} · ${node.source}`}
                       />
                     ))}
-                  {Object.entries(data.providerEvidence).slice(0, 10).map(
-                    ([provider, evidence]) => (
+                  {Object.entries(data.providerEvidence)
+                    .slice(0, 10)
+                    .map(([provider, evidence]) => (
                       <DataRow
                         key={provider}
                         title={provider}
                         value={evidence.status}
                         detail={evidence.limitation ?? evidence.role}
                       />
-                    ),
-                  )}
+                    ))}
                   <Limitation
                     text={t("clusterLimitation", {
                       history: data.completeness.transactionHistory,
@@ -384,38 +397,48 @@ export default function TokenDetail() {
                 </>
               )}
             </AsyncPanel>
+            <AsyncPanel query={snipers}>
+              {(data) => <EarlyBuyerEvidence data={data} />}
+            </AsyncPanel>
           </>
         ) : null}
         {tab === "risk" ? (
-          <AsyncPanel query={risk}>
-            {(data) => (
-              <>
-                <View style={styles.score}>
-                  <Text style={styles.scoreValue}>{data.riskScore.score}</Text>
-                  <View>
-                    <Text style={styles.scoreLabel}>{t("safetyScore")}</Text>
-                    <Text style={styles.riskLevel}>
-                      {data.riskScore.riskLevel}
+          <>
+            <AsyncPanel query={risk}>
+              {(data) => (
+                <>
+                  <View style={styles.score}>
+                    <Text style={styles.scoreValue}>
+                      {data.riskScore.score}
                     </Text>
+                    <View>
+                      <Text style={styles.scoreLabel}>{t("safetyScore")}</Text>
+                      <Text style={styles.riskLevel}>
+                        {data.riskScore.riskLevel}
+                      </Text>
+                    </View>
                   </View>
-                </View>
-                {data.riskScore.factors.map((factor) => (
-                  <DataRow
-                    key={`${factor.name}-${factor.scoreImpact}`}
-                    title={factor.name}
-                    value={factor.impact}
-                    detail={factor.description}
-                    tone={
-                      factor.impact === "CRITICAL" || factor.impact === "HIGH"
-                        ? "negative"
-                        : undefined
-                    }
-                  />
-                ))}
-                <Limitation text={t("riskLimitation")} />
-              </>
-            )}
-          </AsyncPanel>
+                  {data.riskScore.factors.map((factor) => (
+                    <DataRow
+                      key={`${factor.name}-${factor.scoreImpact}`}
+                      title={factor.name}
+                      value={factor.impact}
+                      detail={factor.description}
+                      tone={
+                        factor.impact === "CRITICAL" || factor.impact === "HIGH"
+                          ? "negative"
+                          : undefined
+                      }
+                    />
+                  ))}
+                  <Limitation text={t("riskLimitation")} />
+                </>
+              )}
+            </AsyncPanel>
+            <AsyncPanel query={securityHistory}>
+              {(data) => <SecurityHistoryEvidence data={data} />}
+            </AsyncPanel>
+          </>
         ) : null}
         {tab === "intel" ? (
           <IntelPanel narrative={narrative} smartMoney={smartMoney} />
@@ -447,6 +470,67 @@ export default function TokenDetail() {
         ) : null}
       </ScrollView>
     </SafeAreaView>
+  );
+}
+
+export function EarlyBuyerEvidence({ data }: { data: SnipersResponse }) {
+  const { t } = useSettings();
+  return (
+    <>
+      <Text style={styles.sectionTitle}>{t("earlyBuyers")}</Text>
+      <EvidenceLine
+        label={t("observedEarlyBuyers")}
+        value={String(data.snipers.length)}
+      />
+      {data.snipers.map((item) => (
+        <DataRow
+          key={`${item.address}-${item.boughtAt}`}
+          title={short(item.address)}
+          value={t("secondsAfterPair", { seconds: item.delaySec.toFixed(1) })}
+          detail={new Date(item.boughtAt).toLocaleString()}
+        />
+      ))}
+      <Limitation text={t("earlyBuyerLimitation")} />
+    </>
+  );
+}
+
+export function SecurityHistoryEvidence({
+  data,
+}: {
+  data: SecurityHistoryResponse;
+}) {
+  const { t } = useSettings();
+  return (
+    <>
+      <Text style={styles.sectionTitle}>{t("securityHistory")}</Text>
+      <EvidenceLine label={t("dataQuality")} value={data.dataQuality} />
+      <EvidenceLine label={t("observedSnapshots")} value={String(data.count)} />
+      {data.snapshots.slice(0, 10).map((snapshot) => {
+        const flags = snapshot.evidence.securityRiskFlags ?? [];
+        const authority = snapshot.evidence.isMintRenounced
+          ? t("mintRenounced")
+          : t("mintAuthorityPresent");
+        return (
+          <DataRow
+            key={snapshot.id}
+            title={`${snapshot.source} · ${new Date(snapshot.observedAt).toLocaleString()}`}
+            value={
+              snapshot.evidence.isHoneypot === true
+                ? t("honeypotObserved")
+                : flags.join(", ") || t("noProviderFlags")
+            }
+            detail={`${authority} · ${snapshot.evidence.isFreezeRenounced ? t("freezeRenounced") : t("freezeAuthorityPresent")}`}
+            tone={
+              snapshot.evidence.isHoneypot === true || flags.length
+                ? "negative"
+                : undefined
+            }
+          />
+        );
+      })}
+      <Limitation text={t("securityHistoryLimitation")} />
+    </>
   );
 }
 

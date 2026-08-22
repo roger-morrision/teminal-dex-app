@@ -52,6 +52,13 @@ describe('backend client routing', () => {
     expect(jest.mocked(fetch).mock.calls.map((call) => call[0])).toEqual([`https://terminal.example/api/token/${address}/bubble`, `https://terminal.example/api/token/${address}/manipulation`]);
   });
 
+  it('routes unique early-buyer and historical security evidence contracts', async () => {
+    const address = '11111111111111111111111111111111'; const evidence = { mintAuthority: null, freezeAuthority: null, isMintRenounced: true, isFreezeRenounced: true, holderCount: null, buyTax: null, sellTax: null, isHoneypot: null, isLpLocked: null, devHoldingsPct: null, topHolderPct: null, liquidityLockPct: null };
+    jest.mocked(fetch).mockResolvedValueOnce(jsonResponse({ snipers: [], ts: 1 })).mockResolvedValueOnce(jsonResponse({ snapshots: [{ id: 's1', source: 'provider', observedAt: 1, evidence }], count: 1, dataQuality: 'provider_backed', synthetic: false }));
+    await fetchTokenPanel(address, 'snipers'); await fetchTokenPanel(address, 'security-history');
+    expect(jest.mocked(fetch).mock.calls.map((call) => call[0])).toEqual([`https://terminal.example/api/token/${address}/snipers`, `https://terminal.example/api/token/${address}/security-history`]);
+  });
+
   it('requests portfolio and PnL evidence with encoded bounded parameters', async () => {
     jest.mocked(fetch).mockResolvedValueOnce(jsonResponse({ success: true, timestamp: 1, data: { address: 'wallet', timeframe: '30d', holdings: [], allocation: {}, totalValueUsd: 0, tokenCount: 0, riskScore: null, performance: null }, provenance: { source: 'provider_backed_wallet_holdings', observedAt: null, dataQuality: 'unavailable', derived: [], unavailable: ['cost_basis'] } })).mockResolvedValueOnce(jsonResponse({ pnl: null, ts: 1 }));
     await fetchPortfolioAnalytics('wallet', '30d'); await fetchWalletPnl('wallet');

@@ -63,6 +63,9 @@ export type HoldersResponse = z.infer<typeof holdersSchema>;
 export const transactionsSchema = z.object({ txns: z.array(z.object({ signature: z.string(), timestamp: z.number(), type: z.enum(['buy', 'sell']), amount: z.number(), amountUsd: z.number(), price: z.number().nullable(), feePayer: z.string().nullable(), source: z.string(), finality: z.string() }).passthrough()).max(MAX_PAGE_ROWS), dataQuality: z.string(), quality: z.object({ freshness: z.string().optional(), completeHistory: z.boolean().optional() }).passthrough().optional() }).passthrough();
 export type TransactionsResponse = z.infer<typeof transactionsSchema>;
 
+export const snipersSchema = z.object({ snipers: z.array(z.object({ address: publicKeyString, boughtAt: z.number().nonnegative(), delaySec: z.number().nonnegative().max(300) }).passthrough()).max(10), ts: z.number().optional() }).passthrough();
+export type SnipersResponse = z.infer<typeof snipersSchema>;
+
 const providerEvidenceStatusSchema = z.enum(['success', 'empty', 'unavailable', 'not_configured', 'not_queried', 'error']);
 const boundedProviderStatusMapSchema = z.record(z.string(), providerEvidenceStatusSchema).refine((value) => Object.keys(value).length <= 10, 'Too many provider statuses.');
 export const bubbleGraphSchema = z.object({
@@ -90,6 +93,16 @@ export type ManipulationResponse = z.infer<typeof manipulationSchema>;
 
 export const riskSchema = z.object({ riskScore: z.object({ score: z.number(), riskLevel: z.string(), factors: z.array(z.object({ name: z.string(), description: z.string(), impact: z.string(), scoreImpact: z.number() }).passthrough()), warnings: z.array(z.string()), recommendations: z.array(z.string()) }).passthrough(), riskEvidence: z.record(z.string(), z.unknown()).optional() }).passthrough();
 export type RiskResponse = z.infer<typeof riskSchema>;
+
+const securitySnapshotEvidenceSchema = z.object({
+  mintAuthority: z.string().max(100).nullable(), freezeAuthority: z.string().max(100).nullable(), isMintRenounced: z.boolean(), isFreezeRenounced: z.boolean(),
+  holderCount: z.number().int().nonnegative().nullable(), buyTax: z.number().nonnegative().nullable(), sellTax: z.number().nonnegative().nullable(), isHoneypot: z.boolean().nullable(),
+  isLpLocked: z.boolean().nullable(), devHoldingsPct: z.number().min(0).max(100).nullable(), topHolderPct: z.number().min(0).max(100).nullable(), liquidityLockPct: z.number().min(0).max(100).nullable(),
+  tokenProgram: z.string().max(100).nullable().optional(), isToken2022: z.boolean().optional(), transferFeeBps: z.number().int().nonnegative().max(10_000).nullable().optional(),
+  permanentDelegate: z.string().max(100).nullable().optional(), transferHookProgramId: z.string().max(100).nullable().optional(), securityRiskFlags: z.array(z.string().max(100)).max(20).optional(),
+}).passthrough();
+export const securityHistorySchema = z.object({ snapshots: z.array(z.object({ id: z.string().max(200), source: z.string().max(100), observedAt: z.number().nonnegative(), evidence: securitySnapshotEvidenceSchema }).passthrough()).max(50), count: z.number().int().nonnegative().max(50), dataQuality: z.enum(['provider_backed', 'unavailable']), synthetic: z.literal(false) }).passthrough().refine((value) => value.count === value.snapshots.length, 'Security snapshot count mismatch.');
+export type SecurityHistoryResponse = z.infer<typeof securityHistorySchema>;
 
 export const narrativeSchema = z.object({ narrative: z.object({ primary: z.string(), secondary: z.array(z.string()), confidence: z.number(), sources: z.array(z.string()), description: z.string() }).passthrough(), narrativeEvidence: z.record(z.string(), z.unknown()).optional() }).passthrough();
 export type NarrativeResponse = z.infer<typeof narrativeSchema>;

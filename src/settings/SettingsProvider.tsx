@@ -289,6 +289,21 @@ const en = {
   observedFlag: "OBSERVED FLAG",
   behaviorLimitation:
     "Heuristics are indicators, not proof. Unavailable analysis: {unavailable}.",
+  earlyBuyers: "Observed early buyers",
+  observedEarlyBuyers: "Detected rows",
+  secondsAfterPair: "{seconds}s after pair",
+  earlyBuyerLimitation:
+    "Provider-derived buys within five minutes of the observed pair creation time. A detected row is not proof of malicious intent; an empty result is not proof that early buying was absent.",
+  securityHistory: "Security history",
+  observedSnapshots: "Observed snapshots",
+  mintRenounced: "mint renounced",
+  mintAuthorityPresent: "mint authority present",
+  freezeRenounced: "freeze renounced",
+  freezeAuthorityPresent: "freeze authority present",
+  honeypotObserved: "honeypot flag observed",
+  noProviderFlags: "no provider flags",
+  securityHistoryLimitation:
+    "Provider-backed persisted snapshots show observations over time, not continuous coverage or a guarantee of safety. Missing snapshots and unchanged flags are not evidence of absence.",
   safetyScore: "SAFETY SCORE",
   riskLimitation:
     "Risk scoring is decision support, not a guarantee. Missing inputs reduce confidence and execution remains locked.",
@@ -971,6 +986,21 @@ const vi: { [K in TranslationKey]: string } = {
   observedFlag: "CỜ QUAN SÁT",
   behaviorLimitation:
     "Heuristic là chỉ báo, không phải bằng chứng kết luận. Phân tích chưa có: {unavailable}.",
+  earlyBuyers: "Người mua sớm được quan sát",
+  observedEarlyBuyers: "Dòng phát hiện",
+  secondsAfterPair: "{seconds} giây sau khi tạo cặp",
+  earlyBuyerLimitation:
+    "Các lệnh mua do nhà cung cấp ghi nhận trong vòng năm phút sau thời điểm tạo cặp được quan sát. Dòng được phát hiện không chứng minh ý đồ xấu; kết quả trống không chứng minh không có mua sớm.",
+  securityHistory: "Lịch sử bảo mật",
+  observedSnapshots: "Snapshot được quan sát",
+  mintRenounced: "quyền mint đã từ bỏ",
+  mintAuthorityPresent: "quyền mint còn tồn tại",
+  freezeRenounced: "quyền đóng băng đã từ bỏ",
+  freezeAuthorityPresent: "quyền đóng băng còn tồn tại",
+  honeypotObserved: "đã quan sát cờ honeypot",
+  noProviderFlags: "không có cờ từ nhà cung cấp",
+  securityHistoryLimitation:
+    "Snapshot bền vững từ nhà cung cấp thể hiện quan sát theo thời gian, không phải phạm vi liên tục hay bảo đảm an toàn. Snapshot bị thiếu và cờ không đổi không chứng minh rủi ro không tồn tại.",
   safetyScore: "ĐIỂM AN TOÀN",
   riskLimitation:
     "Điểm rủi ro chỉ hỗ trợ quyết định, không phải bảo đảm. Thiếu đầu vào làm giảm độ tin cậy và thực thi vẫn bị khóa.",

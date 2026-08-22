@@ -382,3 +382,14 @@
 - Verification evidence: strict TypeScript and warning-free Expo lint passed; Jest 26 suites / 123 tests passed; Expo Doctor passed 21/21; web production export passed all 22 routes; Android and iOS production bundles passed. Generated exports were removed after verification.
 - Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles.
 - Next priority: continue auditing newly landed backend contracts and independently closable mobile evidence gaps; transaction/provider and physical-device blockers remain explicit.
+
+## 2026-08-22 — Slice 35: token early-buyer and security-history evidence
+
+- Compared the complete backend token route inventory with mobile panels and found two unique omitted contracts: `/api/token/[address]/snipers` and `/api/token/[address]/security-history`. The aggregate enrichment route duplicates already normalized mobile panels and was deliberately not fetched, avoiding redundant bandwidth and conflicting evidence.
+- Added bounded fail-closed contracts and exact client routing for at most ten exact-wallet early-buyer observations and at most fifty non-synthetic provider security snapshots. Historical snapshot counts must match the returned collection, authorities/flags are bounded, and malformed identities or synthetic history are rejected.
+- Extended Trades with provider-derived buys observed within five minutes of pair creation, exact delay/timestamp evidence, and explicit language that detection is not proof of malicious intent while an empty result is not proof of absence.
+- Extended Risk with provider-backed historical security observations, mint/freeze authority state, honeypot/risk flags, source/time/quality, and explicit non-continuous-coverage/no-safety-guarantee limitations.
+- Added direct rendering tests for both disclosures, schema adversarial/budget tests, and exact endpoint-routing coverage. No explorer, alert, trading, or transaction authority was added.
+- Verification evidence: strict TypeScript and warning-free Expo lint passed; Jest 27 suites / 128 tests passed; Expo Doctor passed 21/21; web production export passed all 22 routes; Android and iOS production bundles passed. Generated exports were removed after verification.
+- Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles.
+- Next priority: continue comparing authoritative backend route families against implemented mobile evidence while retaining transaction/provider and physical-device blockers.

@@ -100,3 +100,15 @@
 - Verification evidence: strict TypeScript and Expo lint passed; Jest 11 suites / 43 tests passed; Expo Doctor passed 21/21; Expo config introspection confirmed `NSAllowsArbitraryLoads=false`, `android:usesCleartextTraffic=false`, and `android:allowBackup=false`; web export passed all 18 routes including `/settings`; Android and iOS production bundles passed.
 - Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles. Generated export directories were removed after verification.
 - Next priority: implement the highest-value remaining More destination whose read-only backend contract can be proven without enabling unsafe execution, then expand full-screen localization and device accessibility evidence.
+
+## 2026-08-22 — Slice 10: signature-backed Market Intelligence
+
+- Re-audited the clean mobile state and read-only backend instructions/contracts for Signals, Heatmap, Claim Monitor, persisted event pagination, market trust exclusion, RPC health, and claim journaling.
+- Activated Signals, Heatmap, and Claim Monitor from More through one dense Market Intelligence route; each More entry opens its intended tab and retains the approved catalog labels.
+- Signals supports 24-hour/7-day windows, bounded server type filters, opaque cursor pagination, ingestion/provider/freshness evidence, deduplication, signature/source display, and exact 32-byte mint detail handoff. No CSV download, external link, evaluator, or transaction action is exposed.
+- Heatmap uses only backend-filtered trustworthy Solana rows, orders tiles by reported 24-hour volume, colors by reported change, displays liquidity/trust flags and inclusion/exclusion counts, and hands off only validated mint addresses.
+- Claim Monitor displays RPC health, scanned/detected/first/unpaid counts, transaction signatures, parsed SOL amounts, and confirmed/detected/fake state without opening backend-supplied URLs. It cannot claim, sign, move funds, or deliver messages.
+- Added fail-closed runtime schemas and a degraded-evidence reader: structurally valid 503 payloads remain visible as unavailable/degraded evidence, while incompatible payloads still fail closed. All mobile Market Intelligence calls are GET-only.
+- Verification evidence: strict TypeScript and warning-free Expo lint passed; Jest 12 suites / 49 tests passed; Expo Doctor passed 21/21; web production export passed all 19 routes including `/market-intelligence`; Android and iOS production bundles passed.
+- Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles. Generated exports were removed after verification.
+- Next priority: Smart Money and Wallet Tracker using provider/indexed wallet evidence, while preserving verified ownership and no automatic execution boundaries.

@@ -1,4 +1,4 @@
-import { createPausedCopyTradeConfig, createUserAlert, fetchAiPaperReport, fetchAiPlatform, fetchAiRecommendations, fetchAlertDeliveries, fetchCopyExecutions, fetchCopyTradeConfigs, fetchCopyTradeHealth, fetchDiscovery, fetchMonitorAlerts, fetchOhlcv, fetchPortfolioAnalytics, fetchSwapQuote, fetchTokenDetail, fetchTokenPanel, fetchTopTraders, fetchTrenches, fetchUserAlerts, fetchWalletPnl, getApiOrigin, pauseCopyTradeConfig, searchTokens, setUserAlertActive, type CreateCopyTradeInput } from '@/api/client';
+import { createPausedCopyTradeConfig, createUserAlert, fetchAiPaperReport, fetchAiPlatform, fetchAiRecommendations, fetchAlertDeliveries, fetchClaimMonitor, fetchCopyExecutions, fetchCopyTradeConfigs, fetchCopyTradeHealth, fetchDiscovery, fetchHeatmap, fetchMonitorAlerts, fetchOhlcv, fetchPortfolioAnalytics, fetchSignals, fetchSwapQuote, fetchTokenDetail, fetchTokenPanel, fetchTopTraders, fetchTrenches, fetchUserAlerts, fetchWalletPnl, getApiOrigin, pauseCopyTradeConfig, searchTokens, setUserAlertActive, type CreateCopyTradeInput } from '@/api/client';
 
 const token = { id: 'pair', symbol: 'DEX', name: 'Terminal', address: 'mint', pairAddress: 'pair', dex: 'raydium', quoteSymbol: 'SOL', price: 1, marketCap: 10, liquidity: 5, volume24h: 4, volume1h: 2, change24h: 3, change1h: 1, txns5m: { buys: 1, sells: 0 }, ageLabel: '1h', ageMinutes: 60 };
 const jsonResponse = (body: unknown, ok = true, status = 200) => ({ ok, status, json: jest.fn().mockResolvedValue(body) }) as unknown as Response;
@@ -86,5 +86,13 @@ describe('backend client routing', () => {
     await fetchAiRecommendations(); await fetchAiPaperReport(); await fetchAiPlatform();
     expect(jest.mocked(fetch).mock.calls.map((call) => call[0])).toEqual(['https://terminal.example/api/ai/recommendations?view=public&limit=50', 'https://terminal.example/api/ai/paper-trading?view=public', 'https://terminal.example/api/ai/platform']);
     expect(jest.mocked(fetch).mock.calls.every((call) => !call[1]?.method || call[1]?.method === 'GET')).toBe(true);
+  });
+
+  it('routes read-only market intelligence with bounded filters and accepts explicit degraded evidence', async () => {
+    const address = '11111111111111111111111111111111';
+    jest.mocked(fetch).mockResolvedValueOnce(jsonResponse({ signals: [], fetchedAt: 1, recordCount: 0, totalCount: 0, hasMore: false, nextBefore: null, nextCursor: null, counts: {}, source: 'database', providers: [], dataQuality: 'unavailable', reason: 'No evidence', freshness: { isStale: true, staleAfterMs: 120000 }, requestId: 'r' }, false, 503)).mockResolvedValueOnce(jsonResponse({ heatmap: [], fetchedAt: 1, recordCount: 0, providers: [], source: 'database', trustSummary: { warningRecordCount: 0, lowLiquidityCount: 0, noPriceCount: 0, transactionCountUnavailable: 0, suspiciousMetadataCount: 0, nonCanonicalMintCount: 0, incompleteMetricCount: 0, inputRecordCount: 0, excludedRecordCount: 0 }, freshness: { isStale: true, staleAfterMs: 300000 }, error: 'database_read_unavailable', reason: 'Retry' }, false, 503)).mockResolvedValueOnce(jsonResponse({ generatedAt: 1, health: 'unhealthy', source: 'solana-rpc', mode: 'rpc-polling', programId: address, programIds: [address], rpcEndpoint: 'unavailable', signaturesScanned: 0, claimsDetected: 0, firstClaims: 0, fakeClaims: 0, events: [], error: 'RPC unavailable' }, false, 503));
+    await fetchSignals({ hours: 24, type: 'Whale Move', cursor: 'opaque_cursor' }); await fetchHeatmap(); const claim = await fetchClaimMonitor();
+    expect(jest.mocked(fetch).mock.calls.map((call) => call[0])).toEqual(['https://terminal.example/api/signals?limit=40&hours=24&type=Whale+Move&cursor=opaque_cursor', 'https://terminal.example/api/heatmap', 'https://terminal.example/api/claim-monitor?limit=30']);
+    expect(claim.health).toBe('unhealthy'); expect(jest.mocked(fetch).mock.calls.every((call) => !call[1]?.method || call[1]?.method === 'GET')).toBe(true);
   });
 });

@@ -24,11 +24,14 @@ Status legend: `[x]` verified, `[ ]` incomplete, `[~]` intentionally visible but
 - [x] Portfolio and analytics use provider-backed holdings, explicit watch-only versus verified ownership, allocation/risk evidence, and truthful realized/unavailable PnL provenance.
 - [~] CopyTrade provides provenance-aware Top Traders rankings, verified-wallet durable strategy review/create, pause/delete, readiness, positions, and execution audit. Mobile always creates paused strategies and deliberately omits activation, confirmation, signing, closing, and submission pending the full transaction safety gate.
 - [x] AI Intelligence provides fail-closed advisory recommendations, public read-only paper performance/positions/research, and verified-wallet 31-phase governance evidence with simulation-only, kill-switch, and execution-disabled contracts enforced at runtime.
-- [~] Settings now provides persistent English/Vietnamese navigation labels, reduced-motion preference, accessible control roles/states, telemetry consent default-off, and privacy reset. Remaining More destinations, full-screen localization, and device screen-reader/dynamic-type audit remain incomplete.
+- [x] Signals provides filterable 24h/7d signature-backed events with cursor pagination, ingestion/freshness evidence, exact-mint detail handoff, and no export or transaction authority; valid degraded backend evidence remains visible.
+- [x] Heatmap provides trustworthy provider market rows ordered by volume, gain/loss intensity, liquidity, trust warnings, excluded-row counts, freshness, and exact-mint detail handoff.
+- [x] Claim Monitor provides read-only Solana RPC health, confirmed/detected/unpaid claim evidence, first-observed status, signature provenance, and explicit no-claim/no-wallet-action boundaries.
+- [~] Settings provides persistent English/Vietnamese navigation labels, reduced-motion preference, accessible control roles/states, telemetry consent default-off, and privacy reset. Smart Money, Wallet Tracker, Snipe List, standalone Analytics, Multicharts, and Feed Data remain queued; full-screen localization and device screen-reader/dynamic-type audit remain incomplete.
 
 ## Verification
 
 - [x] Unit tests for response validation and financial formatting.
-- [~] Component interaction coverage includes accessible token navigation/watchlist controls, Trenches quote handoff, alert financial-input gating, CopyTrade eligibility, AI advisory qualification, and hostile input/privacy boundaries; complete screen-state coverage remains incomplete.
+- [~] Component interaction coverage includes accessible token navigation/watchlist controls, Trenches quote handoff, alert financial-input gating, CopyTrade eligibility, AI advisory qualification, hostile input/privacy boundaries, and exact-mint Signal handoff; complete screen-state coverage remains incomplete.
 - [~] Android, iOS, and web production bundles pass; Expo native-config introspection proves ATS/cleartext/backup policy and accessibility tests cover key controls, while device runtime, offline/recovery, performance, and full security regression remain incomplete.
 - [ ] Final full requirement and regression audit.

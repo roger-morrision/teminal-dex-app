@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { isSolanaAddress } from '@/security/input';
 
 const transactionCount = z.object({ buys: z.number(), sells: z.number() }).catch({ buys: 0, sells: 0 });
 
@@ -78,7 +79,7 @@ export type WalletPnlResponse = z.infer<typeof walletPnlSchema>;
 export const trenchesSchema = z.object({ newTokens: z.array(tokenSchema), almostBonded: z.array(tokenSchema), migrated: z.array(tokenSchema), fetchedAt: z.number(), recordCount: z.number(), providers: z.array(z.string()), source: z.string(), dataQuality: z.string(), freshness: z.object({ ageMs: z.number().nullable(), staleAfterMs: z.number(), isStale: z.boolean() }).passthrough(), error: z.string().optional() }).passthrough();
 export type TrenchesResponse = z.infer<typeof trenchesSchema>;
 
-const publicKeyString = z.string().regex(/^[1-9A-HJ-NP-Za-km-z]{32,44}$/);
+const publicKeyString = z.string().refine(isSolanaAddress, 'Expected an exact 32-byte Solana address.');
 export const swapQuoteSchema = z.object({
   quote: z.object({ side: z.enum(['buy', 'sell']), token: z.object({ address: publicKeyString, symbol: z.string(), name: z.string(), price: z.number().positive() }), inputMint: publicKeyString, outputMint: publicKeyString, inAmount: z.string().regex(/^\d+$/), inAmountUi: z.number().positive(), inAmountUiExact: z.string(), inSymbol: z.string(), outAmount: z.string().regex(/^\d+$/), outAmountUi: z.number().positive(), outAmountUiExact: z.string(), outSymbol: z.string(), minOutAmount: z.string().regex(/^\d+$/), minOutUi: z.number().positive(), minOutUiExact: z.string(), priceImpactPct: z.number().nonnegative(), slippageBps: z.number().int().min(1).max(5000), swapUsdValue: z.number().nullable(), route: z.array(z.string()).min(1), contextSlot: z.number().int().positive(), real: z.literal(true) }).passthrough(),
   jupQuote: z.record(z.string(), z.unknown()), quotedAt: z.number(), ts: z.number(),
@@ -178,3 +179,25 @@ export type AiPaperReport = z.infer<typeof aiPaperReportSchema>['data'];
 
 export const aiPlatformSchema = z.object({ success: z.literal(true), data: z.object({ schema: z.literal('ai-platform-readiness-v1'), phases: z.array(z.object({ phase: z.number().int(), title: z.string(), status: z.string(), evidenceCount: z.number().int().nonnegative(), simulationOnly: z.literal(true) })), metrics: z.record(z.string(), z.number().nullable()), phase31: z.object({ status: z.string(), blockers: z.array(z.string()), checks: z.record(z.string(), z.boolean()), executionEnabled: z.literal(false) }).passthrough() }).passthrough(), executionEnabled: z.literal(false) });
 export type AiPlatform = z.infer<typeof aiPlatformSchema>['data'];
+
+const freshnessSchema = z.object({ isStale: z.boolean(), staleAfterMs: z.number().nonnegative(), ageMs: z.number().nullable().optional(), latestSourceFetchedAt: z.number().nullable().optional(), reason: z.string().nullable().optional() }).passthrough();
+export const marketSignalSchema = z.object({
+  id: z.string(), type: z.enum(['On-chain Buy', 'On-chain Sell', 'Smart Buy', 'Smart Sell', 'Whale Move', 'New Listing', 'Pump Alert', 'Liquidity Add', 'Dev Sell']),
+  token: z.string(), tokenAddress: publicKeyString.optional(), description: z.string(), time: z.string(), ts: z.number().optional(), wallet: publicKeyString.optional(), amount: z.number().optional(), amountUsd: z.number().optional(), amountToken: z.number().optional(), profitEstimate: z.number().optional(), txHash: z.string().optional(), source: z.string().optional(), explorerUrl: z.string().url().optional(), evidence: z.array(z.string()).optional(),
+}).passthrough();
+export const signalsSchema = z.object({
+  signals: z.array(marketSignalSchema), signalEvidence: z.array(z.record(z.string(), z.unknown())).optional(), fetchedAt: z.number(), recordCount: z.number().int().nonnegative(), totalCount: z.number().int().nonnegative(), hasMore: z.boolean(), nextBefore: z.number().nullable(), nextCursor: z.string().nullable(), counts: z.record(z.string(), z.number()), source: z.string(), providers: z.array(z.string()).optional(), dataQuality: z.string(), reason: z.string().nullable(), ingestion: z.object({ status: z.string(), lastStartedAt: z.number().nullable(), lastFinishedAt: z.number().nullable(), lastSuccessAt: z.number().nullable(), processedCount: z.number().nonnegative(), error: z.string().nullable() }).passthrough().optional(), freshness: freshnessSchema, requestId: z.string(),
+}).passthrough();
+export type MarketSignal = z.infer<typeof marketSignalSchema>;
+export type SignalsResponse = z.infer<typeof signalsSchema>;
+
+export const heatmapSchema = z.object({
+  heatmap: z.array(z.object({ symbol: z.string(), name: z.string(), address: publicKeyString, price: z.number().nonnegative(), change24h: z.number(), volume24h: z.number().nonnegative(), marketCap: z.number().nonnegative().nullable(), liquidity: z.number().nonnegative(), dex: z.string(), imageUrl: z.string().optional(), pairUrl: z.string().optional(), trustFlags: z.array(z.string()), source: z.string().optional() }).passthrough()),
+  fetchedAt: z.number(), recordCount: z.number().int().nonnegative(), providers: z.array(z.string()), source: z.string(), trustSummary: z.object({ warningRecordCount: z.number().int().nonnegative(), lowLiquidityCount: z.number().int().nonnegative(), noPriceCount: z.number().int().nonnegative(), transactionCountUnavailable: z.number().int().nonnegative(), suspiciousMetadataCount: z.number().int().nonnegative(), nonCanonicalMintCount: z.number().int().nonnegative(), incompleteMetricCount: z.number().int().nonnegative(), inputRecordCount: z.number().int().nonnegative(), excludedRecordCount: z.number().int().nonnegative() }).passthrough(), freshness: freshnessSchema, error: z.string().nullable().optional(), reason: z.string().nullable(),
+}).passthrough();
+export type HeatmapResponse = z.infer<typeof heatmapSchema>;
+
+export const claimMonitorSchema = z.object({
+  generatedAt: z.number(), health: z.enum(['healthy', 'degraded', 'unhealthy']), source: z.literal('solana-rpc'), mode: z.literal('rpc-polling'), programId: publicKeyString, programIds: z.array(publicKeyString), rpcEndpoint: z.string(), signaturesScanned: z.number().int().nonnegative(), claimsDetected: z.number().int().nonnegative(), firstClaims: z.number().int().nonnegative(), fakeClaims: z.number().int().nonnegative(), events: z.array(z.object({ signature: z.string(), slot: z.number().int().nonnegative(), blockTime: z.number().int().nullable(), programId: publicKeyString, instruction: z.string(), platform: z.enum(['github', 'unknown']), amountLamports: z.number().nonnegative().nullable(), amountSol: z.number().nonnegative().nullable(), feePayer: publicKeyString.nullable(), status: z.enum(['confirmed', 'failed', 'fake_or_unpaid', 'detected']), isFirstClaim: z.boolean(), isFakeClaim: z.boolean(), logs: z.array(z.string()), explorerUrl: z.string().url() }).passthrough()), error: z.string().optional(),
+}).passthrough();
+export type ClaimMonitorResponse = z.infer<typeof claimMonitorSchema>;

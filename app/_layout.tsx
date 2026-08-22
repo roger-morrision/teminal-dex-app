@@ -4,16 +4,20 @@ import { MobileWalletProvider } from '@wallet-ui/react-native-kit';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
+import { View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { colors } from '@/theme';
 import { WalletSessionProvider } from '@/security/WalletSessionProvider';
 import { secureWalletCache } from '@/security/wallet-cache';
 import { SettingsProvider } from '@/settings/SettingsProvider';
+import { ConnectivityProvider } from '@/network/connectivity';
+import { ConnectivityBanner } from '@/network/ConnectivityBanner';
+import { queryDefaults } from '@/api/query-policy';
 
 const cluster = { id: 'solana:mainnet', url: 'https://api.mainnet-beta.solana.com' } as const;
 const identity = { name: 'Terminal DEX' } as const;
 
 export default function RootLayout() {
-  const [queryClient] = useState(() => new QueryClient({ defaultOptions: { queries: { retry: 2, staleTime: 15_000, gcTime: 5 * 60_000 } } }));
-  return <SafeAreaProvider><SettingsProvider><MobileWalletProvider cluster={cluster} identity={identity} cache={secureWalletCache}><WalletSessionProvider><QueryClientProvider client={queryClient}><StatusBar style="light" /><Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.background } }} /></QueryClientProvider></WalletSessionProvider></MobileWalletProvider></SettingsProvider></SafeAreaProvider>;
+  const [queryClient] = useState(() => new QueryClient({ defaultOptions: queryDefaults }));
+  return <SafeAreaProvider><SettingsProvider><ConnectivityProvider><MobileWalletProvider cluster={cluster} identity={identity} cache={secureWalletCache}><WalletSessionProvider><QueryClientProvider client={queryClient}><StatusBar style="light" /><View style={{ flex: 1, backgroundColor: colors.background }}><ConnectivityBanner /><Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.background } }} /></View></QueryClientProvider></WalletSessionProvider></MobileWalletProvider></ConnectivityProvider></SettingsProvider></SafeAreaProvider>;
 }

@@ -159,3 +159,16 @@
 - Verification evidence: strict TypeScript and warning-free Expo lint passed; Jest 19 suites / 79 tests passed and exited cleanly; Expo Doctor passed 21/21; web production export passed all 22 routes; Android and iOS production bundles passed.
 - Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles. Generated exports were removed after verification.
 - Remaining localization/accessibility scope is explicit: translate auxiliary tool/detail routes, then verify real screen readers and large dynamic type on Android/iOS hardware or emulators. Next independent code slice: offline/recovery behavior and query-cache policy.
+
+## 2026-08-22 — Slice 15: truthful offline and reconnect recovery
+
+- Re-audited the clean mobile history, query-client defaults, every per-screen refresh/retry override, API error contract, and existing recovery UI. The app previously retried every query twice without failure classification and had no device connectivity signal or offline disclosure.
+- Added the Expo SDK-compatible `expo-network` native module and one bounded connectivity provider that distinguishes checking, online, offline, and unknown states without treating uncertain reachability as confirmed offline.
+- Integrated explicit device state with React Query's online manager: reads pause while definitively offline, already loaded in-memory evidence remains visible under a global translated warning, and active evidence refetches on reconnect with a short accessible recovery announcement.
+- Centralized query policy: 4xx responses and aborts never retry, transient/network/server reads retry at most twice, cache freshness remains 15 seconds with five-minute in-memory retention, and reconnect always revalidates active evidence.
+- Prevented dangerous deferred writes: all mutations have retries disabled and use `networkMode: always`, so an offline action attempts and fails immediately rather than being paused and silently submitted after connectivity returns. No persistent query/mutation queue or synthetic offline market data was added.
+- Added tests for explicit offline/unknown/online classification, online-manager pause/recovery, subscription cleanup, bounded read retry classification, reconnect behavior, and mutation non-queue policy.
+- Verification evidence: strict TypeScript and warning-free Expo lint passed; Jest 20 suites / 82 tests passed and exited cleanly; Expo Doctor passed 21/21; web production export passed all 22 routes; Android and iOS production bundles passed with the new native module.
+- Installation note: npm still reports the existing 10 moderate Expo CLI/build-tool advisories and a peer-override warning involving optional worklets versions; Expo Doctor reports 21/21 and all bundles pass, so no breaking forced audit fix was applied.
+- Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal. Generated exports were removed after verification.
+- Next priority: performance/render/cache audit and full security regression, while auxiliary localization and real-device accessibility/connectivity verification remain explicit device-dependent work.

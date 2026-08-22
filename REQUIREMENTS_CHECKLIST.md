@@ -11,6 +11,7 @@ Status legend: `[x]` verified, `[ ]` incomplete, `[~]` intentionally visible but
 - [~] Android secure wallet connection uses official Mobile Wallet Adapter, encrypted authorization/session storage, backend ownership challenge, 24h expiry, cookie/cache revocation, and biometric re-authentication; native wallet support remains unavailable on iOS/web and requires a development build.
 - [~] Real Jupiter ExactIn quote review validates exact amounts, route, mint identities, impact, slippage, context slot, and 15-second expiry; build/simulation/decoded confirmation/submission/replay protection remain deliberately locked.
 - [x] Explicit app scheme/intent filter and development/preview/production EAS profiles; exact Solana deep-link allowlisting; bounded matching snapshots; HTTPS-only production origins; iOS ATS and Android cleartext/backup denial; diagnostic redaction; and device-local privacy reset are implemented and verified.
+- [x] Expo Network drives React Query online state with explicit offline/cached-evidence and recovery disclosure; reads pause and refetch on reconnect, transient retries are bounded, 4xx/abort failures do not retry, and mutations neither retry nor queue for reconnection.
 
 ## Approved mobile information architecture
 
@@ -39,5 +40,5 @@ Status legend: `[x]` verified, `[ ]` incomplete, `[~]` intentionally visible but
 
 - [x] Unit tests for response validation and financial formatting.
 - [~] Component interaction coverage includes accessible token navigation/watchlist controls, Trenches quote handoff, alert financial-input gating, CopyTrade eligibility, AI advisory qualification, hostile input/privacy boundaries, exact-mint Signal handoff, distinct tracked-wallet inspect/remove controls, distinct Snipe detail/remove/threshold controls, truthful configured/receiving/persistence Feed Data labels, localization persistence/interpolation/fallback, and a static primary-screen Pressable/TextInput semantics gate; complete auxiliary screen-state coverage remains incomplete.
-- [~] Android, iOS, and web production bundles pass; Expo native-config introspection proves ATS/cleartext/backup policy and automated accessibility tests cover every primary-tab/Settings Pressable and TextInput, while real-device screen-reader/dynamic-type, offline/recovery, performance, and full security regression remain incomplete.
+- [~] Android, iOS, and web production bundles pass; Expo native-config introspection proves ATS/cleartext/backup policy, automated accessibility tests cover every primary-tab/Settings Pressable and TextInput, and simulated offline/reconnect/query-policy tests pass. Real-device screen-reader/dynamic-type/connectivity, performance, and full security regression remain incomplete.
 - [ ] Final full requirement and regression audit.

@@ -301,3 +301,13 @@
 - Verification evidence: strict TypeScript and warning-free Expo lint passed; Jest 20 suites / 102 tests passed; Expo Doctor passed 21/21; web production export passed all 22 routes; Android and iOS production bundles passed. Generated exports were removed after verification.
 - Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles.
 - Next priority: continue dynamic-state coverage and audit remaining hardcoded copy in Discovery/Trenches/market evidence without translating protocol identifiers.
+
+## 2026-08-22 — Slice 27: primary market dynamic-state accessibility
+
+- Audited Discover and Trenches loading, provider-failure, empty, and retry surfaces. Their visual states were distinct, but the shared state containers were not exposed as accessible elements and loading used generic progress semantics without an explicit busy state.
+- Exposed both route state components as polite live summaries, marked loading summaries busy, and announced retryable provider failures as alerts while preserving the existing actionable retry controls and backend error text.
+- Added direct component coverage for Discover loading/error/retry and Trenches loading/error/empty transitions. The test renderer caught the missing accessible-container boundary before verification passed.
+- Prettier normalized the two previously compressed route files while the semantic change remains limited to state accessibility and error classification.
+- Verification evidence: strict TypeScript and warning-free Expo lint passed; Jest 21 suites / 105 tests passed; Expo Doctor passed 21/21; web production export passed all 22 routes; Android and iOS production bundles passed. Generated exports were removed after verification.
+- Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles.
+- Next priority: continue direct dynamic-state coverage across remaining detail and intelligence routes, then resume the final requirement-by-requirement regression audit; transaction execution and deeper drilldowns remain blocked on the authoritative backend contracts documented in Slice 25.

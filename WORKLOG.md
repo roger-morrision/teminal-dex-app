@@ -255,3 +255,15 @@
 - Verification evidence: strict TypeScript and warning-free Expo lint passed; Jest 20 suites / 100 tests passed; Expo Doctor passed 21/21; web production export passed all 22 routes; Android and iOS production bundles passed. Generated exports were removed after verification.
 - Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles.
 - Next priority: localize and audit Operations, then perform the final requirement/regression audit while device-only screen-reader/dynamic-type/connectivity/performance evidence remains explicit.
+
+## 2026-08-22 — Slice 23: localized GET-only Operations
+
+- Re-established the clean status/history, requirements, tests, and validated Analytics/Feed Data contracts before auditing the final named auxiliary route.
+- Localized mobile-owned headings, tabs, GET-only safety disclosure, exact-mint analytics evidence/KPIs/sections/empty states, historical observation labels, feed summaries, evidence availability, inventory, persisted counts/freshness, ingestion outcomes, time labels, and absence-of-authority boundaries in typed English and Vietnamese.
+- Preserved exact dynamic evidence: provider/runtime scopes, health/delivery/data-quality/status values, provider labels, job types/statuses, remediation actions, DEX names, token identities, and backend errors remain untranslated.
+- Added header, tab labels/selection, summary, alert, and busy semantics to the route, analytics/feed evidence, unavailable states, market navigation, and loading/error surfaces. KPI containers continue wrapping under larger text.
+- Kept authority GET-only: no active probes, provider changes, replay, scheduler mutation, raw sample/endpoint/credential exposure, transaction construction, signing, or submission action is present.
+- Wrapped FeedConnectionCard tests in the real settings boundary, expanded Vietnamese operational interpolation/safety assertions, and added Operations to the all-route Pressable/TextInput semantics audit.
+- Verification evidence: strict TypeScript and warning-free Expo lint passed; Jest 20 suites / 102 tests passed; Expo Doctor passed 21/21; web production export passed all 22 routes; Android and iOS production bundles passed. Generated exports were removed after verification.
+- Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles.
+- Next priority: execute the final requirement-by-requirement regression audit and continue implementing any evidence-backed gaps; real-device screen-reader/dynamic-type/connectivity/performance checks remain device-dependent.

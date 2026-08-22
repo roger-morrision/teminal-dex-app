@@ -415,3 +415,15 @@
 - Verification evidence: strict TypeScript and warning-free Expo lint passed; Jest 30 suites / 138 tests passed; Expo Doctor passed 21/21; web production export passed all 23 routes; Android and iOS production bundles passed. Generated exports were removed after verification.
 - Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles.
 - Next priority: continue comparing authoritative product acceptance against implemented mobile flows while retaining transaction, native-wallet/device, Track cursor/X-TG, and physical-device blockers.
+
+## 2026-08-22 — Slice 38: Feed Data recovery drill-down
+
+- Audited the remaining P1 product acceptance after determining that CopyTrade's requested priority-fee, Anti-MEV, holder, trailing-stop, and ladder controls are not represented by the authoritative persisted config contract and therefore cannot truthfully be added as real backend configuration.
+- Found that `/api/feed/connections` already returns authoritative provider/channel configuration, subscription state, last success/error, cooldown/rate-limit pressure, runtime decode counters, event-bus persistence counters, and consumer freshness, but mobile validated and rendered only its basic inventory fields.
+- Added fail-closed bounded schemas for connection runtime, subscriptions, rate limits, on-chain decode counters, and event-bus persistence pressure. Mobile now distinguishes configured, connected, subscribed, receiving useful traffic, and freshly persisted consumer evidence instead of allowing nominal connectivity to imply health.
+- Added a localized GET-only recovery drill-down with received/decoded/persisted/dropped/ignored cumulative counters and deltas between successful validated refreshes. Failed or malformed responses do not advance the baseline, and a runtime counter reset starts a new baseline rather than producing negative traffic.
+- Exposed per-provider subscription counts, last runtime success/error, request/rate-limit/queue/cooldown evidence, and retained explicit boundaries against active probes, replay, provider mutation, raw records, endpoint URLs, or credentials.
+- Added schema, client routing, pure delta/restart, and rendered component tests covering disconnected subscriptions, runtime errors, cooldowns, decode deltas, and persistence pressure.
+- Verification evidence: strict TypeScript and warning-free Expo lint passed; Jest 31 suites / 143 tests passed; Expo Doctor passed 21/21; web production export passed all 23 routes; Android and iOS production bundles passed. Generated exports were removed after verification.
+- Known upstream Noble hashes Metro fallback warning remains unchanged and non-fatal across all bundles.
+- Next priority: continue auditing independently actionable acceptance gaps; unsupported CopyTrade controls, transaction execution, native-wallet/device, Track cursor/X-TG, and physical-device evidence remain explicit contract or environment blockers.

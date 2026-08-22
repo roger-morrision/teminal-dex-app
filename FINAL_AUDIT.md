@@ -2,7 +2,7 @@
 
 Audit date: 2026-08-22
 
-Audit maintained through: Slice 37
+Audit maintained through: Slice 38
 
 Backend authority: `C:\Tuan\devApps\TERMINAL_DEX_Intelligent` (read-only)
 
@@ -22,10 +22,10 @@ Completion is intentionally not claimed for requirements that need an absent bac
 | Token intelligence                      | Verified except execution              | Real detail, OHLCV, holders, clusters, transactions, behavior heuristics, provider-derived early buyers, current and historical security evidence, smart money, narrative, and pairs; quote review remains non-executing.                                            |
 | Monitor and alerts                      | Verified except cursor/social coverage | Indexed observations, owner-scoped durable rule CRUD/delivery evidence, and a bounded deduplicated Track event window with persistent All/Wallet/KOL/X-TG filters and source status; cursor history and authoritative X/TG events remain unavailable.                |
 | CopyTrade                               | Verified read-only/paused              | Rankings, verified-owner paused strategy lifecycle, readiness, positions, and execution audit; activation/signing/submission remain absent.                                                                                                                          |
-| AI and auxiliary intelligence           | Verified                               | Advisory-only AI, public simulation performance/research plus operational, mutation, lease, and cycle-fencing health, execution-disabled governance, signals, heatmap, claims, smart money, wallet tracker, Snipe List, Multicharts, analytics, and feed operations. |
+| AI and auxiliary intelligence           | Verified                               | Advisory-only AI, public simulation performance/research plus operational, mutation, lease, and cycle-fencing health, execution-disabled governance, signals, heatmap, claims, smart money, wallet tracker, Snipe List, Multicharts, analytics, and GET-only feed operations with provider/channel recovery evidence and refresh deltas. |
 | Localization, privacy, accessibility    | Automated verification passed          | Typed English/Vietnamese copy, reduced motion, telemetry default-off, privacy reset, roles/labels/busy/error/empty/retry semantics, and static all-route control audit.                                                                                              |
 | Network and platform hardening          | Automated verification passed          | React Query online/offline policy, bounded retry behavior, ATS/cleartext/backup configuration, deep-link allowlisting, redaction, Expo Doctor, and web/Android/iOS exports.                                                                                          |
-| Tests and build regression              | Verified                               | TypeScript, Expo lint, 30 Jest suites / 138 tests, Expo Doctor 21/21, 23-route web export, Android export, and iOS export passed on 2026-08-22.                                                                                                                      |
+| Tests and build regression              | Verified                               | TypeScript, Expo lint, 31 Jest suites / 143 tests, Expo Doctor 21/21, 23-route web export, Android export, and iOS export passed on 2026-08-22.                                                                                                                      |
 
 ## Remaining blockers
 

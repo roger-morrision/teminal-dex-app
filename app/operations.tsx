@@ -20,6 +20,10 @@ import {
 } from "@/api/client";
 import type { FeedConnectionsResponse, MarketToken } from "@/api/schema";
 import { compactUsd, signedPercent, tokenPrice } from "@/lib/format";
+import {
+  feedCounterSnapshot,
+  type FeedCounterSnapshot,
+} from "@/lib/feed-recovery";
 import { isSolanaAddress } from "@/security/input";
 import { useSettings } from "@/settings/SettingsProvider";
 import { colors, spacing } from "@/theme";
@@ -311,10 +315,11 @@ function FeedPanel({
   diagnostics: DiagnosticsQuery;
 }) {
   const { t } = useSettings();
-  if (connections.isLoading && diagnostics.isLoading)
-    return <State loading text={t("loadingFeedEvidence")} />;
   const inventory = connections.data;
   const health = diagnostics.data;
+  const currentCounters = feedCounterSnapshot(inventory);
+  if (connections.isLoading && diagnostics.isLoading)
+    return <State loading text={t("loadingFeedEvidence")} />;
   return (
     <View>
       {inventory ? (
@@ -408,6 +413,13 @@ function FeedPanel({
           ))}
         </>
       ) : null}
+      {inventory ? (
+        <FeedRuntimeRecovery
+          response={inventory}
+          counters={currentCounters}
+          delta={inventory.counterDelta}
+        />
+      ) : null}
       <SectionTitle
         title={t("providerInventory")}
         detail={t("configurationNotDelivery")}
@@ -451,6 +463,85 @@ function FeedPanel({
       <Text accessibilityRole="summary" style={styles.boundary}>
         {t("feedBoundary")}
       </Text>
+    </View>
+  );
+}
+
+export function FeedRuntimeRecovery({
+  response,
+  counters,
+  delta,
+}: {
+  response: FeedConnectionsResponse;
+  counters: FeedCounterSnapshot | null;
+  delta: FeedCounterSnapshot | null;
+}) {
+  const { t } = useSettings();
+  const bus = response.runtime.eventBus;
+  return (
+    <View>
+      <SectionTitle
+        title={t("recoveryDrilldown")}
+        detail={t("runtimeCountersBoundary")}
+      />
+      {counters ? (
+        <View accessibilityRole="summary" style={styles.recoveryCard}>
+          <Text style={styles.rowTitle}>{t("decodePipeline")}</Text>
+          <Text
+            style={[
+              styles.meta,
+              response.runtime.onchainTicks.quality !== "healthy" &&
+                styles.warn,
+            ]}
+          >
+            {t("decodePipelineState", {
+              quality: response.runtime.onchainTicks.quality,
+              cooldown: `${Math.ceil(response.runtime.onchainTicks.cooldownRemainingMs / 1000)}s`,
+            })}
+          </Text>
+          <View style={styles.recoveryGrid}>
+            {(Object.keys(counters) as (keyof FeedCounterSnapshot)[]).map(
+              (key) => (
+                <View key={key} style={styles.recoveryMetric}>
+                  <Text style={styles.kpiLabel}>{t(`feedCounter_${key}`)}</Text>
+                  <Text style={styles.qualityValue}>
+                    {counters[key].toLocaleString()}
+                    {delta ? ` · +${delta[key]}` : ""}
+                  </Text>
+                </View>
+              ),
+            )}
+          </View>
+          <Text style={styles.freshness}>
+            {delta ? t("deltaSinceRefresh") : t("awaitingCounterBaseline")}
+          </Text>
+        </View>
+      ) : (
+        <Empty text={t("runtimeCountersUnavailable")} />
+      )}
+      <View accessibilityRole="summary" style={styles.recoveryCard}>
+        <Text style={styles.rowTitle}>{t("eventPersistencePipeline")}</Text>
+        <Text style={styles.meta}>
+          {t("eventBusCounters", {
+            published: bus.published,
+            persisted: bus.persisted,
+            duplicate: bus.droppedDuplicates,
+            invalid: bus.droppedInvalidTimestamps,
+          })}
+        </Text>
+        <Text style={styles.meta}>
+          {t("persistencePressure", {
+            failed: bus.persistFailures,
+            dropped: bus.persistenceDrops,
+            pending: bus.pendingPersistence,
+          })}
+        </Text>
+        <Text style={styles.freshness}>
+          {bus.lastEventAt
+            ? ageLabel(Date.parse(bus.lastEventAt), t)
+            : t("noRuntimeEvent")}
+        </Text>
+      </View>
     </View>
   );
 }
@@ -518,6 +609,41 @@ export function FeedConnectionCard({
           ? ageLabel(item.records.lastPersistedAt, t)
           : t("noPersistedObservation")}
       </Text>
+      {item.subscription || item.runtime ? (
+        <View style={styles.connectionEvidence}>
+          <Text style={styles.meta}>
+            {t("subscriptionEvidence", {
+              connected: item.subscription?.connected ? t("yes") : t("no"),
+              count: item.subscription?.count ?? t("notApplicable"),
+              receiving: item.subscription?.receiving ? t("yes") : t("no"),
+            })}
+          </Text>
+          <Text style={styles.meta}>
+            {t("lastRuntimeSuccess", {
+              age: item.runtime?.lastSuccessAt
+                ? ageLabel(Date.parse(item.runtime.lastSuccessAt), t)
+                : t("unavailable"),
+            })}
+          </Text>
+          {item.runtime?.lastError ? (
+            <Text style={styles.warn}>
+              {t("lastRuntimeError", { error: item.runtime.lastError })}
+            </Text>
+          ) : null}
+        </View>
+      ) : null}
+      {item.rateLimit ? (
+        <Text style={[styles.meta, item.rateLimit.coolingDown && styles.warn]}>
+          {t("rateLimitEvidence", {
+            requests: item.rateLimit.requests,
+            limited: item.rateLimit.rateLimited,
+            queued: item.rateLimit.queuedRequests,
+            cooldown: item.rateLimit.coolingDown
+              ? `${Math.ceil(item.rateLimit.cooldownRemainingMs / 1000)}s`
+              : t("none"),
+          })}
+        </Text>
+      ) : null}
     </View>
   );
 }
@@ -827,6 +953,28 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     gap: spacing.sm,
+  },
+  recoveryCard: {
+    marginTop: spacing.md,
+    padding: spacing.md,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: colors.border,
+    backgroundColor: colors.surface,
+  },
+  recoveryGrid: {
+    marginTop: spacing.md,
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: spacing.sm,
+  },
+  recoveryMetric: { minWidth: "29%", flexGrow: 1 },
+  connectionEvidence: {
+    marginTop: spacing.sm,
+    paddingTop: spacing.sm,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: colors.border,
+    gap: 4,
   },
   qualityItem: {
     width: "48%",

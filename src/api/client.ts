@@ -1,215 +1,803 @@
-import { aiPaperReportSchema, aiPlatformSchema, aiRecommendationsSchema, alertDeliveriesSchema, bubbleGraphSchema, claimMonitorSchema, copyExecutionsSchema, copyPositionsSchema, copyTradeConfigMutationSchema, copyTradeConfigsSchema, copyTradeHealthSchema, feedConnectionsSchema, feedDiagnosticsSchema, heatmapSchema, holdersSchema, manipulationSchema, monitorAlertsSchema, narrativeSchema, ohlcvSchema, pairsSchema, portfolioAnalyticsSchema, riskSchema, securityHistorySchema, signalsSchema, smartMoneySchema, snipersSchema, swapQuoteSchema, tokenDetailSchema, topTradersSchema, trackFeedSchema, transactionsSchema, trenchesSchema, trendingSchema, userAlertMutationSchema, userAlertsSchema, walletHoldingsSchema, walletPnlSchema, type AiPaperReport, type AiPlatform, type AiRecommendation, type AlertDeliveriesResponse, type BubbleGraphResponse, type ClaimMonitorResponse, type CopyExecution, type CopyPosition, type CopyTradeConfig, type CopyTradeHealth, type FeedConnectionsResponse, type FeedDiagnosticsResponse, type HeatmapResponse, type HoldersResponse, type ManipulationResponse, type MonitorAlertsResponse, type NarrativeResponse, type OhlcvResponse, type PairsResponse, type PortfolioAnalyticsResponse, type RiskResponse, type SecurityHistoryResponse, type SignalsResponse, type SmartMoneyResponse, type SnipersResponse, type SwapQuoteResponse, type TokenDetailResponse, type TopTradersResponse, type TrackFeedResponse, type TransactionsResponse, type TrenchesResponse, type TrendingResponse, type UserAlert, type UserAlertsResponse, type WalletHoldingsResponse, type WalletPnlResponse } from './schema';
-import { isSolanaAddress } from '@/security/input';
+import {
+  aiPaperReportSchema,
+  aiPlatformSchema,
+  aiRecommendationsSchema,
+  alertDeliveriesSchema,
+  bubbleGraphSchema,
+  claimMonitorSchema,
+  copyExecutionsSchema,
+  copyPositionsSchema,
+  copyTradeConfigMutationSchema,
+  copyTradeConfigsSchema,
+  copyTradeHealthSchema,
+  feedConnectionsSchema,
+  feedDiagnosticsSchema,
+  heatmapSchema,
+  holdersSchema,
+  manipulationSchema,
+  monitorAlertsSchema,
+  narrativeSchema,
+  ohlcvSchema,
+  pairsSchema,
+  portfolioAnalyticsSchema,
+  riskSchema,
+  securityHistorySchema,
+  signalsSchema,
+  smartMoneySchema,
+  snipersSchema,
+  swapQuoteSchema,
+  tokenDetailSchema,
+  topTradersSchema,
+  trackFeedSchema,
+  transactionsSchema,
+  trenchesSchema,
+  trendingSchema,
+  userAlertMutationSchema,
+  userAlertsSchema,
+  walletHoldingsSchema,
+  walletPnlSchema,
+  type AiPaperReport,
+  type AiPlatform,
+  type AiRecommendation,
+  type AlertDeliveriesResponse,
+  type BubbleGraphResponse,
+  type ClaimMonitorResponse,
+  type CopyExecution,
+  type CopyPosition,
+  type CopyTradeConfig,
+  type CopyTradeHealth,
+  type FeedConnectionsResponse,
+  type FeedDiagnosticsResponse,
+  type HeatmapResponse,
+  type HoldersResponse,
+  type ManipulationResponse,
+  type MonitorAlertsResponse,
+  type NarrativeResponse,
+  type OhlcvResponse,
+  type PairsResponse,
+  type PortfolioAnalyticsResponse,
+  type RiskResponse,
+  type SecurityHistoryResponse,
+  type SignalsResponse,
+  type SmartMoneyResponse,
+  type SnipersResponse,
+  type SwapQuoteResponse,
+  type TokenDetailResponse,
+  type TopTradersResponse,
+  type TrackFeedResponse,
+  type TransactionsResponse,
+  type TrenchesResponse,
+  type TrendingResponse,
+  type UserAlert,
+  type UserAlertsResponse,
+  type WalletHoldingsResponse,
+  type WalletPnlResponse,
+} from "./schema";
+import { isSolanaAddress } from "@/security/input";
+import { recordFeedCounterSample } from "@/lib/feed-recovery";
 
-export type TrendingPeriod = '1h' | '6h' | '24h';
-export type TrendingSort = 'trending' | 'gainers' | 'losers' | 'volume' | 'new';
-export type DiscoveryMode = TrendingSort | 'new-pairs' | 'hot-searches' | 'surge' | 'nextbc' | 'pump-live' | 'watchlist';
-export type DiscoveryFilters = { dex: string; minLiquidity: string; minMarketCap: string };
+export type TrendingPeriod = "1h" | "6h" | "24h";
+export type TrendingSort = "trending" | "gainers" | "losers" | "volume" | "new";
+export type DiscoveryMode =
+  | TrendingSort
+  | "new-pairs"
+  | "hot-searches"
+  | "surge"
+  | "nextbc"
+  | "pump-live"
+  | "watchlist";
+export type DiscoveryFilters = {
+  dex: string;
+  minLiquidity: string;
+  minMarketCap: string;
+};
 
 export class ApiError extends Error {
-  constructor(message: string, readonly status?: number) { super(message); }
+  constructor(
+    message: string,
+    readonly status?: number,
+  ) {
+    super(message);
+  }
 }
 
 export function getApiOrigin(): string {
-  const configured = process.env.EXPO_PUBLIC_API_URL?.trim().replace(/\/$/, '');
-  if (!configured) throw new ApiError('Backend URL is not configured. Set EXPO_PUBLIC_API_URL.');
-  let url: URL; try { url = new URL(configured); } catch { throw new ApiError('Backend URL must be a valid absolute URL.'); }
-  const loopback = ['localhost', '127.0.0.1', '::1'].includes(url.hostname);
-  if (url.protocol !== 'https:' && !(typeof __DEV__ !== 'undefined' && __DEV__ && url.protocol === 'http:' && loopback)) throw new ApiError('Backend URL must use HTTPS; HTTP is limited to loopback development.');
-  if (url.username || url.password || url.pathname !== '/' || url.search || url.hash) throw new ApiError('Backend URL must be an origin without credentials, paths, query parameters, or fragments.');
+  const configured = process.env.EXPO_PUBLIC_API_URL?.trim().replace(/\/$/, "");
+  if (!configured)
+    throw new ApiError(
+      "Backend URL is not configured. Set EXPO_PUBLIC_API_URL.",
+    );
+  let url: URL;
+  try {
+    url = new URL(configured);
+  } catch {
+    throw new ApiError("Backend URL must be a valid absolute URL.");
+  }
+  const loopback = ["localhost", "127.0.0.1", "::1"].includes(url.hostname);
+  if (
+    url.protocol !== "https:" &&
+    !(
+      typeof __DEV__ !== "undefined" &&
+      __DEV__ &&
+      url.protocol === "http:" &&
+      loopback
+    )
+  )
+    throw new ApiError(
+      "Backend URL must use HTTPS; HTTP is limited to loopback development.",
+    );
+  if (
+    url.username ||
+    url.password ||
+    url.pathname !== "/" ||
+    url.search ||
+    url.hash
+  )
+    throw new ApiError(
+      "Backend URL must be an origin without credentials, paths, query parameters, or fragments.",
+    );
   return url.origin;
 }
 
-async function getValidated(url: string, signal?: AbortSignal): Promise<TrendingResponse> {
+async function getValidated(
+  url: string,
+  signal?: AbortSignal,
+): Promise<TrendingResponse> {
   const response = await fetch(url, {
-    headers: { Accept: 'application/json' }, signal,
+    headers: { Accept: "application/json" },
+    signal,
   });
-  if (!response.ok) throw new ApiError(`Market data request failed (${response.status}).`, response.status);
+  if (!response.ok)
+    throw new ApiError(
+      `Market data request failed (${response.status}).`,
+      response.status,
+    );
   const result = trendingSchema.safeParse(await response.json());
-  if (!result.success) throw new ApiError('Backend returned an incompatible market data response.');
+  if (!result.success)
+    throw new ApiError(
+      "Backend returned an incompatible market data response.",
+    );
   return result.data;
 }
 
-export async function fetchDiscovery(mode: DiscoveryMode, period: TrendingPeriod, filters: DiscoveryFilters, cursor?: string, signal?: AbortSignal): Promise<TrendingResponse> {
-  const special = ['hot-searches', 'surge', 'nextbc', 'pump-live'].includes(mode);
-  if (special) return getValidated(`${getApiOrigin()}/api/trending/${mode}`, signal);
-  if (mode === 'new-pairs') {
-    const query = new URLSearchParams({ limit: '50' });
-    if (cursor) query.set('cursor', cursor);
+export async function fetchDiscovery(
+  mode: DiscoveryMode,
+  period: TrendingPeriod,
+  filters: DiscoveryFilters,
+  cursor?: string,
+  signal?: AbortSignal,
+): Promise<TrendingResponse> {
+  const special = ["hot-searches", "surge", "nextbc", "pump-live"].includes(
+    mode,
+  );
+  if (special)
+    return getValidated(`${getApiOrigin()}/api/trending/${mode}`, signal);
+  if (mode === "new-pairs") {
+    const query = new URLSearchParams({ limit: "50" });
+    if (cursor) query.set("cursor", cursor);
     return getValidated(`${getApiOrigin()}/api/v2/new-pairs?${query}`, signal);
   }
-  const query = new URLSearchParams({ period, sort: mode === 'watchlist' ? 'trending' : mode, limit: '50' });
-  if (cursor && /^\d+$/.test(cursor)) query.set('cursor', cursor);
-  if (filters.dex !== 'All') query.set('dex', filters.dex);
-  if (filters.minLiquidity) query.set('minLiquidity', filters.minLiquidity);
-  if (filters.minMarketCap) query.set('minMarketCap', filters.minMarketCap);
+  const query = new URLSearchParams({
+    period,
+    sort: mode === "watchlist" ? "trending" : mode,
+    limit: "50",
+  });
+  if (cursor && /^\d+$/.test(cursor)) query.set("cursor", cursor);
+  if (filters.dex !== "All") query.set("dex", filters.dex);
+  if (filters.minLiquidity) query.set("minLiquidity", filters.minLiquidity);
+  if (filters.minMarketCap) query.set("minMarketCap", filters.minMarketCap);
   return getValidated(`${getApiOrigin()}/api/trending?${query}`, signal);
 }
 
-export async function searchTokens(queryText: string, signal?: AbortSignal): Promise<TrendingResponse> {
+export async function searchTokens(
+  queryText: string,
+  signal?: AbortSignal,
+): Promise<TrendingResponse> {
   const query = new URLSearchParams({ q: queryText.trim() });
   return getValidated(`${getApiOrigin()}/api/search?${query}`, signal);
 }
 
-export async function fetchTokenDetail(address: string, signal?: AbortSignal): Promise<TokenDetailResponse> {
-  if (!isSolanaAddress(address)) throw new ApiError('Token address must decode to exactly 32 bytes.');
-  const response = await fetch(`${getApiOrigin()}/api/token/${encodeURIComponent(address)}`, { headers: { Accept: 'application/json' }, signal });
-  if (!response.ok) throw new ApiError(`Token detail request failed (${response.status}).`, response.status);
+export async function fetchTokenDetail(
+  address: string,
+  signal?: AbortSignal,
+): Promise<TokenDetailResponse> {
+  if (!isSolanaAddress(address))
+    throw new ApiError("Token address must decode to exactly 32 bytes.");
+  const response = await fetch(
+    `${getApiOrigin()}/api/token/${encodeURIComponent(address)}`,
+    { headers: { Accept: "application/json" }, signal },
+  );
+  if (!response.ok)
+    throw new ApiError(
+      `Token detail request failed (${response.status}).`,
+      response.status,
+    );
   const result = tokenDetailSchema.safeParse(await response.json());
-  if (!result.success) throw new ApiError('Backend returned an incompatible token detail response.');
-  if (result.data.token && result.data.token.address !== address) throw new ApiError('Backend token identity did not match the requested address.');
+  if (!result.success)
+    throw new ApiError(
+      "Backend returned an incompatible token detail response.",
+    );
+  if (result.data.token && result.data.token.address !== address)
+    throw new ApiError(
+      "Backend token identity did not match the requested address.",
+    );
   return result.data;
 }
 
-type TokenPanel = 'holders' | 'txns' | 'risk' | 'narrative' | 'smart-money' | 'pairs' | 'bubble' | 'manipulation' | 'snipers' | 'security-history';
-type TokenPanelResponse = { holders: HoldersResponse; txns: TransactionsResponse; risk: RiskResponse; narrative: NarrativeResponse; 'smart-money': SmartMoneyResponse; pairs: PairsResponse; bubble: BubbleGraphResponse; manipulation: ManipulationResponse; snipers: SnipersResponse; 'security-history': SecurityHistoryResponse };
-const panelSchemas = { holders: holdersSchema, txns: transactionsSchema, risk: riskSchema, narrative: narrativeSchema, 'smart-money': smartMoneySchema, pairs: pairsSchema, bubble: bubbleGraphSchema, manipulation: manipulationSchema, snipers: snipersSchema, 'security-history': securityHistorySchema } as const;
+type TokenPanel =
+  | "holders"
+  | "txns"
+  | "risk"
+  | "narrative"
+  | "smart-money"
+  | "pairs"
+  | "bubble"
+  | "manipulation"
+  | "snipers"
+  | "security-history";
+type TokenPanelResponse = {
+  holders: HoldersResponse;
+  txns: TransactionsResponse;
+  risk: RiskResponse;
+  narrative: NarrativeResponse;
+  "smart-money": SmartMoneyResponse;
+  pairs: PairsResponse;
+  bubble: BubbleGraphResponse;
+  manipulation: ManipulationResponse;
+  snipers: SnipersResponse;
+  "security-history": SecurityHistoryResponse;
+};
+const panelSchemas = {
+  holders: holdersSchema,
+  txns: transactionsSchema,
+  risk: riskSchema,
+  narrative: narrativeSchema,
+  "smart-money": smartMoneySchema,
+  pairs: pairsSchema,
+  bubble: bubbleGraphSchema,
+  manipulation: manipulationSchema,
+  snipers: snipersSchema,
+  "security-history": securityHistorySchema,
+} as const;
 
-export async function fetchTokenPanel<T extends TokenPanel>(address: string, panel: T, signal?: AbortSignal): Promise<TokenPanelResponse[T]> {
-  if (!isSolanaAddress(address)) throw new ApiError('Token address must decode to exactly 32 bytes.');
-  const response = await fetch(`${getApiOrigin()}/api/token/${encodeURIComponent(address)}/${panel}`, { headers: { Accept: 'application/json' }, signal });
-  if (!response.ok) throw new ApiError(`${panel} request failed (${response.status}).`, response.status);
+export async function fetchTokenPanel<T extends TokenPanel>(
+  address: string,
+  panel: T,
+  signal?: AbortSignal,
+): Promise<TokenPanelResponse[T]> {
+  if (!isSolanaAddress(address))
+    throw new ApiError("Token address must decode to exactly 32 bytes.");
+  const response = await fetch(
+    `${getApiOrigin()}/api/token/${encodeURIComponent(address)}/${panel}`,
+    { headers: { Accept: "application/json" }, signal },
+  );
+  if (!response.ok)
+    throw new ApiError(
+      `${panel} request failed (${response.status}).`,
+      response.status,
+    );
   const result = panelSchemas[panel].safeParse(await response.json());
-  if (!result.success) throw new ApiError(`Backend returned incompatible ${panel} data.`);
+  if (!result.success)
+    throw new ApiError(`Backend returned incompatible ${panel} data.`);
   return result.data as TokenPanelResponse[T];
 }
 
-export async function fetchOhlcv(address: string, timeframe: '5m' | '15m' | '1h' | '4h' | '1d', signal?: AbortSignal): Promise<OhlcvResponse> {
-  if (!isSolanaAddress(address)) throw new ApiError('Token address must decode to exactly 32 bytes.');
+export async function fetchOhlcv(
+  address: string,
+  timeframe: "5m" | "15m" | "1h" | "4h" | "1d",
+  signal?: AbortSignal,
+): Promise<OhlcvResponse> {
+  if (!isSolanaAddress(address))
+    throw new ApiError("Token address must decode to exactly 32 bytes.");
   const query = new URLSearchParams({ tf: timeframe });
-  const response = await fetch(`${getApiOrigin()}/api/token/${encodeURIComponent(address)}/ohlcv?${query}`, { headers: { Accept: 'application/json' }, signal });
-  if (!response.ok) throw new ApiError(`Chart request failed (${response.status}).`, response.status);
+  const response = await fetch(
+    `${getApiOrigin()}/api/token/${encodeURIComponent(address)}/ohlcv?${query}`,
+    { headers: { Accept: "application/json" }, signal },
+  );
+  if (!response.ok)
+    throw new ApiError(
+      `Chart request failed (${response.status}).`,
+      response.status,
+    );
   const result = ohlcvSchema.safeParse(await response.json());
-  if (!result.success) throw new ApiError('Backend returned incompatible OHLCV data.');
+  if (!result.success)
+    throw new ApiError("Backend returned incompatible OHLCV data.");
   return result.data;
 }
 
-export async function fetchPortfolioAnalytics(address: string, timeframe: '7d' | '30d' | '90d' | '1y', signal?: AbortSignal): Promise<PortfolioAnalyticsResponse> {
+export async function fetchPortfolioAnalytics(
+  address: string,
+  timeframe: "7d" | "30d" | "90d" | "1y",
+  signal?: AbortSignal,
+): Promise<PortfolioAnalyticsResponse> {
   const query = new URLSearchParams({ address, timeframe });
-  const response = await fetch(`${getApiOrigin()}/api/analytics/portfolio?${query}`, { credentials: 'include', headers: { Accept: 'application/json' }, signal });
-  if (!response.ok) throw new ApiError(`Portfolio request failed (${response.status}).`, response.status);
+  const response = await fetch(
+    `${getApiOrigin()}/api/analytics/portfolio?${query}`,
+    { credentials: "include", headers: { Accept: "application/json" }, signal },
+  );
+  if (!response.ok)
+    throw new ApiError(
+      `Portfolio request failed (${response.status}).`,
+      response.status,
+    );
   const result = portfolioAnalyticsSchema.safeParse(await response.json());
-  if (!result.success) throw new ApiError('Backend returned incompatible portfolio analytics.');
+  if (!result.success)
+    throw new ApiError("Backend returned incompatible portfolio analytics.");
   return result.data;
 }
 
-export async function fetchWalletPnl(address: string, signal?: AbortSignal): Promise<WalletPnlResponse> {
-  const response = await fetch(`${getApiOrigin()}/api/wallet/${encodeURIComponent(address)}/pnl`, { credentials: 'include', headers: { Accept: 'application/json' }, signal });
-  if (!response.ok) throw new ApiError(`Wallet PnL request failed (${response.status}).`, response.status);
+export async function fetchWalletPnl(
+  address: string,
+  signal?: AbortSignal,
+): Promise<WalletPnlResponse> {
+  const response = await fetch(
+    `${getApiOrigin()}/api/wallet/${encodeURIComponent(address)}/pnl`,
+    { credentials: "include", headers: { Accept: "application/json" }, signal },
+  );
+  if (!response.ok)
+    throw new ApiError(
+      `Wallet PnL request failed (${response.status}).`,
+      response.status,
+    );
   const result = walletPnlSchema.safeParse(await response.json());
-  if (!result.success) throw new ApiError('Backend returned incompatible wallet PnL evidence.');
+  if (!result.success)
+    throw new ApiError("Backend returned incompatible wallet PnL evidence.");
   return result.data;
 }
 
-export async function fetchTrenches(signal?: AbortSignal): Promise<TrenchesResponse> {
-  const response = await fetch(`${getApiOrigin()}/api/trenches`, { headers: { Accept: 'application/json' }, signal });
-  if (!response.ok) throw new ApiError(`Trenches request failed (${response.status}).`, response.status);
+export async function fetchTrenches(
+  signal?: AbortSignal,
+): Promise<TrenchesResponse> {
+  const response = await fetch(`${getApiOrigin()}/api/trenches`, {
+    headers: { Accept: "application/json" },
+    signal,
+  });
+  if (!response.ok)
+    throw new ApiError(
+      `Trenches request failed (${response.status}).`,
+      response.status,
+    );
   const result = trenchesSchema.safeParse(await response.json());
-  if (!result.success) throw new ApiError('Backend returned incompatible Trenches data.');
+  if (!result.success)
+    throw new ApiError("Backend returned incompatible Trenches data.");
   return result.data;
 }
 
-export async function fetchSwapQuote(input: { token: string; side: 'buy' | 'sell'; amount: string; unit: 'usd' | 'sol' | 'token'; slippageBps: number }, signal?: AbortSignal): Promise<SwapQuoteResponse> {
-  if (!/^(?:0|[1-9]\d*)(?:\.\d+)?$/.test(input.amount) || Number(input.amount) <= 0 || !Number.isInteger(input.slippageBps) || input.slippageBps < 1 || input.slippageBps > 500) throw new ApiError('Enter a valid amount and slippage from 0.01% to 5%.');
-  const query = new URLSearchParams({ token: input.token, side: input.side, amount: input.amount, unit: input.unit, slippageBps: String(input.slippageBps) });
-  const response = await fetch(`${getApiOrigin()}/api/swap/quote?${query}`, { credentials: 'include', headers: { Accept: 'application/json' }, signal });
-  if (!response.ok) throw new ApiError(`Quote request failed (${response.status}).`, response.status);
+export async function fetchSwapQuote(
+  input: {
+    token: string;
+    side: "buy" | "sell";
+    amount: string;
+    unit: "usd" | "sol" | "token";
+    slippageBps: number;
+  },
+  signal?: AbortSignal,
+): Promise<SwapQuoteResponse> {
+  if (
+    !/^(?:0|[1-9]\d*)(?:\.\d+)?$/.test(input.amount) ||
+    Number(input.amount) <= 0 ||
+    !Number.isInteger(input.slippageBps) ||
+    input.slippageBps < 1 ||
+    input.slippageBps > 500
+  )
+    throw new ApiError("Enter a valid amount and slippage from 0.01% to 5%.");
+  const query = new URLSearchParams({
+    token: input.token,
+    side: input.side,
+    amount: input.amount,
+    unit: input.unit,
+    slippageBps: String(input.slippageBps),
+  });
+  const response = await fetch(`${getApiOrigin()}/api/swap/quote?${query}`, {
+    credentials: "include",
+    headers: { Accept: "application/json" },
+    signal,
+  });
+  if (!response.ok)
+    throw new ApiError(
+      `Quote request failed (${response.status}).`,
+      response.status,
+    );
   const result = swapQuoteSchema.safeParse(await response.json());
-  if (!result.success) throw new ApiError('Backend returned an incompatible swap quote.');
+  if (!result.success)
+    throw new ApiError("Backend returned an incompatible swap quote.");
   return result.data;
 }
 
 async function jsonRequest(path: string, init: RequestInit, failure: string) {
-  const response = await fetch(`${getApiOrigin()}${path}`, { credentials: 'include', headers: { Accept: 'application/json', ...(init.body ? { 'Content-Type': 'application/json' } : {}) }, ...init });
-  if (!response.ok) throw new ApiError(`${failure} (${response.status}).`, response.status);
+  const response = await fetch(`${getApiOrigin()}${path}`, {
+    credentials: "include",
+    headers: {
+      Accept: "application/json",
+      ...(init.body ? { "Content-Type": "application/json" } : {}),
+    },
+    ...init,
+  });
+  if (!response.ok)
+    throw new ApiError(`${failure} (${response.status}).`, response.status);
   return response.json();
 }
 
-export async function fetchMonitorAlerts(signal?: AbortSignal): Promise<MonitorAlertsResponse> {
-  const result = monitorAlertsSchema.safeParse(await jsonRequest('/api/monitor/alerts', { signal }, 'Monitor feed request failed'));
-  if (!result.success) throw new ApiError('Backend returned incompatible monitor evidence.');
+export async function fetchMonitorAlerts(
+  signal?: AbortSignal,
+): Promise<MonitorAlertsResponse> {
+  const result = monitorAlertsSchema.safeParse(
+    await jsonRequest(
+      "/api/monitor/alerts",
+      { signal },
+      "Monitor feed request failed",
+    ),
+  );
+  if (!result.success)
+    throw new ApiError("Backend returned incompatible monitor evidence.");
   return result.data;
 }
 
-export async function fetchUserAlerts(signal?: AbortSignal): Promise<UserAlertsResponse> {
-  const result = userAlertsSchema.safeParse(await jsonRequest('/api/alerts?limit=100', { signal }, 'Alert definitions request failed'));
-  if (!result.success) throw new ApiError('Backend returned incompatible alert definitions.');
+export async function fetchUserAlerts(
+  signal?: AbortSignal,
+): Promise<UserAlertsResponse> {
+  const result = userAlertsSchema.safeParse(
+    await jsonRequest(
+      "/api/alerts?limit=100",
+      { signal },
+      "Alert definitions request failed",
+    ),
+  );
+  if (!result.success)
+    throw new ApiError("Backend returned incompatible alert definitions.");
   return result.data;
 }
 
-export async function fetchAlertDeliveries(signal?: AbortSignal): Promise<AlertDeliveriesResponse> {
-  const result = alertDeliveriesSchema.safeParse(await jsonRequest('/api/alerts/deliveries?limit=100', { signal }, 'Delivery evidence request failed'));
-  if (!result.success) throw new ApiError('Backend returned incompatible delivery evidence.');
+export async function fetchAlertDeliveries(
+  signal?: AbortSignal,
+): Promise<AlertDeliveriesResponse> {
+  const result = alertDeliveriesSchema.safeParse(
+    await jsonRequest(
+      "/api/alerts/deliveries?limit=100",
+      { signal },
+      "Delivery evidence request failed",
+    ),
+  );
+  if (!result.success)
+    throw new ApiError("Backend returned incompatible delivery evidence.");
   return result.data;
 }
 
-export async function fetchTrackFeed(signal?: AbortSignal): Promise<TrackFeedResponse> {
-  return readEvidence('/api/in-app-notifications', trackFeedSchema, 'Track feed request failed', signal);
+export async function fetchTrackFeed(
+  signal?: AbortSignal,
+): Promise<TrackFeedResponse> {
+  return readEvidence(
+    "/api/in-app-notifications",
+    trackFeedSchema,
+    "Track feed request failed",
+    signal,
+  );
 }
 
-export type CreateAlertInput = { address: string; type: 'price' | 'percentageChange' | 'volumeSpike'; name: string; conditions: Record<string, unknown>; cooldownMinutes: number; channels: ['inApp'] };
-export async function createUserAlert(input: CreateAlertInput): Promise<UserAlert> {
-  const result = userAlertMutationSchema.safeParse(await jsonRequest('/api/alerts', { method: 'POST', body: JSON.stringify(input) }, 'Alert creation failed'));
-  if (!result.success) throw new ApiError('Backend returned an incompatible created alert.');
+export type CreateAlertInput = {
+  address: string;
+  type: "price" | "percentageChange" | "volumeSpike";
+  name: string;
+  conditions: Record<string, unknown>;
+  cooldownMinutes: number;
+  channels: ["inApp"];
+};
+export async function createUserAlert(
+  input: CreateAlertInput,
+): Promise<UserAlert> {
+  const result = userAlertMutationSchema.safeParse(
+    await jsonRequest(
+      "/api/alerts",
+      { method: "POST", body: JSON.stringify(input) },
+      "Alert creation failed",
+    ),
+  );
+  if (!result.success)
+    throw new ApiError("Backend returned an incompatible created alert.");
   return result.data.data;
 }
 
-export async function setUserAlertActive(id: string, active: boolean): Promise<UserAlert> {
-  const result = userAlertMutationSchema.safeParse(await jsonRequest('/api/alerts', { method: 'PUT', body: JSON.stringify({ id, active }) }, 'Alert update failed'));
-  if (!result.success) throw new ApiError('Backend returned an incompatible updated alert.');
+export async function setUserAlertActive(
+  id: string,
+  active: boolean,
+): Promise<UserAlert> {
+  const result = userAlertMutationSchema.safeParse(
+    await jsonRequest(
+      "/api/alerts",
+      { method: "PUT", body: JSON.stringify({ id, active }) },
+      "Alert update failed",
+    ),
+  );
+  if (!result.success)
+    throw new ApiError("Backend returned an incompatible updated alert.");
   return result.data.data;
 }
 
 export async function deleteUserAlert(id: string): Promise<void> {
-  await jsonRequest(`/api/alerts?id=${encodeURIComponent(id)}`, { method: 'DELETE' }, 'Alert deletion failed');
+  await jsonRequest(
+    `/api/alerts?id=${encodeURIComponent(id)}`,
+    { method: "DELETE" },
+    "Alert deletion failed",
+  );
 }
 
-export async function fetchTopTraders(period: '1D' | '7D' | '30D', signal?: AbortSignal): Promise<TopTradersResponse> {
-  const query = new URLSearchParams({ period, sort: 'pnlUsd' });
-  const result = topTradersSchema.safeParse(await jsonRequest(`/api/top-traders?${query}`, { signal }, 'Trader rankings request failed'));
-  if (!result.success) throw new ApiError('Backend returned incompatible trader ranking evidence.');
+export async function fetchTopTraders(
+  period: "1D" | "7D" | "30D",
+  signal?: AbortSignal,
+): Promise<TopTradersResponse> {
+  const query = new URLSearchParams({ period, sort: "pnlUsd" });
+  const result = topTradersSchema.safeParse(
+    await jsonRequest(
+      `/api/top-traders?${query}`,
+      { signal },
+      "Trader rankings request failed",
+    ),
+  );
+  if (!result.success)
+    throw new ApiError(
+      "Backend returned incompatible trader ranking evidence.",
+    );
   return result.data;
 }
 
-export async function fetchCopyTradeHealth(signal?: AbortSignal): Promise<CopyTradeHealth> {
-  const result = copyTradeHealthSchema.safeParse(await jsonRequest('/api/copytrade/health', { signal }, 'CopyTrade readiness request failed'));
-  if (!result.success) throw new ApiError('Backend returned incompatible CopyTrade readiness.');
+export async function fetchCopyTradeHealth(
+  signal?: AbortSignal,
+): Promise<CopyTradeHealth> {
+  const result = copyTradeHealthSchema.safeParse(
+    await jsonRequest(
+      "/api/copytrade/health",
+      { signal },
+      "CopyTrade readiness request failed",
+    ),
+  );
+  if (!result.success)
+    throw new ApiError("Backend returned incompatible CopyTrade readiness.");
   return result.data;
 }
 
-export async function fetchCopyTradeConfigs(signal?: AbortSignal): Promise<CopyTradeConfig[]> {
-  const result = copyTradeConfigsSchema.safeParse(await jsonRequest('/api/copytrade/configs', { signal }, 'CopyTrade strategies request failed'));
-  if (!result.success) throw new ApiError('Backend returned incompatible CopyTrade strategies.');
+export async function fetchCopyTradeConfigs(
+  signal?: AbortSignal,
+): Promise<CopyTradeConfig[]> {
+  const result = copyTradeConfigsSchema.safeParse(
+    await jsonRequest(
+      "/api/copytrade/configs",
+      { signal },
+      "CopyTrade strategies request failed",
+    ),
+  );
+  if (!result.success)
+    throw new ApiError("Backend returned incompatible CopyTrade strategies.");
   return result.data.data;
 }
 
-export type CreateCopyTradeInput = Omit<CopyTradeConfig, 'id' | 'userId' | 'createdAt' | 'updatedAt'>;
-export async function createPausedCopyTradeConfig(input: CreateCopyTradeInput): Promise<CopyTradeConfig> {
-  if (input.isActive) throw new ApiError('New mobile CopyTrade strategies must be created paused for explicit safety review.');
-  const result = copyTradeConfigMutationSchema.safeParse(await jsonRequest('/api/copytrade/configs', { method: 'POST', body: JSON.stringify(input) }, 'CopyTrade strategy creation failed'));
-  if (!result.success || result.data.data.isActive) throw new ApiError('Backend did not preserve the paused strategy safety gate.');
+export type CreateCopyTradeInput = Omit<
+  CopyTradeConfig,
+  "id" | "userId" | "createdAt" | "updatedAt"
+>;
+export async function createPausedCopyTradeConfig(
+  input: CreateCopyTradeInput,
+): Promise<CopyTradeConfig> {
+  if (input.isActive)
+    throw new ApiError(
+      "New mobile CopyTrade strategies must be created paused for explicit safety review.",
+    );
+  const result = copyTradeConfigMutationSchema.safeParse(
+    await jsonRequest(
+      "/api/copytrade/configs",
+      { method: "POST", body: JSON.stringify(input) },
+      "CopyTrade strategy creation failed",
+    ),
+  );
+  if (!result.success || result.data.data.isActive)
+    throw new ApiError(
+      "Backend did not preserve the paused strategy safety gate.",
+    );
   return result.data.data;
 }
 
-export async function pauseCopyTradeConfig(id: string): Promise<CopyTradeConfig> {
-  const result = copyTradeConfigMutationSchema.safeParse(await jsonRequest(`/api/copytrade/configs/${encodeURIComponent(id)}`, { method: 'PUT', body: JSON.stringify({ isActive: false }) }, 'CopyTrade pause failed'));
-  if (!result.success || result.data.data.isActive) throw new ApiError('Backend did not confirm the strategy is paused.');
+export async function pauseCopyTradeConfig(
+  id: string,
+): Promise<CopyTradeConfig> {
+  const result = copyTradeConfigMutationSchema.safeParse(
+    await jsonRequest(
+      `/api/copytrade/configs/${encodeURIComponent(id)}`,
+      { method: "PUT", body: JSON.stringify({ isActive: false }) },
+      "CopyTrade pause failed",
+    ),
+  );
+  if (!result.success || result.data.data.isActive)
+    throw new ApiError("Backend did not confirm the strategy is paused.");
   return result.data.data;
 }
 
-export async function deleteCopyTradeConfig(id: string): Promise<void> { await jsonRequest(`/api/copytrade/configs/${encodeURIComponent(id)}`, { method: 'DELETE' }, 'CopyTrade deletion failed'); }
-export async function fetchCopyPositions(signal?: AbortSignal): Promise<CopyPosition[]> { const result = copyPositionsSchema.safeParse(await jsonRequest('/api/copytrade/positions', { signal }, 'CopyTrade positions request failed')); if (!result.success) throw new ApiError('Backend returned incompatible CopyTrade positions.'); return result.data.data; }
-export async function fetchCopyExecutions(signal?: AbortSignal): Promise<CopyExecution[]> { const result = copyExecutionsSchema.safeParse(await jsonRequest('/api/copytrade/executions', { signal }, 'CopyTrade executions request failed')); if (!result.success) throw new ApiError('Backend returned incompatible CopyTrade execution evidence.'); return result.data.data; }
+export async function deleteCopyTradeConfig(id: string): Promise<void> {
+  await jsonRequest(
+    `/api/copytrade/configs/${encodeURIComponent(id)}`,
+    { method: "DELETE" },
+    "CopyTrade deletion failed",
+  );
+}
+export async function fetchCopyPositions(
+  signal?: AbortSignal,
+): Promise<CopyPosition[]> {
+  const result = copyPositionsSchema.safeParse(
+    await jsonRequest(
+      "/api/copytrade/positions",
+      { signal },
+      "CopyTrade positions request failed",
+    ),
+  );
+  if (!result.success)
+    throw new ApiError("Backend returned incompatible CopyTrade positions.");
+  return result.data.data;
+}
+export async function fetchCopyExecutions(
+  signal?: AbortSignal,
+): Promise<CopyExecution[]> {
+  const result = copyExecutionsSchema.safeParse(
+    await jsonRequest(
+      "/api/copytrade/executions",
+      { signal },
+      "CopyTrade executions request failed",
+    ),
+  );
+  if (!result.success)
+    throw new ApiError(
+      "Backend returned incompatible CopyTrade execution evidence.",
+    );
+  return result.data.data;
+}
 
-export async function fetchAiRecommendations(signal?: AbortSignal): Promise<AiRecommendation[]> { const result = aiRecommendationsSchema.safeParse(await jsonRequest('/api/ai/recommendations?view=public&limit=50', { signal }, 'AI recommendations request failed')); if (!result.success) throw new ApiError('Backend returned incompatible AI recommendation evidence.'); return result.data.data.recommendations; }
-export async function fetchAiPaperReport(signal?: AbortSignal): Promise<AiPaperReport> { const result = aiPaperReportSchema.safeParse(await jsonRequest('/api/ai/paper-trading?view=public', { signal }, 'Paper report request failed')); if (!result.success) throw new ApiError('Backend returned incompatible paper-trading evidence.'); return result.data.data; }
-export async function fetchAiPlatform(signal?: AbortSignal): Promise<AiPlatform> { const result = aiPlatformSchema.safeParse(await jsonRequest('/api/ai/platform', { signal }, 'AI governance request failed')); if (!result.success) throw new ApiError('Backend returned incompatible AI governance evidence.'); return result.data.data; }
+export async function fetchAiRecommendations(
+  signal?: AbortSignal,
+): Promise<AiRecommendation[]> {
+  const result = aiRecommendationsSchema.safeParse(
+    await jsonRequest(
+      "/api/ai/recommendations?view=public&limit=50",
+      { signal },
+      "AI recommendations request failed",
+    ),
+  );
+  if (!result.success)
+    throw new ApiError(
+      "Backend returned incompatible AI recommendation evidence.",
+    );
+  return result.data.data.recommendations;
+}
+export async function fetchAiPaperReport(
+  signal?: AbortSignal,
+): Promise<AiPaperReport> {
+  const result = aiPaperReportSchema.safeParse(
+    await jsonRequest(
+      "/api/ai/paper-trading?view=public",
+      { signal },
+      "Paper report request failed",
+    ),
+  );
+  if (!result.success)
+    throw new ApiError("Backend returned incompatible paper-trading evidence.");
+  return result.data.data;
+}
+export async function fetchAiPlatform(
+  signal?: AbortSignal,
+): Promise<AiPlatform> {
+  const result = aiPlatformSchema.safeParse(
+    await jsonRequest(
+      "/api/ai/platform",
+      { signal },
+      "AI governance request failed",
+    ),
+  );
+  if (!result.success)
+    throw new ApiError("Backend returned incompatible AI governance evidence.");
+  return result.data.data;
+}
 
-export type SignalFilter = 'All' | 'On-chain Buy' | 'On-chain Sell' | 'Smart Buy' | 'Smart Sell' | 'Dev Sell' | 'Whale Move';
-async function readEvidence<T>(path: string, schema: { safeParse: (value: unknown) => { success: true; data: T } | { success: false } }, failure: string, signal?: AbortSignal): Promise<T> { const response = await fetch(`${getApiOrigin()}${path}`, { credentials: 'include', headers: { Accept: 'application/json' }, signal }); const result = schema.safeParse(await response.json()); if (result.success) return result.data; if (!response.ok) throw new ApiError(`${failure} (${response.status}).`, response.status); throw new ApiError(`Backend returned incompatible ${failure.toLowerCase()}.`); }
-export async function fetchSignals(input: { hours: 24 | 168; type: SignalFilter; cursor?: string }, signal?: AbortSignal): Promise<SignalsResponse> { const query = new URLSearchParams({ limit: '40', hours: String(input.hours) }); if (input.type !== 'All') query.set('type', input.type); if (input.cursor) query.set('cursor', input.cursor); return readEvidence(`/api/signals?${query}`, signalsSchema, 'Signals request failed', signal); }
-export async function fetchHeatmap(signal?: AbortSignal): Promise<HeatmapResponse> { return readEvidence('/api/heatmap', heatmapSchema, 'Heatmap request failed', signal); }
-export async function fetchClaimMonitor(signal?: AbortSignal): Promise<ClaimMonitorResponse> { return readEvidence('/api/claim-monitor?limit=30', claimMonitorSchema, 'Claim monitor request failed', signal); }
-export async function fetchFeedConnections(signal?: AbortSignal): Promise<FeedConnectionsResponse> { return readEvidence('/api/feed/connections', feedConnectionsSchema, 'Feed inventory request failed', signal); }
-export async function fetchFeedDiagnostics(signal?: AbortSignal): Promise<FeedDiagnosticsResponse> { return readEvidence('/api/feed/diagnostics?limit=20', feedDiagnosticsSchema, 'Feed diagnostics request failed', signal); }
-export async function fetchWalletHoldings(address: string, signal?: AbortSignal): Promise<WalletHoldingsResponse> { if (!isSolanaAddress(address)) throw new ApiError('Wallet address must decode to exactly 32 bytes.'); const result = walletHoldingsSchema.safeParse(await jsonRequest(`/api/wallet/${encodeURIComponent(address)}`, { signal }, 'Wallet holdings request failed')); if (!result.success || result.data.wallet.address !== address) throw new ApiError('Backend returned incompatible wallet holdings.'); return result.data; }
+export type SignalFilter =
+  | "All"
+  | "On-chain Buy"
+  | "On-chain Sell"
+  | "Smart Buy"
+  | "Smart Sell"
+  | "Dev Sell"
+  | "Whale Move";
+async function readEvidence<T>(
+  path: string,
+  schema: {
+    safeParse: (
+      value: unknown,
+    ) => { success: true; data: T } | { success: false };
+  },
+  failure: string,
+  signal?: AbortSignal,
+): Promise<T> {
+  const response = await fetch(`${getApiOrigin()}${path}`, {
+    credentials: "include",
+    headers: { Accept: "application/json" },
+    signal,
+  });
+  const result = schema.safeParse(await response.json());
+  if (result.success) return result.data;
+  if (!response.ok)
+    throw new ApiError(`${failure} (${response.status}).`, response.status);
+  throw new ApiError(`Backend returned incompatible ${failure.toLowerCase()}.`);
+}
+export async function fetchSignals(
+  input: { hours: 24 | 168; type: SignalFilter; cursor?: string },
+  signal?: AbortSignal,
+): Promise<SignalsResponse> {
+  const query = new URLSearchParams({
+    limit: "40",
+    hours: String(input.hours),
+  });
+  if (input.type !== "All") query.set("type", input.type);
+  if (input.cursor) query.set("cursor", input.cursor);
+  return readEvidence(
+    `/api/signals?${query}`,
+    signalsSchema,
+    "Signals request failed",
+    signal,
+  );
+}
+export async function fetchHeatmap(
+  signal?: AbortSignal,
+): Promise<HeatmapResponse> {
+  return readEvidence(
+    "/api/heatmap",
+    heatmapSchema,
+    "Heatmap request failed",
+    signal,
+  );
+}
+export async function fetchClaimMonitor(
+  signal?: AbortSignal,
+): Promise<ClaimMonitorResponse> {
+  return readEvidence(
+    "/api/claim-monitor?limit=30",
+    claimMonitorSchema,
+    "Claim monitor request failed",
+    signal,
+  );
+}
+export async function fetchFeedConnections(
+  signal?: AbortSignal,
+): Promise<
+  FeedConnectionsResponse & {
+    counterDelta: ReturnType<typeof recordFeedCounterSample>;
+  }
+> {
+  const response = await readEvidence(
+    "/api/feed/connections",
+    feedConnectionsSchema,
+    "Feed inventory request failed",
+    signal,
+  );
+  return { ...response, counterDelta: recordFeedCounterSample(response) };
+}
+export async function fetchFeedDiagnostics(
+  signal?: AbortSignal,
+): Promise<FeedDiagnosticsResponse> {
+  return readEvidence(
+    "/api/feed/diagnostics?limit=20",
+    feedDiagnosticsSchema,
+    "Feed diagnostics request failed",
+    signal,
+  );
+}
+export async function fetchWalletHoldings(
+  address: string,
+  signal?: AbortSignal,
+): Promise<WalletHoldingsResponse> {
+  if (!isSolanaAddress(address))
+    throw new ApiError("Wallet address must decode to exactly 32 bytes.");
+  const result = walletHoldingsSchema.safeParse(
+    await jsonRequest(
+      `/api/wallet/${encodeURIComponent(address)}`,
+      { signal },
+      "Wallet holdings request failed",
+    ),
+  );
+  if (!result.success || result.data.wallet.address !== address)
+    throw new ApiError("Backend returned incompatible wallet holdings.");
+  return result.data;
+}

@@ -4,13 +4,14 @@ import type { MarketToken } from '@/api/schema';
 import { compactUsd, signedPercent, tokenPrice } from '@/lib/format';
 import { colors, spacing } from '@/theme';
 
-export function TokenRow({ token, onPress }: { token: MarketToken; onPress: () => void }) {
+export function TokenRow({ token, onPress, watched, onToggleWatch }: { token: MarketToken; onPress: () => void; watched?: boolean; onToggleWatch?: () => void }) {
   const positive = token.change1h >= 0;
   return <Pressable accessibilityRole="button" accessibilityLabel={`Open ${token.symbol} details`} onPress={onPress} style={({ pressed }) => [styles.row, pressed && styles.pressed]}>
     {token.imageUrl ? <Image source={{ uri: token.imageUrl }} style={styles.avatar} /> : <View style={styles.fallback}><Text style={styles.fallbackText}>{token.symbol.slice(0, 2)}</Text></View>}
     <View style={styles.identity}><View style={styles.titleLine}><Text numberOfLines={1} style={styles.symbol}>{token.symbol}</Text><Text style={styles.age}>{token.ageLabel}</Text></View><Text numberOfLines={1} style={styles.meta}>{token.dex} · {token.quoteSymbol}</Text></View>
     <View style={styles.metric}><Text style={styles.price}>{tokenPrice(token.price)}</Text><Text style={styles.subMetric}>{compactUsd(token.volume24h)} vol</Text></View>
     <View style={[styles.change, positive ? styles.positiveBg : styles.negativeBg]}><Ionicons name={positive ? 'caret-up' : 'caret-down'} size={10} color={positive ? colors.positive : colors.negative} /><Text style={[styles.changeText, { color: positive ? colors.positive : colors.negative }]}>{signedPercent(token.change1h)}</Text></View>
+    {onToggleWatch ? <Pressable accessibilityRole="button" accessibilityLabel={watched ? `Remove ${token.symbol} from watchlist` : `Add ${token.symbol} to watchlist`} hitSlop={10} onPress={(event) => { event.stopPropagation(); onToggleWatch(); }}><Ionicons name={watched ? 'star' : 'star-outline'} size={18} color={watched ? colors.warning : colors.muted} /></Pressable> : null}
   </Pressable>;
 }
 

@@ -16,9 +16,9 @@ Status legend: `[x]` verified, `[ ]` incomplete, `[~]` intentionally visible but
 
 - [x] Five-tab shell: Discover, Trenches, Monitor, Portfolio, More.
 - [x] More catalog preserves AI, Track, CopyTrade, Top Traders, Smart Money, Wallet Tracker, Signals, Heatmap, Snipe List, Analytics, Multicharts, Feed Data, and Claim Monitor destinations.
-- [x] Discover Trending/Gainers/Volume/New, timeframe, search, refresh, states, provenance, and token-detail handoff.
-- [ ] Discover Losers, New Pairs, Hot Searches, Surge, NextBC, Pump Live, filters, watchlist and pagination.
-- [ ] Full token detail: chart, swaps, holders, security, transactions, smart money, narrative, pairs and evidence.
+- [x] Discover Trending/Gainers/Losers/Volume/New Pairs/Hot Searches/Surge/NextBC/Pump Live/Watchlist, timeframes, server search, refresh, filters, pagination, states, provenance, and token-detail handoff.
+- [x] Non-secret watchlist and Discovery filter persistence with idempotent add/remove and explicit reset.
+- [~] Token detail fetches its live normalized backend contract and exposes market/security automation evidence; chart, swaps, holders, transactions, smart money, narrative, and pairs remain incomplete.
 - [ ] Trenches launch/migration columns and trade handoff.
 - [ ] Monitor, Track, alerts, delivery evidence and diagnostics.
 - [ ] Portfolio and analytics with owner-scoped backend data.
@@ -29,6 +29,6 @@ Status legend: `[x]` verified, `[ ]` incomplete, `[~]` intentionally visible but
 ## Verification
 
 - [x] Unit tests for response validation and financial formatting.
-- [ ] Component interaction tests for every completed screen.
+- [~] Component interaction coverage started for accessible token navigation/watchlist controls; complete screen-state coverage remains incomplete.
 - [ ] Android/iOS/web smoke tests, accessibility audit, offline/recovery, performance and security regression suite.
 - [ ] Final full requirement and regression audit.

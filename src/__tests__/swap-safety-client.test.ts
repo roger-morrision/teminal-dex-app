@@ -1,5 +1,6 @@
 import { confirmVerifiedSwapIntent, prepareVerifiedSwapIntent } from "@/api/client";
 import type { SwapQuoteResponse } from "@/api/schema";
+import { swapConfirmationSchema, swapSimulationSchema } from "@/api/schema";
 
 const owner = "11111111111111111111111111111111";
 const mint = "So11111111111111111111111111111111111111112";
@@ -22,5 +23,11 @@ describe("verified unsigned swap client", () => {
     expect(calls.map(([url]) => String(url))).toEqual(expect.arrayContaining([expect.stringContaining("/api/swap/build"), expect.stringContaining("/api/swap/intents/inspect"), expect.stringContaining("/api/swap/intents/simulate"), expect.stringContaining("/api/swap/intents/confirm")]));
     expect(calls.some(([url]) => /submit|send|sign/.test(String(url)))).toBe(false);
     expect(JSON.parse(calls[3][1].body).acknowledgement).toBe("I_CONFIRM_SIMULATED_UNSIGNED_SWAP");
+  });
+
+  it("rejects forged execution authority and unverified resolved evidence", () => {
+    const simulation = { schema: "swap-intent-simulation-v1", executionEnabled: true, intentId: "intent_123", replay: false, simulation: { provider: "configured-helius-rpc", slot: 7, succeeded: true, error: null, logs: [], unitsConsumed: 10, simulatedAt: 1, sigVerify: false, replaceRecentBlockhash: true, resolved: { inputMint: owner, outputMint: mint, inAmount: "123", quotedOutAmount: "456", slippageBps: 100, ownerAuthorityVerified: true, mintIdentityVerified: false, amountIdentityVerified: true, swapVariant: "route" } }, nextRequiredGate: "explicit_owner_confirmation" };
+    expect(swapSimulationSchema.safeParse(simulation).success).toBe(false);
+    expect(swapConfirmationSchema.safeParse({ schema: "swap-intent-confirmation-v1", executionEnabled: true, replay: false, intent: { id: "intent_123", status: "confirmed", confirmedAt: 3, confirmationHash: hash }, nextRequiredGate: "wallet_signature_and_managed_submission" }).success).toBe(false);
   });
 });

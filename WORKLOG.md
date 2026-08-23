@@ -522,3 +522,11 @@
 - Added adversarial backend parser/static safety coverage and mobile client routing/schema coverage proving no sign/send/submit request. Backend Prisma validation/generation, TypeScript, targeted ESLint, existing inspection regression, and new safety contract passed. Backend commit: `4e1aa7f`.
 - Mobile strict TypeScript, repository-wide ESLint, 40 Jest suites / 170 tests, Expo Doctor 21/21, a fresh 23-route web export, Android export, and iOS export passed. Generated verification output was removed.
 - Next priority: keep wallet signing and managed submission locked pending a separately approved end-to-end execution design; native wallet and physical-device evidence remain environment-blocked.
+
+## 2026-08-23 — Slice 48: stale simulation and wallet re-lock hardening
+
+- Audited the completed simulation flow and found that editing side, unit, amount, or slippage could leave evidence from the prior quote visible. Every quote-defining edit now clears prepared simulation and confirmation state before applying the new input.
+- Explicit confirmation now disables immediately when the verified wallet session is absent or re-locked, in addition to the mutation's existing runtime ownership check.
+- Failed simulations expose the bounded provider error and direct users to refresh the quote; they never expose a confirmation action. Added adversarial response tests rejecting forged `executionEnabled: true` authority and false resolved mint verification.
+- Updated the final audit through Slice 48 so its blocker matrix no longer incorrectly reports resolved-account verification, simulation, and explicit confirmation absent.
+- Strict TypeScript, repository-wide ESLint, 40 Jest suites / 171 tests, Expo Doctor 21/21, a fresh 23-route web export, Android export, and iOS export passed. Generated verification output was removed; the known upstream Noble hashes fallback warning remains non-fatal.

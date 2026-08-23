@@ -589,3 +589,10 @@
 - Added nine policy regressions covering the allowlist, malformed paths, unknown swap mutations, and forbidden execution routes. TypeScript, repository-wide ESLint, and 42 Jest suites / 192 tests passed.
 - Added the seven-phase readiness ledger, managed-submission architecture approval draft, physical-device evidence matrix, and release/incident runbook. These define exact acceptance evidence without fabricating device runs or external approvals.
 - Phases 0–1 are code-complete. Phases 2–3 are prepared but remain blocked on physical Android/iOS hardware and a supported Android wallet. Phases 4–7 have fail-closed designs and release gates; transaction and CopyTrade execution remain blocked on explicit custody, provider, fee/risk, legal/security, incident-owner, and rollout decisions.
+
+## 2026-08-23 — Slice 56: provider migration readiness evidence
+
+- Connected quote review to the authoritative GET-only `/api/swap/v2-readiness` contract so users can see completed checks and exact unresolved provider evidence without implying execution authority.
+- Added a bounded fail-closed schema requiring blocked status, `executionEnabled: false`, unique check IDs, consistent completed/total counts, and bounded provider evidence.
+- Added localized English/Vietnamese progress and unavailable states plus GET-only routing and adversarial forged-authority/count tests.
+- Strict TypeScript, repository-wide ESLint, 42 Jest suites / 194 tests, Expo Doctor 21/21, and fresh web/Android/iOS exports passed. Generated verification output was removed; the known Noble hashes fallback warning remains non-fatal. Signing, submission, consumption, CopyTrade activation, and position closing remain disabled.

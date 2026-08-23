@@ -12,7 +12,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { confirmVerifiedSwapIntent, fetchSwapQuote, fetchTokenDetail, prepareVerifiedSwapIntent } from "@/api/client";
+import { confirmVerifiedSwapIntent, fetchSwapQuote, fetchSwapV2Readiness, fetchTokenDetail, prepareVerifiedSwapIntent } from "@/api/client";
 import { tokenSchema } from "@/api/schema";
 import { useWalletSession } from "@/security/WalletSessionProvider";
 import { colors, spacing } from "@/theme";
@@ -30,6 +30,7 @@ export default function TradeReviewScreen() {
     snapshot?: string;
   }>();
   const wallet = useWalletSession();
+  const readiness = useQuery({ queryKey: ["swap-v2-readiness"], queryFn: ({ signal }) => fetchSwapV2Readiness(signal), staleTime: 300_000, retry: 1 });
   const validAddress = isSolanaAddress(address);
   const local = tokenSchema.safeParse(parseBoundedJson(snapshot));
   const snapshotMatches = local.success && local.data.address === address;
@@ -98,6 +99,13 @@ export default function TradeReviewScreen() {
             <Text style={styles.getQuoteText}>{t("goBack")}</Text>
           </Pressable>
         </View>
+        {readiness.data ? (
+          <View accessibilityRole="summary" style={styles.readinessCard}>
+            <Text style={styles.gateTitle}>{t("providerReadiness")}</Text>
+            <Text style={styles.gateText}>{t("providerReadinessProgress", { provider: readiness.data.data.provider.name, completed: readiness.data.data.completed, total: readiness.data.data.total })}</Text>
+            {readiness.data.data.checks.filter((check) => !check.ready).map((check) => <Text key={check.id} style={styles.checkText}>• {check.evidence}</Text>)}
+          </View>
+        ) : readiness.error ? <Text accessibilityRole="alert" style={styles.flowError}>{t("providerReadinessUnavailable")}</Text> : null}
       </SafeAreaView>
     );
 
@@ -553,6 +561,7 @@ const styles = StyleSheet.create({
   flowError: { color: colors.negative, fontSize: 11, textAlign: "center", marginTop: spacing.md },
   failureGuidance: { color: colors.warning, fontSize: 10, lineHeight: 16, marginTop: spacing.sm },
   simulationCard: { marginTop: spacing.lg, padding: spacing.lg, borderRadius: 14, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.accentDim, gap: spacing.sm },
+  readinessCard: { marginTop: spacing.lg, padding: spacing.lg, borderRadius: 14, backgroundColor: "#2d2715", gap: spacing.sm },
   confirmButton: { minHeight: 48, alignItems: "center", justifyContent: "center", borderRadius: 12, backgroundColor: colors.warning, marginTop: spacing.lg },
   confirmedCard: { flexDirection: "row", gap: spacing.md, marginTop: spacing.lg, padding: spacing.lg, borderRadius: 14, backgroundColor: colors.accentDim },
   confirmedTitle: { color: colors.accent, fontSize: 13, fontWeight: "900" },

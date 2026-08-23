@@ -20,6 +20,7 @@ import {
   fetchSignals,
   fetchSocialRadar,
   fetchSwapQuote,
+  fetchSwapV2Readiness,
   fetchTokenDetail,
   fetchTokenPanel,
   fetchTopTraders,
@@ -150,6 +151,14 @@ describe("backend client routing", () => {
       "https://terminal.example/api/trending/surge",
       expect.objectContaining({ headers: { Accept: "application/json" } }),
     );
+  });
+
+  it("loads GET-only blocked swap provider readiness", async () => {
+    jest.mocked(fetch).mockResolvedValue(jsonResponse({ success: true, data: { schema: "jupiter-swap-v2-readiness-v1", status: "blocked", executionEnabled: false, assessedAt: "2026-08-19", checks: [{ id: "managedExecution", ready: false, evidence: "Managed execution absent." }], completed: 0, total: 1, provider: { name: "Jupiter Meta-Aggregator" } } }));
+    const result = await fetchSwapV2Readiness();
+    expect(result.data.executionEnabled).toBe(false);
+    expect(jest.mocked(fetch).mock.calls[0]?.[0]).toBe("https://terminal.example/api/swap/v2-readiness");
+    expect("method" in (jest.mocked(fetch).mock.calls[0]?.[1] ?? {})).toBe(false);
   });
 
   it("rejects a non-advancing new-pairs cursor", async () => {

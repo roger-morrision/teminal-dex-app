@@ -434,6 +434,9 @@ const en = {
   liveRefreshFailed: "Live refresh failed: {error}",
   tradingLocked:
     "Trading is locked. Execution requires ownership, a fresh quote, simulation, explicit confirmation, and server policy approval.",
+  providerReadiness: "Provider migration readiness",
+  providerReadinessProgress: "{provider}: {completed}/{total} safety checks complete. Execution remains blocked.",
+  providerReadinessUnavailable: "Provider readiness evidence is unavailable; execution remains blocked.",
   selectTimeframe: "Select {timeframe} chart timeframe",
   chartUnavailable: "Chart unavailable",
   loadingCandles: "Loading verified candles…",
@@ -1350,6 +1353,9 @@ const vi: { [K in TranslationKey]: string } = {
   liveRefreshFailed: "Làm mới trực tiếp thất bại: {error}",
   tradingLocked:
     "Giao dịch bị khóa. Thực thi cần quyền sở hữu, báo giá mới, mô phỏng, xác nhận rõ ràng và phê duyệt chính sách máy chủ.",
+  providerReadiness: "Mức sẵn sàng chuyển đổi nhà cung cấp",
+  providerReadinessProgress: "{provider}: hoàn tất {completed}/{total} kiểm tra an toàn. Thực thi vẫn bị khóa.",
+  providerReadinessUnavailable: "Không có bằng chứng sẵn sàng của nhà cung cấp; thực thi vẫn bị khóa.",
   selectTimeframe: "Chọn khung biểu đồ {timeframe}",
   chartUnavailable: "Biểu đồ không khả dụng",
   loadingCandles: "Đang tải nến đã xác minh…",

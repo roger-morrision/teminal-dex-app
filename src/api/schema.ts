@@ -663,6 +663,25 @@ export const swapQuoteSchema = z
   .passthrough();
 export type SwapQuoteResponse = z.infer<typeof swapQuoteSchema>;
 
+export const swapV2ReadinessSchema = z.object({
+  success: z.literal(true),
+  data: z.object({
+    schema: z.literal("jupiter-swap-v2-readiness-v1"),
+    status: z.literal("blocked"),
+    executionEnabled: z.literal(false),
+    assessedAt: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+    checks: z.array(z.object({ id: z.string().min(1).max(64), ready: z.boolean(), evidence: z.string().min(1).max(1_000) }).strict()).min(1).max(20),
+    completed: z.number().int().nonnegative(),
+    total: z.number().int().positive().max(20),
+    provider: z.object({ name: z.string().min(1).max(120) }).passthrough(),
+  }).passthrough(),
+}).strict().superRefine((value, context) => {
+  const { checks, completed, total } = value.data;
+  if (total !== checks.length || completed !== checks.filter((check) => check.ready).length) context.addIssue({ code: "custom", message: "Swap readiness totals are inconsistent.", path: ["data", "completed"] });
+  if (new Set(checks.map((check) => check.id)).size !== checks.length) context.addIssue({ code: "custom", message: "Swap readiness check IDs must be unique.", path: ["data", "checks"] });
+});
+export type SwapV2Readiness = z.infer<typeof swapV2ReadinessSchema>;
+
 const transactionHash = z.string().regex(/^[a-f0-9]{64}$/);
 export const swapBuildSchema = z.object({
   swapTransaction: z.string().min(16).max(200_000).regex(/^[A-Za-z0-9+/]+={0,2}$/),

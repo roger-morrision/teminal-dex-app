@@ -20,6 +20,7 @@ import {
   signalsSchema,
   snipersSchema,
   swapQuoteSchema,
+  swapV2ReadinessSchema,
   topTradersSchema,
   trackFeedSchema,
   transactionsSchema,
@@ -29,6 +30,15 @@ import {
   walletHoldingsSchema,
   walletPnlSchema,
 } from "@/api/schema";
+
+describe("swap provider readiness", () => {
+  const payload = { success: true, data: { schema: "jupiter-swap-v2-readiness-v1", status: "blocked", executionEnabled: false, assessedAt: "2026-08-19", checks: [{ id: "walletTaker", ready: false, evidence: "Connected taker required." }], completed: 0, total: 1, provider: { name: "Jupiter Meta-Aggregator" } } };
+  it("accepts consistent blocked evidence and rejects forged authority", () => {
+    expect(swapV2ReadinessSchema.safeParse(payload).success).toBe(true);
+    expect(swapV2ReadinessSchema.safeParse({ ...payload, data: { ...payload.data, executionEnabled: true } }).success).toBe(false);
+    expect(swapV2ReadinessSchema.safeParse({ ...payload, data: { ...payload.data, completed: 1 } }).success).toBe(false);
+  });
+});
 
 const socialTrendRow = {
   token: { address: "11111111111111111111111111111111", symbol: "SOL", name: "Solana" },

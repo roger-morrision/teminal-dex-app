@@ -33,6 +33,7 @@ import {
   swapInspectionSchema,
   swapSimulationSchema,
   swapConfirmationSchema,
+  swapV2ReadinessSchema,
   tokenDetailSchema,
   topTradersSchema,
   trackFeedSchema,
@@ -73,6 +74,7 @@ import {
   type SmartMoneyResponse,
   type SnipersResponse,
   type SwapQuoteResponse,
+  type SwapV2Readiness,
   type TokenDetailResponse,
   type TopTradersResponse,
   type TrackFeedResponse,
@@ -425,6 +427,10 @@ export async function fetchSwapQuote(
   if (!result.success)
     throw new ApiError("Backend returned an incompatible swap quote.");
   return result.data;
+}
+
+export async function fetchSwapV2Readiness(signal?: AbortSignal): Promise<SwapV2Readiness> {
+  return readEvidence("/api/swap/v2-readiness", swapV2ReadinessSchema, "Swap readiness request failed", signal);
 }
 
 async function postSwapGate<T>(path: string, body: unknown, schema: { safeParse(value: unknown): { success: true; data: T } | { success: false } }, failure: string): Promise<T> {

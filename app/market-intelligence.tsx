@@ -66,6 +66,7 @@ export default function MarketIntelligenceScreen() {
     initialPageParam: undefined as string | undefined,
     getNextPageParam: (page) =>
       page.hasMore ? (page.nextCursor ?? undefined) : undefined,
+    maxPages: 4,
     enabled: tab === "signals",
   });
   const heatmap = useQuery({

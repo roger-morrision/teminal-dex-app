@@ -557,3 +557,11 @@
 - Added adversarial coverage for duplicates, unordered evidence, forged boundary cursors, mismatched availability, and non-advancing server pages.
 - Strict TypeScript, repository-wide ESLint, 41 Jest suites / 177 tests, Expo Doctor 21/21, a fresh 23-route web export, Android export, and iOS export passed. Generated verification output was removed; the known upstream Noble hashes fallback warning remains non-fatal.
 - Remaining blockers are unchanged: managed submission requires separate execution authority/design, and native wallet/accessibility closure requires physical devices.
+
+## 2026-08-23 — Slice 52: Signals cursor integrity hardening
+
+- Audited the filterable Signals paginator against the authoritative backend's encoded timestamp/ID cursor and descending merge order. The mobile boundary previously trusted inconsistent continuation metadata, duplicate IDs, unordered pages, and a repeated returned cursor.
+- Added fail-closed response invariants for exact record counts, credible totals, `hasMore`/cursor agreement, unique page IDs, and descending timestamp/ID ordering.
+- Added request-boundary rejection for a non-advancing opaque cursor and capped retained React Query history at four explicit pages, preventing malformed servers from creating unbounded or replaying client state.
+- Added adversarial schema and client coverage. Strict TypeScript, repository-wide ESLint, 41 Jest suites / 179 tests, Expo Doctor 21/21, a fresh 23-route web export, Android export, and iOS export passed. Generated verification output was removed; the known upstream Noble hashes fallback warning remains non-fatal.
+- Remaining blockers are unchanged: managed submission requires separate execution authority/design, and native wallet/accessibility closure requires physical devices.

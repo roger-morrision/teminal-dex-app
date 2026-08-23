@@ -832,6 +832,29 @@ describe("backend client routing", () => {
     ).toBe(true);
   });
 
+  it("rejects a non-advancing signal continuation cursor", async () => {
+    jest.mocked(fetch).mockResolvedValue(
+      jsonResponse({
+        signals: [],
+        fetchedAt: 1,
+        recordCount: 0,
+        totalCount: 1,
+        hasMore: true,
+        nextBefore: 1,
+        nextCursor: "same-cursor",
+        counts: {},
+        source: "database",
+        dataQuality: "signature-backed",
+        reason: null,
+        freshness: { isStale: false, staleAfterMs: 120000 },
+        requestId: "request",
+      }),
+    );
+    await expect(
+      fetchSignals({ hours: 24, type: "All", cursor: "same-cursor" }),
+    ).rejects.toThrow("non-advancing cursor");
+  });
+
   it("loads only an exact public wallet and verifies response identity", async () => {
     const address = "11111111111111111111111111111111";
     jest

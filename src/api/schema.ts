@@ -1561,7 +1561,54 @@ export const signalsSchema = z
     freshness: freshnessSchema,
     requestId: z.string(),
   })
-  .passthrough();
+  .passthrough()
+  .superRefine((page, ctx) => {
+    if (page.recordCount !== page.signals.length) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["recordCount"],
+        message: "Signal record count must match the returned page.",
+      });
+    }
+    if (page.totalCount < page.recordCount) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["totalCount"],
+        message: "Signal total count cannot be smaller than the page.",
+      });
+    }
+    if (page.hasMore !== Boolean(page.nextCursor)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["nextCursor"],
+        message: "Signal continuation metadata is inconsistent.",
+      });
+    }
+    const ids = new Set<string>();
+    page.signals.forEach((item, index) => {
+      if (ids.has(item.id)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["signals", index, "id"],
+          message: "Signal IDs must be unique within a page.",
+        });
+      }
+      ids.add(item.id);
+      const previous = page.signals[index - 1];
+      if (
+        previous?.ts != null &&
+        item.ts != null &&
+        (item.ts > previous.ts ||
+          (item.ts === previous.ts && item.id >= previous.id))
+      ) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["signals", index],
+          message: "Signals must use descending timestamp and ID order.",
+        });
+      }
+    });
+  });
 export type MarketSignal = z.infer<typeof marketSignalSchema>;
 export type SignalsResponse = z.infer<typeof signalsSchema>;
 

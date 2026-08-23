@@ -812,12 +812,16 @@ export async function fetchSignals(
   });
   if (input.type !== "All") query.set("type", input.type);
   if (input.cursor) query.set("cursor", input.cursor);
-  return readEvidence(
+  const page = await readEvidence(
     `/api/signals?${query}`,
     signalsSchema,
     "Signals request failed",
     signal,
   );
+  if (input.cursor && page.nextCursor === input.cursor) {
+    throw new ApiError("Signals request returned a non-advancing cursor.");
+  }
+  return page;
 }
 export async function fetchHeatmap(
   signal?: AbortSignal,

@@ -816,6 +816,44 @@ describe("Market Intelligence evidence schemas", () => {
         .success,
     ).toBe(false);
   });
+  it("rejects inconsistent, duplicate, and unordered signal pages", () => {
+    const signal = (id: string, ts: number) => ({
+      id,
+      type: "On-chain Buy" as const,
+      token: "SOL",
+      description: "observed buy",
+      time: "now",
+      ts,
+    });
+    const page = {
+      signals: [signal("a", 1), signal("a", 2)],
+      fetchedAt: 2,
+      recordCount: 1,
+      totalCount: 0,
+      hasMore: true,
+      nextBefore: null,
+      nextCursor: null,
+      counts: {},
+      source: "database",
+      dataQuality: "signature-backed",
+      reason: null,
+      freshness: { isStale: false, staleAfterMs: 120000 },
+      requestId: "request",
+    };
+    const result = signalsSchema.safeParse(page);
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error.issues.map((issue) => issue.path.join("."))).toEqual(
+        expect.arrayContaining([
+          "recordCount",
+          "totalCount",
+          "nextCursor",
+          "signals.1.id",
+          "signals.1",
+        ]),
+      );
+    }
+  });
   it("preserves heatmap exclusions and rejects negative market weights", () => {
     const base = {
       heatmap: [

@@ -12,7 +12,7 @@ describe("verified unsigned swap client", () => {
   it("builds, inspects, simulates, and explicitly confirms without signing or submitting", async () => {
     const responses = [
       { swapTransaction: "A".repeat(16), lastValidBlockHeight: 9, prioritizationFeeLamports: 0, simulationError: null, builtAt: 1 },
-      { schema: "swap-intent-inspection-v1", executionEnabled: false, intent: { id: "intent_123", status: "inspected", expiresAt: 2, transactionHash: hash, quoteHash: hash }, replay: false, nextRequiredGate: "server_simulation_and_mint_amount_verification" },
+      { schema: "swap-intent-inspection-v1", executionEnabled: false, intent: { id: "intent_123", status: "inspected", expiresAt: 2, transactionHash: hash, messageHash: hash, quoteHash: hash }, replay: false, nextRequiredGate: "server_simulation_and_mint_amount_verification" },
       { schema: "swap-intent-simulation-v1", executionEnabled: false, intentId: "intent_123", replay: false, simulation: { provider: "configured-helius-rpc", slot: 7, succeeded: true, error: null, logs: [], unitsConsumed: 10, simulatedAt: 1, sigVerify: false, replaceRecentBlockhash: true, resolved: { inputMint: owner, outputMint: mint, inAmount: "123", quotedOutAmount: "456", slippageBps: 100, ownerAuthorityVerified: true, mintIdentityVerified: true, amountIdentityVerified: true, swapVariant: "route" } }, nextRequiredGate: "explicit_owner_confirmation" },
       { schema: "swap-intent-confirmation-v1", executionEnabled: false, replay: false, intent: { id: "intent_123", status: "confirmed", confirmedAt: 3, confirmationHash: hash }, nextRequiredGate: "wallet_signature_and_managed_submission" },
     ];

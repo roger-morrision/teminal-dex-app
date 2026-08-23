@@ -3,6 +3,7 @@ import {
   aiPlatformSchema,
   aiRecommendationsSchema,
   alertDeliveriesSchema,
+  alertEvaluationHistorySchema,
   bubbleGraphSchema,
   claimMonitorSchema,
   copyExecutionsSchema,
@@ -46,6 +47,7 @@ import {
   type AiPlatform,
   type AiRecommendation,
   type AlertDeliveriesResponse,
+  type AlertEvaluationHistory,
   type BubbleGraphResponse,
   type ClaimMonitorResponse,
   type CopyExecution,
@@ -496,6 +498,12 @@ export async function fetchAlertDeliveries(
   );
   if (!result.success)
     throw new ApiError("Backend returned incompatible delivery evidence.");
+  return result.data;
+}
+
+export async function fetchAlertEvaluations(signal?: AbortSignal): Promise<AlertEvaluationHistory> {
+  const result = alertEvaluationHistorySchema.safeParse(await jsonRequest("/api/alerts/evaluations?limit=50", { signal }, "Alert evaluation history request failed"));
+  if (!result.success) throw new ApiError("Backend returned incompatible alert evaluation evidence.");
   return result.data;
 }
 

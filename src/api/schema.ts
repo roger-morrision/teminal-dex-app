@@ -637,7 +637,7 @@ export const swapBuildSchema = z.object({
 export const swapInspectionSchema = z.object({
   schema: z.literal("swap-intent-inspection-v1"),
   executionEnabled: z.literal(false),
-  intent: z.object({ id: z.string().min(8).max(64), status: z.string(), expiresAt: z.number().int().positive(), transactionHash, quoteHash: transactionHash }).passthrough(),
+  intent: z.object({ id: z.string().min(8).max(64), status: z.string(), expiresAt: z.number().int().positive(), transactionHash, messageHash: transactionHash, quoteHash: transactionHash }).passthrough(),
   replay: z.boolean(),
   nextRequiredGate: z.literal("server_simulation_and_mint_amount_verification"),
 }).passthrough();
@@ -765,6 +765,21 @@ export const alertDeliveriesSchema = z
 export type UserAlert = z.infer<typeof userAlertSchema>;
 export type UserAlertsResponse = z.infer<typeof userAlertsSchema>;
 export type AlertDeliveriesResponse = z.infer<typeof alertDeliveriesSchema>;
+
+export const alertEvaluationHistorySchema = z.object({
+  schema: z.literal("alert-evaluation-history-v1"),
+  data: z.array(z.object({
+    id: z.string().min(8).max(64), alertId: z.string().min(8).max(64),
+    alert: z.object({ address: publicKeyString, type: z.enum(["price", "percentageChange", "volumeSpike", "newPair", "customFilter"]), name: z.string().max(100) }).strict(),
+    evaluationVersion: z.string().max(64), source: z.string().max(100), sourceIdentity: z.string().max(200), observedAt: z.number().int().positive(), evaluatedAt: z.number().int().positive(),
+    metric: z.object({ name: z.string().max(100), value: z.number().finite().nullable(), operator: z.enum(["gte", "lte", "eq"]).nullable(), threshold: z.number().finite().nullable() }).strict(),
+    status: z.enum(["triggered", "not_triggered", "unavailable"]), triggered: z.boolean().nullable(), reason: z.string().max(200).nullable(),
+    deliveries: z.array(z.object({ channel: z.string().max(32), status: z.string().max(32), reason: z.string().max(200).nullable() }).strict()).max(5),
+  }).strict()).max(100),
+  page: z.object({ limit: z.number().int().min(1).max(100), hasMore: z.boolean(), nextCursor: z.object({ evaluatedAt: z.number().int().positive(), id: z.string().min(8).max(64) }).strict().nullable() }).strict(),
+  persistence: z.literal("database"), fetchedAt: z.number().int().positive(),
+}).strict();
+export type AlertEvaluationHistory = z.infer<typeof alertEvaluationHistorySchema>;
 
 const trackTypeSchema = z.enum([
   "pumpfun_live",

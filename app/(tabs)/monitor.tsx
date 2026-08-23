@@ -17,6 +17,7 @@ import {
   createUserAlert,
   deleteUserAlert,
   fetchAlertDeliveries,
+  fetchAlertEvaluations,
   fetchMonitorAlerts,
   fetchUserAlerts,
   setUserAlertActive,
@@ -58,19 +59,20 @@ export default function MonitorScreen() {
     queryFn: ({ signal }) => fetchAlertDeliveries(signal),
     enabled: authorized && mode === "delivery",
   });
+  const evaluations = useQuery({ queryKey: ["alert-evaluations"], queryFn: ({ signal }) => fetchAlertEvaluations(signal), enabled: authorized && mode === "delivery" });
   const refresh = () =>
     mode === "live"
       ? live.refetch()
       : mode === "rules"
         ? rules.refetch()
-        : deliveries.refetch();
+        : Promise.all([deliveries.refetch(), evaluations.refetch()]);
   return (
     <SafeAreaView style={styles.safe} edges={["top"]}>
       <ScrollView
         refreshControl={
           <RefreshControl
             refreshing={
-              live.isRefetching || rules.isRefetching || deliveries.isRefetching
+              live.isRefetching || rules.isRefetching || deliveries.isRefetching || evaluations.isRefetching
             }
             onRefresh={refresh}
             tintColor={colors.accent}
@@ -145,11 +147,10 @@ export default function MonitorScreen() {
             }
           />
         ) : (
-          <Delivery
-            data={deliveries.data?.data ?? []}
-            loading={deliveries.isLoading}
-            error={deliveries.error?.message}
-          />
+          <View>
+            <Delivery data={deliveries.data?.data ?? []} loading={deliveries.isLoading} error={deliveries.error?.message} />
+            <EvaluationHistory data={evaluations.data?.data ?? []} loading={evaluations.isLoading} error={evaluations.error?.message} />
+          </View>
         )}
       </ScrollView>
     </SafeAreaView>
@@ -530,6 +531,25 @@ function Delivery({
     </View>
   );
 }
+
+export function EvaluationHistory({ data, loading, error }: { data: Awaited<ReturnType<typeof fetchAlertEvaluations>>["data"]; loading: boolean; error?: string }) {
+  const { t } = useSettings();
+  if (loading) return <State loading text={t("loadingEvaluations")} />;
+  if (error) return <State error text={error} />;
+  return <View style={styles.evaluationSection}>
+    <Text accessibilityRole="header" style={styles.sectionTitle}>{t("evaluationHistory")}</Text>
+    <Text accessibilityRole="summary" style={styles.sectionHint}>{t("evaluationEvidenceBoundary")}</Text>
+    {data.map((item) => <View key={item.id} style={styles.delivery}>
+      <View style={[styles.deliveryDot, item.status === "triggered" ? styles.delivered : item.status === "unavailable" ? styles.failed : styles.pending]} />
+      <View style={styles.flex}>
+        <Text style={styles.eventTitle}>{item.alert.name} · {t(item.status === "triggered" ? "triggered" : item.status === "not_triggered" ? "notTriggered" : "unavailable")}</Text>
+        <Text style={styles.eventMeta}>{t("evaluationMetric", { metric: item.metric.name, value: item.metric.value ?? t("unavailable"), threshold: item.metric.threshold ?? t("unavailable") })} · {relative(item.evaluatedAt, t)}</Text>
+        <Text style={styles.eventMeta}>{item.source} · {short(item.sourceIdentity)}{item.reason ? ` · ${item.reason}` : ""}</Text>
+      </View>
+    </View>)}
+    {!data.length ? <State text={t("noEvaluations")} /> : null}
+  </View>;
+}
 function IdentityGate({
   locked,
   busy,
@@ -651,6 +671,7 @@ function conditionLabel(
 }
 
 const styles = StyleSheet.create({
+  evaluationSection: { marginTop: spacing.xl, gap: spacing.sm },
   safe: { flex: 1, backgroundColor: colors.background },
   content: { paddingBottom: 90 },
   header: {

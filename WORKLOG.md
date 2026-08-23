@@ -530,3 +530,12 @@
 - Failed simulations expose the bounded provider error and direct users to refresh the quote; they never expose a confirmation action. Added adversarial response tests rejecting forged `executionEnabled: true` authority and false resolved mint verification.
 - Updated the final audit through Slice 48 so its blocker matrix no longer incorrectly reports resolved-account verification, simulation, and explicit confirmation absent.
 - Strict TypeScript, repository-wide ESLint, 40 Jest suites / 171 tests, Expo Doctor 21/21, a fresh 23-route web export, Android export, and iOS export passed. Generated verification output was removed; the known upstream Noble hashes fallback warning remains non-fatal.
+
+## 2026-08-23 — Slice 49: owner-scoped alert evaluations and swap message integrity
+
+- Added a backend GET-only alert evaluation history contract over durable `AlertEvaluation` rows. It requires the private-resource owner boundary, supports paired evaluated-time/ID cursors and optional alert filtering, caps pages at 100, fetches one extra row for truthful continuation, and bounds delivery summaries and reasons.
+- Connected the latest 50 evaluations to Monitor's verified-owner Delivery view with status, metric/threshold, provider/source identity, observation time, and explicit language that evaluation does not prove delivery or authorize a trade.
+- Added exact serialized-message hashing to inspected swap intents and a server-side Ed25519 owner-signature verification primitive without a sender. Disabled the legacy raw submission action with HTTP 410; no mobile signing or broadcast call was added.
+- Added backend static safety contracts plus mobile strict schemas and rendered evidence tests rejecting oversized delivery evidence and forged pagination. Backend TypeScript, Prisma generation/validation, targeted ESLint, new blocker safety contract, and existing inspection regression passed. Backend commit: `0957e50`.
+- Mobile TypeScript, repository-wide ESLint, 41 Jest suites / 173 tests, Expo Doctor 21/21, a fresh 23-route web export, Android export, and iOS export passed. Generated verification output was removed; the known upstream Noble hashes fallback warning remains non-fatal.
+- Remaining blockers: a separately approved managed-submission design and physical Android/iOS wallet/accessibility evidence.

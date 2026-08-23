@@ -697,8 +697,18 @@ export const swapInspectionSchema = z.object({
   replay: z.boolean(),
   nextRequiredGate: z.literal("server_simulation_and_mint_amount_verification"),
 }).passthrough();
+const automationPolicyTraceSchema = z.object({
+  schemaVersion: z.literal("automation-policy-trace-v1"), ownerKey: publicKeyString, intentId: z.string().min(8).max(64), mode: z.literal("simulation"), lease: z.null(),
+  checks: z.array(z.object({ id: z.string().min(1).max(64), passed: z.boolean(), observed: z.union([z.string().max(256), z.boolean()]), limit: z.string().max(256).optional() }).strict()).min(1).max(16),
+  blockers: z.array(z.string().min(1).max(64)).max(16), policyHash: transactionHash, allowed: z.boolean(), executionEnabled: z.literal(false),
+}).strict().superRefine((trace, context) => {
+  const ids = trace.checks.map((check) => check.id);
+  if (new Set(ids).size !== ids.length || ids.some((id, index) => index > 0 && id <= ids[index - 1]!)) context.addIssue({ code: "custom", message: "Policy checks must be unique and sorted.", path: ["checks"] });
+  const expected = trace.checks.filter((check) => !check.passed).map((check) => check.id);
+  if (expected.join("\0") !== trace.blockers.join("\0") || trace.allowed !== (expected.length === 0)) context.addIssue({ code: "custom", message: "Policy decision is inconsistent.", path: ["blockers"] });
+});
 export const swapSimulationSchema = z.object({
-  schema: z.literal("swap-intent-simulation-v1"),
+  schema: z.enum(["swap-intent-simulation-v1", "swap-intent-simulation-v2"]),
   executionEnabled: z.literal(false),
   intentId: z.string().min(8).max(64),
   replay: z.boolean(),
@@ -706,9 +716,14 @@ export const swapSimulationSchema = z.object({
     provider: z.literal("configured-helius-rpc"), slot: z.number().int().positive(), succeeded: z.boolean(), error: z.string().max(1_000).nullable(),
     logs: z.array(z.string().max(500)).max(64), unitsConsumed: z.number().int().nonnegative().nullable(), simulatedAt: z.number().int().positive(), sigVerify: z.literal(false), replaceRecentBlockhash: z.literal(true),
     resolved: z.object({ inputMint: publicKeyString, outputMint: publicKeyString, inAmount: z.string().regex(/^\d+$/), quotedOutAmount: z.string().regex(/^\d+$/), slippageBps: z.number().int().min(1).max(5000), ownerAuthorityVerified: z.literal(true), mintIdentityVerified: z.literal(true), amountIdentityVerified: z.literal(true), swapVariant: z.enum(["route", "shared_accounts_route"]) }).passthrough(),
+    policyTrace: automationPolicyTraceSchema.optional(),
   }).passthrough(),
   nextRequiredGate: z.enum(["explicit_owner_confirmation", "fix_simulation_failure"]),
-}).passthrough();
+}).passthrough().superRefine((value, context) => {
+  if (value.schema === "swap-intent-simulation-v2" && (value.replay || !value.simulation.policyTrace)) context.addIssue({ code: "custom", message: "Fresh v2 simulation requires durable policy evidence.", path: ["simulation", "policyTrace"] });
+  const trace = value.simulation.policyTrace;
+  if (trace && trace.intentId !== value.intentId) context.addIssue({ code: "custom", message: "Policy trace intent mismatch.", path: ["simulation", "policyTrace", "intentId"] });
+});
 export const swapConfirmationSchema = z.object({
   schema: z.literal("swap-intent-confirmation-v1"), executionEnabled: z.literal(false), replay: z.boolean(),
   intent: z.object({ id: z.string().min(8).max(64), status: z.literal("confirmed"), confirmedAt: z.number().int().positive(), confirmationHash: transactionHash }),

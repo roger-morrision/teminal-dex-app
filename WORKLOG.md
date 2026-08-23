@@ -604,3 +604,10 @@
 - Added a dependency-aware ten-phase governance evaluator covering automated/provider readiness, physical-device evidence, custody/provider/risk/legal approvals, devnet, mainnet canary, CopyTrade shadow/activation, production drills, and provider SLO operations. Complete evidence never grants mobile execution authority.
 - Added fail-closed provider SLO evaluation for useful traffic, freshness, decode/persistence coverage, cooldown, and drop/ignore pressure; nominal configuration alone cannot qualify health.
 - Added the ten-phase execution ledger and retained the original seven-phase ledger as a superseded decision record. TypeScript, repository-wide ESLint, 45 Jest suites / 200 tests, and fresh web/Android/iOS exports passed. Physical-device and real-financial stages remain honestly blocked on hardware and explicit external authority.
+
+## 2026-08-23 — Slice 58: durable simulation policy-trace compatibility
+
+- Audited the evolved backend and found fresh simulations now return `swap-intent-simulation-v2` with durable automation-policy evidence while replay responses retain the v1 envelope. Mobile previously rejected every fresh v2 response.
+- Added backward-compatible v1/v2 parsing while requiring every fresh v2 response to be non-replayed and contain a bounded simulation-only policy trace with exact intent binding, unique sorted checks, consistent blockers/allowance, a policy hash, and `executionEnabled: false`.
+- Updated the end-to-end unsigned build/inspect/simulate/confirm fixture to the live v2 contract and added adversarial coverage for missing and internally forged policy evidence.
+- Strict TypeScript, repository-wide ESLint, 45 Jest suites / 201 tests, Expo Doctor 21/21, and fresh web/Android/iOS exports passed. Generated verification output was removed; the known Noble hashes fallback warning remains non-fatal. No signing, submission, consumption, or financial authority was added.

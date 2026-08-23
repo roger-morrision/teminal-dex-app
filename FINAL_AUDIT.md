@@ -2,7 +2,7 @@
 
 Audit date: 2026-08-23
 
-Audit maintained through: Slice 57
+Audit maintained through: Slice 58
 
 Backend authority: `C:\Tuan\devApps\TERMINAL_DEX_Intelligent` (source of truth; isolated Slice 43–49 contracts added with explicit write approval)
 
@@ -25,7 +25,7 @@ Completion is intentionally not claimed for requirements that need an absent bac
 | AI and auxiliary intelligence           | Verified                                     | Advisory-only AI, public simulation performance/research plus operational, mutation, lease, and cycle-fencing health, execution-disabled governance, bounded four-page Signals history with unique descending rows and fail-closed cursor continuity, heatmap, claims, smart money, wallet tracker, Snipe List, Multicharts, analytics, and GET-only feed operations with provider/channel recovery evidence and refresh deltas. |
 | Localization, privacy, accessibility    | Automated verification passed                | Typed English/Vietnamese copy, reduced motion, telemetry default-off, privacy reset, roles/labels/busy/error/empty/retry semantics, and static all-route control audit.                                                                                                                                                                  |
 | Network and platform hardening          | Automated verification passed                | React Query online/offline policy, bounded retry behavior, ATS/cleartext/backup configuration, deep-link allowlisting, redaction, Expo Doctor, and web/Android/iOS exports.                                                                                                                                                              |
-| Tests and build regression              | Verified                                     | TypeScript, direct ESLint, 45 Jest suites / 200 tests, and fresh 23-route web/Android/iOS exports passed through Slice 57; Expo Doctor 21/21 passed on the unchanged dependency/config baseline. Backend alert-history/message-integrity TypeScript, targeted ESLint, Prisma validation/generation, and safety contracts passed. |
+| Tests and build regression              | Verified                                     | TypeScript, direct ESLint, 45 Jest suites / 201 tests, Expo Doctor 21/21, and fresh 23-route web/Android/iOS exports passed through Slice 58. Backend alert-history/message-integrity TypeScript, targeted ESLint, Prisma validation/generation, and safety contracts passed. |
 
 ## Remaining blockers
 

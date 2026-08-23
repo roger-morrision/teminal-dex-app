@@ -581,3 +581,11 @@
 - Added request-boundary continuity rejection for non-advancing pages and adversarial schema/client coverage for unordered, empty-continuation, forged-boundary, and replayed responses.
 - Strict TypeScript, repository-wide ESLint, and 41 Jest suites / 183 tests passed. No signing, transaction submission, provider mutation, or production side effect was introduced.
 - Remaining blockers are unchanged: managed submission requires separate execution authority/design, and native wallet/accessibility closure requires physical devices.
+
+## 2026-08-23 — Slice 55: seven-phase readiness and runtime execution boundary
+
+- Reconciled the Final Audit through Slice 54 and corrected its automated baseline to 41 suites / 183 tests before this slice.
+- Added a centralized runtime mobile request policy. It allows only reviewed unsigned swap build, inspection, simulation, and explicit non-executing confirmation mutations; live signing, broadcast, submission, intent consumption, CopyTrade activation/execution, and position closing fail before network access.
+- Added nine policy regressions covering the allowlist, malformed paths, unknown swap mutations, and forbidden execution routes. TypeScript, repository-wide ESLint, and 42 Jest suites / 192 tests passed.
+- Added the seven-phase readiness ledger, managed-submission architecture approval draft, physical-device evidence matrix, and release/incident runbook. These define exact acceptance evidence without fabricating device runs or external approvals.
+- Phases 0–1 are code-complete. Phases 2–3 are prepared but remain blocked on physical Android/iOS hardware and a supported Android wallet. Phases 4–7 have fail-closed designs and release gates; transaction and CopyTrade execution remain blocked on explicit custody, provider, fee/risk, legal/security, incident-owner, and rollout decisions.

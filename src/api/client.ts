@@ -86,6 +86,7 @@ import {
 } from "./schema";
 import { isSolanaAddress } from "@/security/input";
 import { recordFeedCounterSample } from "@/lib/feed-recovery";
+import { assertMobileRequestPolicy } from "@/security/execution-policy";
 
 export type TrendingPeriod = "1h" | "6h" | "24h";
 export type TrendingSort = "trending" | "gainers" | "losers" | "volume" | "new";
@@ -427,6 +428,7 @@ export async function fetchSwapQuote(
 }
 
 async function postSwapGate<T>(path: string, body: unknown, schema: { safeParse(value: unknown): { success: true; data: T } | { success: false } }, failure: string): Promise<T> {
+  assertMobileRequestPolicy(path, "POST");
   const response = await fetch(`${getApiOrigin()}${path}`, { method: "POST", credentials: "include", headers: { Accept: "application/json", "Content-Type": "application/json" }, body: JSON.stringify(body) });
   if (!response.ok) throw new ApiError(`${failure} (${response.status}).`, response.status);
   const parsed = schema.safeParse(await response.json());
@@ -454,6 +456,7 @@ export async function confirmVerifiedSwapIntent(quote: SwapQuoteResponse, prepar
 }
 
 async function jsonRequest(path: string, init: RequestInit, failure: string) {
+  assertMobileRequestPolicy(path, init.method ?? "GET");
   const response = await fetch(`${getApiOrigin()}${path}`, {
     credentials: "include",
     headers: {

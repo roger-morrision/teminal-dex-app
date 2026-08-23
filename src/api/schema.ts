@@ -70,7 +70,44 @@ export const trendingSchema = z
       .passthrough()
       .optional(),
   })
-  .passthrough();
+  .passthrough()
+  .superRefine((page, ctx) => {
+    if (page.recordCount != null && page.recordCount !== page.tokens.length) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["recordCount"],
+        message: "Discovery record count must match the returned page.",
+      });
+    }
+    if (page.totalCount != null && page.totalCount < page.tokens.length) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["totalCount"],
+        message: "Discovery total count cannot be smaller than the page.",
+      });
+    }
+    if (
+      page.pagination &&
+      page.pagination.hasMore !== Boolean(page.pagination.nextCursor)
+    ) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["pagination", "nextCursor"],
+        message: "Discovery continuation metadata is inconsistent.",
+      });
+    }
+    const addresses = new Set<string>();
+    page.tokens.forEach((token, index) => {
+      if (addresses.has(token.address)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["tokens", index, "address"],
+          message: "Discovery token addresses must be unique within a page.",
+        });
+      }
+      addresses.add(token.address);
+    });
+  });
 
 export type TrendingResponse = z.infer<typeof trendingSchema>;
 

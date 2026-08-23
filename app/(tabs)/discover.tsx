@@ -138,6 +138,7 @@ export default function DiscoverScreen() {
         ? String(loaded)
         : undefined;
     },
+    maxPages: 4,
   });
   const remoteSearch = useQuery({
     queryKey: ["token-search", debouncedSearch],

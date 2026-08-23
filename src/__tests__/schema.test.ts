@@ -207,6 +207,16 @@ describe("trendingSchema", () => {
       }).success,
     ).toBe(false);
   });
+  it("rejects duplicate discovery rows and inconsistent page metadata", () => {
+    expect(
+      trendingSchema.safeParse({
+        tokens: [token, { ...token, id: "other-pair" }],
+        recordCount: 1,
+        totalCount: 1,
+        pagination: { hasMore: true, nextCursor: null },
+      }).success,
+    ).toBe(false);
+  });
 });
 
 describe("token intelligence schemas", () => {

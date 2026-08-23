@@ -178,6 +178,13 @@ export async function fetchDiscovery(
   cursor?: string,
   signal?: AbortSignal,
 ): Promise<TrendingResponse> {
+  const validateCursorProgress = (page: TrendingResponse) => {
+    const nextCursor = page.pagination?.nextCursor ?? page.nextCursor;
+    if (cursor && nextCursor != null && String(nextCursor) === cursor) {
+      throw new ApiError("Discovery request returned a non-advancing cursor.");
+    }
+    return page;
+  };
   const special = ["hot-searches", "surge", "nextbc", "pump-live"].includes(
     mode,
   );
@@ -186,7 +193,9 @@ export async function fetchDiscovery(
   if (mode === "new-pairs") {
     const query = new URLSearchParams({ limit: "50" });
     if (cursor) query.set("cursor", cursor);
-    return getValidated(`${getApiOrigin()}/api/v2/new-pairs?${query}`, signal);
+    return validateCursorProgress(
+      await getValidated(`${getApiOrigin()}/api/v2/new-pairs?${query}`, signal),
+    );
   }
   const query = new URLSearchParams({
     period,
@@ -197,7 +206,9 @@ export async function fetchDiscovery(
   if (filters.dex !== "All") query.set("dex", filters.dex);
   if (filters.minLiquidity) query.set("minLiquidity", filters.minLiquidity);
   if (filters.minMarketCap) query.set("minMarketCap", filters.minMarketCap);
-  return getValidated(`${getApiOrigin()}/api/trending?${query}`, signal);
+  return validateCursorProgress(
+    await getValidated(`${getApiOrigin()}/api/trending?${query}`, signal),
+  );
 }
 
 export async function searchTokens(

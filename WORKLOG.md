@@ -565,3 +565,11 @@
 - Added request-boundary rejection for a non-advancing opaque cursor and capped retained React Query history at four explicit pages, preventing malformed servers from creating unbounded or replaying client state.
 - Added adversarial schema and client coverage. Strict TypeScript, repository-wide ESLint, 41 Jest suites / 179 tests, Expo Doctor 21/21, a fresh 23-route web export, Android export, and iOS export passed. Generated verification output was removed; the known upstream Noble hashes fallback warning remains non-fatal.
 - Remaining blockers are unchanged: managed submission requires separate execution authority/design, and native wallet/accessibility closure requires physical devices.
+
+## 2026-08-23 — Slice 53: bounded Discover cursor integrity
+
+- Compared Discover's two real pagination contracts with the authoritative backend: numeric offsets for Trending and opaque stable cursors for new pairs. The mobile query previously retained unlimited pages and accepted a returned cursor identical to the requested cursor.
+- Capped retained Discover history at four explicitly loaded pages and added request-boundary rejection for non-advancing cursor pages across both paginated contracts.
+- Added fail-closed page validation for exact declared record counts, credible totals, `hasMore`/cursor agreement, and unique token addresses while retaining compatibility with non-paginated provider modes.
+- Added adversarial schema and client coverage. Strict TypeScript, repository-wide ESLint, 41 Jest suites / 181 tests, Expo Doctor 21/21, a fresh 23-route web export, Android export, and iOS export passed. Generated verification output was removed; the known upstream Noble hashes fallback warning remains non-fatal.
+- Remaining blockers are unchanged: managed submission requires separate execution authority/design, and native wallet/accessibility closure requires physical devices.

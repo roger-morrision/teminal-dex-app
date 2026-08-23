@@ -152,6 +152,25 @@ describe("backend client routing", () => {
     );
   });
 
+  it("rejects a non-advancing new-pairs cursor", async () => {
+    jest.mocked(fetch).mockResolvedValue(
+      jsonResponse({
+        tokens: [],
+        source: "database",
+        dataQuality: "unavailable",
+        pagination: { hasMore: true, nextCursor: "same-cursor" },
+      }),
+    );
+    await expect(
+      fetchDiscovery(
+        "new-pairs",
+        "1h",
+        { dex: "All", minLiquidity: "", minMarketCap: "" },
+        "same-cursor",
+      ),
+    ).rejects.toThrow("non-advancing cursor");
+  });
+
   it("encodes search terms and validates token detail", async () => {
     const address = "11111111111111111111111111111111";
     jest

@@ -1,4 +1,6 @@
-# Terminal DEX Mobile — Seven-Phase Readiness Program
+# Terminal DEX Mobile — Seven-Phase Readiness Program (Superseded)
+
+The current program is `TEN_PHASE_EXECUTION_LEDGER.md`. This file is retained as the original seven-phase decision record.
 
 This document is the current execution ledger for the seven-phase enhancement request. A phase is complete only when its evidence exists; checklists never substitute for device, provider, or production evidence. Live execution remains disabled until every mandatory gate passes and the required authority is explicitly supplied.
 

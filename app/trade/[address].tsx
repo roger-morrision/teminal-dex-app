@@ -15,6 +15,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { confirmVerifiedSwapIntent, fetchSwapQuote, fetchSwapV2Readiness, fetchTokenDetail, prepareVerifiedSwapIntent } from "@/api/client";
 import { tokenSchema } from "@/api/schema";
 import { useWalletSession } from "@/security/WalletSessionProvider";
+import { evaluateSwapReadiness } from "@/lib/swap-readiness";
 import { colors, spacing } from "@/theme";
 import { isSolanaAddress, parseBoundedJson } from "@/security/input";
 import { useSettings } from "@/settings/SettingsProvider";
@@ -30,8 +31,8 @@ export default function TradeReviewScreen() {
     snapshot?: string;
   }>();
   const wallet = useWalletSession();
-  const readiness = useQuery({ queryKey: ["swap-v2-readiness"], queryFn: ({ signal }) => fetchSwapV2Readiness(signal), staleTime: 300_000, retry: 1 });
   const validAddress = isSolanaAddress(address);
+  const readiness = useQuery({ queryKey: ["swap-v2-readiness"], queryFn: ({ signal }) => fetchSwapV2Readiness(signal), enabled: validAddress, staleTime: 300_000, retry: 1 });
   const local = tokenSchema.safeParse(parseBoundedJson(snapshot));
   const snapshotMatches = local.success && local.data.address === address;
   const detail = useQuery({
@@ -49,6 +50,7 @@ export default function TradeReviewScreen() {
   const [amount, setAmount] = useState("");
   const [slippageBps, setSlippageBps] = useState(100);
   const [now, setNow] = useState(0);
+  const readinessState = readiness.data ? evaluateSwapReadiness(readiness.data, now) : null;
   const request = useMemo(
     () => ({ token: address, side, amount, unit, slippageBps }),
     [address, side, amount, unit, slippageBps],
@@ -99,13 +101,6 @@ export default function TradeReviewScreen() {
             <Text style={styles.getQuoteText}>{t("goBack")}</Text>
           </Pressable>
         </View>
-        {readiness.data ? (
-          <View accessibilityRole="summary" style={styles.readinessCard}>
-            <Text style={styles.gateTitle}>{t("providerReadiness")}</Text>
-            <Text style={styles.gateText}>{t("providerReadinessProgress", { provider: readiness.data.data.provider.name, completed: readiness.data.data.completed, total: readiness.data.data.total })}</Text>
-            {readiness.data.data.checks.filter((check) => !check.ready).map((check) => <Text key={check.id} style={styles.checkText}>• {check.evidence}</Text>)}
-          </View>
-        ) : readiness.error ? <Text accessibilityRole="alert" style={styles.flowError}>{t("providerReadinessUnavailable")}</Text> : null}
       </SafeAreaView>
     );
 
@@ -135,6 +130,15 @@ export default function TradeReviewScreen() {
             <Ionicons name="lock-closed" size={14} color={colors.warning} />
           </View>
         </View>
+        {readiness.data && readinessState ? (
+          <View accessibilityRole="summary" style={styles.readinessCard}>
+            <Text style={styles.gateTitle}>{t("providerReadiness")}</Text>
+            <Text style={styles.gateText}>{t("providerReadinessProgress", { provider: readiness.data.data.provider.name, completed: readiness.data.data.completed, total: readiness.data.data.total })}</Text>
+            <Text style={styles.checkText}>{t("providerReadinessAssessed", { date: readiness.data.data.assessedAt })}</Text>
+            {readinessState.stale ? <Text accessibilityRole="alert" style={styles.failureGuidance}>{t("providerReadinessStale")}</Text> : null}
+            {readinessState.blockers.map((check) => <Text key={check.id} style={styles.checkText}>• {t("providerReadinessBlocker", { category: t(`readinessCategory_${check.category}`), evidence: check.evidence })}</Text>)}
+          </View>
+        ) : readiness.error ? <Text accessibilityRole="alert" style={styles.flowError}>{t("providerReadinessUnavailable")}</Text> : null}
         {token ? (
           <View style={styles.token}>
             <View style={styles.avatar}>

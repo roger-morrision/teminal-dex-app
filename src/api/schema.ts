@@ -626,6 +626,42 @@ export const swapQuoteSchema = z
   .passthrough();
 export type SwapQuoteResponse = z.infer<typeof swapQuoteSchema>;
 
+const transactionHash = z.string().regex(/^[a-f0-9]{64}$/);
+export const swapBuildSchema = z.object({
+  swapTransaction: z.string().min(16).max(200_000).regex(/^[A-Za-z0-9+/]+={0,2}$/),
+  lastValidBlockHeight: z.number().int().positive(),
+  prioritizationFeeLamports: z.number().int().nonnegative(),
+  simulationError: z.unknown().nullable(),
+  builtAt: z.number().int().positive(),
+}).passthrough();
+export const swapInspectionSchema = z.object({
+  schema: z.literal("swap-intent-inspection-v1"),
+  executionEnabled: z.literal(false),
+  intent: z.object({ id: z.string().min(8).max(64), status: z.string(), expiresAt: z.number().int().positive(), transactionHash, quoteHash: transactionHash }).passthrough(),
+  replay: z.boolean(),
+  nextRequiredGate: z.literal("server_simulation_and_mint_amount_verification"),
+}).passthrough();
+export const swapSimulationSchema = z.object({
+  schema: z.literal("swap-intent-simulation-v1"),
+  executionEnabled: z.literal(false),
+  intentId: z.string().min(8).max(64),
+  replay: z.boolean(),
+  simulation: z.object({
+    provider: z.literal("configured-helius-rpc"), slot: z.number().int().positive(), succeeded: z.boolean(), error: z.string().max(1_000).nullable(),
+    logs: z.array(z.string().max(500)).max(64), unitsConsumed: z.number().int().nonnegative().nullable(), simulatedAt: z.number().int().positive(), sigVerify: z.literal(false), replaceRecentBlockhash: z.literal(true),
+    resolved: z.object({ inputMint: publicKeyString, outputMint: publicKeyString, inAmount: z.string().regex(/^\d+$/), quotedOutAmount: z.string().regex(/^\d+$/), slippageBps: z.number().int().min(1).max(5000), ownerAuthorityVerified: z.literal(true), mintIdentityVerified: z.literal(true), amountIdentityVerified: z.literal(true), swapVariant: z.enum(["route", "shared_accounts_route"]) }).passthrough(),
+  }).passthrough(),
+  nextRequiredGate: z.enum(["explicit_owner_confirmation", "fix_simulation_failure"]),
+}).passthrough();
+export const swapConfirmationSchema = z.object({
+  schema: z.literal("swap-intent-confirmation-v1"), executionEnabled: z.literal(false), replay: z.boolean(),
+  intent: z.object({ id: z.string().min(8).max(64), status: z.literal("confirmed"), confirmedAt: z.number().int().positive(), confirmationHash: transactionHash }),
+  nextRequiredGate: z.literal("wallet_signature_and_managed_submission"),
+}).passthrough();
+export type SwapInspection = z.infer<typeof swapInspectionSchema>;
+export type SwapSimulation = z.infer<typeof swapSimulationSchema>;
+export type SwapConfirmation = z.infer<typeof swapConfirmationSchema>;
+
 const monitorAlertSchema = z
   .object({
     id: z.string(),

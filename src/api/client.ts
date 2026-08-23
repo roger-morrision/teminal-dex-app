@@ -28,6 +28,10 @@ import {
   smartMoneySchema,
   snipersSchema,
   swapQuoteSchema,
+  swapBuildSchema,
+  swapInspectionSchema,
+  swapSimulationSchema,
+  swapConfirmationSchema,
   tokenDetailSchema,
   topTradersSchema,
   trackFeedSchema,
@@ -407,6 +411,33 @@ export async function fetchSwapQuote(
   if (!result.success)
     throw new ApiError("Backend returned an incompatible swap quote.");
   return result.data;
+}
+
+async function postSwapGate<T>(path: string, body: unknown, schema: { safeParse(value: unknown): { success: true; data: T } | { success: false } }, failure: string): Promise<T> {
+  const response = await fetch(`${getApiOrigin()}${path}`, { method: "POST", credentials: "include", headers: { Accept: "application/json", "Content-Type": "application/json" }, body: JSON.stringify(body) });
+  if (!response.ok) throw new ApiError(`${failure} (${response.status}).`, response.status);
+  const parsed = schema.safeParse(await response.json());
+  if (!parsed.success) throw new ApiError(`Backend returned incompatible ${failure.toLowerCase()} evidence.`);
+  return parsed.data;
+}
+
+export async function prepareVerifiedSwapIntent(quote: SwapQuoteResponse, userPublicKey: string) {
+  const built = await postSwapGate("/api/swap/build", { quoteResponse: quote.jupQuote, userPublicKey, quotedAt: quote.quotedAt }, swapBuildSchema, "Unsigned transaction build failed");
+  const idempotencyKey = `mobile-${quote.quotedAt}-${quote.quote.contextSlot}`;
+  const inspection = await postSwapGate("/api/swap/intents/inspect", { transaction: built.swapTransaction, quoteResponse: quote.jupQuote, quotedAt: quote.quotedAt, userPublicKey, idempotencyKey }, swapInspectionSchema, "Transaction inspection failed");
+  const simulation = await postSwapGate("/api/swap/intents/simulate", { intentId: inspection.intent.id, transaction: built.swapTransaction, userPublicKey }, swapSimulationSchema, "Transaction simulation failed");
+  return { inspection, simulation };
+}
+
+export async function confirmVerifiedSwapIntent(quote: SwapQuoteResponse, prepared: Awaited<ReturnType<typeof prepareVerifiedSwapIntent>>, userPublicKey: string) {
+  const { intent } = prepared.inspection;
+  const simulationSlot = prepared.simulation.simulation.slot;
+  return postSwapGate("/api/swap/intents/confirm", {
+    intentId: intent.id, confirmationKey: `mobile-confirm-${intent.id}`, acknowledgement: "I_CONFIRM_SIMULATED_UNSIGNED_SWAP", userPublicKey,
+    transactionHash: intent.transactionHash, quoteHash: intent.quoteHash, inputMint: quote.quote.inputMint, outputMint: quote.quote.outputMint,
+    inAmount: quote.quote.inAmount, quotedOutAmount: quote.quote.outAmount, minimumOutAmount: quote.quote.minOutAmount,
+    slippageBps: quote.quote.slippageBps, simulationSlot,
+  }, swapConfirmationSchema, "Explicit confirmation failed");
 }
 
 async function jsonRequest(path: string, init: RequestInit, failure: string) {

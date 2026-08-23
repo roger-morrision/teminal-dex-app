@@ -512,3 +512,13 @@
 - Verification evidence: strict TypeScript, repository-wide ESLint, 39 Jest suites / 169 tests, Expo Doctor 21/21, fresh 23-route web export, Android export, and iOS export passed. Generated exports were removed.
 - Known upstream Noble hashes Metro subpath fallback warning remains unchanged and non-fatal across all bundles.
 - Next priority: transaction simulation after explicit Helius disclosure approval, then native-wallet and physical-device evidence.
+
+## 2026-08-23 — Slice 47: verified unsigned-swap simulation and intent confirmation
+
+- With explicit approval for configured Helius disclosure and the isolated backend safety routes, added durable server-side resolution of versioned-transaction lookup tables, allowlisted resolved programs, exact owner authority, exact Jupiter route/shared-route amounts, mints, and slippage, and configured Helius `simulateTransaction` with signature verification disabled and a replaced recent blockhash.
+- Stored only bounded evidence: provider/slot/result, at most 64 logs of 500 characters, a 1,000-character error, compute units, resolved program/account counts, and quote-binding facts. Raw transactions and signatures are not persisted.
+- Added owner-scoped replay-safe simulation and explicit confirmation endpoints. Confirmation requires an exact acknowledgement plus a complete server-derived summary; responses keep `executionEnabled: false`. No signing, broadcast, submission, transaction consumption, or financial action endpoint was added.
+- Wired mobile quote review through build → inspect → simulate → explicit confirm for verified unlocked wallets. The screen presents simulation result, slot, compute units, integrity checks, and a final confirmed-not-executed boundary; unsigned bytes remain only in component/API-call memory.
+- Added adversarial backend parser/static safety coverage and mobile client routing/schema coverage proving no sign/send/submit request. Backend Prisma validation/generation, TypeScript, targeted ESLint, existing inspection regression, and new safety contract passed. Backend commit: `4e1aa7f`.
+- Mobile strict TypeScript, repository-wide ESLint, 40 Jest suites / 170 tests, Expo Doctor 21/21, a fresh 23-route web export, Android export, and iOS export passed. Generated verification output was removed.
+- Next priority: keep wallet signing and managed submission locked pending a separately approved end-to-end execution design; native wallet and physical-device evidence remain environment-blocked.

@@ -1,5 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
 import {
@@ -12,7 +12,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { fetchSwapQuote, fetchTokenDetail } from "@/api/client";
+import { confirmVerifiedSwapIntent, fetchSwapQuote, fetchTokenDetail, prepareVerifiedSwapIntent } from "@/api/client";
 import { tokenSchema } from "@/api/schema";
 import { useWalletSession } from "@/security/WalletSessionProvider";
 import { colors, spacing } from "@/theme";
@@ -60,6 +60,14 @@ export default function TradeReviewScreen() {
     staleTime: 0,
     gcTime: 60_000,
   });
+  const prepare = useMutation({ mutationFn: async () => {
+    if (!quote.data || !wallet.session || wallet.locked) throw new Error(t("verifiedWalletRequired"));
+    return prepareVerifiedSwapIntent(quote.data, wallet.session.wallet);
+  } });
+  const confirm = useMutation({ mutationFn: async () => {
+    if (!quote.data || !prepare.data || !wallet.session || wallet.locked) throw new Error(t("verifiedWalletRequired"));
+    return confirmVerifiedSwapIntent(quote.data, prepare.data, wallet.session.wallet);
+  } });
   useEffect(() => {
     const timer = setInterval(() => setNow(Date.now()), 1_000);
     return () => clearInterval(timer);
@@ -242,7 +250,7 @@ export default function TradeReviewScreen() {
             disabled: !validAmount || !token || quote.isFetching,
             busy: quote.isFetching,
           }}
-          onPress={() => quote.refetch()}
+          onPress={() => { prepare.reset(); confirm.reset(); void quote.refetch(); }}
           disabled={!validAmount || !token || quote.isFetching}
           style={[
             styles.getQuote,
@@ -331,22 +339,27 @@ export default function TradeReviewScreen() {
             <Text style={styles.gateTitle}>{t("executionLocked")}</Text>
             <Text style={styles.gateText}>
               {wallet.session && !wallet.locked
-                ? t("verifiedExecutionLocked")
+                ? t("verifiedSimulationReady")
                 : t("unverifiedExecutionLocked")}
             </Text>
           </View>
         </View>
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel={t("buildUnavailable")}
-          accessibilityState={{ disabled: true }}
-          disabled
-          style={styles.disabledExecution}
-        >
-          <Text style={styles.disabledExecutionText}>
-            {t("buildUnavailable")}
-          </Text>
+        <Pressable accessibilityRole="button" accessibilityLabel={t("prepareSimulation")} accessibilityState={{ disabled: !quote.data || expired || !wallet.session || wallet.locked || prepare.isPending, busy: prepare.isPending }} disabled={!quote.data || expired || !wallet.session || wallet.locked || prepare.isPending} onPress={() => prepare.mutate()} style={[styles.getQuote, (!quote.data || expired || !wallet.session || wallet.locked || prepare.isPending) && styles.disabled]}>
+          {prepare.isPending ? <ActivityIndicator color={colors.background} /> : <Text style={styles.getQuoteText}>{t("prepareSimulation")}</Text>}
         </Pressable>
+        {prepare.isError ? <Text accessibilityRole="alert" style={styles.flowError}>{prepare.error.message}</Text> : null}
+        {prepare.data ? <View accessibilityRole="summary" style={styles.simulationCard}>
+          <Text style={styles.quoteTitle}>{t("simulationEvidence")}</Text>
+          <QuoteRow label={t("status")} value={prepare.data.simulation.simulation.succeeded ? t("passed") : t("failed")} warning={!prepare.data.simulation.simulation.succeeded} />
+          <QuoteRow label={t("contextSlot")} value={String(prepare.data.simulation.simulation.slot)} />
+          <QuoteRow label={t("computeUnits")} value={String(prepare.data.simulation.simulation.unitsConsumed ?? t("unknown"))} />
+          <Check text={t("simulationChecksBound")} /><Check text={t("simulationUnsigned")} />
+        </View> : null}
+        {prepare.data?.simulation.simulation.succeeded && !confirm.data ? <Pressable accessibilityRole="button" accessibilityLabel={t("explicitConfirm")} accessibilityState={{ disabled: confirm.isPending, busy: confirm.isPending }} disabled={confirm.isPending} onPress={() => confirm.mutate()} style={styles.confirmButton}>
+          {confirm.isPending ? <ActivityIndicator color={colors.background} /> : <Text style={styles.getQuoteText}>{t("explicitConfirm")}</Text>}
+        </Pressable> : null}
+        {confirm.isError ? <Text accessibilityRole="alert" style={styles.flowError}>{confirm.error.message}</Text> : null}
+        {confirm.data ? <View accessibilityRole="alert" style={styles.confirmedCard}><Ionicons name="shield-checkmark" size={20} color={colors.accent} /><View style={styles.gateCopy}><Text style={styles.confirmedTitle}>{t("intentConfirmed")}</Text><Text style={styles.gateText}>{t("signatureStillLocked")}</Text></View></View> : null}
       </ScrollView>
     </SafeAreaView>
   );
@@ -533,6 +546,11 @@ const styles = StyleSheet.create({
   },
   getQuoteText: { color: colors.background, fontWeight: "900" },
   disabled: { opacity: 0.4 },
+  flowError: { color: colors.negative, fontSize: 11, textAlign: "center", marginTop: spacing.md },
+  simulationCard: { marginTop: spacing.lg, padding: spacing.lg, borderRadius: 14, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.accentDim, gap: spacing.sm },
+  confirmButton: { minHeight: 48, alignItems: "center", justifyContent: "center", borderRadius: 12, backgroundColor: colors.warning, marginTop: spacing.lg },
+  confirmedCard: { flexDirection: "row", gap: spacing.md, marginTop: spacing.lg, padding: spacing.lg, borderRadius: 14, backgroundColor: colors.accentDim },
+  confirmedTitle: { color: colors.accent, fontSize: 13, fontWeight: "900" },
   errorBox: {
     marginTop: spacing.lg,
     padding: spacing.lg,

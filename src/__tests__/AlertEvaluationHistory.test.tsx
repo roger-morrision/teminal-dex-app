@@ -24,6 +24,14 @@ describe("alert evaluation history", () => {
     expect(alertEvaluationHistorySchema.safeParse(payload).success).toBe(false);
   });
 
+  it("rejects duplicate, unordered, and non-boundary cursor evidence", () => {
+    const base = { schema: "alert-evaluation-history-v1", data: [evaluation], page: { limit: 50, hasMore: true, nextCursor: { evaluatedAt: evaluation.evaluatedAt, id: evaluation.id } }, persistence: "database", fetchedAt: 1_800_000_000_200 };
+    expect(alertEvaluationHistorySchema.safeParse({ ...base, data: [evaluation, evaluation] }).success).toBe(false);
+    expect(alertEvaluationHistorySchema.safeParse({ ...base, data: [evaluation, { ...evaluation, id: "evaluation_2", evaluatedAt: evaluation.evaluatedAt + 1 }] }).success).toBe(false);
+    expect(alertEvaluationHistorySchema.safeParse({ ...base, page: { ...base.page, nextCursor: { evaluatedAt: 1, id: "evaluation_x" } } }).success).toBe(false);
+    expect(alertEvaluationHistorySchema.safeParse({ ...base, page: { limit: 50, hasMore: false, nextCursor: base.page.nextCursor } }).success).toBe(false);
+  });
+
   it("loads older evidence only from an explicit bounded control", async () => {
     const onLoadMore = jest.fn();
     const screen = await render(<SettingsProvider><EvaluationHistory data={[evaluation]} loading={false} hasMore onLoadMore={onLoadMore} /></SettingsProvider>);
@@ -38,5 +46,10 @@ describe("alert evaluation history", () => {
     expect(String(url)).toContain("cursorAt=1800000000100&cursorId=evaluation_1");
     expect(init.method).toBeUndefined();
     await expect(fetchAlertEvaluations({ evaluatedAt: 0, id: "bad" })).rejects.toThrow("Invalid alert evaluation cursor");
+  });
+
+  it("rejects a page that does not advance beyond the requested cursor", async () => {
+    global.fetch = jest.fn(async () => ({ ok: true, json: async () => ({ schema: "alert-evaluation-history-v1", data: [evaluation], page: { limit: 50, hasMore: false, nextCursor: null }, persistence: "database", fetchedAt: 1_800_000_000_200 }) })) as jest.Mock;
+    await expect(fetchAlertEvaluations({ evaluatedAt: evaluation.evaluatedAt, id: evaluation.id })).rejects.toThrow("non-advancing");
   });
 });

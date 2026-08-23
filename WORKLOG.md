@@ -548,3 +548,12 @@
 - Added rendered explicit-load coverage plus client tests for paired forwarding and malformed cursor rejection.
 - Strict TypeScript, repository-wide ESLint, 41 Jest suites / 175 tests, Expo Doctor 21/21, a fresh 23-route web export, Android export, and iOS export passed. Generated verification output was removed; the known upstream Noble hashes fallback warning remains non-fatal.
 - Remaining blockers are unchanged: managed submission requires separate execution authority/design, and native wallet/accessibility closure requires physical devices.
+
+## 2026-08-23 — Slice 51: alert cursor continuity hardening
+
+- Audited the bounded evaluation paginator and found its response schema did not prove unique IDs, descending evaluated-time/ID order, `hasMore`/cursor agreement, or that the returned cursor matched the last row. A malformed response could repeat pages until the session cap.
+- Added fail-closed page invariants for declared limits, unique IDs, stable descending order, exact cursor availability, and exact page-boundary cursors.
+- Added request-boundary continuity validation: a cursor page's first row must be strictly older than the requested evaluated-time/ID pair, preventing replayed or non-advancing pages from entering React Query state.
+- Added adversarial coverage for duplicates, unordered evidence, forged boundary cursors, mismatched availability, and non-advancing server pages.
+- Strict TypeScript, repository-wide ESLint, 41 Jest suites / 177 tests, Expo Doctor 21/21, a fresh 23-route web export, Android export, and iOS export passed. Generated verification output was removed; the known upstream Noble hashes fallback warning remains non-fatal.
+- Remaining blockers are unchanged: managed submission requires separate execution authority/design, and native wallet/accessibility closure requires physical devices.

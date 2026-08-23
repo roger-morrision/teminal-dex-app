@@ -509,6 +509,8 @@ export async function fetchAlertEvaluations(cursor?: { evaluatedAt: number; id: 
   }
   const result = alertEvaluationHistorySchema.safeParse(await jsonRequest(`/api/alerts/evaluations?${query}`, { signal }, "Alert evaluation history request failed"));
   if (!result.success) throw new ApiError("Backend returned incompatible alert evaluation evidence.");
+  const first = result.data.data[0];
+  if (cursor && first && (first.evaluatedAt > cursor.evaluatedAt || (first.evaluatedAt === cursor.evaluatedAt && first.id >= cursor.id))) throw new ApiError("Backend returned non-advancing alert evaluation history.");
   return result.data;
 }
 

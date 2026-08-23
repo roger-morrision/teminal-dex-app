@@ -778,7 +778,20 @@ export const alertEvaluationHistorySchema = z.object({
   }).strict()).max(100),
   page: z.object({ limit: z.number().int().min(1).max(100), hasMore: z.boolean(), nextCursor: z.object({ evaluatedAt: z.number().int().positive(), id: z.string().min(8).max(64) }).strict().nullable() }).strict(),
   persistence: z.literal("database"), fetchedAt: z.number().int().positive(),
-}).strict();
+}).strict().superRefine((value, context) => {
+  if (value.data.length > value.page.limit) context.addIssue({ code: "custom", message: "Evaluation page exceeds declared limit" });
+  if (value.page.hasMore !== Boolean(value.page.nextCursor)) context.addIssue({ code: "custom", message: "Evaluation cursor availability mismatch" });
+  const seen = new Set<string>();
+  for (let index = 0; index < value.data.length; index++) {
+    const item = value.data[index]!;
+    if (seen.has(item.id)) context.addIssue({ code: "custom", message: "Duplicate evaluation ID" });
+    seen.add(item.id);
+    const previous = value.data[index - 1];
+    if (previous && (item.evaluatedAt > previous.evaluatedAt || (item.evaluatedAt === previous.evaluatedAt && item.id >= previous.id))) context.addIssue({ code: "custom", message: "Evaluation page order is invalid" });
+  }
+  const last = value.data.at(-1);
+  if (value.page.nextCursor && (!last || value.page.nextCursor.evaluatedAt !== last.evaluatedAt || value.page.nextCursor.id !== last.id)) context.addIssue({ code: "custom", message: "Evaluation cursor does not match page boundary" });
+});
 export type AlertEvaluationHistory = z.infer<typeof alertEvaluationHistorySchema>;
 
 const trackTypeSchema = z.enum([

@@ -545,12 +545,22 @@ export async function fetchFeedHistory(
     query.set("beforeSequence", cursor.beforeSequence);
     query.set("beforeId", cursor.beforeId);
   }
-  return readEvidence(
+  const page = await readEvidence(
     `/api/feed/history?${query}`,
     feedHistorySchema,
     "Feed history request failed",
     signal,
   );
+  const first = page.events[0];
+  if (cursor && first) {
+    const sequenceOrder = first.replaySequence.length === cursor.beforeSequence.length
+      ? first.replaySequence.localeCompare(cursor.beforeSequence)
+      : first.replaySequence.length - cursor.beforeSequence.length;
+    if (sequenceOrder > 0 || (sequenceOrder === 0 && first.id >= cursor.beforeId)) {
+      throw new ApiError("Backend returned non-advancing feed history.");
+    }
+  }
+  return page;
 }
 
 export async function fetchSocialRadar(signal?: AbortSignal): Promise<SocialRadarResponse> {

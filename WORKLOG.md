@@ -573,3 +573,11 @@
 - Added fail-closed page validation for exact declared record counts, credible totals, `hasMore`/cursor agreement, and unique token addresses while retaining compatibility with non-paginated provider modes.
 - Added adversarial schema and client coverage. Strict TypeScript, repository-wide ESLint, 41 Jest suites / 181 tests, Expo Doctor 21/21, a fresh 23-route web export, Android export, and iOS export passed. Generated verification output was removed; the known upstream Noble hashes fallback warning remains non-fatal.
 - Remaining blockers are unchanged: managed submission requires separate execution authority/design, and native wallet/accessibility closure requires physical devices.
+
+## 2026-08-23 — Slice 54: Track history cursor integrity
+
+- Audited Track's immutable feed-history paginator against its paired replay-sequence/ID contract. The mobile boundary previously accepted unordered pages, forged boundary cursors, and a cursor page that replayed or moved newer than the requested position.
+- Added fail-closed validation for unique IDs, strict descending replay-sequence/ID order, `hasMore`/cursor agreement, and an exact cursor match to the final page row without coercing 20-digit sequences through unsafe JavaScript numbers.
+- Added request-boundary continuity rejection for non-advancing pages and adversarial schema/client coverage for unordered, empty-continuation, forged-boundary, and replayed responses.
+- Strict TypeScript, repository-wide ESLint, and 41 Jest suites / 183 tests passed. No signing, transaction submission, provider mutation, or production side effect was introduced.
+- Remaining blockers are unchanged: managed submission requires separate execution authority/design, and native wallet/accessibility closure requires physical devices.

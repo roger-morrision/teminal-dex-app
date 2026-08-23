@@ -947,6 +947,16 @@ const feedHistoryCursorSchema = z
     beforeId: z.string().regex(/^[A-Za-z0-9:._-]{1,128}$/),
   })
   .strict();
+const compareReplayPosition = (
+  left: { replaySequence: string; id: string },
+  right: { replaySequence: string; id: string },
+) => {
+  const sequenceOrder =
+    left.replaySequence.length === right.replaySequence.length
+      ? left.replaySequence.localeCompare(right.replaySequence)
+      : left.replaySequence.length - right.replaySequence.length;
+  return sequenceOrder || left.id.localeCompare(right.id);
+};
 export const feedHistorySchema = z
   .object({
     schema: z.literal("feed-history-v1"),
@@ -977,8 +987,26 @@ export const feedHistorySchema = z
     nextCursor: feedHistoryCursorSchema.nullable(),
   })
   .strict()
-  .refine((value) => new Set(value.events.map((item) => item.id)).size === value.events.length, "Feed history IDs must be unique.")
-  .refine((value) => value.hasMore === Boolean(value.nextCursor), "Feed history cursor availability mismatch.");
+  .superRefine((value, context) => {
+    if (new Set(value.events.map((item) => item.id)).size !== value.events.length) {
+      context.addIssue({ code: "custom", message: "Feed history IDs must be unique.", path: ["events"] });
+    }
+    for (let index = 1; index < value.events.length; index += 1) {
+      const previous = value.events[index - 1];
+      const current = value.events[index];
+      if (previous && current && compareReplayPosition(previous, current) <= 0) {
+        context.addIssue({ code: "custom", message: "Feed history must be strictly descending.", path: ["events", index] });
+        break;
+      }
+    }
+    if (value.hasMore !== Boolean(value.nextCursor)) {
+      context.addIssue({ code: "custom", message: "Feed history cursor availability mismatch.", path: ["nextCursor"] });
+    }
+    const last = value.events.at(-1);
+    if (value.nextCursor && (!last || value.nextCursor.beforeSequence !== last.replaySequence || value.nextCursor.beforeId !== last.id)) {
+      context.addIssue({ code: "custom", message: "Feed history cursor must match the page boundary.", path: ["nextCursor"] });
+    }
+  });
 export type FeedHistoryResponse = z.infer<typeof feedHistorySchema>;
 export type FeedHistoryCursor = NonNullable<FeedHistoryResponse["nextCursor"]>;
 export type FeedHistoryEvent = FeedHistoryResponse["events"][number];

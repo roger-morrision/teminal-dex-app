@@ -432,6 +432,31 @@ describe("backend client routing", () => {
     expect("method" in (jest.mocked(fetch).mock.calls[0]?.[1] ?? {})).toBe(false);
   });
 
+  it("rejects non-advancing durable feed history pages", async () => {
+    jest.mocked(fetch).mockResolvedValueOnce(jsonResponse({
+      schema: "feed-history-v1",
+      mode: "read-only",
+      generatedAt: 1,
+      events: [{
+        id: "solana-rpc:trade:newer",
+        replaySequence: "43",
+        source: "solana-rpc",
+        channel: "rpc",
+        kind: "trade",
+        topic: "market",
+        mint: "11111111111111111111111111111111",
+        signature: "signature",
+        slot: 43,
+        observedAt: "2026-08-22T00:00:00.000Z",
+        dataQuality: "observed",
+        payload: {},
+      }],
+      hasMore: false,
+      nextCursor: null,
+    }));
+    await expect(fetchFeedHistory({ beforeSequence: "42", beforeId: "solana-rpc:trade:signature" })).rejects.toThrow("non-advancing feed history");
+  });
+
   it("loads public social radar with GET only and rejects incompatible evidence", async () => {
     jest.mocked(fetch).mockResolvedValueOnce(jsonResponse({ success: true, data: { trends: [] } }));
     await expect(fetchSocialRadar()).rejects.toThrow("incompatible social tracking evidence");

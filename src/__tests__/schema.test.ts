@@ -100,6 +100,14 @@ describe("durable feed history", () => {
     expect(feedHistorySchema.safeParse({ ...base, hasMore: true }).success).toBe(false);
     expect(feedHistorySchema.safeParse({ ...base, events: [{ ...event, payload: { value: "x".repeat(20_001) } }] }).success).toBe(false);
   });
+  it("rejects unordered pages and forged boundary cursors", () => {
+    const older = { ...event, id: "solana-rpc:trade:older", replaySequence: "41" };
+    const base = { schema: "feed-history-v1", mode: "read-only", generatedAt: 1, events: [event, older], hasMore: true, nextCursor: { beforeSequence: "41", beforeId: older.id } };
+    expect(feedHistorySchema.safeParse(base).success).toBe(true);
+    expect(feedHistorySchema.safeParse({ ...base, events: [older, event] }).success).toBe(false);
+    expect(feedHistorySchema.safeParse({ ...base, nextCursor: { beforeSequence: "42", beforeId: event.id } }).success).toBe(false);
+    expect(feedHistorySchema.safeParse({ ...base, events: [] }).success).toBe(false);
+  });
 });
 
 const token = {

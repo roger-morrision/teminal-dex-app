@@ -501,8 +501,13 @@ export async function fetchAlertDeliveries(
   return result.data;
 }
 
-export async function fetchAlertEvaluations(signal?: AbortSignal): Promise<AlertEvaluationHistory> {
-  const result = alertEvaluationHistorySchema.safeParse(await jsonRequest("/api/alerts/evaluations?limit=50", { signal }, "Alert evaluation history request failed"));
+export async function fetchAlertEvaluations(cursor?: { evaluatedAt: number; id: string } | null, signal?: AbortSignal): Promise<AlertEvaluationHistory> {
+  const query = new URLSearchParams({ limit: "50" });
+  if (cursor) {
+    if (!Number.isSafeInteger(cursor.evaluatedAt) || cursor.evaluatedAt <= 0 || !/^[A-Za-z0-9_-]{8,64}$/.test(cursor.id)) throw new ApiError("Invalid alert evaluation cursor.");
+    query.set("cursorAt", String(cursor.evaluatedAt)); query.set("cursorId", cursor.id);
+  }
+  const result = alertEvaluationHistorySchema.safeParse(await jsonRequest(`/api/alerts/evaluations?${query}`, { signal }, "Alert evaluation history request failed"));
   if (!result.success) throw new ApiError("Backend returned incompatible alert evaluation evidence.");
   return result.data;
 }

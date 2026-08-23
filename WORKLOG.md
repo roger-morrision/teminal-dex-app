@@ -539,3 +539,12 @@
 - Added backend static safety contracts plus mobile strict schemas and rendered evidence tests rejecting oversized delivery evidence and forged pagination. Backend TypeScript, Prisma generation/validation, targeted ESLint, new blocker safety contract, and existing inspection regression passed. Backend commit: `0957e50`.
 - Mobile TypeScript, repository-wide ESLint, 41 Jest suites / 173 tests, Expo Doctor 21/21, a fresh 23-route web export, Android export, and iOS export passed. Generated verification output was removed; the known upstream Noble hashes fallback warning remains non-fatal.
 - Remaining blockers: a separately approved managed-submission design and physical Android/iOS wallet/accessibility evidence.
+
+## 2026-08-23 — Slice 50: bounded alert evaluation pagination
+
+- Audited Slice 49 and found mobile rendered only the newest 50 rows despite the backend's stable paired cursor, contradicting the checklist's cursor-backed completion claim.
+- Converted private evaluation history to a bounded infinite query with an explicit older-history control, 50 rows per page, and a hard four-page/200-row session cap. It never automatically drains retained history.
+- The client validates positive safe-integer timestamps and bounded IDs before network access and forwards both cursor fields together through GET. Loading-more busy/disabled semantics and English/Vietnamese labels are explicit.
+- Added rendered explicit-load coverage plus client tests for paired forwarding and malformed cursor rejection.
+- Strict TypeScript, repository-wide ESLint, 41 Jest suites / 175 tests, Expo Doctor 21/21, a fresh 23-route web export, Android export, and iOS export passed. Generated verification output was removed; the known upstream Noble hashes fallback warning remains non-fatal.
+- Remaining blockers are unchanged: managed submission requires separate execution authority/design, and native wallet/accessibility closure requires physical devices.

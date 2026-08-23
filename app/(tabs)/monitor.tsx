@@ -1,5 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import {
@@ -59,7 +59,7 @@ export default function MonitorScreen() {
     queryFn: ({ signal }) => fetchAlertDeliveries(signal),
     enabled: authorized && mode === "delivery",
   });
-  const evaluations = useQuery({ queryKey: ["alert-evaluations"], queryFn: ({ signal }) => fetchAlertEvaluations(signal), enabled: authorized && mode === "delivery" });
+  const evaluations = useInfiniteQuery({ queryKey: ["alert-evaluations"], initialPageParam: null as { evaluatedAt: number; id: string } | null, queryFn: ({ pageParam, signal }) => fetchAlertEvaluations(pageParam, signal), getNextPageParam: (last, pages) => pages.length >= 4 ? undefined : last.page.nextCursor ?? undefined, enabled: authorized && mode === "delivery" });
   const refresh = () =>
     mode === "live"
       ? live.refetch()
@@ -149,7 +149,7 @@ export default function MonitorScreen() {
         ) : (
           <View>
             <Delivery data={deliveries.data?.data ?? []} loading={deliveries.isLoading} error={deliveries.error?.message} />
-            <EvaluationHistory data={evaluations.data?.data ?? []} loading={evaluations.isLoading} error={evaluations.error?.message} />
+            <EvaluationHistory data={evaluations.data?.pages.flatMap((page) => page.data) ?? []} loading={evaluations.isLoading} error={evaluations.error?.message} hasMore={evaluations.hasNextPage} loadingMore={evaluations.isFetchingNextPage} onLoadMore={() => evaluations.fetchNextPage()} />
           </View>
         )}
       </ScrollView>
@@ -532,7 +532,7 @@ function Delivery({
   );
 }
 
-export function EvaluationHistory({ data, loading, error }: { data: Awaited<ReturnType<typeof fetchAlertEvaluations>>["data"]; loading: boolean; error?: string }) {
+export function EvaluationHistory({ data, loading, error, hasMore = false, loadingMore = false, onLoadMore }: { data: Awaited<ReturnType<typeof fetchAlertEvaluations>>["data"]; loading: boolean; error?: string; hasMore?: boolean; loadingMore?: boolean; onLoadMore?: () => void }) {
   const { t } = useSettings();
   if (loading) return <State loading text={t("loadingEvaluations")} />;
   if (error) return <State error text={error} />;
@@ -547,6 +547,7 @@ export function EvaluationHistory({ data, loading, error }: { data: Awaited<Retu
         <Text style={styles.eventMeta}>{item.source} · {short(item.sourceIdentity)}{item.reason ? ` · ${item.reason}` : ""}</Text>
       </View>
     </View>)}
+    {hasMore && onLoadMore ? <Pressable accessibilityRole="button" accessibilityLabel={t("loadOlderEvaluations")} accessibilityState={{ disabled: loadingMore, busy: loadingMore }} disabled={loadingMore} onPress={onLoadMore} style={[styles.primary, loadingMore && styles.disabled]}><Text style={styles.primaryText}>{loadingMore ? t("loadingOlderEvaluations") : t("loadOlderEvaluations")}</Text></Pressable> : null}
     {!data.length ? <State text={t("noEvaluations")} /> : null}
   </View>;
 }

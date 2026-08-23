@@ -15,7 +15,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { confirmVerifiedSwapIntent, fetchSwapQuote, fetchSwapV2Readiness, fetchTokenDetail, prepareVerifiedSwapIntent } from "@/api/client";
 import { tokenSchema } from "@/api/schema";
 import { useWalletSession } from "@/security/WalletSessionProvider";
-import { evaluateSwapReadiness } from "@/lib/swap-readiness";
+import { evaluateSwapEvidenceChain, evaluateSwapReadiness } from "@/lib/swap-readiness";
 import { colors, spacing } from "@/theme";
 import { isSolanaAddress, parseBoundedJson } from "@/security/input";
 import { useSettings } from "@/settings/SettingsProvider";
@@ -69,6 +69,8 @@ export default function TradeReviewScreen() {
   } });
   const confirm = useMutation({ mutationFn: async () => {
     if (!quote.data || !prepare.data || !wallet.session || wallet.locked) throw new Error(t("verifiedWalletRequired"));
+    const chain = evaluateSwapEvidenceChain({ readiness: readiness.data, inspection: prepare.data.inspection, simulation: prepare.data.simulation, wallet: wallet.session.wallet });
+    if (!chain.consistent) throw new Error(t("policyEvidenceInconsistent"));
     return confirmVerifiedSwapIntent(quote.data, prepare.data, wallet.session.wallet);
   } });
   function resetSafetyFlow() { prepare.reset(); confirm.reset(); }
@@ -370,6 +372,15 @@ export default function TradeReviewScreen() {
           <Check text={t("simulationChecksBound")} /><Check text={t("simulationUnsigned")} />
           {prepare.data.simulation.simulation.error ? <Text accessibilityRole="alert" style={styles.flowError}>{t("simulationError", { error: prepare.data.simulation.simulation.error })}</Text> : null}
           {!prepare.data.simulation.simulation.succeeded ? <Text style={styles.failureGuidance}>{t("simulationFailureRecovery")}</Text> : null}
+          {prepare.data.simulation.simulation.policyTrace ? <View style={styles.policyTrace}>
+            <Text style={styles.gateTitle}>{t("policyTrace")}</Text>
+            <QuoteRow label={t("policyHash")} value={prepare.data.simulation.simulation.policyTrace.policyHash} />
+            <QuoteRow label={t("intentId")} value={prepare.data.simulation.simulation.policyTrace.intentId} />
+            <QuoteRow label={t("policyMode")} value={t("simulationOnly")} />
+            {prepare.data.simulation.simulation.policyTrace.checks.map((check) => check.passed
+              ? <Check key={check.id} text={t("policyCheckPassed", { id: check.id })} />
+              : <Text accessibilityRole="alert" key={check.id} style={styles.failureGuidance}>• {t("policyCheckBlocked", { id: check.id })}</Text>)}
+          </View> : <Text style={styles.checkText}>{t("legacyReplayPolicyEvidence")}</Text>}
         </View> : null}
         {prepare.data?.simulation.simulation.succeeded && !confirm.data ? <Pressable accessibilityRole="button" accessibilityLabel={t("explicitConfirm")} accessibilityState={{ disabled: confirm.isPending || !wallet.session || wallet.locked, busy: confirm.isPending }} disabled={confirm.isPending || !wallet.session || wallet.locked} onPress={() => confirm.mutate()} style={[styles.confirmButton, (confirm.isPending || !wallet.session || wallet.locked) && styles.disabled]}>
           {confirm.isPending ? <ActivityIndicator color={colors.background} /> : <Text style={styles.getQuoteText}>{t("explicitConfirm")}</Text>}
@@ -565,6 +576,7 @@ const styles = StyleSheet.create({
   flowError: { color: colors.negative, fontSize: 11, textAlign: "center", marginTop: spacing.md },
   failureGuidance: { color: colors.warning, fontSize: 10, lineHeight: 16, marginTop: spacing.sm },
   simulationCard: { marginTop: spacing.lg, padding: spacing.lg, borderRadius: 14, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.accentDim, gap: spacing.sm },
+  policyTrace: { marginTop: spacing.md, paddingTop: spacing.md, borderTopWidth: 1, borderTopColor: colors.border, gap: spacing.sm },
   readinessCard: { marginTop: spacing.lg, padding: spacing.lg, borderRadius: 14, backgroundColor: "#2d2715", gap: spacing.sm },
   confirmButton: { minHeight: 48, alignItems: "center", justifyContent: "center", borderRadius: 12, backgroundColor: colors.warning, marginTop: spacing.lg },
   confirmedCard: { flexDirection: "row", gap: spacing.md, marginTop: spacing.lg, padding: spacing.lg, borderRadius: 14, backgroundColor: colors.accentDim },

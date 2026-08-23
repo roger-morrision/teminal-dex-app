@@ -733,6 +733,32 @@ export type SwapInspection = z.infer<typeof swapInspectionSchema>;
 export type SwapSimulation = z.infer<typeof swapSimulationSchema>;
 export type SwapConfirmation = z.infer<typeof swapConfirmationSchema>;
 
+export const copyTradeShadowEvidenceSchema = z.object({
+  schema: z.literal("copytrade-shadow-evidence-v1"),
+  generatedAt: z.number().int().positive(),
+  executionEnabled: z.literal(false),
+  records: z.array(z.object({
+    id: z.string().min(8).max(64),
+    strategyId: z.string().min(1).max(64),
+    strategyVersion: z.string().min(1).max(64),
+    tokenAddress: publicKeyString,
+    decidedAt: z.number().int().positive(),
+    intendedAction: z.enum(["paper_buy", "paper_sell", "reject", "hold"]),
+    passedChecks: z.array(z.string().min(1).max(64)).max(32),
+    blockers: z.array(z.string().min(1).max(64)).max(32),
+    providerFamilies: z.array(z.string().min(1).max(64)).min(1).max(8),
+    quote: z.object({ inputAmount: z.string().regex(/^\d+$/), expectedOutput: z.string().regex(/^\d+$/), minimumOutput: z.string().regex(/^\d+$/), priceImpactPct: z.number().finite().nonnegative(), feeLamports: z.number().int().nonnegative(), observedAt: z.number().int().positive() }).strict().nullable(),
+    outcome: z.object({ status: z.enum(["open", "resolved", "expired", "unavailable"]), returnPct: z.number().finite().nullable(), observedAt: z.number().int().positive().nullable() }).strict(),
+  }).strict().superRefine((record, context) => {
+    if (new Set(record.passedChecks).size !== record.passedChecks.length || new Set(record.blockers).size !== record.blockers.length) context.addIssue({ code: "custom", message: "Shadow checks must be unique." });
+    if ((record.intendedAction === "paper_buy" || record.intendedAction === "paper_sell") && !record.quote) context.addIssue({ code: "custom", message: "Shadow trade intent requires quote evidence.", path: ["quote"] });
+    if ((record.intendedAction === "reject" || record.intendedAction === "hold") && record.blockers.length === 0) context.addIssue({ code: "custom", message: "Non-trade shadow decision requires blockers.", path: ["blockers"] });
+  })).max(100),
+}).strict().superRefine((value, context) => {
+  if (new Set(value.records.map((record) => record.id)).size !== value.records.length) context.addIssue({ code: "custom", message: "Shadow record IDs must be unique.", path: ["records"] });
+});
+export type CopyTradeShadowEvidence = z.infer<typeof copyTradeShadowEvidenceSchema>;
+
 const monitorAlertSchema = z
   .object({
     id: z.string(),

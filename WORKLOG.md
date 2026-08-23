@@ -611,3 +611,11 @@
 - Added backward-compatible v1/v2 parsing while requiring every fresh v2 response to be non-replayed and contain a bounded simulation-only policy trace with exact intent binding, unique sorted checks, consistent blockers/allowance, a policy hash, and `executionEnabled: false`.
 - Updated the end-to-end unsigned build/inspect/simulate/confirm fixture to the live v2 contract and added adversarial coverage for missing and internally forged policy evidence.
 - Strict TypeScript, repository-wide ESLint, 45 Jest suites / 201 tests, Expo Doctor 21/21, and fresh web/Android/iOS exports passed. Generated verification output was removed; the known Noble hashes fallback warning remains non-fatal. No signing, submission, consumption, or financial authority was added.
+
+## 2026-08-23 — Slice 59: phases 1–67 evidence ledger and policy UX
+
+- Rendered fresh durable simulation-policy v2 evidence in normal quote review: policy hash, exact intent, simulation-only mode, passed checks, blockers, and a truthful legacy-replay boundary in English and Vietnamese.
+- Added a confirmation-time evidence-chain gate binding readiness, inspection, simulation intent, policy intent, policy owner wallet, and policy/simulation outcome. Internally inconsistent evidence fails before confirmation network access.
+- Added a bounded execution-disabled CopyTrade shadow-evidence contract for unique strategy/version decisions, exact token, point-in-time quote/fee/impact, checks, blockers, provider families, and outcomes. Paper trade intents require quotes; rejected/held decisions require blockers.
+- Registered phases 1–67 in one ledger. Phases 1–63 have implementation foundations and evidence references; physical-device, devnet, funded mainnet canary, and CopyTrade activation phases 64–67 retain exact hardware, custody, provider, risk, legal/security, incident, wallet, and financial blockers.
+- TypeScript, repository-wide ESLint, 46 Jest suites / 204 tests, and fresh web/Android/iOS exports passed. Signing, submission, intent consumption, mainnet canary, CopyTrade activation, position closing, and live execution remain disabled.

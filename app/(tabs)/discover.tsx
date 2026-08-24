@@ -252,6 +252,7 @@ export default function DiscoverScreen() {
           <View>
             <TokenRow
               token={item}
+              dense
               onPress={() => openToken(item)}
               watched={watchlist.includes(item.address)}
               onToggleWatch={() => toggleWatch(item)}
@@ -296,51 +297,31 @@ export default function DiscoverScreen() {
         }
         ListHeaderComponent={
           <View>
-            <View style={styles.header}>
-              <View>
-                <Text style={styles.eyebrow}>TERMINAL DEX</Text>
-                <Text accessibilityRole="header" style={styles.heading}>
-                  {t("discover")}
-                </Text>
-              </View>
-              <View accessibilityRole="summary" style={styles.live}>
-                <View
-                  style={[
-                    styles.dot,
-                    firstPage?.freshness?.isStale && styles.staleDot,
-                  ]}
+            <View style={styles.searchRow}>
+              <View style={styles.searchWrap}>
+                <Ionicons name="search" color={colors.muted} size={17} />
+                <TextInput
+                  accessibilityLabel={t("searchTokens")}
+                  value={search}
+                  onChangeText={setSearch}
+                  placeholder={t("searchTokens")}
+                  placeholderTextColor={colors.muted}
+                  style={styles.search}
+                  autoCapitalize="none"
+                  autoCorrect={false}
                 />
-                <Text style={styles.liveText}>
-                  {firstPage?.status?.toUpperCase() ?? t("realData")}
-                </Text>
+                {search ? (
+                  <Pressable
+                    accessibilityRole="button"
+                    accessibilityLabel={t("clearSearch")}
+                    hitSlop={10}
+                    onPress={() => setSearch("")}
+                  >
+                    <Ionicons name="close-circle" color={colors.muted} size={18} />
+                  </Pressable>
+                ) : null}
               </View>
-            </View>
-            <View style={styles.searchWrap}>
-              <Ionicons name="search" color={colors.muted} size={17} />
-              <TextInput
-                accessibilityLabel={t("searchTokens")}
-                value={search}
-                onChangeText={setSearch}
-                placeholder={t("searchTokens")}
-                placeholderTextColor={colors.muted}
-                style={styles.search}
-                autoCapitalize="none"
-                autoCorrect={false}
-              />
-              {search ? (
-                <Pressable
-                  accessibilityRole="button"
-                  accessibilityLabel={t("clearSearch")}
-                  hitSlop={10}
-                  onPress={() => setSearch("")}
-                >
-                  <Ionicons
-                    name="close-circle"
-                    color={colors.muted}
-                    size={18}
-                  />
-                </Pressable>
-              ) : null}
+              <View accessible accessibilityLabel="Solana" style={styles.chain}><Text style={styles.chainMark}>≋</Text><Text style={styles.chainText}>SOL</Text></View>
             </View>
             <ScrollView
               horizontal
@@ -756,7 +737,7 @@ const styles = StyleSheet.create({
   staleDot: { backgroundColor: colors.warning },
   liveText: { color: colors.muted, fontSize: 9, fontWeight: "900" },
   searchWrap: {
-    marginHorizontal: spacing.lg,
+    flex: 1,
     height: 44,
     borderRadius: 12,
     borderWidth: 1,
@@ -767,15 +748,37 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.md,
     gap: spacing.sm,
   },
+  searchRow: {
+    flexDirection: "row",
+    gap: spacing.sm,
+    paddingHorizontal: spacing.md,
+    paddingTop: spacing.sm,
+  },
+  chain: {
+    minWidth: 70,
+    height: 44,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 5,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: colors.border,
+    backgroundColor: colors.surface,
+  },
+  chainMark: { color: colors.violet, fontSize: 17, fontWeight: "900" },
+  chainText: { color: colors.text, fontSize: 10, fontWeight: "900" },
   search: { flex: 1, color: colors.text, fontSize: 14 },
   controlRow: {
-    gap: spacing.sm,
-    paddingHorizontal: spacing.lg,
-    paddingTop: spacing.lg,
+    gap: 5,
+    paddingHorizontal: spacing.md,
+    paddingTop: spacing.sm,
   },
   pill: {
-    paddingHorizontal: 12,
-    paddingVertical: 8,
+    minHeight: 36,
+    justifyContent: "center",
+    paddingHorizontal: 11,
+    paddingVertical: 6,
     borderRadius: 10,
     backgroundColor: colors.surface,
   },
@@ -790,9 +793,9 @@ const styles = StyleSheet.create({
   periodRow: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 14,
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.lg,
+    gap: 12,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
     borderBottomWidth: 1,
     borderBottomColor: colors.border,
   },

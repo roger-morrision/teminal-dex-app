@@ -819,3 +819,10 @@
 - Removed the long, visually truncated safety sentence from the transaction feed chrome. The visible status is now only the current evidence count/scope and an info icon; its accessibility summary retains the complete provider-only, no-advice and market-change boundaries.
 - Replaced the ambiguous default “Minimum $0” control with localized “Any amount” / “Mọi số tiền” wording while retaining the same persisted zero-threshold behavior and exact accessibility filter context.
 - Android native inspection confirmed `85 HISTORICAL`, `Any amount`, 11 rendered event buttons, row provenance, and no runtime/configuration error UI. Strict TypeScript, targeted ESLint, and 43 focused localization/accessibility/whale tests passed.
+
+## 2026-08-24 — Slice 84: token-first Discover home
+
+- Applied the transaction-first Whales hierarchy to Discover. Removed the duplicate Terminal DEX/Discover hero and live-status badge so real provider market rows begin immediately after search, mode, timeframe and filter controls.
+- Added a compact Solana scope beside search, tightened the horizontal mode/timeframe rails, and introduced an opt-in dense `TokenRow` presentation for Discover without changing other consumers.
+- Preserved price, one-hour change, 24-hour volume, token age, DEX/quote identity, watchlist actions, source, filters, pagination, whale-flow enrichment and exact-token handoff. No promotional banner, balance/deposit claim, or mock data was introduced.
+- Restarted the local read-only backend runtime after it had stopped, then verified 11 real token buttons and ten visible rows in the Android viewport with no runtime/configuration error UI. Strict TypeScript, targeted ESLint, and 39 focused row/store/accessibility/state tests passed.

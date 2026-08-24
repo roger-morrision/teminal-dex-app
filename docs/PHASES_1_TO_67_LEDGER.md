@@ -2,6 +2,8 @@
 
 This ledger answers the request to execute every phase through 67 without misrepresenting missing physical, legal, custody, provider, or financial evidence. Detailed evidence for phases 1–58 is in `WORKLOG.md`; current production dependencies are in `TEN_PHASE_EXECUTION_LEDGER.md` and `MANAGED_SUBMISSION_ARCHITECTURE.md`.
 
+The continuation for phases 68–77 is maintained in `PHASES_68_TO_77_LEDGER.md`.
+
 ## Completed implementation phases
 
 | Phases | Evidence |

@@ -37,6 +37,14 @@ export const tokenSchema = z
     dataQuality: z.string().optional(),
     sourceFetchedAt: z.number().optional(),
     holderCount: z.number().nullable().optional(),
+    social: z
+      .object({
+        twitter: z.string().url().nullable().optional().catch(undefined),
+        telegram: z.string().url().nullable().optional().catch(undefined),
+        website: z.string().url().nullable().optional().catch(undefined),
+      })
+      .passthrough()
+      .optional(),
     topHolderPct: z.number().nullable().optional(),
     sniperPct: z.number().nullable().optional(),
     bondingProgress: z.number().nullable().optional(),

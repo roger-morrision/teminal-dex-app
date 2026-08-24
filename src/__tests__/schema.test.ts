@@ -22,6 +22,7 @@ import {
   swapQuoteSchema,
   swapV2ReadinessSchema,
   topTradersSchema,
+  tokenSchema,
   trackFeedSchema,
   transactionsSchema,
   trenchesSchema,
@@ -30,6 +31,15 @@ import {
   walletHoldingsSchema,
   walletPnlSchema,
 } from "@/api/schema";
+
+describe("discovery token social evidence", () => {
+  const token = { id: "pair", symbol: "DEX", name: "Terminal", address: "mint", pairAddress: "pair", dex: "Pump.fun", quoteSymbol: "SOL", price: 1, marketCap: 10, liquidity: 5, volume24h: 4, volume1h: 2, change24h: 3, change1h: 1, txns5m: { buys: 1, sells: 0 }, ageLabel: "1h", ageMinutes: 60 };
+
+  it("retains validated social URLs and drops malformed provider links", () => {
+    const parsed = tokenSchema.parse({ ...token, social: { twitter: "https://x.com/terminal", telegram: "not-a-url", website: "https://terminal.example" } });
+    expect(parsed.social).toEqual({ twitter: "https://x.com/terminal", telegram: undefined, website: "https://terminal.example" });
+  });
+});
 
 describe("swap provider readiness", () => {
   const payload = { success: true, data: { schema: "jupiter-swap-v2-readiness-v1", status: "blocked", executionEnabled: false, assessedAt: "2026-08-19", checks: [{ id: "walletTaker", ready: false, evidence: "Connected taker required." }], completed: 0, total: 1, provider: { name: "Jupiter Meta-Aggregator" } } };

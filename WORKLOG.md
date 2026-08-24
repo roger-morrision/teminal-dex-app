@@ -826,3 +826,10 @@
 - Added a compact Solana scope beside search, tightened the horizontal mode/timeframe rails, and introduced an opt-in dense `TokenRow` presentation for Discover without changing other consumers.
 - Preserved price, one-hour change, 24-hour volume, token age, DEX/quote identity, watchlist actions, source, filters, pagination, whale-flow enrichment and exact-token handoff. No promotional banner, balance/deposit claim, or mock data was introduced.
 - Restarted the local read-only backend runtime after it had stopped, then verified 11 real token buttons and ten visible rows in the Android viewport with no runtime/configuration error UI. Strict TypeScript, targeted ESLint, and 39 focused row/store/accessibility/state tests passed.
+
+## 2026-08-24 — Slice 85: useful Discover token evidence
+
+- Removed repeated `Pump.fun · SOL` text from Discover token rows. Rows now show validated holder count and 24-hour volume beneath identity, plus market cap beneath price, while retaining age and one-hour change.
+- Extended the bounded market schema with fail-soft validated X, Telegram and website URLs. Rows expose compact, non-interactive social-presence icons; malformed provider URLs are discarded rather than breaking the entire market response.
+- Token imagery remains primary when `imageUrl` is supplied. A bottom-right launchpad badge identifies Pump.fun or the observed DEX; when the backend omits imagery, deterministic token initials remain visible instead of a fabricated logo.
+- Android inspection verified 11 real token buttons, 10 social-evidence groups, 10 launchpad badges, holder/volume rows and zero repeated Pump.fun text. Strict TypeScript, targeted ESLint, and 76 schema/row/store/accessibility tests passed.

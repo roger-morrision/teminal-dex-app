@@ -18,4 +18,12 @@ describe('TokenRow', () => {
     expect(onToggleWatch).toHaveBeenCalledTimes(1);
     expect(onPress).not.toHaveBeenCalled();
   });
+
+  it('shows holder, volume, social, and launchpad evidence without repeating DEX text', async () => {
+    const screen = await render(<TokenRow token={{ ...token, dex: 'Pump.fun', holderCount: 1_418, volume24h: 730_426, social: { telegram: 'https://t.me/terminal', website: 'https://terminal.example' } }} onPress={jest.fn()} dense />);
+    expect(screen.getByText('1.4K holders · $730K vol')).toBeTruthy();
+    expect(screen.getByLabelText('Social evidence: Telegram, Website')).toBeTruthy();
+    expect(screen.getByLabelText('Pump.fun launchpad')).toBeTruthy();
+    expect(screen.queryByText(/PUMP\.FUN/i)).toBeNull();
+  });
 });

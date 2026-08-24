@@ -27,4 +27,10 @@ describe('TokenRow', () => {
     expect(screen.getByLabelText('DEX token logo unavailable; showing initials')).toBeTruthy();
     expect(screen.queryByText(/PUMP\.FUN/i)).toBeNull();
   });
+
+  it('recovers failed provider artwork to the shared accessible identity fallback', async () => {
+    const screen = await render(<TokenRow token={{ ...token, imageUrl: 'https://cdn.example/token.png' }} onPress={jest.fn()} />);
+    await fireEvent(screen.getByLabelText('DEX token logo'), 'error');
+    expect(screen.getByLabelText('DEX token logo unavailable; showing initials')).toBeTruthy();
+  });
 });

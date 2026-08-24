@@ -2,7 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
-import { Image, Pressable, RefreshControl, ScrollView, StyleSheet, Text, TextInput, View, useWindowDimensions } from "react-native";
+import { Pressable, RefreshControl, ScrollView, StyleSheet, Text, TextInput, View, useWindowDimensions } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { fetchTopTraders, fetchTrackFeed } from "@/api/client";
 import type { TopTrader, TrackNotification } from "@/api/schema";
@@ -11,6 +11,7 @@ import { aggregateWhaleActivity, filterWhaleEvents, isWhaleActivity, whaleAmount
 import { useSettings } from "@/settings/SettingsProvider";
 import { defaultWhaleWatchPreferences, loadWhaleWatchPreferences, saveWhaleWatchPreferences, type WhaleWatchMode } from "@/store/whale-watch";
 import { colors, spacing } from "@/theme";
+import { TokenAvatar } from "@/components/TokenAvatar";
 
 type Mode = WhaleWatchMode;
 const modes: Mode[] = ["live", "accumulating", "distributing", "wallets", "alerts"];
@@ -78,7 +79,7 @@ function LiveEvents({ rows, onReset, onOpen }: { rows: TrackNotification[]; onRe
   const { t } = useSettings();
   if (!rows.length) return <View style={styles.state}><Ionicons name="filter" size={24} color={colors.muted} /><Text style={styles.stateText}>{t("noWhaleFilterMatches")}</Text><Pressable accessibilityRole="button" accessibilityLabel={t("resetWhaleFilters")} onPress={onReset} style={styles.secondary}><Text style={styles.secondaryText}>{t("resetWhaleFilters")}</Text></Pressable></View>;
   return <View>{rows.map((item) => { const buy = item.type.endsWith("buy"); return <Pressable key={item.id} accessibilityRole="button" accessibilityLabel={t("openWhaleEvent", { symbol: item.tokenSymbol })} onPress={() => onOpen(item.tokenAddress)} style={[styles.card, { borderLeftWidth: 3, borderLeftColor: buy ? colors.positive : colors.negative }]}>
-    <View style={{ position: "relative" }}><TokenAvatar item={item} size={36} /><View style={{ position: "absolute", right: -2, bottom: -2, width: 15, height: 15, borderRadius: 8, alignItems: "center", justifyContent: "center", backgroundColor: buy ? colors.accentDim : "#401b24" }}><Ionicons name={buy ? "arrow-down" : "arrow-up"} size={10} color={buy ? colors.positive : colors.negative} /></View></View>
+    <View style={{ position: "relative" }}><TokenAvatar symbol={item.tokenSymbol} identity={item.tokenAddress} imageUrl={item.market.imageUrl} size={36} accessible={false} /><View style={{ position: "absolute", right: -2, bottom: -2, width: 15, height: 15, borderRadius: 8, alignItems: "center", justifyContent: "center", backgroundColor: buy ? colors.accentDim : "#401b24" }}><Ionicons name={buy ? "arrow-down" : "arrow-up"} size={10} color={buy ? colors.positive : colors.negative} /></View></View>
     <View style={styles.flex}><View style={styles.row}><View style={styles.flex}><Text style={styles.cardTitle}>{item.tokenSymbol}</Text><Text style={[styles.actionText, { color: buy ? colors.positive : colors.negative }]}>{t(buy ? "whaleBuy" : "whaleSell")} {item.amountUsd == null ? "—" : compactUsd(item.amountUsd)}</Text></View><View style={styles.eventContext}><Text numberOfLines={1} style={styles.meta}>{item.wallet ? short(item.wallet) : item.source} · {ageLabel(item.observedAt)}</Text></View></View><View style={styles.evidenceRow}><MarketSnapshot item={item} compact /><Text numberOfLines={1} style={styles.evidence}>{item.source} · {item.dataQuality}</Text></View>{whaleAmountContext(item) === "amount_exceeds_market_cap" ? <Text style={{ color: colors.warning, fontSize: 8, marginTop: 5 }}>{t("whaleAmountContextWarning")}</Text> : null}</View>
   </Pressable>; })}</View>;
 }
@@ -97,10 +98,6 @@ function MarketSnapshot({ item, compact = false }: { item: TrackNotification; co
   const chip = { paddingHorizontal: compact ? 5 : 7, paddingVertical: 3, borderRadius: 6 } as const;
   const unavailable = item.market.priceUsd == null && item.market.marketCap == null && item.market.change1h == null;
   return <View accessible accessibilityLabel={t("whaleMarketSnapshot", { price, marketCap, change })} style={{ flexDirection: "row", flexWrap: "wrap", alignItems: "center", gap: compact ? 4 : 6, marginTop: compact ? 5 : 7 }}>{unavailable ? <Text style={[chip, { color: colors.muted, backgroundColor: colors.surfaceRaised, fontSize: 7, fontWeight: "800" }]}>{t("marketUnavailable")}</Text> : <><Text style={[chip, { color: colors.cyan, backgroundColor: colors.cyanDim, fontSize: 7, fontWeight: "800" }]}>{t("tokenPriceShort")} {price}</Text><Text style={[chip, { color: colors.violet, backgroundColor: colors.violetDim, fontSize: 7, fontWeight: "800" }]}>MC {marketCap}</Text><Text style={[chip, { color: positive ? colors.positive : colors.negative, backgroundColor: positive ? colors.accentDim : "#3a1820", fontSize: 7, fontWeight: "900" }]}>1h {change}</Text></>}</View>;
-}
-
-function TokenAvatar({ item, size }: { item: TrackNotification; size: number }) {
-  return item.market.imageUrl ? <Image accessible={false} source={{ uri: item.market.imageUrl }} style={{ width: size, height: size, borderRadius: size / 2, backgroundColor: colors.surfaceRaised }} /> : <View accessible={false} style={{ width: size, height: size, borderRadius: size / 2, alignItems: "center", justifyContent: "center", backgroundColor: colors.accentDim }}><Text style={{ color: colors.accent, fontSize: Math.max(7, size * 0.25), fontWeight: "900" }}>{item.tokenSymbol.slice(0, 2).toUpperCase()}</Text></View>;
 }
 
 function FlowList({ rows, onOpen }: { rows: WhaleFlow[]; onOpen: (address: string) => void }) {

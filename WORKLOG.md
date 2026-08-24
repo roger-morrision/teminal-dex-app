@@ -857,3 +857,11 @@
 - Kept provider zero-row responses as accessible summaries rather than false errors; transport/schema failures remain alerts.
 - Verification evidence: strict TypeScript, targeted ESLint and focused state/localization tests passed (2 suites / 6 tests).
 - Next priority: reuse the dense token identity/activity primitive across primary feeds, then audit authoritative whale-history cursor availability.
+
+## 2026-08-24 — Slice 89: shared resilient token identity
+
+- Extracted one reusable token-avatar primitive for Discover and transaction-first Whale rows, preserving each feed's compact layout while removing divergent remote-image and fallback behavior.
+- Both surfaces now recover failed artwork to the same address-deterministic initials identity; Discover keeps its accessible logo/fallback labels and launchpad overlay, while Whale rows avoid duplicate accessibility announcements inside their already named transaction buttons.
+- Added rendered failure recovery coverage for provider artwork.
+- Verification evidence: strict TypeScript, targeted ESLint and focused component tests passed.
+- Next priority: audit the backend for a stable token-specific whale-history cursor before changing chronology claims; if absent, document the exact blocker and advance Discover/detail hierarchy.

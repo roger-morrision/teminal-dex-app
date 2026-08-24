@@ -799,3 +799,10 @@
 - Replaced runtime-dependent compact notation with a deterministic finite-value formatter covering K/M/B/T/Q scales, adaptive significant precision, sub-thousand values, and conventional negative currency signs.
 - At Android font scale 1.3 the native hierarchy now reports `$434M`, `$80.1M`, and `-$12.9B`; no backend/runtime error UI appeared and the system font scale was restored to 1.0.
 - Strict TypeScript, targeted ESLint, and 12 focused formatting/whale tests passed. Durable history/alerts and physical screen-reader certification remain external blockers.
+
+## 2026-08-24 — Slice 81: transaction-first Whale home
+
+- Reworked the default Whales surface around the user's primary job: scan as many validated transactions as the viewport can hold. Removed the large branded hero, duplicate newest-event carousel, KPI dashboard, Market Pulse panel, and expanded safety card from the Live path.
+- Search and Solana scope now start the screen, followed by a compact view rail, one-line evidence boundary, horizontal filters, and dense transaction rows. The full safety meaning remains in the accessible status label and row-level provenance; no data or execution boundary was weakened.
+- Tightened row padding/avatar size and removed the repeated “classified wallet” label while preserving exact wallet/address, age, token, direction, amount, price, market cap, one-hour change, source, quality, and mismatch warning evidence.
+- Android emulator verification displayed seven complete transaction rows in the initial viewport after load, with eight event buttons present in the native hierarchy and no backend/runtime error UI. Strict TypeScript, targeted ESLint, and 50 whale/accessibility/localization tests passed.

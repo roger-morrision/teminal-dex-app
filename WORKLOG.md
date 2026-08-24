@@ -792,3 +792,10 @@
 - Added bounded single-line font fitting to newest-event amounts and KPI values, plus shrink-safe token/direction headers. Values remain complete in accessibility labels and are never truncated into a different financial value.
 - Restored the emulator font scale to 1.0 after capture. Strict TypeScript, targeted ESLint, 10 focused whale tests, native hierarchy inspection, and React Native/Android error-log checks passed.
 - Durable whale history and alert delivery remain backend-contract blocked; physical TalkBack/VoiceOver certification remains external.
+
+## 2026-08-24 — Slice 80: deterministic compact financial values
+
+- Emulator replay revealed that Hermes accepted `Intl.NumberFormat` compact notation but rendered full values such as `$433,565,871.94`, defeating the concise signal hierarchy and stressing large-text layouts.
+- Replaced runtime-dependent compact notation with a deterministic finite-value formatter covering K/M/B/T/Q scales, adaptive significant precision, sub-thousand values, and conventional negative currency signs.
+- At Android font scale 1.3 the native hierarchy now reports `$434M`, `$80.1M`, and `-$12.9B`; no backend/runtime error UI appeared and the system font scale was restored to 1.0.
+- Strict TypeScript, targeted ESLint, and 12 focused formatting/whale tests passed. Durable history/alerts and physical screen-reader certification remain external blockers.

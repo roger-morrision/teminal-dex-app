@@ -833,3 +833,10 @@
 - Extended the bounded market schema with fail-soft validated X, Telegram and website URLs. Rows expose compact, non-interactive social-presence icons; malformed provider URLs are discarded rather than breaking the entire market response.
 - Token imagery remains primary when `imageUrl` is supplied. A bottom-right launchpad badge identifies Pump.fun or the observed DEX; when the backend omits imagery, deterministic token initials remain visible instead of a fabricated logo.
 - Android inspection verified 11 real token buttons, 10 social-evidence groups, 10 launchpad badges, holder/volume rows and zero repeated Pump.fun text. Strict TypeScript, targeted ESLint, and 76 schema/row/store/accessibility tests passed.
+
+## 2026-08-24 — Slice 86: resilient token identity artwork
+
+- Audited all 50 live Trending records after the token-evidence change. The backend currently returns validated social metadata for all 50 but zero `imageUrl` fields, so the mobile client cannot truthfully display provider token artwork without a backend enrichment contract.
+- Improved the dependency-ready path: missing and failed image URLs now recover to address-deterministic colored initials with an explicit accessible “logo unavailable” label. Validated images remain preferred and automatically replace the fallback when supplied.
+- The launchpad badge remains independently overlaid at the avatar's bottom-right, so source identity is preserved without repeating Pump.fun text or presenting fallback initials as real artwork.
+- Android inspection verified 10 explicit logo fallbacks, zero claimed real logos, 10 launchpad badges, 11 token buttons, and no React Native/Android runtime error. Strict TypeScript, targeted ESLint, and 73 row/schema/accessibility tests passed.

@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, useState } from 'react';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import type { MarketToken } from '@/api/schema';
@@ -8,13 +8,19 @@ import { colors, spacing } from '@/theme';
 export const TokenRow = memo(function TokenRow({ token, onPress, watched, onToggleWatch, dense = false }: { token: MarketToken; onPress: () => void; watched?: boolean; onToggleWatch?: () => void; dense?: boolean }) {
   const positive = token.change1h >= 0;
   return <Pressable accessibilityRole="button" accessibilityLabel={`Open ${token.symbol} details`} onPress={onPress} style={({ pressed }) => [styles.row, dense && styles.denseRow, pressed && styles.pressed]}>
-    <View style={styles.avatarWrap}>{token.imageUrl ? <Image source={{ uri: token.imageUrl }} style={styles.avatar} /> : <View style={styles.fallback}><Text style={styles.fallbackText}>{token.symbol.slice(0, 2)}</Text></View>}<View accessible accessibilityLabel={`${token.dex} launchpad`} style={styles.dexBadge}><Ionicons name={token.dex.toLowerCase().includes('pump') ? 'flash' : 'swap-horizontal'} size={9} color={colors.text} /></View></View>
+    <View style={styles.avatarWrap}><TokenIdentityAvatar token={token} /><View accessible accessibilityLabel={`${token.dex} launchpad`} style={styles.dexBadge}><Ionicons name={token.dex.toLowerCase().includes('pump') ? 'flash' : 'swap-horizontal'} size={9} color={colors.text} /></View></View>
     <View style={styles.identity}><View style={styles.titleLine}><Text numberOfLines={1} style={styles.symbol}>{token.symbol}</Text><Text style={styles.age}>{token.ageLabel}</Text></View><View style={styles.metaLine}><Text numberOfLines={1} style={styles.meta}>{token.holderCount == null ? '— holders' : `${compactCount(token.holderCount)} holders`} · {compactUsd(token.volume24h)} vol</Text><SocialEvidence token={token} /></View></View>
     <View style={styles.metric}><Text style={styles.price}>{tokenPrice(token.price)}</Text><Text style={styles.subMetric}>{compactUsd(token.marketCap)} MC</Text></View>
     <View style={[styles.change, positive ? styles.positiveBg : styles.negativeBg]}><Ionicons name={positive ? 'caret-up' : 'caret-down'} size={10} color={positive ? colors.positive : colors.negative} /><Text style={[styles.changeText, { color: positive ? colors.positive : colors.negative }]}>{signedPercent(token.change1h)}</Text></View>
     {onToggleWatch ? <Pressable accessibilityRole="button" accessibilityLabel={watched ? `Remove ${token.symbol} from watchlist` : `Add ${token.symbol} to watchlist`} hitSlop={10} onPress={(event) => { event.stopPropagation(); onToggleWatch(); }}><Ionicons name={watched ? 'star' : 'star-outline'} size={18} color={watched ? colors.warning : colors.muted} /></Pressable> : null}
   </Pressable>;
 }, (previous, next) => previous.token === next.token && previous.watched === next.watched && previous.dense === next.dense && Boolean(previous.onToggleWatch) === Boolean(next.onToggleWatch));
+
+function TokenIdentityAvatar({ token }: { token: MarketToken }) {
+  const [failedUrl, setFailedUrl] = useState<string | null>(null);
+  if (token.imageUrl && token.imageUrl !== failedUrl) return <Image accessible accessibilityLabel={`${token.symbol} token logo`} source={{ uri: token.imageUrl }} onError={() => setFailedUrl(token.imageUrl ?? null)} style={styles.avatar} />;
+  return <View accessible accessibilityLabel={`${token.symbol} token logo unavailable; showing initials`} style={[styles.fallback, { backgroundColor: fallbackColor(token.address) }]}><Text style={styles.fallbackText}>{token.symbol.slice(0, 2).toUpperCase()}</Text></View>;
+}
 
 function SocialEvidence({ token }: { token: MarketToken }) {
   const entries = [
@@ -30,6 +36,12 @@ function compactCount(value: number) {
   if (value < 1_000) return String(Math.round(value));
   if (value < 1_000_000) return `${(value / 1_000).toFixed(value >= 10_000 ? 0 : 1)}K`;
   return `${(value / 1_000_000).toFixed(value >= 10_000_000 ? 0 : 1)}M`;
+}
+
+function fallbackColor(identity: string) {
+  const palette = ['#134e4a', '#164e63', '#312e81', '#4c1d95', '#7f1d1d', '#713f12'];
+  const hash = Array.from(identity).reduce((value, character) => ((value * 31) + character.charCodeAt(0)) >>> 0, 0);
+  return palette[hash % palette.length];
 }
 
 const styles = StyleSheet.create({

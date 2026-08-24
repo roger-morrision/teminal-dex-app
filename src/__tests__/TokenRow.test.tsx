@@ -24,6 +24,7 @@ describe('TokenRow', () => {
     expect(screen.getByText('1.4K holders · $730K vol')).toBeTruthy();
     expect(screen.getByLabelText('Social evidence: Telegram, Website')).toBeTruthy();
     expect(screen.getByLabelText('Pump.fun launchpad')).toBeTruthy();
+    expect(screen.getByLabelText('DEX token logo unavailable; showing initials')).toBeTruthy();
     expect(screen.queryByText(/PUMP\.FUN/i)).toBeNull();
   });
 });

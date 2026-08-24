@@ -944,3 +944,10 @@
 - Replaced that invalid navigation path with the existing localized Smart Money/Whale evidence-empty state. Real ranked addresses retain their exact wallet-detail handoff.
 - No fallback wallet, mock ranking, or inferred identity was introduced. Backend history pagination and physical-device accessibility evidence remain externally blocked.
 - Strict TypeScript, focused ESLint and 2 primary-state/accessibility suites with 34 tests passed.
+
+## 2026-08-24 — Slice 100: truthful Whale wallet navigation
+
+- Audited the non-empty wallet-ranking flow and found that the aggregate “Open Wallet Intelligence” footer silently routed to the first ranked address, duplicating row-detail behavior.
+- Separated the intents: ranked rows continue to open their exact public-wallet dossier, while the footer now opens the complete Smart Money research workspace with no implicit address selection.
+- This changes navigation only; it adds no inferred identity, tracking, following, copying, signing or execution authority.
+- Strict TypeScript, focused ESLint and 2 primary-state/accessibility suites with 34 tests passed.

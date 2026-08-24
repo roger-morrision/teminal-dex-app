@@ -995,6 +995,13 @@
 - Indexed activity, token-table evidence, alert rules, evaluation/delivery boundaries and backend contracts are unchanged.
 - Strict TypeScript, focused ESLint and 3 Monitor/state/accessibility suites with 38 tests passed.
 
+## 2026-08-25 — Slice 108: complete Monitor owner-data recovery
+
+- Audited the verified-owner Monitor surfaces and found rule, delivery-ledger, and evaluation-history provider errors had no direct recovery path.
+- Bound each failure to its exact React Query refetch and reused the accessible busy/disabled recovery control, preventing overlapping requests while preserving evaluation pagination's separate guarded control.
+- Alert CRUD, evidence schemas, ownership gates, delivery/evaluation separation, provider records and transaction-safety boundaries are unchanged.
+- Strict TypeScript, focused ESLint and 4 alert/state/accessibility suites with 45 tests passed.
+
 ## 2026-08-24 — Slice 100: truthful Whale wallet navigation
 
 - Audited the non-empty wallet-ranking flow and found that the aggregate “Open Wallet Intelligence” footer silently routed to the first ranked address, duplicating row-detail behavior.

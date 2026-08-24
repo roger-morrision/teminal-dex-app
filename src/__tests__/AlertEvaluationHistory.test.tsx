@@ -39,6 +39,25 @@ describe("alert evaluation history", () => {
     expect(onLoadMore).toHaveBeenCalledTimes(1);
   });
 
+  it("guards evaluation recovery while refetching", async () => {
+    const onRetry = jest.fn();
+    const screen = await render(
+      <SettingsProvider>
+        <EvaluationHistory
+          data={[]}
+          loading={false}
+          error="Provider failed"
+          retrying
+          onRetry={onRetry}
+        />
+      </SettingsProvider>,
+    );
+    const retry = screen.getByLabelText("Retry");
+    expect(retry.props.accessibilityState).toEqual({ busy: true, disabled: true });
+    await fireEvent.press(retry);
+    expect(onRetry).not.toHaveBeenCalled();
+  });
+
   it("forwards only a validated paired cursor through GET", async () => {
     global.fetch = jest.fn(async () => ({ ok: true, json: async () => ({ schema: "alert-evaluation-history-v1", data: [], page: { limit: 50, hasMore: false, nextCursor: null }, persistence: "database", fetchedAt: 1_800_000_000_200 }) })) as jest.Mock;
     await fetchAlertEvaluations({ evaluatedAt: 1_800_000_000_100, id: "evaluation_1" });

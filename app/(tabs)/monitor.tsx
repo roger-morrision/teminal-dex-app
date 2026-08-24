@@ -142,14 +142,16 @@ export default function MonitorScreen() {
             data={rules.data?.data ?? []}
             loading={rules.isLoading}
             error={rules.error?.message}
+            retrying={rules.isFetching}
+            onRetry={() => rules.refetch()}
             onChanged={() =>
               queryClient.invalidateQueries({ queryKey: ["user-alerts"] })
             }
           />
         ) : (
           <View>
-            <Delivery data={deliveries.data?.data ?? []} loading={deliveries.isLoading} error={deliveries.error?.message} />
-            <EvaluationHistory data={evaluations.data?.pages.flatMap((page) => page.data) ?? []} loading={evaluations.isLoading} error={evaluations.error?.message} hasMore={evaluations.hasNextPage} loadingMore={evaluations.isFetchingNextPage} onLoadMore={() => evaluations.fetchNextPage()} />
+            <Delivery data={deliveries.data?.data ?? []} loading={deliveries.isLoading} error={deliveries.error?.message} retrying={deliveries.isFetching} onRetry={() => deliveries.refetch()} />
+            <EvaluationHistory data={evaluations.data?.pages.flatMap((page) => page.data) ?? []} loading={evaluations.isLoading} error={evaluations.error?.message} retrying={evaluations.isFetching && !evaluations.isFetchingNextPage} onRetry={() => evaluations.refetch()} hasMore={evaluations.hasNextPage} loadingMore={evaluations.isFetchingNextPage} onLoadMore={() => evaluations.fetchNextPage()} />
           </View>
         )}
       </ScrollView>
@@ -236,17 +238,21 @@ function Rules({
   data,
   loading,
   error,
+  retrying,
+  onRetry,
   onChanged,
 }: {
   data: UserAlert[];
   loading: boolean;
   error?: string;
+  retrying: boolean;
+  onRetry: () => void;
   onChanged: () => void;
 }) {
   const { t } = useSettings();
   const [open, setOpen] = useState(false);
   if (loading) return <State loading text={t("loadingRules")} />;
-  if (error) return <State error text={error} />;
+  if (error) return <State error text={error} action={t("retry")} actionBusy={retrying} onAction={onRetry} />;
   return (
     <View>
       <View style={styles.sectionHead}>
@@ -499,14 +505,18 @@ function Delivery({
   data,
   loading,
   error,
+  retrying,
+  onRetry,
 }: {
   data: Awaited<ReturnType<typeof fetchAlertDeliveries>>["data"];
   loading: boolean;
   error?: string;
+  retrying: boolean;
+  onRetry: () => void;
 }) {
   const { t } = useSettings();
   if (loading) return <State loading text={t("loadingDeliveries")} />;
-  if (error) return <State error text={error} />;
+  if (error) return <State error text={error} action={t("retry")} actionBusy={retrying} onAction={onRetry} />;
   return (
     <View>
       <Text accessibilityRole="summary" style={styles.provenance}>
@@ -541,10 +551,10 @@ function Delivery({
   );
 }
 
-export function EvaluationHistory({ data, loading, error, hasMore = false, loadingMore = false, onLoadMore }: { data: Awaited<ReturnType<typeof fetchAlertEvaluations>>["data"]; loading: boolean; error?: string; hasMore?: boolean; loadingMore?: boolean; onLoadMore?: () => void }) {
+export function EvaluationHistory({ data, loading, error, retrying = false, onRetry, hasMore = false, loadingMore = false, onLoadMore }: { data: Awaited<ReturnType<typeof fetchAlertEvaluations>>["data"]; loading: boolean; error?: string; retrying?: boolean; onRetry?: () => void; hasMore?: boolean; loadingMore?: boolean; onLoadMore?: () => void }) {
   const { t } = useSettings();
   if (loading) return <State loading text={t("loadingEvaluations")} />;
-  if (error) return <State error text={error} />;
+  if (error) return <State error text={error} action={t("retry")} actionBusy={retrying} onAction={onRetry} />;
   return <View style={styles.evaluationSection}>
     <Text accessibilityRole="header" style={styles.sectionTitle}>{t("evaluationHistory")}</Text>
     <Text accessibilityRole="summary" style={styles.sectionHint}>{t("evaluationEvidenceBoundary")}</Text>

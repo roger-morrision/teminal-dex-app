@@ -1037,6 +1037,13 @@
 - Quote inputs, unsigned build, transaction inspection, Helius simulation, intent confirmation, replay controls, signing lock and submission absence are unchanged.
 - Strict TypeScript, focused ESLint and 4 quote/safety/accessibility suites with 41 tests passed.
 
+## 2026-08-25 — Slice 114: recover market-intelligence evidence
+
+- Advanced the auxiliary-flow audit to Signals, Heatmap, and Claim Monitor and found their provider errors relied only on pull-to-refresh, with no discoverable in-place recovery action.
+- Added localized query-specific retries to all three states; each is accessible, disabled and announced busy during its exact refetch, and action labels without handlers are omitted.
+- Pagination, evidence schemas, degraded-data visibility, exact-mint navigation, claim read-only boundaries, and transaction authority remain unchanged.
+- Strict TypeScript, focused ESLint and 4 market/state/schema/accessibility suites with 82 tests passed.
+
 ## 2026-08-24 — Slice 100: truthful Whale wallet navigation
 
 - Audited the non-empty wallet-ranking flow and found that the aggregate “Open Wallet Intelligence” footer silently routed to the first ranked address, duplicating row-detail behavior.

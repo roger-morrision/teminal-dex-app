@@ -13,9 +13,11 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { fetchTrenches } from "@/api/client";
+import { fetchTrackFeed, fetchTrenches } from "@/api/client";
 import type { MarketToken } from "@/api/schema";
 import { compactUsd, signedPercent, tokenPrice } from "@/lib/format";
+import { WhaleFlowBadge } from "@/components/WhaleFlowBadge";
+import { whaleFlowByToken } from "@/lib/whale-activity";
 import {
   applyTrenchFilters,
   boundedKeyword,
@@ -49,6 +51,15 @@ export default function TrenchesScreen() {
     queryFn: ({ signal }) => fetchTrenches(signal),
     refetchInterval: 30_000,
   });
+  const whaleActivity = useQuery({
+    queryKey: ["whale-activity"],
+    queryFn: ({ signal }) => fetchTrackFeed(signal),
+    staleTime: 30_000,
+  });
+  const whaleFlows = useMemo(
+    () => whaleFlowByToken(whaleActivity.data?.notifications ?? []),
+    [whaleActivity.data],
+  );
   const laneRows = useMemo(() => query.data?.[lane] ?? [], [lane, query.data]);
   const rows = useMemo(
     () => applyTrenchFilters(laneRows, filters),
@@ -93,14 +104,7 @@ export default function TrenchesScreen() {
             tintColor={colors.accent}
           />
         }
-        renderItem={({ item }) => (
-          <TrenchCard
-            token={item}
-            lane={lane}
-            onDetail={() => openDetail(item)}
-            onTrade={() => openTrade(item)}
-          />
-        )}
+        renderItem={({ item }) => <View><TrenchCard token={item} lane={lane} onDetail={() => openDetail(item)} onTrade={() => openTrade(item)} /><WhaleFlowBadge flow={whaleFlows.get(item.address)} /></View>}
         ListHeaderComponent={
           <>
             <View style={styles.header}>

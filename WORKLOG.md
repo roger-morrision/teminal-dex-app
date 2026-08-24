@@ -647,3 +647,14 @@
 - Added the Phase 78–87 ledger with exact backend, hardware, approval, provider, funded-network, and activation evidence required for operational closure.
 - Fixed a clean-install blocker exposed by the platform gate: `buffer` was declared but absent from the mixed dependency tree, while TypeScript, Babel runtime, Expo config plugins, and React types were being supplied only by accidental hoisting. The dependencies are now explicit and a script-disabled clean install passes without relying on hoisting.
 - Strict TypeScript, repository-wide ESLint, 56 Jest suites / 226 tests, and fresh 23-route web/Android/iOS exports passed. Generated export/store output was removed, and the known Noble hashes fallback warning remains non-fatal.
+
+## 2026-08-24 — Slice 63: whale-first mobile objective
+
+- Reoriented the primary mobile hierarchy around authoritative whale activity without copying Moby branding, text, mascots, or assets. Whales is now the first tab and default route; Monitor remains available as a hidden routed alert/delivery workspace.
+- Added Live, Accumulating, Distributing, Wallets, and Alerts views. Live rows preserve exact backend direction, wallet when supplied, USD amount, observation time, source, quality, market-cap context, and exact-mint handoff. Flow views deterministically aggregate only validated Whale/Smart Money events into buys, sells, USD net flow, unique wallets, and latest observation.
+- Promoted qualified Whale/Smart Money rankings into the primary experience and added real-event whale-flow badges to matching Discovery and Trenches tokens. Tokens without matching evidence receive no badge or inferred whale claim.
+- Kept alert truth fail-closed: the Alerts view routes to existing durable verified-owner price/change/volume rules and explicitly states that the backend does not expose whale-specific rule mutations.
+- Added typed English/Vietnamese copy and pure aggregation regressions covering event inclusion, net direction, unique wallets, and newest-first evidence. TypeScript, lint, targeted whale tests, and the primary accessibility gate passed before the full regression/platform gate.
+- Full TypeScript, repository-wide ESLint, 57 Jest suites / 228 tests, and fresh 25-route web/Android/iOS exports passed. Generated verification output was removed; the known Noble hashes fallback warning remains non-fatal.
+- Final verification passed: strict TypeScript, repository-wide Expo ESLint, 57 Jest suites / 228 tests, Expo Doctor 21/21, and a fresh Android production export. The existing Noble hashes fallback warning remained non-fatal; export output was written outside the repository.
+- Next priority: obtain an authoritative whale-rule mutation contract if product acceptance requires server-side whale event alerts; otherwise preserve the read-only whale objective and continue physical-device verification.

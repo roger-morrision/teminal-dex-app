@@ -1,0 +1,63 @@
+import type { TrackNotification } from "@/api/schema";
+
+export type WhaleFlow = {
+  tokenAddress: string;
+  tokenSymbol: string;
+  buys: number;
+  sells: number;
+  buyUsd: number;
+  sellUsd: number;
+  netUsd: number;
+  uniqueWallets: number;
+  latestObservedAt: number;
+  events: TrackNotification[];
+};
+
+export const isWhaleActivity = (event: TrackNotification) =>
+  event.type === "whale_buy" ||
+  event.type === "whale_sell" ||
+  event.type === "smart_buy" ||
+  event.type === "smart_take_profit";
+
+export function aggregateWhaleActivity(events: TrackNotification[]): WhaleFlow[] {
+  const flows = new Map<string, WhaleFlow & { wallets: Set<string> }>();
+  for (const event of events.filter(isWhaleActivity)) {
+    const current = flows.get(event.tokenAddress) ?? {
+      tokenAddress: event.tokenAddress,
+      tokenSymbol: event.tokenSymbol,
+      buys: 0,
+      sells: 0,
+      buyUsd: 0,
+      sellUsd: 0,
+      netUsd: 0,
+      uniqueWallets: 0,
+      latestObservedAt: 0,
+      events: [],
+      wallets: new Set<string>(),
+    };
+    const amount = event.amountUsd ?? 0;
+    const sell = event.type === "whale_sell" || event.type === "smart_take_profit";
+    if (sell) {
+      current.sells += 1;
+      current.sellUsd += amount;
+    } else {
+      current.buys += 1;
+      current.buyUsd += amount;
+    }
+    if (event.wallet) current.wallets.add(event.wallet);
+    current.latestObservedAt = Math.max(current.latestObservedAt, event.observedAt);
+    current.events.push(event);
+    flows.set(event.tokenAddress, current);
+  }
+  return [...flows.values()]
+    .map(({ wallets, ...flow }) => ({
+      ...flow,
+      netUsd: flow.buyUsd - flow.sellUsd,
+      uniqueWallets: wallets.size,
+      events: flow.events.sort((a, b) => b.observedAt - a.observedAt),
+    }))
+    .sort((a, b) => Math.abs(b.netUsd) - Math.abs(a.netUsd) || b.latestObservedAt - a.latestObservedAt);
+}
+
+export const whaleFlowByToken = (events: TrackNotification[]) =>
+  new Map(aggregateWhaleActivity(events).map((flow) => [flow.tokenAddress, flow]));

@@ -18,6 +18,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import {
   fetchDiscovery,
   fetchAlertDeliveries,
+  fetchTrackFeed,
   fetchUserAlerts,
   searchTokens,
   type DiscoveryFilters,
@@ -31,6 +32,8 @@ import type {
 } from "@/api/schema";
 import { TokenRow } from "@/components/TokenRow";
 import { BusyIndicator } from "@/components/BusyIndicator";
+import { WhaleFlowBadge } from "@/components/WhaleFlowBadge";
+import { whaleFlowByToken } from "@/lib/whale-activity";
 import {
   defaultFilters,
   loadFilters,
@@ -156,6 +159,15 @@ export default function DiscoverScreen() {
     queryFn: ({ signal }) => fetchAlertDeliveries(signal),
     enabled: mode === "watchlist" && authorized,
   });
+  const whaleActivity = useQuery({
+    queryKey: ["whale-activity"],
+    queryFn: ({ signal }) => fetchTrackFeed(signal),
+    staleTime: 30_000,
+  });
+  const whaleFlows = useMemo(
+    () => whaleFlowByToken(whaleActivity.data?.notifications ?? []),
+    [whaleActivity.data],
+  );
 
   const feedRows = useMemo(() => {
     const seen = new Set<string>();
@@ -244,6 +256,7 @@ export default function DiscoverScreen() {
               watched={watchlist.includes(item.address)}
               onToggleWatch={() => toggleWatch(item)}
             />
+            <WhaleFlowBadge flow={whaleFlows.get(item.address)} />
             {mode === "watchlist" ? (
               <WatchlistEvidence
                 token={item}

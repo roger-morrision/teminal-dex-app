@@ -19,6 +19,7 @@ export const whaleHistorySchema = z.object({
   if (value.hasMore !== Boolean(value.nextCursor)) context.addIssue({ code: "custom", message: "Whale cursor availability mismatch.", path: ["nextCursor"] });
   const last = value.events.at(-1); if (value.nextCursor && (!last || last.observedAt !== value.nextCursor.beforeObservedAt || last.id !== value.nextCursor.beforeId)) context.addIssue({ code: "custom", message: "Whale cursor must match the page boundary.", path: ["nextCursor"] });
 });
+export type WhaleHistory = z.infer<typeof whaleHistorySchema>;
 
 export const walletClassificationHistorySchema = z.object({
   schema: z.literal("wallet-classification-history-v1"), wallet: publicKey, generatedAt: z.number().int().positive().safe(),
@@ -28,6 +29,7 @@ export const walletClassificationHistorySchema = z.object({
   const versions = value.versions.map((item) => item.version); if (new Set(versions).size !== versions.length || versions.some((version, index) => index > 0 && version >= versions[index - 1]!)) context.addIssue({ code: "custom", message: "Classification versions must be unique and descending.", path: ["versions"] });
   value.versions.forEach((item, index) => { if (item.expiresAt != null && item.expiresAt <= item.effectiveAt) context.addIssue({ code: "custom", message: "Classification expiry must follow activation.", path: ["versions", index, "expiresAt"] }); });
 });
+export type WalletClassificationHistory = z.infer<typeof walletClassificationHistorySchema>;
 
 export const whaleAlertEvidenceSchema = z.object({
   schema: z.literal("whale-alert-evidence-v1"), id: z.string().min(8).max(128), ownerWallet: publicKey, enabled: z.boolean(),

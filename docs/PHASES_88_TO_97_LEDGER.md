@@ -2,6 +2,8 @@
 
 Date: 2026-08-24
 
+The continuation for phases 98–109 is maintained in `PHASES_98_TO_109_LEDGER.md`.
+
 This ledger separates delivered mobile foundations from authoritative backend and physical-device proof. Whale evidence remains observational and read-only. It cannot authorize a trade, alert mutation, wallet signature, or submission.
 
 | Phase | Delivered foundation | Required operational closure |

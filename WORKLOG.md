@@ -895,3 +895,13 @@
 - Checks: TypeScript passed; ESLint passed with zero errors and one generated `.expo/types/router.d.ts` warning; Jest passed 62 suites / 261 tests; Android debug build/install passed.
 - External blocker: real whale/token rows and token-detail drill-down cannot be exercised until the configured backend on port 3000 is running. No backend edit, publication, transaction, signing, or external deployment occurred.
 - Implementation commit: `01d25af fix: include native splash screen module`.
+
+## 2026-08-24 — Slice 94: phases 98–109 evidence and promotion gates
+
+- Added Phase 98–109 governance covering authoritative whale history, mobile pagination, whale alerts, wallet classification, corroboration, analytics, exposure, operations, live-backend Android, physical Android/iOS and managed devnet submission. Dependencies propagate and fully populated evidence never grants mobile submission authority.
+- Added cross-page whale-history validation for exact requested cursors, strict older chronology, cross-page duplicate rejection, non-advancing cursors and a four-page retained-session cap.
+- Added current wallet-classification resolution that fails closed on missing, expired, revoked and explicitly unclassified evidence.
+- Added a sixteen-dependency managed-devnet readiness gate spanning custody, signer/provider, allowlists, risk, legal/security, incident/retention, physical-device, manifest, consumption, expiry/replay, finality/reorg, reconciliation and kill-switch proof.
+- Added strict devnet-only run evidence and combined physical-platform certification contracts. They require valid chronology, unique artifacts, actual Android wallet evidence, explicit iOS Wallet Adapter unavailability and literal mainnet/CopyTrade disabled flags.
+- Added the Phase 98–109 ledger with exact backend, organizational, device, wallet and network closure evidence. No live signing, submission, mainnet or CopyTrade authority was introduced.
+- Strict TypeScript, repository-wide ESLint, 67 Jest suites / 271 tests, and fresh 25-route web/Android/iOS exports passed. Generated verification output was removed; the known Noble hashes fallback warning remains non-fatal.

@@ -1615,6 +1615,71 @@ export const aiPlatformSchema = z.object({
 });
 export type AiPlatform = z.infer<typeof aiPlatformSchema>["data"];
 
+const gmgnProviderHistoryRowSchema = z.object({
+  id: z.string().min(1).max(200),
+  address: publicKeyString,
+  symbol: z.string().max(30).nullable(),
+  name: z.string().max(120).nullable(),
+  provider: z.string().min(1).max(80),
+  observedAt: z.number().int().positive().safe(),
+  persistedAt: z.number().int().positive().safe(),
+  priceUsd: z.number().finite().nonnegative().nullable(),
+  liquidityUsd: z.number().finite().nonnegative().nullable(),
+  volume24hUsd: z.number().finite().nonnegative().nullable(),
+  confidence: z.number().min(0).max(1),
+  quality: z.string().min(1).max(80),
+  mintVerified: z.boolean(),
+});
+
+export const aiGmgnHistorySchema = z
+  .object({
+    success: z.literal(true),
+    data: z.object({
+      providerHistory: z.array(gmgnProviderHistoryRowSchema).max(250),
+      historySummary: z.object({
+        sweeps: z.number().int().nonnegative(),
+        observations: z.number().int().nonnegative(),
+        returnedObservations: z.number().int().min(0).max(250),
+      }),
+      chainPolicy: z.object({
+        chain: z.literal("solana"),
+        crossChainEnabled: z.literal(false),
+        chainQualifiedIdentityRequired: z.literal(true),
+      }),
+      executionEnabled: z.literal(false),
+    }),
+  })
+  .superRefine((response, ctx) => {
+    const ids = new Set<string>();
+    response.data.providerHistory.forEach((row, index, rows) => {
+      if (ids.has(row.id)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["data", "providerHistory", index, "id"],
+          message: "GMGN provider history IDs must be unique.",
+        });
+      }
+      ids.add(row.id);
+      if (row.persistedAt < row.observedAt) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["data", "providerHistory", index, "persistedAt"],
+          message: "GMGN evidence cannot persist before observation.",
+        });
+      }
+      const previous = rows[index - 1];
+      if (previous && previous.observedAt < row.observedAt) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["data", "providerHistory", index, "observedAt"],
+          message: "GMGN provider history must be newest first.",
+        });
+      }
+    });
+  });
+
+export type AiGmgnHistory = z.infer<typeof aiGmgnHistorySchema>["data"];
+
 const freshnessSchema = z
   .object({
     isStale: z.boolean(),

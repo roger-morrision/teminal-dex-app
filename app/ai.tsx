@@ -13,20 +13,27 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
+  fetchAiGmgnHistory,
   fetchAiPaperReport,
   fetchAiPlatform,
   fetchAiRecommendations,
 } from "@/api/client";
-import type { AiPaperReport, AiPlatform, AiRecommendation } from "@/api/schema";
+import type {
+  AiGmgnHistory,
+  AiPaperReport,
+  AiPlatform,
+  AiRecommendation,
+} from "@/api/schema";
 import { compactUsd, signedPercent } from "@/lib/format";
 import { useWalletSession } from "@/security/WalletSessionProvider";
 import { colors, spacing } from "@/theme";
 import { useSettings } from "@/settings/SettingsProvider";
 
-type Tab = "advisories" | "paper" | "governance";
+type Tab = "advisories" | "paper" | "history" | "governance";
 const tabs = [
   { id: "advisories", key: "advisories" },
   { id: "paper", key: "paper" },
+  { id: "history", key: "discoveryHistory" },
   { id: "governance", key: "governance" },
 ] as const;
 
@@ -51,12 +58,19 @@ export default function AiScreen() {
     queryFn: ({ signal }) => fetchAiPlatform(signal),
     enabled: authorized && tab === "governance",
   });
+  const gmgnHistory = useQuery({
+    queryKey: ["ai-gmgn-history", wallet.session?.wallet],
+    queryFn: ({ signal }) => fetchAiGmgnHistory(signal),
+    enabled: authorized && tab === "history",
+  });
   const refresh = () =>
     tab === "advisories"
       ? recommendations.refetch()
       : tab === "paper"
         ? paper.refetch()
-        : platform.refetch();
+        : tab === "history"
+          ? gmgnHistory.refetch()
+          : platform.refetch();
   return (
     <SafeAreaView style={styles.safe}>
       <ScrollView
@@ -66,6 +80,7 @@ export default function AiScreen() {
             refreshing={
               recommendations.isRefetching ||
               paper.isRefetching ||
+              gmgnHistory.isRefetching ||
               platform.isRefetching
             }
             onRefresh={refresh}
@@ -145,6 +160,15 @@ export default function AiScreen() {
             onUnlock={wallet.unlock}
             onVerify={wallet.connectAndVerify}
           />
+        ) : tab === "history" ? (
+          <GmgnHistory
+            data={gmgnHistory.data}
+            loading={gmgnHistory.isLoading}
+            error={gmgnHistory.error?.message}
+            onOpen={(address) =>
+              router.push({ pathname: "/token/[address]", params: { address } })
+            }
+          />
         ) : (
           <Governance
             data={platform.data}
@@ -154,6 +178,101 @@ export default function AiScreen() {
         )}
       </ScrollView>
     </SafeAreaView>
+  );
+}
+
+export function GmgnHistory({
+  data,
+  loading,
+  error,
+  onOpen,
+}: {
+  data?: AiGmgnHistory;
+  loading: boolean;
+  error?: string;
+  onOpen: (address: string) => void;
+}) {
+  const { t } = useSettings();
+  if (loading) return <State loading text={t("loadingDiscoveryHistory")} />;
+  if (error || !data)
+    return <State error text={error ?? t("discoveryHistoryUnavailable")} />;
+  return (
+    <View>
+      <View accessibilityRole="summary" style={styles.phase31}>
+        <Ionicons name="time" size={22} color={colors.accent} />
+        <View style={styles.flex}>
+          <Text style={styles.sectionTitle}>{t("gmgnDiscoveryHistory")}</Text>
+          <Text style={styles.meta}>
+            {t("gmgnHistorySummary", {
+              observations: data.historySummary.observations,
+              sweeps: data.historySummary.sweeps,
+              shown: data.providerHistory.length,
+            })}
+          </Text>
+        </View>
+        <Text style={styles.locked}>{t("readOnly")}</Text>
+      </View>
+      <Text style={styles.provenance}>{t("gmgnHistoryBoundary")}</Text>
+      {data.providerHistory.slice(0, 50).map((row) => (
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={t("openGmgnEvidence", {
+            symbol: row.symbol ?? row.address.slice(0, 7),
+          })}
+          key={row.id}
+          onPress={() => onOpen(row.address)}
+          style={styles.card}
+        >
+          <View style={styles.cardTop}>
+            <View style={styles.flex}>
+              <Text style={styles.symbol}>
+                {row.symbol ?? `${row.address.slice(0, 5)}…${row.address.slice(-5)}`}
+              </Text>
+              <Text style={styles.meta}>
+                {row.name ?? row.provider} · {row.quality}
+              </Text>
+            </View>
+            <Text style={row.mintVerified ? styles.verified : styles.blocker}>
+              {row.mintVerified ? t("mintVerified") : t("mintUnverified")}
+            </Text>
+          </View>
+          <View style={styles.evidenceRow}>
+            <Evidence
+              label={t("price")}
+              value={row.priceUsd == null ? t("unavailable") : compactUsd(row.priceUsd)}
+              good={row.priceUsd != null}
+            />
+            <Evidence
+              label={t("liquidity")}
+              value={row.liquidityUsd == null ? t("unavailable") : compactUsd(row.liquidityUsd)}
+              good={row.liquidityUsd != null}
+            />
+            <Evidence
+              label={t("volume24h")}
+              value={row.volume24hUsd == null ? t("unavailable") : compactUsd(row.volume24hUsd)}
+              good={row.volume24hUsd != null}
+            />
+            <Evidence
+              label={t("confidence")}
+              value={`${Math.round(row.confidence * 100)}%`}
+              good={row.mintVerified && row.confidence >= 0.5}
+            />
+          </View>
+          <Text style={styles.meta}>
+            {t("gmgnObserved", {
+              provider: row.provider,
+              observed: new Date(row.observedAt).toLocaleString(),
+            })}
+          </Text>
+        </Pressable>
+      ))}
+      {!data.providerHistory.length ? <State text={t("noGmgnHistory")} /> : null}
+      {data.providerHistory.length > 50 ? (
+        <Text style={styles.provenance}>
+          {t("gmgnRenderLimit", { shown: 50, total: data.providerHistory.length })}
+        </Text>
+      ) : null}
+    </View>
   );
 }
 
@@ -760,6 +879,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: "900",
   },
+  verified: { color: colors.positive, fontSize: 8, fontWeight: "900" },
   evidenceRow: {
     flexDirection: "row",
     justifyContent: "space-between",

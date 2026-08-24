@@ -2,6 +2,7 @@ import {
   aiPaperReportSchema,
   aiPlatformSchema,
   aiRecommendationsSchema,
+  aiGmgnHistorySchema,
   alertDeliveriesSchema,
   alertEvaluationHistorySchema,
   bubbleGraphSchema,
@@ -47,6 +48,7 @@ import {
   type AiPaperReport,
   type AiPlatform,
   type AiRecommendation,
+  type AiGmgnHistory,
   type AlertDeliveriesResponse,
   type AlertEvaluationHistory,
   type BubbleGraphResponse,
@@ -800,6 +802,21 @@ export async function fetchAiPlatform(
   );
   if (!result.success)
     throw new ApiError("Backend returned incompatible AI governance evidence.");
+  return result.data.data;
+}
+
+export async function fetchAiGmgnHistory(
+  signal?: AbortSignal,
+): Promise<AiGmgnHistory> {
+  const result = aiGmgnHistorySchema.safeParse(
+    await jsonRequest(
+      "/api/ai/gmgn-gems",
+      { signal },
+      "GMGN discovery history request failed",
+    ),
+  );
+  if (!result.success)
+    throw new ApiError("Backend returned incompatible GMGN discovery evidence.");
   return result.data.data;
 }
 

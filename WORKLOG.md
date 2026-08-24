@@ -771,3 +771,10 @@
 - The backend exposes `change1h` for token price but no independently measured market-cap change. The UI therefore labels the percentage as `1h` token-price change and adds an explicit bilingual boundary instead of fabricating an MC-change series.
 - Added accessible combined market-snapshot labels and a defensive translation fallback that prevents a partial Fast Refresh dictionary from crashing the screen.
 - Strict TypeScript, targeted ESLint, Settings/localization and primary accessibility regressions passed. Final emulator replay was externally blocked because `emulator-5554` disconnected before the clean restart; no device was available to ADB.
+
+## 2026-08-24 — Slice 77: signal-first whale event identity
+
+- Adapted the supplied reference's useful event hierarchy without copying its branding, assets, named traders, icons or proprietary text. Newest and Live whale observations now lead with the backend token image or a deterministic symbol fallback, exact token symbol and observed buy/sell amount.
+- Each full row pairs the classified-wallet boundary and shortened public address with compact elapsed time, then keeps price, market cap, provider 1h price change, source, quality and mismatch warnings in the same evidence card.
+- Added direction badges to token imagery and accessible parent labels while keeping images decorative. No wallet avatar or human alias is fabricated because the backend contract supplies neither.
+- Strict TypeScript, targeted ESLint, 39 focused accessibility/whale tests passed. Native replay remains externally blocked because ADB reports no connected emulator/device.

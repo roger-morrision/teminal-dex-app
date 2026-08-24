@@ -35,6 +35,15 @@ export const isWhaleActivity = (event: TrackNotification) =>
   event.type === "smart_buy" ||
   event.type === "smart_take_profit";
 
+export const whaleAmountContext = (event: TrackNotification) => {
+  if (event.amountUsd == null) return "amount_missing" as const;
+  const marketCap = event.market.marketCap;
+  if (marketCap == null || marketCap <= 0) return "market_cap_missing" as const;
+  return event.amountUsd > marketCap
+    ? ("amount_exceeds_market_cap" as const)
+    : ("within_market_cap" as const);
+};
+
 export function aggregateWhaleActivity(events: TrackNotification[]): WhaleFlow[] {
   const flows = new Map<string, WhaleFlow & { wallets: Set<string> }>();
   for (const event of events.filter(isWhaleActivity)) {

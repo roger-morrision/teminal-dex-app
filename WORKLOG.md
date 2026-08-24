@@ -742,3 +742,11 @@
 - Added Whale Watch to the all-route Pressable/TextInput semantics audit and added static regression checks for scalable text, responsive width handling, and the horizontal tab rail.
 - Verification passed: strict TypeScript, warning-free `app`/`src` ESLint, all 61 Jest suites / 248 tests, and a fresh Android production export outside the repository. The known Noble hashes warning and recoverable Metro cache fallback remained non-fatal.
 - Next priority: physical TalkBack/large-text verification on Android and responsive evidence-card refinement from emulator screenshots. This requires an available interactive emulator/device session; durable whale history and whale-alert delivery still require backend contracts.
+
+## 2026-08-24 — Slice 73: emulator-led whale amount context warning
+
+- Reconnected to the running `emulator-5554` development build and inspected the native UI hierarchy at 1080×2400 / font scale 1.0. The Whales surface rendered real historical evidence, accessible search, horizontal event/control rails, and exact event rows without React Native error UI.
+- The live hierarchy exposed a concrete evidence-quality issue: some provider-reported historical amounts exceeded the accompanying current market-cap snapshot. Added a deterministic context classifier and visible bilingual warning while preserving the original amount and source evidence.
+- The warning does not declare the provider value invalid because transaction and market snapshots can have different chronology. It directs users to verify chronology/provider context and grants no predictive or execution authority.
+- Verification passed: strict TypeScript, warning-free `app`/`src` ESLint, all 61 Jest suites / 249 tests, and a fresh Android production export outside the repository. The known Noble hashes warning remained non-fatal.
+- Next priority: repeat emulator verification at large font scale and restore the device setting, then refine any clipped evidence rows. Durable history pagination and whale-alert delivery remain blocked by absent backend contracts.

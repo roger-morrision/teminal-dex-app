@@ -1,5 +1,5 @@
 import type { TrackNotification } from "@/api/schema";
-import { aggregateWhaleActivity, buildWhaleMarketPulse, filterWhaleEvents, isWhaleActivity, whaleActivityForToken } from "@/lib/whale-activity";
+import { aggregateWhaleActivity, buildWhaleMarketPulse, filterWhaleEvents, isWhaleActivity, whaleActivityForToken, whaleAmountContext } from "@/lib/whale-activity";
 
 const event = (input: Partial<TrackNotification> & Pick<TrackNotification, "id" | "type">): TrackNotification => ({
   title: "Observed activity",
@@ -82,5 +82,11 @@ describe("whale activity aggregation", () => {
     ]);
     expect(pulse).toMatchObject({ eventCount: 3, activeTokens: 2, uniqueWallets: 2, knownAmountCount: 2, missingAmountCount: 1, buyUsd: 75_000, sellUsd: 25_000, netUsd: 50_000, buyShare: 0.75 });
     expect(pulse.largestEvent?.id).toBe("buy");
+  });
+
+  it("flags amount and market-cap snapshot mismatches without deleting provider evidence", () => {
+    expect(whaleAmountContext(event({ id: "high", type: "whale_buy", amountUsd: 2_000_000 }))).toBe("amount_exceeds_market_cap");
+    expect(whaleAmountContext(event({ id: "bounded", type: "whale_buy", amountUsd: 500_000 }))).toBe("within_market_cap");
+    expect(whaleAmountContext(event({ id: "missing", type: "whale_buy", amountUsd: null }))).toBe("amount_missing");
   });
 });

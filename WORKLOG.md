@@ -886,3 +886,12 @@
 - The known upstream Noble hashes Metro subpath fallback warning remains non-fatal. No app runtime failure, secret, environment file, database, log, cache or generated artifact was retained.
 - Physical Android/iOS wallet, TalkBack/VoiceOver, background/restore and representative-device performance evidence remain external blockers requiring actual devices and supported wallet applications; no execution control was weakened to simulate closure.
 - Roadmap outcome: dependency-ready Slices 87–92 are implemented or evidence-closed. Durable whale-history pagination remains explicitly blocked on the authoritative cursor contract documented in Slice 90.
+
+## 2026-08-24 — Slice 93: Android development-build launch repair
+
+- Reproduced and fixed the emulator startup blocker: Expo Dev Launcher required `expo.modules.splashscreen.SplashScreenManager`, but `expo-splash-screen` was absent from the native dependency graph.
+- Added the Expo 57-compatible module/config plugin, rebuilt with Java 17, installed the debug APK, and launched it through local Metro with ADB port forwarding.
+- Runtime evidence: Whales and Discover rendered, bottom navigation switched screens, offline/provider-empty disclosures were visible while the read-only backend remained stopped, and post-repair logcat contained no fatal native-class or Metro-resolution error.
+- Checks: TypeScript passed; ESLint passed with zero errors and one generated `.expo/types/router.d.ts` warning; Jest passed 62 suites / 261 tests; Android debug build/install passed.
+- External blocker: real whale/token rows and token-detail drill-down cannot be exercised until the configured backend on port 3000 is running. No backend edit, publication, transaction, signing, or external deployment occurred.
+- Implementation commit: `01d25af fix: include native splash screen module`.

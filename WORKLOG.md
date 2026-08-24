@@ -930,3 +930,10 @@
 - Added representative mobile performance budgets requiring low- and mid-tier samples and route-level cold-start, interaction-ready, peak-memory, dropped-frame and bundle limits.
 - Added the Phase 112–121 ledger with exact operational evidence required for closure. No production acceptance or execution authority was introduced.
 - Strict TypeScript, repository-wide ESLint, 73 Jest suites / 283 tests, and fresh 25-route web/Android/iOS exports passed. Generated verification output was removed; the known Noble hashes fallback warning remains non-fatal.
+
+## 2026-08-24 — Slice 98: primary Whale recovery actions
+
+- Re-ran the nine-phase review after the production-operations baseline. Durable whale-history pagination, whale-rule mutation, native signing and physical-device certification remain externally blocked; the primary Whales error state was independently actionable.
+- Added localized, accessible retry actions to both whale-activity and wallet-ranking failures. Recovery controls expose busy/disabled state during refetch and prevent overlapping requests while preserving pull-to-refresh.
+- No market values, wallet identities, transaction authority or synthetic fallback data were added. Next priority remains authoritative whale-history pagination when the backend exposes a stable cursor, followed by physical TalkBack/VoiceOver evidence.
+- Strict TypeScript and focused ESLint passed; 4 focused accessibility/state/whale suites passed with 44 tests.

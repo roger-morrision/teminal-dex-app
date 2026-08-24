@@ -678,3 +678,11 @@
 - Added numbered accumulation/distribution flow rankings and deterministic tests proving direction, amount threshold, and sort behavior.
 - Strict TypeScript, Expo ESLint, targeted whale regressions, and the primary static accessibility gate passed before the full regression/export gate.
 - Final verification passed: strict TypeScript, Expo ESLint, 57 Jest suites / 229 tests, Expo Doctor 21/21, and a fresh Android production export outside the repository. The known Noble hashes fallback warning remains non-fatal.
+
+## 2026-08-24 — Slice 65: Android emulator deployment verification
+
+- Built and installed the latest native development APK on the `Terminal_DEX_API_37` Android emulator, configured ADB reverse transport for Metro and the local Terminal DEX backend, and launched the Expo development client without publishing or deploying externally.
+- Fixed the API-origin development allowlist to match the documented Android emulator host `10.0.2.2`. The exception remains limited to `__DEV__` HTTP; production and every other non-HTTPS host remain fail-closed.
+- Added focused regression coverage, then passed the backend-client suite (24 tests), strict TypeScript, and Expo ESLint.
+- Device UI verification passed for Live, Buy filtering, Accumulating, Distributing, Wallet rankings, and Alerts. Wallet rankings rendered real backend evidence; current Live and multi-event flow windows rendered truthful empty states; Alerts explicitly preserved the unsupported whale-rule boundary.
+- Android React Native error logs were empty after the verified flows. Metro, the backend, and the emulator were left running for interactive review.

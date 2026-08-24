@@ -225,6 +225,11 @@ describe("backend client routing", () => {
     }
   });
 
+  it("permits the Android emulator host only in development", () => {
+    process.env.EXPO_PUBLIC_API_URL = "http://10.0.2.2:3000";
+    expect(getApiOrigin()).toBe("http://10.0.2.2:3000");
+  });
+
   it("routes token panels and chart timeframes without leaking parameters", async () => {
     const address = "11111111111111111111111111111111";
     jest

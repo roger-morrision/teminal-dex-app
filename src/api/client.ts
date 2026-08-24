@@ -129,14 +129,16 @@ export function getApiOrigin(): string {
   } catch {
     throw new ApiError("Backend URL must be a valid absolute URL.");
   }
-  const loopback = ["localhost", "127.0.0.1", "::1"].includes(url.hostname);
+  const developmentHost = ["localhost", "127.0.0.1", "::1", "10.0.2.2"].includes(
+    url.hostname,
+  );
   if (
     url.protocol !== "https:" &&
     !(
       typeof __DEV__ !== "undefined" &&
       __DEV__ &&
       url.protocol === "http:" &&
-      loopback
+      developmentHost
     )
   )
     throw new ApiError(

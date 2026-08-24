@@ -987,6 +987,14 @@
 - Holdings, allocation, risk, PnL provenance, ownership boundaries and backend contracts are unchanged.
 - Strict TypeScript, focused ESLint and 3 Portfolio/watchlist/accessibility suites with 38 tests passed.
 
+## 2026-08-25 — Slice 107: guarded Monitor recovery
+
+- Continued the primary-flow recovery review into Monitor and found the live indexed-activity provider failure had no direct recovery action.
+- Added a localized retry bound to the real React Query refetch, disabled and announced busy while recovery is active; the shared state omits action labels without executable handlers.
+- Added rendered regression coverage for busy suppression and inert-action omission.
+- Indexed activity, token-table evidence, alert rules, evaluation/delivery boundaries and backend contracts are unchanged.
+- Strict TypeScript, focused ESLint and 3 Monitor/state/accessibility suites with 38 tests passed.
+
 ## 2026-08-24 — Slice 100: truthful Whale wallet navigation
 
 - Audited the non-empty wallet-ranking flow and found that the aggregate “Open Wallet Intelligence” footer silently routed to the first ranked address, duplicating row-detail behavior.

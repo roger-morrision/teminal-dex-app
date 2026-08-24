@@ -167,7 +167,16 @@ function LiveFeed({
   const { t } = useSettings();
   const router = useRouter();
   if (query.isLoading) return <State loading text={t("loadingActivity")} />;
-  if (query.isError) return <State error text={query.error.message} />;
+  if (query.isError)
+    return (
+      <State
+        error
+        text={query.error.message}
+        action={t("retry")}
+        actionBusy={query.isFetching}
+        onAction={() => query.refetch()}
+      />
+    );
   return (
     <View>
       <Text style={styles.provenance}>
@@ -620,11 +629,18 @@ export function State({
   loading,
   error,
   text,
+  action,
+  actionBusy = false,
+  onAction,
 }: {
   loading?: boolean;
   error?: boolean;
   text: string;
+  action?: string;
+  actionBusy?: boolean;
+  onAction?: () => void;
 }) {
+  const showAction = Boolean(action && onAction);
   return (
     <View
       accessible
@@ -635,6 +651,18 @@ export function State({
     >
       {loading ? <ActivityIndicator color={colors.accent} /> : null}
       <Text style={styles.stateText}>{text}</Text>
+      {showAction ? (
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={action}
+          accessibilityState={{ busy: actionBusy, disabled: actionBusy }}
+          disabled={actionBusy}
+          onPress={onAction}
+          style={[styles.stateAction, actionBusy && styles.stateActionDisabled]}
+        >
+          <Text style={styles.stateActionText}>{action}</Text>
+        </Pressable>
+      ) : null}
     </View>
   );
 }
@@ -916,4 +944,15 @@ const styles = StyleSheet.create({
     gap: spacing.md,
   },
   stateText: { color: colors.muted, textAlign: "center", lineHeight: 19 },
+  stateAction: {
+    minHeight: 44,
+    minWidth: 120,
+    paddingHorizontal: spacing.lg,
+    borderRadius: 12,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: colors.accent,
+  },
+  stateActionDisabled: { opacity: 0.55 },
+  stateActionText: { color: colors.background, fontWeight: "900" },
 });

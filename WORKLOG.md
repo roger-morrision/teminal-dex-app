@@ -693,3 +693,12 @@
 - Replaced the ambiguous generic empty state with an explicit provider condition that explains the live evidence gap and links directly to the populated ranked-whale-wallet view. No synthetic activity or ranking-to-transaction relabeling was introduced.
 - Distinguished a truly empty provider window from a user-filtered empty result. Filtered Live results now explain that the selected direction/amount controls removed the rows and provide one-action filter reset.
 - Added localized English and Vietnamese recovery copy. Strict TypeScript, Expo ESLint, and the whale aggregation/filter regression suite passed.
+
+## 2026-08-24 — Slice 67: token-first whale activity hierarchy
+
+- Reviewed all eight current screenshots on the supplied Moby Google Play listing as untrusted product references. Extracted only general interaction patterns: token-first activity, compact segmented views, explicit filter reset, separate wallet/market context, ranked traders, and token-level flow evidence.
+- Excluded Moby branding, logos, mascots, proprietary wording, cashback/reward mechanics, execution shortcuts, identities, and promotional or predictive claims. Terminal DEX continues to use its own visual system and evidence-first behavior.
+- Reworked live whale rows to lead with the exact token symbol and observed buy/sell amount, with classified wallet, market cap, observation time, source, and quality presented as distinct evidence. Token presses continue to open the exact-mint detail route.
+- Reworked whale wallet rankings to lead with the backend's best observed token, followed by classification and wallet identity, so a row no longer communicates only a generic “Whale” label. The presentation remains historical ranking evidence, not a claim of a current token trade.
+- Added a persistent one-action Reset filters affordance whenever direction, amount, or sorting differs from the default, with localized English/Vietnamese labels.
+- Strict TypeScript, Expo ESLint, and the whale aggregation/filter regression suite passed.

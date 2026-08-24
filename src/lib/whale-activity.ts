@@ -95,6 +95,15 @@ export function aggregateWhaleActivity(events: TrackNotification[]): WhaleFlow[]
 export const whaleFlowByToken = (events: TrackNotification[]) =>
   new Map(aggregateWhaleActivity(events).map((flow) => [flow.tokenAddress, flow]));
 
+export function filterWhaleFlows(flows: WhaleFlow[], query?: string) {
+  const normalized = query?.trim().toLowerCase() ?? "";
+  if (!normalized) return flows;
+  return flows.filter((flow) =>
+    [flow.tokenSymbol, flow.tokenAddress, ...flow.events.map((event) => event.wallet)]
+      .some((value) => value?.toLowerCase().includes(normalized)),
+  );
+}
+
 export const whaleActivityForToken = (
   events: TrackNotification[],
   tokenAddress: string,

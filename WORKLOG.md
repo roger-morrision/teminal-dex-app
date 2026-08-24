@@ -945,6 +945,13 @@
 - No fallback wallet, mock ranking, or inferred identity was introduced. Backend history pagination and physical-device accessibility evidence remain externally blocked.
 - Strict TypeScript, focused ESLint and 2 primary-state/accessibility suites with 34 tests passed.
 
+## 2026-08-24 — Slice 101: consistent Whale flow search
+
+- Audited the shared Whale search control and found that it filtered Live transactions but was ignored by Accumulating and Distributing token-flow modes.
+- Added a bounded domain-level flow filter covering token symbol, exact mint and contributing observed wallet; the two aggregate modes now consume the same trimmed, case-insensitive query intent as Live.
+- Unmatched queries reuse the truthful no-flow state. No server search, synthetic history, inferred wallet relation or additional data collection was introduced.
+- Strict TypeScript, focused ESLint and 2 Whale/accessibility suites with 40 tests passed.
+
 ## 2026-08-24 — Slice 100: truthful Whale wallet navigation
 
 - Audited the non-empty wallet-ranking flow and found that the aggregate “Open Wallet Intelligence” footer silently routed to the first ranked address, duplicating row-detail behavior.

@@ -1,5 +1,5 @@
 import type { TrackNotification } from "@/api/schema";
-import { aggregateWhaleActivity, buildWhaleMarketPulse, filterWhaleEvents, isWhaleActivity, whaleActivityForToken, whaleAmountContext } from "@/lib/whale-activity";
+import { aggregateWhaleActivity, buildWhaleMarketPulse, filterWhaleEvents, filterWhaleFlows, isWhaleActivity, whaleActivityForToken, whaleAmountContext } from "@/lib/whale-activity";
 
 const event = (input: Partial<TrackNotification> & Pick<TrackNotification, "id" | "type">): TrackNotification => ({
   title: "Observed activity",
@@ -60,6 +60,18 @@ describe("whale activity aggregation", () => {
     expect(filterWhaleEvents(rows, { ...input, query: "bonk" }).map((item) => item.id)).toEqual(["token"]);
     expect(filterWhaleEvents(rows, { ...input, query: "knownwhale" }).map((item) => item.id)).toEqual(["wallet"]);
     expect(rows).toHaveLength(2);
+  });
+
+  it("searches aggregated flows by token identity and contributing wallet", () => {
+    const flows = aggregateWhaleActivity([
+      event({ id: "bonk", type: "whale_buy", tokenSymbol: "BONK", tokenAddress: "BonkMint111", wallet: "KnownWhale111" }),
+      event({ id: "wif", type: "whale_sell", tokenSymbol: "WIF", tokenAddress: "WifMint222", wallet: "OtherWallet222" }),
+    ]);
+    expect(filterWhaleFlows(flows, " bonk ").map((flow) => flow.tokenSymbol)).toEqual(["BONK"]);
+    expect(filterWhaleFlows(flows, "wifmint").map((flow) => flow.tokenSymbol)).toEqual(["WIF"]);
+    expect(filterWhaleFlows(flows, "knownwhale").map((flow) => flow.tokenSymbol)).toEqual(["BONK"]);
+    expect(filterWhaleFlows(flows, "missing")).toEqual([]);
+    expect(filterWhaleFlows(flows)).toBe(flows);
   });
 
   it("builds a strict newest-first token whale chronology", () => {

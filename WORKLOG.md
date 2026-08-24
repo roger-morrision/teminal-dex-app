@@ -973,6 +973,13 @@
 - No retry policy, backend request shape, provider data or token ranking semantics changed.
 - Strict TypeScript, focused ESLint and 3 Discover/state/accessibility suites with 39 tests passed.
 
+## 2026-08-25 — Slice 105: guarded Trenches recovery
+
+- Continued the primary-flow recovery review into Trenches and found its provider retry remained enabled during an active refetch.
+- Added accessible busy/disabled retry state and suppressed action labels without handlers, preventing overlapping provider requests and inert controls.
+- Launch filters, lane ranking, quote-review handoff, backend contracts and transaction safety boundaries are unchanged.
+- Strict TypeScript, focused ESLint and 4 Trenches/state/accessibility suites with 40 tests passed.
+
 ## 2026-08-24 — Slice 100: truthful Whale wallet navigation
 
 - Audited the non-empty wallet-ranking flow and found that the aggregate “Open Wallet Intelligence” footer silently routed to the first ranked address, duplicating row-detail behavior.

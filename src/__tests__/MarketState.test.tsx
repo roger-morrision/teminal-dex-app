@@ -55,4 +55,18 @@ describe("primary market dynamic states", () => {
       screen.getByRole("summary").props.accessibilityState,
     ).toBeUndefined();
   });
+
+  it("guards Trenches retry while a provider refetch is active", async () => {
+    const retry = jest.fn();
+    const screen = await render(
+      <TrenchesState error text="Provider failed" action="Retry" actionBusy onAction={retry} />,
+    );
+    const button = screen.getByLabelText("Retry");
+    expect(button.props.accessibilityState).toEqual({ busy: true, disabled: true });
+    await fireEvent.press(button);
+    expect(retry).not.toHaveBeenCalled();
+
+    await screen.rerender(<TrenchesState text="No launches" action="Retry" />);
+    expect(screen.queryByLabelText("Retry")).toBeNull();
+  });
 });

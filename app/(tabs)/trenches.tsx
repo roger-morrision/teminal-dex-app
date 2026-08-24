@@ -217,6 +217,7 @@ export default function TrenchesScreen() {
               error
               text={query.error.message}
               action={t("retry")}
+              actionBusy={query.isFetching}
               onAction={() => query.refetch()}
             />
           ) : (
@@ -457,12 +458,14 @@ export function State({
   error,
   text,
   action,
+  actionBusy = false,
   onAction,
 }: {
   loading?: boolean;
   error?: boolean;
   text: string;
   action?: string;
+  actionBusy?: boolean;
   onAction?: () => void;
 }) {
   return (
@@ -475,11 +478,13 @@ export function State({
     >
       {loading ? <ActivityIndicator color={colors.accent} /> : null}
       <Text style={styles.stateText}>{text}</Text>
-      {action ? (
+      {action && onAction ? (
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={action}
-          style={styles.retry}
+          accessibilityState={{ busy: actionBusy, disabled: actionBusy }}
+          disabled={actionBusy}
+          style={[styles.retry, actionBusy && styles.retryDisabled]}
           onPress={onAction}
         >
           <Text style={styles.retryText}>{action}</Text>
@@ -728,5 +733,6 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 10,
   },
+  retryDisabled: { opacity: 0.55 },
   retryText: { color: colors.background, fontWeight: "900" },
 });

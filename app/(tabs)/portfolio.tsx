@@ -13,12 +13,14 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { fetchPortfolioAnalytics, fetchWalletPnl } from "@/api/client";
+import { fetchPortfolioAnalytics, fetchTrackFeed, fetchWalletPnl } from "@/api/client";
 import { compactUsd } from "@/lib/format";
+import { whaleFlowByToken } from "@/lib/whale-activity";
 import { isSolanaAddress } from "@/security/input";
 import { useWalletSession } from "@/security/WalletSessionProvider";
 import { useSettings } from "@/settings/SettingsProvider";
 import { BusyIndicator } from "@/components/BusyIndicator";
+import { WhaleFlowBadge } from "@/components/WhaleFlowBadge";
 import { colors, spacing } from "@/theme";
 
 const WATCH_KEY = "terminal-dex:watch-only-wallet:v1";
@@ -52,7 +54,14 @@ export default function PortfolioScreen() {
     queryFn: ({ signal }) => fetchWalletPnl(address, signal),
     enabled: valid,
   });
-  const refreshing = analytics.isRefetching || pnl.isRefetching;
+  const whaleActivity = useQuery({
+    queryKey: ["whale-activity"],
+    queryFn: ({ signal }) => fetchTrackFeed(signal),
+    enabled: valid,
+    staleTime: 30_000,
+  });
+  const whaleFlows = useMemo(() => whaleFlowByToken(whaleActivity.data?.notifications ?? []), [whaleActivity.data]);
+  const refreshing = analytics.isRefetching || pnl.isRefetching || whaleActivity.isRefetching;
   const holdings = analytics.data?.data.holdings ?? [];
   const allocations = useMemo(
     () =>
@@ -114,6 +123,7 @@ export default function PortfolioScreen() {
             onRefresh={() => {
               void analytics.refetch();
               void pnl.refetch();
+              void whaleActivity.refetch();
             }}
             tintColor={colors.accent}
           />
@@ -301,25 +311,10 @@ export default function PortfolioScreen() {
                 <Text style={styles.sectionTitle}>{t("holdings")}</Text>
                 <View style={styles.card}>
                   {holdings.map((holding) => (
-                    <View key={holding.mint} style={styles.holding}>
-                      <View style={styles.holdingMain}>
-                        <Text style={styles.rowTitle}>{holding.symbol}</Text>
-                        <Text style={styles.rowMeta}>
-                          {holding.uiAmount.toLocaleString()} ·{" "}
-                          {short(holding.mint)}
-                        </Text>
-                      </View>
-                      <View>
-                        <Text style={styles.rowValue}>
-                          {compactUsd(holding.valueUsd)}
-                        </Text>
-                        <Text style={styles.rowMeta}>
-                          {holding.pctOfPortfolio == null
-                            ? "—"
-                            : `${holding.pctOfPortfolio.toFixed(1)}%`}
-                        </Text>
-                      </View>
-                    </View>
+                    <View key={holding.mint}><View style={styles.holding}>
+                      <View style={styles.holdingMain}><Text style={styles.rowTitle}>{holding.symbol}</Text><Text style={styles.rowMeta}>{holding.uiAmount.toLocaleString()} · {short(holding.mint)}</Text></View>
+                      <View><Text style={styles.rowValue}>{compactUsd(holding.valueUsd)}</Text><Text style={styles.rowMeta}>{holding.pctOfPortfolio == null ? "—" : `${holding.pctOfPortfolio.toFixed(1)}%`}</Text></View>
+                    </View><WhaleFlowBadge flow={whaleFlows.get(holding.mint)} /></View>
                   ))}
                 </View>
                 <Text style={styles.sectionTitle}>{t("pnlEvidence")}</Text>

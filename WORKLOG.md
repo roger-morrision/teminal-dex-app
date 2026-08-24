@@ -719,3 +719,11 @@
 - Ranked whale-wallet rows now deep-link the selected exact public address into Wallet Intelligence. The dossier validates the route address before using it and keeps its existing watch-only boundary.
 - Added deterministic token-chronology regression coverage and English/Vietnamese copy. Strict TypeScript, warning-free `app`/`src` ESLint, all 60 Jest suites / 242 tests, and a fresh Android production export passed. The known upstream Noble hashes fallback warning remained unchanged and non-fatal; export output stayed outside the repository.
 - Next priority: add evidence-backed whale market-pulse analytics from existing bounded records, then revisit authoritative historical whale pagination and alert contracts if the backend exposes them.
+
+## 2026-08-24 — Slice 70: bounded whale market pulse
+
+- Completed the required nine-phase review and selected the highest-impact dependency-ready item: a truthful market-level whale summary using the already validated mobile feed. Historical pagination and whale-alert mutation remain blocked by absent authoritative backend contracts; physical-device closure remains environment-blocked.
+- Added a deterministic market-pulse evaluator covering active tokens, unique wallets, known/missing USD amounts, buy/sell volume, net flow, buy share, and the largest known-amount event. Unknown amounts remain excluded from volume and separately counted.
+- Added a dense Whales summary panel with explicit live/historical scope, incomplete-chain disclosure, USD evidence coverage, and no predictive score or execution affordance. Added English/Vietnamese copy and focused regression coverage.
+- Verification passed: strict TypeScript, warning-free `app`/`src` ESLint, all 60 Jest suites / 243 tests, and a fresh Android production export outside the repository. The known upstream Noble hashes fallback warning remained non-fatal.
+- Next ranked dependency-ready enhancement: persist non-secret Whale Watch filters and selected view; then add responsive and large-text layout verification. Backend-dependent priorities remain durable whale history pagination and authoritative whale-alert evaluation/delivery.

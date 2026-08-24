@@ -16,6 +16,19 @@ export type WhaleFlow = {
   events: TrackNotification[];
 };
 
+export type WhaleMarketPulse = {
+  eventCount: number;
+  activeTokens: number;
+  uniqueWallets: number;
+  knownAmountCount: number;
+  missingAmountCount: number;
+  buyUsd: number;
+  sellUsd: number;
+  netUsd: number;
+  buyShare: number | null;
+  largestEvent: TrackNotification | null;
+};
+
 export const isWhaleActivity = (event: TrackNotification) =>
   event.type === "whale_buy" ||
   event.type === "whale_sell" ||
@@ -83,6 +96,43 @@ export const whaleActivityForToken = (
       (left, right) =>
         right.observedAt - left.observedAt || left.id.localeCompare(right.id),
     );
+
+export function buildWhaleMarketPulse(
+  events: TrackNotification[],
+): WhaleMarketPulse {
+  const evidence = events.filter(isWhaleActivity);
+  const tokens = new Set<string>();
+  const wallets = new Set<string>();
+  let knownAmountCount = 0;
+  let buyUsd = 0;
+  let sellUsd = 0;
+  let largestEvent: TrackNotification | null = null;
+  for (const event of evidence) {
+    tokens.add(event.tokenAddress);
+    if (event.wallet) wallets.add(event.wallet);
+    if (event.amountUsd == null) continue;
+    knownAmountCount += 1;
+    const sell = event.type === "whale_sell" || event.type === "smart_take_profit";
+    if (sell) sellUsd += event.amountUsd;
+    else buyUsd += event.amountUsd;
+    if (largestEvent == null || event.amountUsd > (largestEvent.amountUsd ?? -1)) {
+      largestEvent = event;
+    }
+  }
+  const observedUsd = buyUsd + sellUsd;
+  return {
+    eventCount: evidence.length,
+    activeTokens: tokens.size,
+    uniqueWallets: wallets.size,
+    knownAmountCount,
+    missingAmountCount: evidence.length - knownAmountCount,
+    buyUsd,
+    sellUsd,
+    netUsd: buyUsd - sellUsd,
+    buyShare: observedUsd > 0 ? buyUsd / observedUsd : null,
+    largestEvent,
+  };
+}
 
 export type WhaleEventDirection = "all" | "buy" | "sell";
 export type WhaleEventSort = "latest" | "largest";

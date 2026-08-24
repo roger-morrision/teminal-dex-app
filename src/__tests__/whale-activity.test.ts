@@ -1,5 +1,5 @@
 import type { TrackNotification } from "@/api/schema";
-import { aggregateWhaleActivity, filterWhaleEvents, isWhaleActivity, whaleActivityForToken } from "@/lib/whale-activity";
+import { aggregateWhaleActivity, buildWhaleMarketPulse, filterWhaleEvents, isWhaleActivity, whaleActivityForToken } from "@/lib/whale-activity";
 
 const event = (input: Partial<TrackNotification> & Pick<TrackNotification, "id" | "type">): TrackNotification => ({
   title: "Observed activity",
@@ -71,5 +71,16 @@ describe("whale activity aggregation", () => {
       event({ id: "newer", type: "whale_sell", observedAt: 20 }),
     ];
     expect(whaleActivityForToken(rows, rows[0]!.tokenAddress).map((item) => item.id)).toEqual(["newer", "older"]);
+  });
+
+  it("builds a truthful bounded market pulse without converting missing amounts to volume", () => {
+    const pulse = buildWhaleMarketPulse([
+      event({ id: "buy", type: "whale_buy", tokenSymbol: "BONK", amountUsd: 75_000, wallet: "wallet-a" }),
+      event({ id: "sell", type: "smart_take_profit", tokenSymbol: "WIF", tokenAddress: "Vote111111111111111111111111111111111111111", amountUsd: 25_000, wallet: "wallet-b" }),
+      event({ id: "missing", type: "smart_buy", amountUsd: null, wallet: "wallet-a" }),
+      event({ id: "ignored", type: "kol_buy", amountUsd: 999_000 }),
+    ]);
+    expect(pulse).toMatchObject({ eventCount: 3, activeTokens: 2, uniqueWallets: 2, knownAmountCount: 2, missingAmountCount: 1, buyUsd: 75_000, sellUsd: 25_000, netUsd: 50_000, buyShare: 0.75 });
+    expect(pulse.largestEvent?.id).toBe("buy");
   });
 });

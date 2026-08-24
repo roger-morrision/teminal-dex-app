@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 const primaryScreens = [
-  'app/(tabs)/discover.tsx', 'app/(tabs)/trenches.tsx', 'app/(tabs)/monitor.tsx',
+  'app/(tabs)/whales.tsx', 'app/(tabs)/discover.tsx', 'app/(tabs)/trenches.tsx', 'app/(tabs)/monitor.tsx',
   'app/(tabs)/portfolio.tsx', 'app/(tabs)/more.tsx', 'app/settings.tsx',
   'app/token/[address].tsx', 'app/trade/[address].tsx',
   'app/copytrade.tsx',
@@ -24,5 +24,13 @@ describe('audited-screen accessibility contract', () => {
     const source = readFileSync(join(process.cwd(), file), 'utf8');
     const unlabeledInputs = [...source.matchAll(/<TextInput\b([^>]*)>/g)].filter((match) => !match[1]?.includes('accessibilityLabel'));
     expect(unlabeledInputs).toEqual([]);
+  });
+
+  it('keeps Whale Watch scalable and its dense tab rail horizontally recoverable', () => {
+    const source = readFileSync(join(process.cwd(), 'app/(tabs)/whales.tsx'), 'utf8');
+    expect(source).not.toContain('allowFontScaling={false}');
+    expect(source).not.toContain('maxFontSizeMultiplier');
+    expect(source).toContain('horizontal showsHorizontalScrollIndicator={false} accessibilityRole="tablist"');
+    expect(source).toContain('useWindowDimensions');
   });
 });

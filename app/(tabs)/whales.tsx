@@ -2,7 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
-import { Pressable, RefreshControl, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
+import { Pressable, RefreshControl, ScrollView, StyleSheet, Text, TextInput, View, useWindowDimensions } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { fetchTopTraders, fetchTrackFeed } from "@/api/client";
 import type { TopTrader, TrackNotification } from "@/api/schema";
@@ -18,6 +18,8 @@ const modes: Mode[] = ["live", "accumulating", "distributing", "wallets", "alert
 export default function WhalesScreen() {
   const { t } = useSettings();
   const router = useRouter();
+  const { width } = useWindowDimensions();
+  const narrow = width < 380;
   const [mode, setMode] = useState<Mode>(defaultWhaleWatchPreferences.mode);
   const [direction, setDirection] = useState<WhaleEventDirection>(defaultWhaleWatchPreferences.direction);
   const [minimumUsd, setMinimumUsd] = useState(defaultWhaleWatchPreferences.minimumUsd);
@@ -58,7 +60,7 @@ export default function WhalesScreen() {
   const evidenceCount = historical ? allEvents.length : (feed.data?.coverage?.whaleTransactions.currentRecordCount ?? feed.data?.coverage?.whaleTransactions.recordCount ?? 0);
   const refresh = () => mode === "wallets" ? rankings.refetch() : feed.refetch();
   return <SafeAreaView style={styles.safe} edges={["top"]}>
-    <ScrollView refreshControl={<RefreshControl refreshing={feed.isRefetching || rankings.isRefetching} onRefresh={refresh} tintColor={colors.accent} />} contentContainerStyle={styles.content}>
+    <ScrollView refreshControl={<RefreshControl refreshing={feed.isRefetching || rankings.isRefetching} onRefresh={refresh} tintColor={colors.accent} />} contentContainerStyle={[styles.content, narrow && { paddingHorizontal: spacing.md }]}>
       <View style={styles.header}>
         <View style={styles.heroIcon}><Ionicons name="water" size={22} color={colors.accent} /></View>
         <View style={styles.flex}><Text style={styles.eyebrow}>TERMINAL DEX · ONCHAIN INTELLIGENCE</Text><Text accessibilityRole="header" style={styles.title}>{t("whales")}</Text><Text style={styles.subtitle}>{t("whaleObjective")}</Text></View>
@@ -68,10 +70,10 @@ export default function WhalesScreen() {
       {allEvents.length ? <>
         <View style={styles.justInHead}><View><Text style={styles.justInTitle}>{t("whaleJustIn")}</Text><Text style={styles.justInHint}>{t("whaleJustInHint")}</Text></View><View style={styles.pulse}><View style={[styles.dot, historical && styles.stale]} /><Text style={styles.pulseText}>{allEvents.length} {t(historical ? "historicalEvidence" : "whaleMode_live").toUpperCase()}</Text></View></View>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.justInRow}>{allEvents.slice(0, 5).map((item) => <JustInCard key={item.id} item={item} onOpen={() => router.push({ pathname: "/token/[address]", params: { address: item.tokenAddress } })} />)}</ScrollView>
-        <View style={styles.kpis}><Kpi label={t("whaleTrackedWindow")} value={String(allEvents.length)} /><Kpi label={t("whaleBuyVolume")} value={compactUsd(totals.buys)} positive /><Kpi label={t("whaleNetFlow")} value={`${totals.buys - totals.sells >= 0 ? "+" : ""}${compactUsd(totals.buys - totals.sells)}`} positive={totals.buys >= totals.sells} negative={totals.buys < totals.sells} /></View>
+        <View style={[styles.kpis, narrow && { flexWrap: "wrap" }]}><Kpi label={t("whaleTrackedWindow")} value={String(allEvents.length)} /><Kpi label={t("whaleBuyVolume")} value={compactUsd(totals.buys)} positive /><Kpi label={t("whaleNetFlow")} value={`${totals.buys - totals.sells >= 0 ? "+" : ""}${compactUsd(totals.buys - totals.sells)}`} positive={totals.buys >= totals.sells} negative={totals.buys < totals.sells} /></View>
         <MarketPulse pulse={pulse} historical={Boolean(historical)} />
       </> : null}
-      <View accessibilityRole="tablist" style={styles.tabs}>{modes.map((item) => <Pressable key={item} accessibilityRole="tab" accessibilityState={{ selected: mode === item }} accessibilityLabel={t("selectWhaleView", { view: t(`whaleMode_${item}`) })} onPress={() => setMode(item)} style={[styles.tab, mode === item && styles.tabActive]}><Text style={[styles.tabText, mode === item && styles.tabTextActive]}>{t(`whaleMode_${item}`)}</Text></Pressable>)}</View>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} accessibilityRole="tablist" style={{ marginVertical: spacing.lg }} contentContainerStyle={[styles.tabs, { marginVertical: 0 }]}>{modes.map((item) => <Pressable key={item} accessibilityRole="tab" accessibilityState={{ selected: mode === item }} accessibilityLabel={t("selectWhaleView", { view: t(`whaleMode_${item}`) })} onPress={() => setMode(item)} style={[styles.tab, { minWidth: 96, flex: 0 }, mode === item && styles.tabActive]}><Text style={[styles.tabText, mode === item && styles.tabTextActive]}>{t(`whaleMode_${item}`)}</Text></Pressable>)}</ScrollView>
       <Text accessibilityRole="summary" style={styles.boundary}>{t("whaleEvidenceBoundary")}</Text>
       {preferencesError ? <Text accessibilityRole="alert" style={styles.preferenceError}>{t("whalePreferencesSaveFailed")}</Text> : null}
       {mode === "live" ? <WhaleControls direction={direction} minimumUsd={minimumUsd} sort={sort} onDirection={setDirection} onMinimum={setMinimumUsd} onSort={setSort} onReset={() => { setDirection("all"); setMinimumUsd(0); setSort("latest"); setQuery(""); }} /> : null}
@@ -94,7 +96,7 @@ function WhaleControls({ direction, minimumUsd, sort, onDirection, onMinimum, on
 
 function Control({ label, accessibilityLabel, active, onPress }: { label: string; accessibilityLabel: string; active: boolean; onPress: () => void }) { return <Pressable accessibilityRole="radio" accessibilityLabel={accessibilityLabel} accessibilityState={{ checked: active }} onPress={onPress} style={[styles.control, active && styles.controlActive]}><Text style={[styles.controlText, active && styles.controlTextActive]}>{label}</Text></Pressable>; }
 
-function Kpi({ label, value, positive, negative }: { label: string; value: string; positive?: boolean; negative?: boolean }) { return <View style={styles.kpi}><Text style={styles.kpiLabel}>{label}</Text><Text style={[styles.kpiValue, positive && styles.good, negative && styles.bad]}>{value}</Text></View>; }
+function Kpi({ label, value, positive, negative }: { label: string; value: string; positive?: boolean; negative?: boolean }) { return <View style={[styles.kpi, { minWidth: 96 }]}><Text style={styles.kpiLabel}>{label}</Text><Text style={[styles.kpiValue, positive && styles.good, negative && styles.bad]}>{value}</Text></View>; }
 
 function MarketPulse({ pulse, historical }: { pulse: WhaleMarketPulse; historical: boolean }) {
   const { t } = useSettings();

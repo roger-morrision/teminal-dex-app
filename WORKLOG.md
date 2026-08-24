@@ -734,3 +734,11 @@
 - Search text is intentionally excluded so entered public wallet addresses or token queries are not retained. The preference key participates in device privacy reset, and write failures are disclosed in the UI rather than silently claiming persistence.
 - Added hostile-storage, incompatible-value, round-trip, and privacy-boundary regression coverage. Next priority: responsive/large-text hardening for dense whale controls and evidence rows; backend-dependent history and alert blockers remain unchanged.
 - Verification passed: strict TypeScript, warning-free `app`/`src` ESLint, all 61 Jest suites / 245 tests, and a fresh Android production export outside the repository. The known Noble hashes warning and recoverable Metro cache fallback remained non-fatal.
+
+## 2026-08-24 — Slice 72: responsive and scalable Whale Watch controls
+
+- Added width-aware compact padding below 380px, wrapping KPI evidence with usable minimum widths, and a horizontally scrollable primary Whale Watch view rail. View labels no longer compete for five equal narrow columns, and the existing controls remain horizontally recoverable.
+- Preserved native dynamic-type scaling by prohibiting `allowFontScaling={false}` and `maxFontSizeMultiplier`; kept primary view targets at least 44px tall and widened each tab to 96px for translated labels.
+- Added Whale Watch to the all-route Pressable/TextInput semantics audit and added static regression checks for scalable text, responsive width handling, and the horizontal tab rail.
+- Verification passed: strict TypeScript, warning-free `app`/`src` ESLint, all 61 Jest suites / 248 tests, and a fresh Android production export outside the repository. The known Noble hashes warning and recoverable Metro cache fallback remained non-fatal.
+- Next priority: physical TalkBack/large-text verification on Android and responsive evidence-card refinement from emulator screenshots. This requires an available interactive emulator/device session; durable whale history and whale-alert delivery still require backend contracts.

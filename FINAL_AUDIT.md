@@ -2,7 +2,7 @@
 
 Audit date: 2026-08-24
 
-Audit maintained through: Slice 71
+Audit maintained through: Slice 72
 
 Backend authority: `C:\Tuan\devApps\TERMINAL_DEX_Intelligent` (source of truth; isolated Slice 43–49 contracts added with explicit write approval)
 
@@ -26,7 +26,7 @@ Completion is intentionally not claimed for requirements that need an absent bac
 | AI and auxiliary intelligence           | Verified                                     | Advisory-only AI, public simulation performance/research plus operational, mutation, lease, and cycle-fencing health, execution-disabled governance, owner-scoped durable GMGN provider discovery history with exact Solana mint/provenance/freshness/quality/confidence verification, bounded four-page Signals history with unique descending rows and fail-closed cursor continuity, heatmap, claims, smart money, wallet tracker, Snipe List, Multicharts, analytics, and GET-only feed operations with provider/channel recovery evidence and refresh deltas. |
 | Localization, privacy, accessibility    | Automated verification passed                | Typed English/Vietnamese copy, reduced motion, telemetry default-off, privacy reset, roles/labels/busy/error/empty/retry semantics, and static all-route control audit.                                                                                                                                                                  |
 | Network and platform hardening          | Automated verification passed                | React Query online/offline policy, bounded retry behavior, ATS/cleartext/backup configuration, deep-link allowlisting, redaction, Expo Doctor, and web/Android/iOS exports.                                                                                                                                                              |
-| Tests and build regression              | Verified                                     | TypeScript, direct ESLint, 61 Jest suites / 245 tests, and the fresh Slice 71 Android production export pass. The prior 25-route web/iOS exports remain the latest unchanged-platform evidence. The Expo Doctor 21/21 result from Slice 60 remains the latest Doctor evidence because its standalone executable was absent in this checkout. Backend alert-history/message-integrity TypeScript, targeted ESLint, Prisma validation/generation, and safety contracts passed. |
+| Tests and build regression              | Verified                                     | TypeScript, direct ESLint, 61 Jest suites / 248 tests, and the fresh Slice 72 Android production export pass. The prior 25-route web/iOS exports remain the latest unchanged-platform evidence. The Expo Doctor 21/21 result from Slice 60 remains the latest Doctor evidence because its standalone executable was absent in this checkout. Backend alert-history/message-integrity TypeScript, targeted ESLint, Prisma validation/generation, and safety contracts passed. |
 
 ## Remaining blockers
 
@@ -51,6 +51,6 @@ No in-scope automated regression was found. Generated export directories were re
 | 4. Detail flows | Token whale chronology and selected wallet dossier are complete; authoritative longer-history chronology remains backend-blocked. |
 | 5. Reference usability | Dense pulse/flow hierarchy is adapted without copied branding, assets, identities, proprietary copy, rewards, or predictive claims. |
 | 6. Recovery states | Live/historical, missing amount, empty, filtered-empty, error, retry and offline boundaries exist; pagination awaits a cursor contract. |
-| 7. Quality/security | Typed localization, bounded schemas, privacy reset and automated accessibility gates pass; physical large-text/screen-reader evidence remains. |
+| 7. Quality/security | Typed localization, bounded schemas, privacy reset, scalable Whale Watch text, narrow-width recovery, and automated accessibility gates pass; physical large-text/screen-reader evidence remains. |
 | 8. Platforms | Web/Android/iOS export baseline and Android emulator deployment exist; physical Android/iOS development-build certification remains external. |
 | 9. Tests/release | Deterministic pulse coverage is added; the current run must pass TypeScript, lint, full Jest and Android export before commit. |

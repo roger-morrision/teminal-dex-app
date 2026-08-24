@@ -68,4 +68,18 @@ describe("primary and detail dynamic states", () => {
     await screen.rerender(<DiscoverState message="No evidence" action="Retry" />);
     expect(screen.queryByLabelText("Retry")).toBeNull();
   });
+
+  it("guards Portfolio recovery and omits inert actions", async () => {
+    const retry = jest.fn();
+    const screen = await render(
+      <PortfolioState error text="Provider failed" action="Retry" actionBusy onAction={retry} />,
+    );
+    const button = screen.getByLabelText("Retry");
+    expect(button.props.accessibilityState).toEqual({ disabled: true, busy: true });
+    await fireEvent.press(button);
+    expect(retry).not.toHaveBeenCalled();
+
+    await screen.rerender(<PortfolioState text="No holdings" action="Retry" />);
+    expect(screen.queryByLabelText("Retry")).toBeNull();
+  });
 });

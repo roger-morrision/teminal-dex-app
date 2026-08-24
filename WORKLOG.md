@@ -980,6 +980,13 @@
 - Launch filters, lane ranking, quote-review handoff, backend contracts and transaction safety boundaries are unchanged.
 - Strict TypeScript, focused ESLint and 4 Trenches/state/accessibility suites with 40 tests passed.
 
+## 2026-08-25 — Slice 106: guarded Portfolio recovery
+
+- Continued the primary-flow recovery review into Portfolio. Analytics retry remained enabled during refetch, and the generic state converted missing action handlers into silent no-op buttons.
+- Routed refetch state through the existing accessible Action busy/disabled behavior and now render recovery only when both label and executable handler exist.
+- Holdings, allocation, risk, PnL provenance, ownership boundaries and backend contracts are unchanged.
+- Strict TypeScript, focused ESLint and 3 Portfolio/watchlist/accessibility suites with 38 tests passed.
+
 ## 2026-08-24 — Slice 100: truthful Whale wallet navigation
 
 - Audited the non-empty wallet-ranking flow and found that the aggregate “Open Wallet Intelligence” footer silently routed to the first ranked address, duplicating row-detail behavior.

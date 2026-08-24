@@ -259,6 +259,7 @@ export default function PortfolioScreen() {
                 error
                 text={analytics.error.message}
                 action={t("retry")}
+                actionBusy={analytics.isFetching}
                 onAction={() => analytics.refetch()}
               />
             ) : analytics.data ? (
@@ -419,12 +420,14 @@ export function State({
   error,
   text,
   action,
+  actionBusy = false,
   onAction,
 }: {
   loading?: boolean;
   error?: boolean;
   text: string;
   action?: string;
+  actionBusy?: boolean;
   onAction?: () => void;
 }) {
   return (
@@ -437,8 +440,8 @@ export function State({
     >
       {loading ? <ActivityIndicator color={colors.accent} /> : null}
       <Text style={styles.hint}>{text}</Text>
-      {action ? (
-        <Action label={action} onPress={onAction ?? (() => undefined)} />
+      {action && onAction ? (
+        <Action label={action} onPress={onAction} disabled={actionBusy} />
       ) : null}
     </View>
   );

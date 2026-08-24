@@ -72,6 +72,18 @@ export function aggregateWhaleActivity(events: TrackNotification[]): WhaleFlow[]
 export const whaleFlowByToken = (events: TrackNotification[]) =>
   new Map(aggregateWhaleActivity(events).map((flow) => [flow.tokenAddress, flow]));
 
+export const whaleActivityForToken = (
+  events: TrackNotification[],
+  tokenAddress: string,
+) =>
+  events
+    .filter(isWhaleActivity)
+    .filter((event) => event.tokenAddress === tokenAddress)
+    .sort(
+      (left, right) =>
+        right.observedAt - left.observedAt || left.id.localeCompare(right.id),
+    );
+
 export type WhaleEventDirection = "all" | "buy" | "sell";
 export type WhaleEventSort = "latest" | "largest";
 

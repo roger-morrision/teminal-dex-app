@@ -1,5 +1,5 @@
 import type { TrackNotification } from "@/api/schema";
-import { aggregateWhaleActivity, filterWhaleEvents, isWhaleActivity } from "@/lib/whale-activity";
+import { aggregateWhaleActivity, filterWhaleEvents, isWhaleActivity, whaleActivityForToken } from "@/lib/whale-activity";
 
 const event = (input: Partial<TrackNotification> & Pick<TrackNotification, "id" | "type">): TrackNotification => ({
   title: "Observed activity",
@@ -60,5 +60,16 @@ describe("whale activity aggregation", () => {
     expect(filterWhaleEvents(rows, { ...input, query: "bonk" }).map((item) => item.id)).toEqual(["token"]);
     expect(filterWhaleEvents(rows, { ...input, query: "knownwhale" }).map((item) => item.id)).toEqual(["wallet"]);
     expect(rows).toHaveLength(2);
+  });
+
+  it("builds a strict newest-first token whale chronology", () => {
+    const otherAddress = "Vote111111111111111111111111111111111111111";
+    const rows = [
+      event({ id: "older", type: "whale_buy", observedAt: 10 }),
+      event({ id: "ignored-kind", type: "surge", observedAt: 40 }),
+      event({ id: "other-token", type: "smart_buy", tokenAddress: otherAddress, observedAt: 30 }),
+      event({ id: "newer", type: "whale_sell", observedAt: 20 }),
+    ];
+    expect(whaleActivityForToken(rows, rows[0]!.tokenAddress).map((item) => item.id)).toEqual(["newer", "older"]);
   });
 });

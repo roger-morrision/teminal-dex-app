@@ -710,3 +710,12 @@
 - Integrated the backend's bounded historical-fallback metadata. Historical smart-money or whale evidence now uses an amber status and `HISTORICAL` label instead of being mislabeled live; current and total evidence counts remain distinct.
 - Extended the response schema for current counts and the evidence window, added deterministic search regressions, and passed 43 focused schema/whale tests, strict TypeScript, and Expo ESLint.
 - Next priority: apply the gallery's token-detail validation hierarchy to smart-money flow, holder classifications, and live evidence chronology without introducing execution or predictive claims.
+
+## 2026-08-24 — Slice 69: token and wallet whale proof drill-down
+
+- Closed the remaining proof-navigation gap identified during the Dexape interaction study without copying its branding, assets, text, identities, paywall, or predictive claims.
+- Added a Whale Activity tab to token detail. It filters the existing validated bounded feed by exact mint, renders a deterministic newest-first chronology, summarizes observed net flow, buy/sell totals and unique wallets, and labels historical fallback evidence truthfully.
+- Added explicit empty, loading, failure and limitation states. Missing history is never inferred, and the panel grants no prediction, advice, signing, submission, or execution authority.
+- Ranked whale-wallet rows now deep-link the selected exact public address into Wallet Intelligence. The dossier validates the route address before using it and keeps its existing watch-only boundary.
+- Added deterministic token-chronology regression coverage and English/Vietnamese copy. Strict TypeScript, warning-free `app`/`src` ESLint, all 60 Jest suites / 242 tests, and a fresh Android production export passed. The known upstream Noble hashes fallback warning remained unchanged and non-fatal; export output stayed outside the repository.
+- Next priority: add evidence-backed whale market-pulse analytics from existing bounded records, then revisit authoritative historical whale pagination and alert contracts if the backend exposes them.

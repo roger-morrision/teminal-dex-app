@@ -32,13 +32,15 @@ import { colors, spacing } from "@/theme";
 
 type Tab = "smart" | "tracker";
 export default function WalletIntelligenceScreen() {
-  const params = useLocalSearchParams<{ tab?: string }>();
+  const params = useLocalSearchParams<{ tab?: string; address?: string }>();
   const router = useRouter();
   const { t } = useSettings();
   const [tab, setTab] = useState<Tab>(
     params.tab === "tracker" ? "tracker" : "smart",
   );
-  const [selected, setSelected] = useState("");
+  const [selected, setSelected] = useState(
+    params.address && isSolanaAddress(params.address) ? params.address : "",
+  );
   const rankings = useQuery({
     queryKey: ["top-traders", "30D"],
     queryFn: ({ signal }) => fetchTopTraders("30D", signal),

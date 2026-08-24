@@ -11,7 +11,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { fetchOhlcv, fetchTokenDetail, fetchTokenPanel } from "@/api/client";
+import { fetchOhlcv, fetchTokenDetail, fetchTokenPanel, fetchTrackFeed } from "@/api/client";
 import {
   tokenSchema,
   type MarketToken,
@@ -19,18 +19,21 @@ import {
   type SecurityHistoryResponse,
   type SmartMoneyResponse,
   type SnipersResponse,
+  type TrackFeedResponse,
   type TokenDetailResponse,
 } from "@/api/schema";
 import { PriceChart } from "@/components/PriceChart";
 import { compactUsd, signedPercent, tokenPrice } from "@/lib/format";
+import { aggregateWhaleActivity, whaleActivityForToken } from "@/lib/whale-activity";
 import { colors, spacing } from "@/theme";
 import { isSolanaAddress, parseBoundedJson } from "@/security/input";
 import { useSettings } from "@/settings/SettingsProvider";
 
 type Tab =
-  "overview" | "chart" | "holders" | "trades" | "risk" | "intel" | "pairs";
+  "overview" | "whales" | "chart" | "holders" | "trades" | "risk" | "intel" | "pairs";
 const tabs = [
   { id: "overview", key: "overview" },
+  { id: "whales", key: "whaleActivity" },
   { id: "chart", key: "chart" },
   { id: "holders", key: "holdersTab" },
   { id: "trades", key: "trades" },
@@ -64,6 +67,11 @@ export default function TokenDetail() {
     queryKey: ["ohlcv", address, timeframe],
     queryFn: ({ signal }) => fetchOhlcv(address, timeframe, signal),
     enabled: validAddress && tab === "chart",
+  });
+  const whaleActivity = useQuery({
+    queryKey: ["whale-activity", "token", address],
+    queryFn: ({ signal }) => fetchTrackFeed(signal),
+    enabled: validAddress && tab === "whales",
   });
   const holders = useQuery({
     queryKey: ["token-panel", address, "holders"],
@@ -229,6 +237,9 @@ export default function TokenDetail() {
             refreshError={detail.isError ? detail.error.message : null}
             onRetry={() => detail.refetch()}
           />
+        ) : null}
+        {tab === "whales" ? (
+          <WhaleEvidencePanel address={address} query={whaleActivity} />
         ) : null}
         {tab === "chart" ? (
           <ChartPanel
@@ -531,6 +542,59 @@ export function SecurityHistoryEvidence({
       })}
       <Limitation text={t("securityHistoryLimitation")} />
     </>
+  );
+}
+
+function WhaleEvidencePanel({
+  address,
+  query,
+}: {
+  address: string;
+  query: UseQueryResult<TrackFeedResponse, Error>;
+}) {
+  const { t } = useSettings();
+  if (query.isLoading) return <PanelState loading message={t("loadingWhaleActivity")} />;
+  if (query.isError) return <PanelState error message={query.error.message} onRetry={() => query.refetch()} />;
+  const events = whaleActivityForToken(query.data?.notifications ?? [], address);
+  const flow = aggregateWhaleActivity(events)[0];
+  const historical = Boolean(
+    query.data?.evidenceWindow?.smartMoneyHistorical ||
+      query.data?.evidenceWindow?.whaleTransactionsHistorical,
+  );
+  return (
+    <View style={styles.panel}>
+      <Text style={styles.sectionTitle}>{t("tokenWhaleChronology")}</Text>
+      <Text style={styles.body}>
+        {t("tokenWhaleChronologyBoundary", {
+          scope: historical ? t("historicalEvidence") : t("whaleMode_live"),
+        })}
+      </Text>
+      {flow ? (
+        <View style={styles.grid}>
+          <Metric label={t("whaleNetFlow")} value={`${flow.netUsd >= 0 ? "+" : ""}${compactUsd(flow.netUsd)}`} />
+          <Metric label={t("uniqueWallets")} value={String(flow.uniqueWallets)} />
+          <Metric label={t("whaleBuys")} value={`${flow.buys} · ${compactUsd(flow.buyUsd)}`} />
+          <Metric label={t("whaleSells")} value={`${flow.sells} · ${compactUsd(flow.sellUsd)}`} />
+        </View>
+      ) : null}
+      {!events.length ? (
+        <PanelState message={t("noTokenWhaleEvidence")} />
+      ) : (
+        events.map((event) => {
+          const buy = event.type === "whale_buy" || event.type === "smart_buy";
+          return (
+            <DataRow
+              key={event.id}
+              title={`${t(buy ? "whaleBuy" : "whaleSell")} · ${event.amountUsd == null ? "—" : compactUsd(event.amountUsd)}`}
+              value={new Date(event.observedAt).toLocaleString()}
+              detail={`${event.wallet ? short(event.wallet) : t("classifiedWallet")} · ${event.source} · ${event.dataQuality}`}
+              tone={buy ? "positive" : "negative"}
+            />
+          );
+        })
+      )}
+      <Limitation text={t("tokenWhaleEvidenceLimitation")} />
+    </View>
   );
 }
 

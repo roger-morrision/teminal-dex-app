@@ -1002,6 +1002,13 @@
 - Alert CRUD, evidence schemas, ownership gates, delivery/evaluation separation, provider records and transaction-safety boundaries are unchanged.
 - Strict TypeScript, focused ESLint and 4 alert/state/accessibility suites with 45 tests passed.
 
+## 2026-08-25 — Slice 109: guarded Track recovery
+
+- Advanced the recovery audit to Track and found feed, social-radar, retained-history, and owner-delivery retry buttons remained enabled during active refetches.
+- Routed each query's active recovery state into the shared localized retry control, which now announces busy/disabled state, blocks repeated presses, and visually communicates its disabled state.
+- Feed pagination remains separately guarded; provider evidence, filters, exact-mint navigation, delivery boundaries, schemas, and backend contracts are unchanged.
+- Strict TypeScript, focused ESLint and 4 Track/state/accessibility suites with 43 tests passed.
+
 ## 2026-08-24 — Slice 100: truthful Whale wallet navigation
 
 - Audited the non-empty wallet-ranking flow and found that the aggregate “Open Wallet Intelligence” footer silently routed to the first ranked address, duplicating row-detail behavior.

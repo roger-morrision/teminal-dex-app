@@ -121,6 +121,7 @@ export default function TrackScreen() {
           <State
             error
             text={feed.error?.message ?? t("trackUnavailable")}
+            retrying={feed.isFetching}
             onRetry={() => feed.refetch()}
           />
         ) : (
@@ -156,7 +157,7 @@ export default function TrackScreen() {
               social.isLoading ? (
                 <State loading text={t("loadingSocialTrack")} />
               ) : social.isError || !social.data ? (
-                <State error text={social.error?.message ?? t("socialTrackUnavailable")} onRetry={() => social.refetch()} />
+                <State error text={social.error?.message ?? t("socialTrackUnavailable")} retrying={social.isFetching} onRetry={() => social.refetch()} />
               ) : social.data.data.trends.length ? (
                 <>
                   {social.data.data.trends.map((item) => (
@@ -191,7 +192,7 @@ export default function TrackScreen() {
             {history.isLoading ? (
               <State loading text={t("loadingFeedHistory")} />
             ) : history.isError || !history.data ? (
-              <State error text={history.error?.message ?? t("feedHistoryUnavailable")} onRetry={() => history.refetch()} />
+              <State error text={history.error?.message ?? t("feedHistoryUnavailable")} retrying={history.isFetching && !history.isFetchingNextPage} onRetry={() => history.refetch()} />
             ) : history.data.pages.flatMap((page) => page.events).length ? (
               <>
                 {history.data.pages.flatMap((page) => page.events).slice(0, 200).map((item) => (
@@ -218,6 +219,7 @@ export default function TrackScreen() {
           <State
             error
             text={deliveries.error?.message ?? t("deliveryUnavailable")}
+            retrying={deliveries.isFetching}
             onRetry={() => deliveries.refetch()}
           />
         ) : deliveries.data.data.length ? (
@@ -354,11 +356,13 @@ export function State({
   loading,
   error,
   text,
+  retrying = false,
   onRetry,
 }: {
   loading?: boolean;
   error?: boolean;
   text: string;
+  retrying?: boolean;
   onRetry?: () => void;
 }) {
   const { t } = useSettings();
@@ -375,8 +379,10 @@ export function State({
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={t("retryTrack")}
+          accessibilityState={{ busy: retrying, disabled: retrying }}
+          disabled={retrying}
           onPress={onRetry}
-          style={styles.retry}
+          style={[styles.retry, retrying && styles.disabled]}
         >
           <Text style={styles.retryText}>{t("retry")}</Text>
         </Pressable>
@@ -518,5 +524,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  disabled: { opacity: 0.55 },
   retryText: { color: colors.accent, fontWeight: "800" },
 });

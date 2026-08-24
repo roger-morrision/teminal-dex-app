@@ -1,4 +1,4 @@
-import { render } from "@testing-library/react-native";
+import { fireEvent, render } from "@testing-library/react-native";
 import { State as AiState } from "../../app/ai";
 import { State as CopyTradeState } from "../../app/copytrade";
 import { State as MarketIntelligenceState } from "../../app/market-intelligence";
@@ -37,4 +37,17 @@ describe.each(states)("%s dynamic state", (_name, State) => {
       screen.getByRole("summary").props.accessibilityState,
     ).toBeUndefined();
   });
+});
+
+it("guards Track recovery while refetching", async () => {
+  const retry = jest.fn();
+  const screen = await render(
+    <SettingsProvider>
+      <TrackState error text="Provider failed" retrying onRetry={retry} />
+    </SettingsProvider>,
+  );
+  const button = screen.getByLabelText("Retry tracking evidence");
+  expect(button.props.accessibilityState).toEqual({ busy: true, disabled: true });
+  await fireEvent.press(button);
+  expect(retry).not.toHaveBeenCalled();
 });

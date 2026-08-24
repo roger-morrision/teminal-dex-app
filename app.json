@@ -16,7 +16,8 @@
         "expo-local-authentication",
         { "faceIDPermission": "Allow Terminal DEX to re-authenticate before showing verified wallet data." }
       ],
-      "@preeternal/react-native-cookie-manager"
+      "@preeternal/react-native-cookie-manager",
+      "expo-splash-screen"
     ],
     "ios": {
       "supportsTablet": true,

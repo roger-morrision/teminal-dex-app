@@ -184,6 +184,9 @@ const en = {
   retry: "Retry",
   watchlistEmpty: "Your watchlist is empty",
   noMatchingTokens: "No matching tokens",
+  providerFeedEmptyTitle: "No validated provider rows",
+  providerFeedEmpty: "The backend source {source} returned no validated tokens for this market window. Retry or choose another view.",
+  searchEmptyHint: "No exact token identity matched this search. Clear it or try a mint address.",
   watchlistHint: "Star tokens from any Discovery list to keep them here.",
   watchlistMarketEvidence: "{source} · {quality} · observed {freshness}",
   watchlistAlertsVerify:
@@ -1212,6 +1215,9 @@ const vi: { [K in TranslationKey]: string } = {
   retry: "Thử lại",
   watchlistEmpty: "Danh sách theo dõi đang trống",
   noMatchingTokens: "Không có token phù hợp",
+  providerFeedEmptyTitle: "Không có hàng dữ liệu nhà cung cấp hợp lệ",
+  providerFeedEmpty: "Nguồn backend {source} không trả về token hợp lệ trong khung thị trường này. Hãy thử lại hoặc chọn chế độ khác.",
+  searchEmptyHint: "Không có danh tính token chính xác phù hợp. Hãy xóa tìm kiếm hoặc thử địa chỉ mint.",
   watchlistHint: "Đánh dấu token từ danh sách Khám phá để lưu tại đây.",
   watchlistMarketEvidence: "{source} · {quality} · quan sát {freshness}",
   watchlistAlertsVerify:

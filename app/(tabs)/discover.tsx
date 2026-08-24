@@ -451,11 +451,21 @@ export default function DiscoverScreen() {
               title={
                 mode === "watchlist"
                   ? t("watchlistEmpty")
-                  : t("noMatchingTokens")
+                  : debouncedSearch.length >= 2 || activeFilterCount > 0
+                    ? t("noMatchingTokens")
+                    : t("providerFeedEmptyTitle")
               }
               message={
-                mode === "watchlist" ? t("watchlistHint") : t("filtersHint")
+                mode === "watchlist"
+                  ? t("watchlistHint")
+                  : debouncedSearch.length >= 2
+                    ? t("searchEmptyHint")
+                    : activeFilterCount > 0
+                      ? t("filtersHint")
+                      : t("providerFeedEmpty", { source: firstPage?.source ?? t("providerUnavailable") })
               }
+              action={activeFilterCount > 0 ? t("resetFilters") : debouncedSearch.length >= 2 ? t("clearSearch") : t("retry")}
+              onAction={activeFilterCount > 0 ? resetFilters : debouncedSearch.length >= 2 ? () => setSearch("") : () => current.refetch()}
             />
           )
         }

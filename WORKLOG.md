@@ -849,3 +849,11 @@
 - Added contract coverage proving accepted DexScreener CDN artwork and fail-safe recovery for insecure and hotlink-only media.
 - Verification evidence: strict TypeScript and targeted ESLint passed; full Jest regression passed 62 suites / 259 tests.
 - Next priority: live primary-surface availability diagnostics and explicit provider-specific empty reasons, followed by durable token-specific whale history pagination when an authoritative cursor contract exists.
+
+## 2026-08-24 — Slice 88: actionable Discover availability states
+
+- Split Discover's prior generic empty state into truthful watchlist-empty, search-empty, filtered-empty, provider-empty and request-error outcomes without adding permanent feed chrome.
+- Filtered results now offer a direct reset, search misses offer a clear action, and an unfiltered zero-row provider response names the backend source and offers a retry.
+- Kept provider zero-row responses as accessible summaries rather than false errors; transport/schema failures remain alerts.
+- Verification evidence: strict TypeScript, targeted ESLint and focused state/localization tests passed (2 suites / 6 tests).
+- Next priority: reuse the dense token identity/activity primitive across primary feeds, then audit authoritative whale-history cursor availability.

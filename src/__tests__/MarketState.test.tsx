@@ -32,6 +32,15 @@ describe("primary market dynamic states", () => {
     expect(retry).toHaveBeenCalledTimes(1);
   });
 
+  it("keeps provider-empty recovery actionable without presenting an error", async () => {
+    const retry = jest.fn();
+    const screen = await render(<DiscoverState title="No validated provider rows" message="Provider returned no rows" action="Retry" onAction={retry} />);
+    expect(screen.getByRole("summary")).toBeTruthy();
+    expect(screen.queryByRole("alert")).toBeNull();
+    await fireEvent.press(screen.getByLabelText("Retry"));
+    expect(retry).toHaveBeenCalledTimes(1);
+  });
+
   it("distinguishes Trenches busy, error, and empty evidence", async () => {
     const screen = await render(
       <TrenchesState loading text="Loading launches" />,

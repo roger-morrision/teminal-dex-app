@@ -659,3 +659,12 @@
 - Full TypeScript, repository-wide ESLint, 57 Jest suites / 228 tests, and fresh 25-route web/Android/iOS exports passed. Generated verification output was removed; the known Noble hashes fallback warning remains non-fatal.
 - Final verification passed: strict TypeScript, repository-wide Expo ESLint, 57 Jest suites / 228 tests, Expo Doctor 21/21, and a fresh Android production export. The existing Noble hashes fallback warning remained non-fatal; export output was written outside the repository.
 - Next priority: obtain an authoritative whale-rule mutation contract if product acceptance requires server-side whale event alerts; otherwise preserve the read-only whale objective and continue physical-device verification.
+
+## 2026-08-24 — Slice 64: dense whale-radar interaction hierarchy
+
+- Studied the supplied dark caller-radar screenshot as a visual/product reference only. Retained its useful scan hierarchy—fresh activity strip, compact control rail, KPI summary, dense ranking—and excluded its branding, assets, caller identities, paywall, impact scores, and predictive marketing claims.
+- Added a horizontally scannable Just In window over the five freshest validated whale/smart-money observations, plus bounded event count, observed buy volume, and net-flow KPIs.
+- Added accessible local controls for All/Buy/Sell, $0/$25K/$100K observed minimums, and Latest/Largest sorting. Filtering remains deterministic over the bounded backend window and never claims complete-chain coverage.
+- Added numbered accumulation/distribution flow rankings and deterministic tests proving direction, amount threshold, and sort behavior.
+- Strict TypeScript, Expo ESLint, targeted whale regressions, and the primary static accessibility gate passed before the full regression/export gate.
+- Final verification passed: strict TypeScript, Expo ESLint, 57 Jest suites / 229 tests, Expo Doctor 21/21, and a fresh Android production export outside the repository. The known Noble hashes fallback warning remains non-fatal.

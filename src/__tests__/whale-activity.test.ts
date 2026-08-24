@@ -1,5 +1,5 @@
 import type { TrackNotification } from "@/api/schema";
-import { aggregateWhaleActivity, isWhaleActivity } from "@/lib/whale-activity";
+import { aggregateWhaleActivity, filterWhaleEvents, isWhaleActivity } from "@/lib/whale-activity";
 
 const event = (input: Partial<TrackNotification> & Pick<TrackNotification, "id" | "type">): TrackNotification => ({
   title: "Observed activity",
@@ -31,5 +31,15 @@ describe("whale activity aggregation", () => {
     expect(flows).toHaveLength(1);
     expect(flows[0]).toMatchObject({ buys: 2, sells: 1, buyUsd: 55_000, sellUsd: 20_000, netUsd: 35_000, uniqueWallets: 2, latestObservedAt: 20 });
     expect(flows[0]?.events.map((item) => item.id)).toEqual(["sell", "smart", "buy"]);
+  });
+
+  it("applies direction and amount controls before deterministic sorting", () => {
+    const rows = [
+      event({ id: "small", type: "whale_buy", amountUsd: 5_000, observedAt: 30 }),
+      event({ id: "large", type: "smart_buy", amountUsd: 80_000, observedAt: 10 }),
+      event({ id: "sell", type: "whale_sell", amountUsd: 100_000, observedAt: 20 }),
+    ];
+    expect(filterWhaleEvents(rows, { direction: "buy", minimumUsd: 10_000, sort: "largest" }).map((item) => item.id)).toEqual(["large"]);
+    expect(filterWhaleEvents(rows, { direction: "all", minimumUsd: 0, sort: "latest" }).map((item) => item.id)).toEqual(["small", "sell", "large"]);
   });
 });

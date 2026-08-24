@@ -61,3 +61,25 @@ export function aggregateWhaleActivity(events: TrackNotification[]): WhaleFlow[]
 
 export const whaleFlowByToken = (events: TrackNotification[]) =>
   new Map(aggregateWhaleActivity(events).map((flow) => [flow.tokenAddress, flow]));
+
+export type WhaleEventDirection = "all" | "buy" | "sell";
+export type WhaleEventSort = "latest" | "largest";
+
+export function filterWhaleEvents(
+  events: TrackNotification[],
+  input: { direction: WhaleEventDirection; minimumUsd: number; sort: WhaleEventSort },
+) {
+  return events
+    .filter(isWhaleActivity)
+    .filter((event) => (event.amountUsd ?? 0) >= input.minimumUsd)
+    .filter((event) => {
+      if (input.direction === "all") return true;
+      const sell = event.type === "whale_sell" || event.type === "smart_take_profit";
+      return input.direction === "sell" ? sell : !sell;
+    })
+    .sort((left, right) =>
+      input.sort === "largest"
+        ? (right.amountUsd ?? 0) - (left.amountUsd ?? 0) || right.observedAt - left.observedAt
+        : right.observedAt - left.observedAt,
+    );
+}

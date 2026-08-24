@@ -110,6 +110,7 @@ function WalletRankings({ rows, loading, refreshing, error, onRetry, onOpen }: {
   const { t } = useSettings();
   if (loading) return <State text={t("loadingWalletRankings")} />;
   if (error) return <State error text={error} retrying={refreshing} onRetry={onRetry} />;
+  if (!rows.length) return <State text={t("noSmartWallets")} />;
   return <View>{rows.slice(0, 20).map((item) => <Pressable key={item.address} accessibilityRole="button" accessibilityLabel={t("inspectWallet", { badge: item.badge, address: item.address })} onPress={() => onOpen(item.address)} style={styles.card}><View style={styles.rank}><Text style={styles.rankText}>{item.rank}</Text></View><View style={styles.flex}><Text style={styles.cardTitle}>{item.bestToken || t("unknownToken")} · {item.badge}</Text><Text style={styles.walletText}>{short(item.address)}</Text><Text style={styles.meta}>{item.trades} {t("observedTrades")} · {item.winRate.toFixed(1)}% {t("winRate")}</Text></View><View style={styles.eventContext}><Text style={[styles.amount, { color: item.pnlUsd >= 0 ? colors.positive : colors.negative }]}>{compactUsd(item.pnlUsd)}</Text><Text style={styles.meta}>{t("bestObservedToken")}</Text></View></Pressable>)}<Pressable accessibilityRole="button" accessibilityLabel={t("openWalletIntelligence")} onPress={() => onOpen(rows[0]?.address ?? "")} style={styles.primary}><Text style={styles.primaryText}>{t("openWalletIntelligence")}</Text></Pressable></View>;
 }
 

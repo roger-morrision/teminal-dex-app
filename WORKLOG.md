@@ -937,3 +937,10 @@
 - Added localized, accessible retry actions to both whale-activity and wallet-ranking failures. Recovery controls expose busy/disabled state during refetch and prevent overlapping requests while preserving pull-to-refresh.
 - No market values, wallet identities, transaction authority or synthetic fallback data were added. Next priority remains authoritative whale-history pagination when the backend exposes a stable cursor, followed by physical TalkBack/VoiceOver evidence.
 - Strict TypeScript and focused ESLint passed; 4 focused accessibility/state/whale suites passed with 44 tests.
+
+## 2026-08-24 — Slice 99: safe empty Whale wallet rankings
+
+- Audited the Slice 98 recovery path and found that a successful empty Top Traders response still exposed an enabled wallet-intelligence action bound to an empty address.
+- Replaced that invalid navigation path with the existing localized Smart Money/Whale evidence-empty state. Real ranked addresses retain their exact wallet-detail handoff.
+- No fallback wallet, mock ranking, or inferred identity was introduced. Backend history pagination and physical-device accessibility evidence remain externally blocked.
+- Strict TypeScript, focused ESLint and 2 primary-state/accessibility suites with 34 tests passed.

@@ -750,3 +750,10 @@
 - The warning does not declare the provider value invalid because transaction and market snapshots can have different chronology. It directs users to verify chronology/provider context and grants no predictive or execution authority.
 - Verification passed: strict TypeScript, warning-free `app`/`src` ESLint, all 61 Jest suites / 249 tests, and a fresh Android production export outside the repository. The known Noble hashes warning remained non-fatal.
 - Next priority: repeat emulator verification at large font scale and restore the device setting, then refine any clipped evidence rows. Durable history pagination and whale-alert delivery remain blocked by absent backend contracts.
+
+## 2026-08-24 — Slice 74: development startup recovery
+
+- Reproduced both user-reported Whales failures on `emulator-5554`: an absent `EXPO_PUBLIC_API_URL` stopped all API reads, while Metro rejected the Node `buffer` import in the wallet-session route graph.
+- Added a development-only loopback backend fallback while retaining explicit HTTPS configuration and fail-closed validation for production. Documented the required Android `adb reverse` behavior.
+- Replaced Node Buffer signature encoding with a deterministic React Native-safe byte-to-base64 encoder and added padding/binary regression coverage.
+- Verification passed: strict TypeScript, targeted ESLint, 30 focused client/encoder tests, fresh cache-cleared Android development bundling, native UI inspection, and React Native/Android error logs. Both reported error strings are absent and real bounded Whales evidence renders again.

@@ -118,7 +118,12 @@ export class ApiError extends Error {
 }
 
 export function getApiOrigin(): string {
-  const configured = process.env.EXPO_PUBLIC_API_URL?.trim().replace(/\/$/, "");
+  const configured = (
+    process.env.EXPO_PUBLIC_API_URL?.trim() ||
+    (typeof __DEV__ !== "undefined" && __DEV__
+      ? "http://127.0.0.1:3000"
+      : "")
+  ).replace(/\/$/, "");
   if (!configured)
     throw new ApiError(
       "Backend URL is not configured. Set EXPO_PUBLIC_API_URL.",

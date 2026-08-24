@@ -1,11 +1,11 @@
 import { useMobileWallet } from '@wallet-ui/react-native-kit';
-import { Buffer } from 'buffer';
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { AppState, Platform } from 'react-native';
 import { getApiOrigin } from '@/api/client';
 import { clearVerifiedSession, persistVerifiedSession, requireBiometricUnlock, restoreVerifiedSession, type VerifiedWalletSession } from './session';
 import { secureWalletCache } from './wallet-cache';
 import { clearAppCookies } from './cookie-revocation';
+import { bytesToBase64 } from './base64';
 
 type WalletSessionState = { session: VerifiedWalletSession | null; accountAddress: string | null; locked: boolean; busy: boolean; error: string | null; connectAndVerify: () => Promise<void>; unlock: () => Promise<void>; disconnect: () => Promise<void> };
 const Context = createContext<WalletSessionState | null>(null);
@@ -26,7 +26,7 @@ export function WalletSessionProvider({ children }: { children: ReactNode }) {
       const challenge = await challengeResponse.json() as { nonce?: string; message?: string };
       if (!challenge.nonce || !challenge.message) throw new Error('Backend returned an invalid ownership challenge.');
       const signed = await wallet.signMessages(new TextEncoder().encode(challenge.message));
-      const verifyResponse = await fetch(`${getApiOrigin()}/api/copytrade/identity/verify`, { method: 'POST', credentials: 'include', headers: { Accept: 'application/json', 'Content-Type': 'application/json' }, body: JSON.stringify({ wallet: walletAddress, signature: Buffer.from(signed).toString('base64') }) });
+      const verifyResponse = await fetch(`${getApiOrigin()}/api/copytrade/identity/verify`, { method: 'POST', credentials: 'include', headers: { Accept: 'application/json', 'Content-Type': 'application/json' }, body: JSON.stringify({ wallet: walletAddress, signature: bytesToBase64(signed) }) });
       if (!verifyResponse.ok) throw new Error(`Wallet ownership verification failed (${verifyResponse.status}).`);
       const result = await verifyResponse.json() as { success?: boolean; wallet?: string };
       if (!result.success || result.wallet !== walletAddress) throw new Error('Backend did not confirm the connected wallet.');

@@ -230,6 +230,11 @@ describe("backend client routing", () => {
     expect(getApiOrigin()).toBe("http://10.0.2.2:3000");
   });
 
+  it("uses loopback when development has no explicit backend origin", () => {
+    delete process.env.EXPO_PUBLIC_API_URL;
+    expect(getApiOrigin()).toBe("http://127.0.0.1:3000");
+  });
+
   it("routes token panels and chart timeframes without leaking parameters", async () => {
     const address = "11111111111111111111111111111111";
     jest

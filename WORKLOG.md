@@ -813,3 +813,9 @@
 - When all three market fields are absent, rows now show one localized “Market data unavailable” indicator. Partially available snapshots retain the individual Price/MC/1h chips, so known evidence is never hidden or inferred.
 - Moved visible source and quality provenance onto the same compact evidence line. Wallet/address and age remain in the row header, and the combined accessibility market-snapshot label still exposes all three field states.
 - Android native inspection found 11 event buttons in the rendered hierarchy, eight compact missing-market indicators, and no runtime/configuration error UI. Strict TypeScript, targeted ESLint, and 50 focused tests passed.
+
+## 2026-08-24 — Slice 83: minimal feed status and amount filter
+
+- Removed the long, visually truncated safety sentence from the transaction feed chrome. The visible status is now only the current evidence count/scope and an info icon; its accessibility summary retains the complete provider-only, no-advice and market-change boundaries.
+- Replaced the ambiguous default “Minimum $0” control with localized “Any amount” / “Mọi số tiền” wording while retaining the same persisted zero-threshold behavior and exact accessibility filter context.
+- Android native inspection confirmed `85 HISTORICAL`, `Any amount`, 11 rendered event buttons, row provenance, and no runtime/configuration error UI. Strict TypeScript, targeted ESLint, and 43 focused localization/accessibility/whale tests passed.

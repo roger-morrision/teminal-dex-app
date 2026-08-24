@@ -50,4 +50,15 @@ describe("whale activity aggregation", () => {
     expect(filterWhaleEvents(rows, { direction: "buy", minimumUsd: 10_000, sort: "largest" }).map((item) => item.id)).toEqual(["large"]);
     expect(filterWhaleEvents(rows, { direction: "all", minimumUsd: 0, sort: "latest" }).map((item) => item.id)).toEqual(["small", "sell", "large"]);
   });
+
+  it("searches whale evidence by token, contract, or wallet without changing source data", () => {
+    const rows = [
+      event({ id: "token", type: "whale_buy", tokenSymbol: "BONK" }),
+      event({ id: "wallet", type: "whale_sell", tokenSymbol: "WIF", wallet: "KnownWhaleWallet111111111111111111111111111" }),
+    ];
+    const input = { direction: "all" as const, minimumUsd: 0, sort: "latest" as const };
+    expect(filterWhaleEvents(rows, { ...input, query: "bonk" }).map((item) => item.id)).toEqual(["token"]);
+    expect(filterWhaleEvents(rows, { ...input, query: "knownwhale" }).map((item) => item.id)).toEqual(["wallet"]);
+    expect(rows).toHaveLength(2);
+  });
 });

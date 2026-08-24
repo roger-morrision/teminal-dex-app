@@ -702,3 +702,11 @@
 - Reworked whale wallet rankings to lead with the backend's best observed token, followed by classification and wallet identity, so a row no longer communicates only a generic “Whale” label. The presentation remains historical ranking evidence, not a claim of a current token trade.
 - Added a persistent one-action Reset filters affordance whenever direction, amount, or sorting differs from the default, with localized English/Vietnamese labels.
 - Strict TypeScript, Expo ESLint, and the whale aggregation/filter regression suite passed.
+
+## 2026-08-24 — Slice 68: searchable whale-watch evidence
+
+- Re-inspected all eight current Play Store gallery screens and retained the useful signal-first patterns: persistent search and chain scope, compact evidence rows, smart-money flow context, and explicit current-versus-historical status. Branding, assets, reward tiers, execution shortcuts, identities, and promotional claims remain excluded.
+- Added accessible token/contract/wallet search to Whale Watch and a truthful Solana scope indicator. Search remains local to the bounded validated backend response and does not imply global chain coverage.
+- Integrated the backend's bounded historical-fallback metadata. Historical smart-money or whale evidence now uses an amber status and `HISTORICAL` label instead of being mislabeled live; current and total evidence counts remain distinct.
+- Extended the response schema for current counts and the evidence window, added deterministic search regressions, and passed 43 focused schema/whale tests, strict TypeScript, and Expo ESLint.
+- Next priority: apply the gallery's token-detail validation hierarchy to smart-money flow, holder classifications, and live evidence chronology without introducing execution or predictive claims.

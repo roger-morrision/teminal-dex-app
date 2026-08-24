@@ -968,6 +968,7 @@ export const trackFeedSchema = z
           .passthrough(),
         smartMoney: z
           .object({
+            currentRecordCount: z.number().int().nonnegative().optional(),
             recordCount: z.number().int().nonnegative(),
             source: z.string(),
             dataQuality: z.string(),
@@ -976,6 +977,7 @@ export const trackFeedSchema = z
           .passthrough(),
         whaleTransactions: z
           .object({
+            currentRecordCount: z.number().int().nonnegative().optional(),
             recordCount: z.number().int().nonnegative(),
             source: z.string(),
             dataQuality: z.string(),
@@ -985,6 +987,15 @@ export const trackFeedSchema = z
         suppressed: z
           .object({ surge: z.number().int().nonnegative() })
           .passthrough(),
+      })
+      .passthrough()
+      .optional(),
+    evidenceWindow: z
+      .object({
+        liveMinutes: z.number().int().positive(),
+        historicalFallbackDays: z.number().int().positive(),
+        smartMoneyHistorical: z.boolean(),
+        whaleTransactionsHistorical: z.boolean(),
       })
       .passthrough()
       .optional(),

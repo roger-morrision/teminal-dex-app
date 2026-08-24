@@ -77,10 +77,15 @@ export type WhaleEventSort = "latest" | "largest";
 
 export function filterWhaleEvents(
   events: TrackNotification[],
-  input: { direction: WhaleEventDirection; minimumUsd: number; sort: WhaleEventSort },
+  input: { direction: WhaleEventDirection; minimumUsd: number; sort: WhaleEventSort; query?: string },
 ) {
+  const query = input.query?.trim().toLowerCase() ?? "";
   return events
     .filter(isWhaleActivity)
+    .filter((event) =>
+      !query || [event.tokenSymbol, event.tokenAddress, event.wallet]
+        .some((value) => value?.toLowerCase().includes(query)),
+    )
     .filter((event) => (event.amountUsd ?? 0) >= input.minimumUsd)
     .filter((event) => {
       if (input.direction === "all") return true;

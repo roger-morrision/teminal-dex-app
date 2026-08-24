@@ -905,3 +905,11 @@
 - Added strict devnet-only run evidence and combined physical-platform certification contracts. They require valid chronology, unique artifacts, actual Android wallet evidence, explicit iOS Wallet Adapter unavailability and literal mainnet/CopyTrade disabled flags.
 - Added the Phase 98–109 ledger with exact backend, organizational, device, wallet and network closure evidence. No live signing, submission, mainnet or CopyTrade authority was introduced.
 - Strict TypeScript, repository-wide ESLint, 67 Jest suites / 271 tests, and fresh 25-route web/Android/iOS exports passed. Generated verification output was removed; the known Noble hashes fallback warning remains non-fatal.
+
+## 2026-08-24 — Slice 95: phases 110–111 production-promotion gates
+
+- Added strict mainnet-canary evidence requiring five distinct approval roles, approval identity/hash, allowlisted wallet/mints, bounded value/fee/loss/expiry limits, unique transaction and artifact evidence, reconciliation, rollback and kill-switch proof. Limit or chronology violations fail closed.
+- Added an ordered CopyTrade promotion state machine from shadow through paper and restricted canary to limited production, with rollback from every stage and invalid stage skipping rejected.
+- Added CopyTrade promotion readiness requiring proven managed devnet and mainnet canary, at least 99% shadow coverage, complete reconciliation, duplicate prevention, outage pause, owner/global kill switches, rollback and owner/production approvals.
+- Added Phase 110–111 governance and ledger. Complete evidence only qualifies an external review; mobile execution and CopyTrade activation authority remain disabled and absent.
+- Strict TypeScript, repository-wide ESLint, 70 Jest suites / 277 tests, and fresh 25-route web/Android/iOS exports passed. Generated verification output was removed; the known Noble hashes fallback warning remains non-fatal.

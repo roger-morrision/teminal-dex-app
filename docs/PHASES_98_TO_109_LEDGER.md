@@ -2,6 +2,8 @@
 
 Date: 2026-08-24
 
+The production-promotion continuation is maintained in `PHASES_110_TO_111_LEDGER.md`.
+
 This ledger records code foundations separately from authoritative backend, organizational approval, physical-device, wallet-signature and network evidence. Passing a local evaluator never grants mobile submission, mainnet, or CopyTrade authority.
 
 | Phase | Delivered foundation | Required operational closure |

@@ -2,7 +2,7 @@
 
 Audit date: 2026-08-24
 
-Audit maintained through: Slice 94
+Audit maintained through: Slice 95
 
 Backend authority: `C:\Tuan\devApps\TERMINAL_DEX_Intelligent` (source of truth; isolated Slice 43–49 contracts added with explicit write approval)
 
@@ -26,7 +26,7 @@ Completion is intentionally not claimed for requirements that need an absent bac
 | AI and auxiliary intelligence           | Verified                                     | Advisory-only AI, public simulation performance/research plus operational, mutation, lease, and cycle-fencing health, execution-disabled governance, owner-scoped durable GMGN provider discovery history with exact Solana mint/provenance/freshness/quality/confidence verification, bounded four-page Signals history with unique descending rows and fail-closed cursor continuity, heatmap, claims, smart money, wallet tracker, Snipe List, Multicharts, analytics, and GET-only feed operations with provider/channel recovery evidence and refresh deltas. |
 | Localization, privacy, accessibility    | Automated verification passed                | Typed English/Vietnamese copy, reduced motion, telemetry default-off, privacy reset, roles/labels/busy/error/empty/retry semantics, and static all-route control audit.                                                                                                                                                                  |
 | Network and platform hardening          | Automated verification passed                | React Query online/offline policy, bounded retry behavior, ATS/cleartext/backup configuration, deep-link allowlisting, redaction, native-safe wallet-signature encoding, Expo Doctor, and web/Android/iOS exports. Slice 93 rebuilt and installed the development client on the API 37 emulator, repaired its required splash dependency, and verified Whales/Discover rendering, tab navigation, truthful backend-offline recovery, and clean fatal-error log inspection. |
-| Tests and build regression              | Verified                                     | TypeScript, direct ESLint, 67 Jest suites / 271 tests, and fresh 25-route web/Android/iOS exports pass through Slice 94. The Slice 93 Android debug assemble/install/runtime check also passes. The Expo Doctor 21/21 result from Slice 60 remains the latest Doctor evidence because its standalone executable was absent in this checkout. |
+| Tests and build regression              | Verified                                     | TypeScript, direct ESLint, 70 Jest suites / 277 tests, and fresh 25-route web/Android/iOS exports pass through Slice 95. The Slice 93 Android debug assemble/install/runtime check also passes. The Expo Doctor 21/21 result from Slice 60 remains the latest Doctor evidence because its standalone executable was absent in this checkout. |
 
 ## Remaining blockers
 

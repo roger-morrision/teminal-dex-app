@@ -9,6 +9,7 @@ import {
   WATCHLIST_SNAPSHOTS_KEY,
   WATCHLIST_WINDOW_KEY,
 } from "@/store/discovery";
+import { WHALE_WATCH_PREFERENCES_KEY } from "@/store/whale-watch";
 
 export const LOCAL_DATA_KEYS = [
   SETTINGS_STORAGE_KEY,
@@ -22,6 +23,7 @@ export const LOCAL_DATA_KEYS = [
   TRACK_FILTER_KEY,
   MONITOR_TABLE_KEY,
   COPYTRADE_PREVIEW_KEY,
+  WHALE_WATCH_PREFERENCES_KEY,
 ] as const;
 export async function clearLocalAppData() {
   await AsyncStorage.multiRemove([...LOCAL_DATA_KEYS]);

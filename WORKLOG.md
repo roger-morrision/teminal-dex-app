@@ -727,3 +727,10 @@
 - Added a dense Whales summary panel with explicit live/historical scope, incomplete-chain disclosure, USD evidence coverage, and no predictive score or execution affordance. Added English/Vietnamese copy and focused regression coverage.
 - Verification passed: strict TypeScript, warning-free `app`/`src` ESLint, all 60 Jest suites / 243 tests, and a fresh Android production export outside the repository. The known upstream Noble hashes fallback warning remained non-fatal.
 - Next ranked dependency-ready enhancement: persist non-secret Whale Watch filters and selected view; then add responsive and large-text layout verification. Backend-dependent priorities remain durable whale history pagination and authoritative whale-alert evaluation/delivery.
+
+## 2026-08-24 — Slice 71: durable privacy-bounded Whale Watch preferences
+
+- Persisted the selected Whale Watch view plus direction, observed minimum amount, and latest/largest sorting using a dedicated versioned AsyncStorage contract. Loading fails closed to defaults and accepts only the exact supported allowlists.
+- Search text is intentionally excluded so entered public wallet addresses or token queries are not retained. The preference key participates in device privacy reset, and write failures are disclosed in the UI rather than silently claiming persistence.
+- Added hostile-storage, incompatible-value, round-trip, and privacy-boundary regression coverage. Next priority: responsive/large-text hardening for dense whale controls and evidence rows; backend-dependent history and alert blockers remain unchanged.
+- Verification passed: strict TypeScript, warning-free `app`/`src` ESLint, all 61 Jest suites / 245 tests, and a fresh Android production export outside the repository. The known Noble hashes warning and recoverable Metro cache fallback remained non-fatal.

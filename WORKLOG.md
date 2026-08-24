@@ -806,3 +806,10 @@
 - Search and Solana scope now start the screen, followed by a compact view rail, one-line evidence boundary, horizontal filters, and dense transaction rows. The full safety meaning remains in the accessible status label and row-level provenance; no data or execution boundary was weakened.
 - Tightened row padding/avatar size and removed the repeated “classified wallet” label while preserving exact wallet/address, age, token, direction, amount, price, market cap, one-hour change, source, quality, and mismatch warning evidence.
 - Android emulator verification displayed seven complete transaction rows in the initial viewport after load, with eight event buttons present in the native hierarchy and no backend/runtime error UI. Strict TypeScript, targeted ESLint, and 50 whale/accessibility/localization tests passed.
+
+## 2026-08-24 — Slice 82: compact missing-market evidence
+
+- Continued the transaction-density review after the dashboard removal. Historical rows with no provider price, market cap, or one-hour change repeated three colored dash chips and consumed attention without adding evidence.
+- When all three market fields are absent, rows now show one localized “Market data unavailable” indicator. Partially available snapshots retain the individual Price/MC/1h chips, so known evidence is never hidden or inferred.
+- Moved visible source and quality provenance onto the same compact evidence line. Wallet/address and age remain in the row header, and the combined accessibility market-snapshot label still exposes all three field states.
+- Android native inspection found 11 event buttons in the rendered hierarchy, eight compact missing-market indicators, and no runtime/configuration error UI. Strict TypeScript, targeted ESLint, and 50 focused tests passed.

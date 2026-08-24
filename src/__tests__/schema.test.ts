@@ -39,6 +39,12 @@ describe("discovery token social evidence", () => {
     const parsed = tokenSchema.parse({ ...token, social: { twitter: "https://x.com/terminal", telegram: "not-a-url", website: "https://terminal.example" } });
     expect(parsed.social).toEqual({ twitter: "https://x.com/terminal", telegram: undefined, website: "https://terminal.example" });
   });
+
+  it("retains direct HTTPS artwork and drops insecure or hotlink-only media", () => {
+    expect(tokenSchema.parse({ ...token, imageUrl: "https://cdn.dexscreener.com/cms/images/token" }).imageUrl).toBe("https://cdn.dexscreener.com/cms/images/token");
+    expect(tokenSchema.parse({ ...token, imageUrl: "http://cdn.example/token.png" }).imageUrl).toBeUndefined();
+    expect(tokenSchema.parse({ ...token, imageUrl: "https://gmgn.ai/external-res/token.webp" }).imageUrl).toBeUndefined();
+  });
 });
 
 describe("swap provider readiness", () => {

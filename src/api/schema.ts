@@ -12,6 +12,18 @@ const MAX_WALLET_HOLDINGS = 500;
 const publicKeyString = z
   .string()
   .refine(isSolanaAddress, "Expected an exact 32-byte Solana address.");
+const safeTokenImageUrl = z.preprocess((value) => {
+  if (typeof value !== "string" || value.length > 2048) return undefined;
+  try {
+    const url = new URL(value);
+    return url.protocol === "https:" && !(
+      (url.hostname === "gmgn.ai" || url.hostname.endsWith(".gmgn.ai")) &&
+      url.pathname.startsWith("/external-res")
+    ) ? value : undefined;
+  } catch {
+    return undefined;
+  }
+}, z.string().url().max(2048).optional());
 
 export const tokenSchema = z
   .object({
@@ -32,7 +44,7 @@ export const tokenSchema = z
     txns5m: transactionCount,
     ageLabel: z.string(),
     ageMinutes: z.number(),
-    imageUrl: z.string().url().optional(),
+    imageUrl: safeTokenImageUrl.optional(),
     source: z.string().optional(),
     dataQuality: z.string().optional(),
     sourceFetchedAt: z.number().optional(),

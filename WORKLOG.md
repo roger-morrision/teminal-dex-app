@@ -840,3 +840,12 @@
 - Improved the dependency-ready path: missing and failed image URLs now recover to address-deterministic colored initials with an explicit accessible “logo unavailable” label. Validated images remain preferred and automatically replace the fallback when supplied.
 - The launchpad badge remains independently overlaid at the avatar's bottom-right, so source identity is preserved without repeating Pump.fun text or presenting fallback initials as real artwork.
 - Android inspection verified 10 explicit logo fallbacks, zero claimed real logos, 10 launchpad badges, 11 token buttons, and no React Native/Android runtime error. Strict TypeScript, targeted ESLint, and 73 row/schema/accessibility tests passed.
+
+## 2026-08-24 — Slice 87: trusted live token artwork boundary
+
+- Re-audited the clean mobile history, requirements, final audit and live Discover artwork dependency after backend commit `65233ee` began enriching bounded trending rows from DexScreener.
+- Hardened the mobile contract to retain only bounded direct HTTPS token artwork while dropping insecure HTTP media and GMGN hotlink-only `/external-res` URLs without rejecting the surrounding real market row.
+- Preserved the existing deterministic, explicitly labeled initials fallback and independent launchpad badge, so missing or rejected artwork never becomes fabricated provider identity and does not reduce feed density.
+- Added contract coverage proving accepted DexScreener CDN artwork and fail-safe recovery for insecure and hotlink-only media.
+- Verification evidence: strict TypeScript and targeted ESLint passed; full Jest regression passed 62 suites / 259 tests.
+- Next priority: live primary-surface availability diagnostics and explicit provider-specific empty reasons, followed by durable token-specific whale history pagination when an authoritative cursor contract exists.

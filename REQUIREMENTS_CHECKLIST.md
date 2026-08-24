@@ -5,7 +5,7 @@ Status legend: `[x]` verified, `[ ]` incomplete, `[~]` intentionally visible but
 ## Foundation and security
 
 - [x] Expo 57 / React Native / Expo Router strict-TypeScript foundation.
-- [x] Dark, dense, high-contrast visual system inspired by supplied references without protected branding or assets.
+- [x] Professional dark, high-contrast visual system uses restrained mint/violet/cyan semantic accents, rounded active navigation, scannable evidence chips and simplified safety panels inspired by supplied references without protected branding or assets.
 - [x] Public backend origin is environment-configured; secrets, native credentials, logs, build output, and local env files are ignored.
 - [x] Development builds safely fall back to loopback when no public backend origin is configured, while production remains HTTPS-only and fail-closed; wallet signature encoding uses a native-safe byte encoder with no Node standard-library dependency.
 - [x] Real responses are runtime-validated; failures never silently become synthetic market data.

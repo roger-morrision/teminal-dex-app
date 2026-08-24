@@ -778,3 +778,10 @@
 - Each full row pairs the classified-wallet boundary and shortened public address with compact elapsed time, then keeps price, market cap, provider 1h price change, source, quality and mismatch warnings in the same evidence card.
 - Added direction badges to token imagery and accessible parent labels while keeping images decorative. No wallet avatar or human alias is fabricated because the backend contract supplies neither.
 - Strict TypeScript, targeted ESLint, 39 focused accessibility/whale tests passed. Native replay remains externally blocked because ADB reports no connected emulator/device.
+
+## 2026-08-24 — Slice 78: professional colorful primary visual system
+
+- Refined the shared dark palette with deeper navy surfaces plus restrained mint, violet and cyan semantic accents. Updated the primary tab bar with rounded active destinations, clearer weight and more comfortable vertical spacing across the app.
+- Simplified Whales scanning: buy/sell cards now use directional edge color, newest cards carry subtle semantic backgrounds, and price/market-cap/1h evidence uses distinct compact chips instead of an undifferentiated metadata sentence.
+- Consolidated two dense evidence disclaimers into one shield-marked evidence panel that preserves all safety meaning while reducing visual noise. No promotional, predictive or execution language was introduced.
+- Strict TypeScript, targeted ESLint and 39 focused accessibility/whale tests passed. Visual emulator verification remains externally blocked because Android reports no device and the SDK exposes no configured AVD.

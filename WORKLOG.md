@@ -686,3 +686,10 @@
 - Added focused regression coverage, then passed the backend-client suite (24 tests), strict TypeScript, and Expo ESLint.
 - Device UI verification passed for Live, Buy filtering, Accumulating, Distributing, Wallet rankings, and Alerts. Wallet rankings rendered real backend evidence; current Live and multi-event flow windows rendered truthful empty states; Alerts explicitly preserved the unsupported whale-rule boundary.
 - Android React Native error logs were empty after the verified flows. Metro, the backend, and the emulator were left running for interactive review.
+
+## 2026-08-24 — Slice 66: truthful whale empty-state recovery
+
+- Diagnosed the reported empty Whale tabs against the running backend: `/api/in-app-notifications` returned current Pump.fun observations but exactly zero whale transactions and zero smart-money events; `/api/signals` returned zero Whale Move records. The 30-day trader ranking endpoint remained populated with 100 indexed wallets.
+- Replaced the ambiguous generic empty state with an explicit provider condition that explains the live evidence gap and links directly to the populated ranked-whale-wallet view. No synthetic activity or ranking-to-transaction relabeling was introduced.
+- Distinguished a truly empty provider window from a user-filtered empty result. Filtered Live results now explain that the selected direction/amount controls removed the rows and provide one-action filter reset.
+- Added localized English and Vietnamese recovery copy. Strict TypeScript, Expo ESLint, and the whale aggregation/filter regression suite passed.

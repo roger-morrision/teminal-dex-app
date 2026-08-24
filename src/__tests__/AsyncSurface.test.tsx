@@ -2,7 +2,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { act, fireEvent, render } from "@testing-library/react-native";
 import { Alert } from "react-native";
 import SettingsScreen, { ResetControl } from "../../app/settings";
-import { QuoteTokenState } from "../../app/trade/[address]";
+import { QuoteTokenState, ReadinessFailure } from "../../app/trade/[address]";
 import { SettingsProvider } from "@/settings/SettingsProvider";
 import { clearLocalAppData } from "@/settings/privacy";
 
@@ -50,6 +50,20 @@ describe("one-off asynchronous surfaces", () => {
         />
       </SettingsProvider>,
     );
+    const button = screen.getByLabelText("Retry");
+    expect(button.props.accessibilityState).toEqual({ busy: true, disabled: true });
+    await fireEvent.press(button);
+    expect(retry).not.toHaveBeenCalled();
+  });
+
+  it("guards provider readiness recovery while refetching", async () => {
+    const retry = jest.fn();
+    const screen = await render(
+      <SettingsProvider>
+        <ReadinessFailure retrying onRetry={retry} />
+      </SettingsProvider>,
+    );
+    expect(screen.getByRole("alert")).toBeTruthy();
     const button = screen.getByLabelText("Retry");
     expect(button.props.accessibilityState).toEqual({ busy: true, disabled: true });
     await fireEvent.press(button);

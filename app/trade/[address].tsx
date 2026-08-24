@@ -140,7 +140,7 @@ export default function TradeReviewScreen() {
             {readinessState.stale ? <Text accessibilityRole="alert" style={styles.failureGuidance}>{t("providerReadinessStale")}</Text> : null}
             {readinessState.blockers.map((check) => <Text key={check.id} style={styles.checkText}>• {t("providerReadinessBlocker", { category: t(`readinessCategory_${check.category}`), evidence: check.evidence })}</Text>)}
           </View>
-        ) : readiness.error ? <Text accessibilityRole="alert" style={styles.flowError}>{t("providerReadinessUnavailable")}</Text> : null}
+        ) : readiness.error ? <ReadinessFailure retrying={readiness.isFetching} onRetry={() => readiness.refetch()} /> : null}
         {token ? (
           <View style={styles.token}>
             <View style={styles.avatar}>
@@ -432,6 +432,36 @@ export function QuoteTokenState({
   );
 }
 
+export function ReadinessFailure({
+  retrying = false,
+  onRetry,
+}: {
+  retrying?: boolean;
+  onRetry: () => void;
+}) {
+  const { t } = useSettings();
+  return (
+    <View
+      accessible
+      accessibilityRole="alert"
+      accessibilityLiveRegion="polite"
+      style={styles.readinessFailure}
+    >
+      <Text style={styles.flowError}>{t("providerReadinessUnavailable")}</Text>
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel={t("retry")}
+        accessibilityState={{ busy: retrying, disabled: retrying }}
+        disabled={retrying}
+        onPress={onRetry}
+        style={[styles.retry, retrying && styles.disabled]}
+      >
+        <Text style={styles.retryText}>{t("retry")}</Text>
+      </Pressable>
+    </View>
+  );
+}
+
 function QuoteRow({
   label,
   value,
@@ -607,6 +637,7 @@ const styles = StyleSheet.create({
   simulationCard: { marginTop: spacing.lg, padding: spacing.lg, borderRadius: 14, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.accentDim, gap: spacing.sm },
   policyTrace: { marginTop: spacing.md, paddingTop: spacing.md, borderTopWidth: 1, borderTopColor: colors.border, gap: spacing.sm },
   readinessCard: { marginTop: spacing.lg, padding: spacing.lg, borderRadius: 14, backgroundColor: "#2d2715", gap: spacing.sm },
+  readinessFailure: { marginTop: spacing.md, alignItems: "center", gap: spacing.sm },
   confirmButton: { minHeight: 48, alignItems: "center", justifyContent: "center", borderRadius: 12, backgroundColor: colors.warning, marginTop: spacing.lg },
   confirmedCard: { flexDirection: "row", gap: spacing.md, marginTop: spacing.lg, padding: spacing.lg, borderRadius: 14, backgroundColor: colors.accentDim },
   confirmedTitle: { color: colors.accent, fontSize: 13, fontWeight: "900" },

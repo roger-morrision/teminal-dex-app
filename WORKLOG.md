@@ -1030,6 +1030,13 @@
 - Quote validation, expiry, unsigned build, inspection, Helius simulation, explicit intent confirmation, replay protection, signing lock and submission absence are unchanged.
 - Strict TypeScript, focused ESLint and 4 quote/safety/accessibility suites with 40 tests passed.
 
+## 2026-08-25 — Slice 113: recover quote provider readiness
+
+- Continued the quote prerequisite audit and found unavailable provider-readiness evidence had an execution-blocking alert but no way to refresh that safety status without remounting.
+- Added a polite accessible alert with a localized, busy/disabled retry bound only to the readiness query, preventing overlapping readiness requests while retaining the execution-blocked disclosure.
+- Quote inputs, unsigned build, transaction inspection, Helius simulation, intent confirmation, replay controls, signing lock and submission absence are unchanged.
+- Strict TypeScript, focused ESLint and 4 quote/safety/accessibility suites with 41 tests passed.
+
 ## 2026-08-24 — Slice 100: truthful Whale wallet navigation
 
 - Audited the non-empty wallet-ranking flow and found that the aggregate “Open Wallet Intelligence” footer silently routed to the first ranked address, duplicating row-detail behavior.

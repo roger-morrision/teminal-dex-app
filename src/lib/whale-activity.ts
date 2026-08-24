@@ -22,6 +22,7 @@ export type WhaleMarketPulse = {
   uniqueWallets: number;
   knownAmountCount: number;
   missingAmountCount: number;
+  amountContextMismatchCount: number;
   buyUsd: number;
   sellUsd: number;
   netUsd: number;
@@ -113,6 +114,7 @@ export function buildWhaleMarketPulse(
   const tokens = new Set<string>();
   const wallets = new Set<string>();
   let knownAmountCount = 0;
+  let amountContextMismatchCount = 0;
   let buyUsd = 0;
   let sellUsd = 0;
   let largestEvent: TrackNotification | null = null;
@@ -121,6 +123,9 @@ export function buildWhaleMarketPulse(
     if (event.wallet) wallets.add(event.wallet);
     if (event.amountUsd == null) continue;
     knownAmountCount += 1;
+    if (whaleAmountContext(event) === "amount_exceeds_market_cap") {
+      amountContextMismatchCount += 1;
+    }
     const sell = event.type === "whale_sell" || event.type === "smart_take_profit";
     if (sell) sellUsd += event.amountUsd;
     else buyUsd += event.amountUsd;
@@ -135,6 +140,7 @@ export function buildWhaleMarketPulse(
     uniqueWallets: wallets.size,
     knownAmountCount,
     missingAmountCount: evidence.length - knownAmountCount,
+    amountContextMismatchCount,
     buyUsd,
     sellUsd,
     netUsd: buyUsd - sellUsd,

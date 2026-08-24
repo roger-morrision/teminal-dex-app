@@ -75,12 +75,12 @@ describe("whale activity aggregation", () => {
 
   it("builds a truthful bounded market pulse without converting missing amounts to volume", () => {
     const pulse = buildWhaleMarketPulse([
-      event({ id: "buy", type: "whale_buy", tokenSymbol: "BONK", amountUsd: 75_000, wallet: "wallet-a" }),
+      event({ id: "buy", type: "whale_buy", tokenSymbol: "BONK", amountUsd: 1_500_000, wallet: "wallet-a" }),
       event({ id: "sell", type: "smart_take_profit", tokenSymbol: "WIF", tokenAddress: "Vote111111111111111111111111111111111111111", amountUsd: 25_000, wallet: "wallet-b" }),
       event({ id: "missing", type: "smart_buy", amountUsd: null, wallet: "wallet-a" }),
       event({ id: "ignored", type: "kol_buy", amountUsd: 999_000 }),
     ]);
-    expect(pulse).toMatchObject({ eventCount: 3, activeTokens: 2, uniqueWallets: 2, knownAmountCount: 2, missingAmountCount: 1, buyUsd: 75_000, sellUsd: 25_000, netUsd: 50_000, buyShare: 0.75 });
+    expect(pulse).toMatchObject({ eventCount: 3, activeTokens: 2, uniqueWallets: 2, knownAmountCount: 2, missingAmountCount: 1, amountContextMismatchCount: 1, buyUsd: 1_500_000, sellUsd: 25_000, netUsd: 1_475_000, buyShare: 1_500_000 / 1_525_000 });
     expect(pulse.largestEvent?.id).toBe("buy");
   });
 

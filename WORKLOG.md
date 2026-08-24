@@ -757,3 +757,10 @@
 - Added a development-only loopback backend fallback while retaining explicit HTTPS configuration and fail-closed validation for production. Documented the required Android `adb reverse` behavior.
 - Replaced Node Buffer signature encoding with a deterministic React Native-safe byte-to-base64 encoder and added padding/binary regression coverage.
 - Verification passed: strict TypeScript, targeted ESLint, 30 focused client/encoder tests, fresh cache-cleared Android development bundling, native UI inspection, and React Native/Android error logs. Both reported error strings are absent and real bounded Whales evidence renders again.
+
+## 2026-08-24 — Slice 75: market-level whale context disclosure
+
+- Promoted amount-versus-market-cap mismatch evidence from individual whale rows into the bounded Market Pulse summary, so users do not need to inspect every event before learning that some provider totals are not directly comparable with their accompanying snapshots.
+- The summary counts only known USD observations with a positive accompanying market cap and preserves provider amounts unchanged. Missing market caps are not mislabeled as mismatches, and the disclosure remains evidence-only rather than predictive.
+- Added English/Vietnamese copy, deterministic aggregation coverage, strict TypeScript and targeted lint/test verification, plus an Android development-bundle reload with no React Native error log.
+- Next priority: authoritative paginated whale history and whale-alert delivery remain backend-contract blocked; physical TalkBack/VoiceOver validation remains external.

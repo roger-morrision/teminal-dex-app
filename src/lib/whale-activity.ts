@@ -1,4 +1,4 @@
-import type { TrackNotification } from "@/api/schema";
+import type { TopTrader, TrackNotification } from "@/api/schema";
 
 export type WhaleFlow = {
   tokenAddress: string;
@@ -101,6 +101,15 @@ export function filterWhaleFlows(flows: WhaleFlow[], query?: string) {
   return flows.filter((flow) =>
     [flow.tokenSymbol, flow.tokenAddress, ...flow.events.map((event) => event.wallet)]
       .some((value) => value?.toLowerCase().includes(normalized)),
+  );
+}
+
+export function filterWhaleWalletRankings(rows: TopTrader[], query?: string) {
+  const normalized = query?.trim().toLowerCase() ?? "";
+  if (!normalized) return rows;
+  return rows.filter((row) =>
+    [row.address, row.bestToken, row.badge]
+      .some((value) => value.toLowerCase().includes(normalized)),
   );
 }
 

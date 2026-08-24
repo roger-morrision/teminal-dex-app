@@ -1,5 +1,5 @@
 import type { TrackNotification } from "@/api/schema";
-import { aggregateWhaleActivity, buildWhaleMarketPulse, filterWhaleEvents, filterWhaleFlows, isWhaleActivity, whaleActivityForToken, whaleAmountContext } from "@/lib/whale-activity";
+import { aggregateWhaleActivity, buildWhaleMarketPulse, filterWhaleEvents, filterWhaleFlows, filterWhaleWalletRankings, isWhaleActivity, whaleActivityForToken, whaleAmountContext } from "@/lib/whale-activity";
 
 const event = (input: Partial<TrackNotification> & Pick<TrackNotification, "id" | "type">): TrackNotification => ({
   title: "Observed activity",
@@ -72,6 +72,18 @@ describe("whale activity aggregation", () => {
     expect(filterWhaleFlows(flows, "knownwhale").map((flow) => flow.tokenSymbol)).toEqual(["BONK"]);
     expect(filterWhaleFlows(flows, "missing")).toEqual([]);
     expect(filterWhaleFlows(flows)).toBe(flows);
+  });
+
+  it("searches qualified wallet rankings without changing provider order", () => {
+    const rows = [
+      { rank: 1, address: "KnownWhale111", pnlUsd: 500, pnlPct: 10, winRate: 60, trades: 8, tokenCount: 3, maxDrawdownPct: 12, reliability: 80, bestToken: "BONK", bestTokenPct: 20, badge: "Whale" as const, sparkline: [1, 2] },
+      { rank: 2, address: "SmartWallet222", pnlUsd: 200, pnlPct: 5, winRate: 55, trades: 6, tokenCount: 2, maxDrawdownPct: 9, reliability: 70, bestToken: "WIF", bestTokenPct: 10, badge: "Smart Money" as const, sparkline: [1, 2] },
+    ];
+    expect(filterWhaleWalletRankings(rows, "knownwhale")).toEqual([rows[0]]);
+    expect(filterWhaleWalletRankings(rows, "wif")).toEqual([rows[1]]);
+    expect(filterWhaleWalletRankings(rows, "smart money")).toEqual([rows[1]]);
+    expect(filterWhaleWalletRankings(rows, "missing")).toEqual([]);
+    expect(filterWhaleWalletRankings(rows)).toBe(rows);
   });
 
   it("builds a strict newest-first token whale chronology", () => {

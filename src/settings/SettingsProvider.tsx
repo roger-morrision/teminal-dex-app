@@ -892,6 +892,8 @@ const en = {
   averageWinRate: "Avg win rate",
   noSmartWallets:
     "No Smart Money or Whale wallets meet the current ranking evidence.",
+  noWhaleWalletSearchMatches:
+    "No ranked Whale or Smart Money wallet matches this search.",
   inspectWallet: "Inspect {badge} wallet {address}",
   indexedTradesReliability:
     "{trades} indexed trades · reliability {reliability}",
@@ -1923,6 +1925,8 @@ const vi: { [K in TranslationKey]: string } = {
   averageWinRate: "Tỷ lệ thắng TB",
   noSmartWallets:
     "Không có ví Smart Money hoặc Whale đáp ứng bằng chứng xếp hạng hiện tại.",
+  noWhaleWalletSearchMatches:
+    "Không có ví Whale hoặc Smart Money được xếp hạng nào khớp tìm kiếm này.",
   inspectWallet: "Kiểm tra ví {badge} {address}",
   indexedTradesReliability:
     "{trades} giao dịch đã lập chỉ mục · độ tin cậy {reliability}",

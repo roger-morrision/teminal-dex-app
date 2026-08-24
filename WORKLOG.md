@@ -952,6 +952,13 @@
 - Unmatched queries reuse the truthful no-flow state. No server search, synthetic history, inferred wallet relation or additional data collection was introduced.
 - Strict TypeScript, focused ESLint and 2 Whale/accessibility suites with 40 tests passed.
 
+## 2026-08-25 — Slice 102: searchable Whale wallet rankings
+
+- Completed the shared-search audit: Wallets mode previously displayed the search field but ignored its value.
+- Added a bounded, order-preserving filter over qualified public address, best observed token and Whale/Smart Money evidence badge.
+- Added localized English/Vietnamese search-miss copy so filtered-empty is distinct from a successful provider response with zero qualified wallets. No ranking values or identities are inferred.
+- Strict TypeScript, focused ESLint and 3 Whale/localization/accessibility suites with 43 tests passed.
+
 ## 2026-08-24 — Slice 100: truthful Whale wallet navigation
 
 - Audited the non-empty wallet-ranking flow and found that the aggregate “Open Wallet Intelligence” footer silently routed to the first ranked address, duplicating row-detail behavior.

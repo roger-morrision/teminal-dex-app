@@ -117,6 +117,8 @@ export default function WalletIntelligenceScreen() {
             response={rankings.data}
             loading={rankings.isLoading}
             error={rankings.error?.message}
+            retrying={rankings.isFetching}
+            onRetry={() => rankings.refetch()}
             selected={smartSelected}
             onSelect={setSelected}
           />
@@ -133,6 +135,8 @@ function SmartMoney({
   response,
   loading,
   error,
+  retrying,
+  onRetry,
   selected,
   onSelect,
 }: {
@@ -140,6 +144,8 @@ function SmartMoney({
   response?: Awaited<ReturnType<typeof fetchTopTraders>>;
   loading: boolean;
   error?: string;
+  retrying: boolean;
+  onRetry: () => void;
   selected: string;
   onSelect: (address: string) => void;
 }) {
@@ -149,7 +155,7 @@ function SmartMoney({
     ? data.reduce((sum, item) => sum + item.winRate, 0) / data.length
     : null;
   if (loading) return <State loading text={t("loadingWalletRankings")} />;
-  if (error) return <State error text={error} />;
+  if (error) return <State error text={error} action={t("retry")} actionBusy={retrying} onAction={onRetry} />;
   return (
     <View>
       <Evidence
@@ -410,7 +416,7 @@ function WalletEvidence({ address }: { address: string }) {
   });
   if (holdings.isLoading || pnl.isLoading)
     return <State loading text={t("loadingWalletEvidence")} />;
-  if (holdings.error) return <State error text={holdings.error.message} />;
+  if (holdings.error) return <State error text={holdings.error.message} action={t("retry")} actionBusy={holdings.isFetching} onAction={() => holdings.refetch()} />;
   const wallet = holdings.data?.wallet;
   return (
     <View style={styles.detail}>
@@ -539,10 +545,16 @@ export function State({
   loading,
   error,
   text,
+  action,
+  actionBusy = false,
+  onAction,
 }: {
   loading?: boolean;
   error?: boolean;
   text: string;
+  action?: string;
+  actionBusy?: boolean;
+  onAction?: () => void;
 }) {
   return (
     <View
@@ -558,6 +570,18 @@ export function State({
         <Ionicons name="information-circle" size={20} color={colors.muted} />
       )}
       <Text style={styles.stateText}>{text}</Text>
+      {action && onAction ? (
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={action}
+          accessibilityState={{ busy: actionBusy, disabled: actionBusy }}
+          disabled={actionBusy}
+          onPress={onAction}
+          style={[styles.stateAction, actionBusy && styles.disabled]}
+        >
+          <Text style={styles.stateActionText}>{action}</Text>
+        </Pressable>
+      ) : null}
     </View>
   );
 }
@@ -802,4 +826,13 @@ const styles = StyleSheet.create({
     padding: spacing.xl,
   },
   stateText: { color: colors.muted, textAlign: "center", lineHeight: 18 },
+  stateAction: {
+    minHeight: 44,
+    paddingHorizontal: spacing.lg,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 10,
+    backgroundColor: colors.accent,
+  },
+  stateActionText: { color: colors.background, fontWeight: "900" },
 });

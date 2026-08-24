@@ -73,3 +73,25 @@ it("guards market-intelligence recovery and omits inert actions", async () => {
   );
   expect(screen.queryByLabelText("Retry")).toBeNull();
 });
+
+it("guards wallet-intelligence recovery and omits inert actions", async () => {
+  const retry = jest.fn();
+  const screen = await render(
+    <WalletIntelligenceState
+      error
+      text="Provider failed"
+      action="Retry"
+      actionBusy
+      onAction={retry}
+    />,
+  );
+  const button = screen.getByLabelText("Retry");
+  expect(button.props.accessibilityState).toEqual({ busy: true, disabled: true });
+  await fireEvent.press(button);
+  expect(retry).not.toHaveBeenCalled();
+
+  await screen.rerender(
+    <WalletIntelligenceState text="No evidence" action="Retry" />,
+  );
+  expect(screen.queryByLabelText("Retry")).toBeNull();
+});

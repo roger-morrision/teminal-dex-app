@@ -1044,6 +1044,13 @@
 - Pagination, evidence schemas, degraded-data visibility, exact-mint navigation, claim read-only boundaries, and transaction authority remain unchanged.
 - Strict TypeScript, focused ESLint and 4 market/state/schema/accessibility suites with 82 tests passed.
 
+## 2026-08-25 — Slice 115: recover wallet intelligence evidence
+
+- Advanced the auxiliary audit to Wallet Intelligence and found Smart Money ranking and selected public-wallet holdings failures had no discoverable in-place recovery.
+- Added localized query-specific retries to both surfaces; each is accessible, disabled and announced busy during refetch, while action labels without handlers are omitted.
+- Public-address/watch-only semantics, local tracker bounds, provider classifications, indexed PnL limitations, no-copy/no-follow policy, schemas, and backend contracts are unchanged.
+- Strict TypeScript, focused ESLint and 5 wallet/state/accessibility suites with 49 tests passed.
+
 ## 2026-08-24 — Slice 100: truthful Whale wallet navigation
 
 - Audited the non-empty wallet-ranking flow and found that the aggregate “Open Wallet Intelligence” footer silently routed to the first ranked address, duplicating row-detail behavior.

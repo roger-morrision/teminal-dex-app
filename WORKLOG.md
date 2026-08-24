@@ -913,3 +913,10 @@
 - Added CopyTrade promotion readiness requiring proven managed devnet and mainnet canary, at least 99% shadow coverage, complete reconciliation, duplicate prevention, outage pause, owner/global kill switches, rollback and owner/production approvals.
 - Added Phase 110–111 governance and ledger. Complete evidence only qualifies an external review; mobile execution and CopyTrade activation authority remain disabled and absent.
 - Strict TypeScript, repository-wide ESLint, 70 Jest suites / 277 tests, and fresh 25-route web/Android/iOS exports passed. Generated verification output was removed; the known Noble hashes fallback warning remains non-fatal.
+
+## 2026-08-24 — Slice 96: persisted market context for historical whale rows
+
+- Extended the authoritative notification feed to resolve the newest exact-token persisted pair observation whenever current Trending/Top provider rows do not contain a historical whale token.
+- The fallback is bounded to 160 evidence tokens and 240 newest pair rows, deduplicated by exact token address, and exposes only stored provider price, market cap, one-hour change, volume, holders, artwork and freshness. Missing evidence remains null; no market value is inferred or mocked.
+- Backend contract test, targeted ESLint and non-incremental TypeScript passed. Backend commit: `a222c72 feat: enrich whale market snapshots`.
+- Runtime replay is temporarily blocked by unrelated concurrent CopyTrade work containing a syntax error in `durable-automation-worker.ts` and a SQLite/PostgreSQL datasource mismatch in its uncommitted Prisma schema. Those files were preserved and excluded from this slice.

@@ -52,6 +52,9 @@ const en = {
   whaleEvidenceBoundary: "Observed provider and indexed activity only. Wallet classification, amounts and market snapshots are evidence—not advice, expected returns or execution authority.",
   whaleAmountContextWarning: "Observed amount exceeds the accompanying market-cap snapshot; verify chronology and provider context.",
   whaleContextMismatchSummary: "{count} of {known} USD observations exceed their accompanying market-cap snapshot. Totals retain provider evidence; verify chronology before comparison.",
+  whaleMarketSnapshot: "Token price {price}, market cap {marketCap}, one-hour price change {change}",
+  whaleMarketChangeBoundary: "The 1h percentage is the provider's token price change, not an independently measured market-cap change.",
+  tokenPriceShort: "Price",
   loadingWhaleActivity: "Loading whale activity…",
   noWhaleActivity: "No whale or smart-money activity is present in the current bounded evidence window.",
   noWhaleFlow: "No matching multi-event whale flow is present in the current evidence window.",
@@ -1076,6 +1079,9 @@ const vi: { [K in TranslationKey]: string } = {
   whaleEvidenceBoundary: "Chỉ là hoạt động được nhà cung cấp và chỉ mục quan sát. Phân loại ví, số tiền và ảnh chụp thị trường là bằng chứng, không phải lời khuyên, lợi nhuận kỳ vọng hay quyền thực thi.",
   whaleAmountContextWarning: "Số tiền quan sát vượt ảnh chụp vốn hóa thị trường đi kèm; hãy kiểm tra thời gian và bối cảnh nhà cung cấp.",
   whaleContextMismatchSummary: "{count}/{known} quan sát USD vượt ảnh chụp vốn hóa thị trường đi kèm. Tổng số vẫn giữ bằng chứng nhà cung cấp; hãy kiểm tra thời gian trước khi so sánh.",
+  whaleMarketSnapshot: "Giá token {price}, vốn hóa {marketCap}, thay đổi giá một giờ {change}",
+  whaleMarketChangeBoundary: "Phần trăm 1 giờ là thay đổi giá token từ nhà cung cấp, không phải thay đổi vốn hóa được đo độc lập.",
+  tokenPriceShort: "Giá",
   loadingWhaleActivity: "Đang tải hoạt động cá voi…",
   noWhaleActivity: "Không có hoạt động cá voi hoặc tiền thông minh trong cửa sổ bằng chứng giới hạn hiện tại.",
   noWhaleFlow: "Không có dòng cá voi nhiều sự kiện phù hợp trong cửa sổ bằng chứng hiện tại.",
@@ -2126,7 +2132,10 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
         setSettings(defaults);
       },
       t: (key, values) =>
-        interpolate(translations[settings.language][key], values),
+        interpolate(
+          translations[settings.language][key] ?? en[key] ?? String(key),
+          values,
+        ),
     }),
     [settings, ready, update],
   );

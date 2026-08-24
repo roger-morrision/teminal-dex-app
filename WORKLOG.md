@@ -764,3 +764,10 @@
 - The summary counts only known USD observations with a positive accompanying market cap and preserves provider amounts unchanged. Missing market caps are not mislabeled as mismatches, and the disclosure remains evidence-only rather than predictive.
 - Added English/Vietnamese copy, deterministic aggregation coverage, strict TypeScript and targeted lint/test verification, plus an Android development-bundle reload with no React Native error log.
 - Next priority: authoritative paginated whale history and whale-alert delivery remain backend-contract blocked; physical TalkBack/VoiceOver validation remains external.
+
+## 2026-08-24 — Slice 76: token market context on whale trades
+
+- Added the requested whale buy/sell context to both newest-event cards and full Live rows: observed USD amount, token price, market cap, one-hour change, wallet, time, source and evidence quality now remain together.
+- The backend exposes `change1h` for token price but no independently measured market-cap change. The UI therefore labels the percentage as `1h` token-price change and adds an explicit bilingual boundary instead of fabricating an MC-change series.
+- Added accessible combined market-snapshot labels and a defensive translation fallback that prevents a partial Fast Refresh dictionary from crashing the screen.
+- Strict TypeScript, targeted ESLint, Settings/localization and primary accessibility regressions passed. Final emulator replay was externally blocked because `emulator-5554` disconnected before the clean restart; no device was available to ADB.

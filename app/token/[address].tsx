@@ -179,8 +179,10 @@ export default function TokenDetail() {
           <Pressable
             accessibilityRole="button"
             accessibilityLabel={t("refreshToken")}
+            accessibilityState={{ busy: detail.isFetching, disabled: detail.isFetching }}
+            disabled={detail.isFetching}
             onPress={() => detail.refetch()}
-            style={styles.back}
+            style={[styles.back, detail.isFetching && styles.disabled]}
           >
             <Ionicons name="refresh" size={18} color={colors.text} />
           </Pressable>
@@ -240,6 +242,7 @@ export default function TokenDetail() {
             token={token}
             detail={detail.data}
             refreshError={detail.isError ? detail.error.message : null}
+            refreshBusy={detail.isFetching}
             onRetry={() => detail.refetch()}
           />
         ) : null}
@@ -607,11 +610,13 @@ function Overview({
   token,
   detail,
   refreshError,
+  refreshBusy,
   onRetry,
 }: {
   token: MarketToken;
   detail?: TokenDetailResponse;
   refreshError: string | null;
+  refreshBusy: boolean;
   onRetry: () => void;
 }) {
   const { t } = useSettings();
@@ -676,6 +681,7 @@ function Overview({
         <Limitation
           text={t("liveRefreshFailed", { error: refreshError })}
           action={t("retry")}
+          actionBusy={refreshBusy}
           onAction={onRetry}
         />
       ) : null}
@@ -930,24 +936,29 @@ function DataRow({
     </View>
   );
 }
-function Limitation({
+export function Limitation({
   text,
   action,
+  actionBusy = false,
   onAction,
 }: {
   text: string;
   action?: string;
+  actionBusy?: boolean;
   onAction?: () => void;
 }) {
   return (
     <View accessibilityRole="summary" style={styles.notice}>
       <Ionicons name="information-circle" color={colors.warning} size={18} />
       <Text style={styles.noticeText}>{text}</Text>
-      {action ? (
+      {action && onAction ? (
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={action}
+          accessibilityState={{ busy: actionBusy, disabled: actionBusy }}
+          disabled={actionBusy}
           onPress={onAction}
+          style={actionBusy && styles.disabled}
         >
           <Text style={styles.retryText}>{action}</Text>
         </Pressable>

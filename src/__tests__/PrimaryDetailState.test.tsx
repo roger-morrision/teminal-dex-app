@@ -2,7 +2,7 @@ import { fireEvent, render } from "@testing-library/react-native";
 import { State as MonitorState } from "../../app/(tabs)/monitor";
 import { State as PortfolioState } from "../../app/(tabs)/portfolio";
 import { State as DiscoverState } from "../../app/(tabs)/discover";
-import { PanelState } from "../../app/token/[address]";
+import { Limitation, PanelState } from "../../app/token/[address]";
 import { SettingsProvider } from "@/settings/SettingsProvider";
 
 jest.mock("@/security/WalletSessionProvider", () => ({
@@ -72,6 +72,20 @@ describe("primary and detail dynamic states", () => {
     expect(button.props.accessibilityState).toEqual({ busy: true, disabled: true });
     await fireEvent.press(button);
     expect(retry).not.toHaveBeenCalled();
+  });
+
+  it("guards Token Detail inline recovery and omits inert actions", async () => {
+    const retry = jest.fn();
+    const screen = await render(
+      <Limitation text="Refresh failed" action="Retry" actionBusy onAction={retry} />,
+    );
+    const button = screen.getByLabelText("Retry");
+    expect(button.props.accessibilityState).toEqual({ busy: true, disabled: true });
+    await fireEvent.press(button);
+    expect(retry).not.toHaveBeenCalled();
+
+    await screen.rerender(<Limitation text="No action" action="Retry" />);
+    expect(screen.queryByLabelText("Retry")).toBeNull();
   });
 
   it("guards Discover recovery while a retry is in progress", async () => {

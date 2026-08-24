@@ -1016,6 +1016,13 @@
 - Token evidence, exact-mint routing, chart timeframes, holder/security/transaction contracts, quote safety and execution locks are unchanged.
 - Strict TypeScript, focused ESLint and 5 token/state/accessibility suites with 52 tests passed.
 
+## 2026-08-25 — Slice 111: complete Token Detail inline recovery
+
+- Completed the Token Detail recovery audit and found the persistent header refresh and stale-overview retry remained independently tappable during the same active detail refetch.
+- Disabled and announced the header refresh while busy, routed detail fetch state into the inline notice action, and suppressed action labels without executable handlers.
+- Token content, provider contracts, route identity, quote review, simulation evidence, confirmation gates and execution locks are unchanged.
+- Strict TypeScript, focused ESLint and 4 token/state/accessibility suites with 43 tests passed.
+
 ## 2026-08-24 — Slice 100: truthful Whale wallet navigation
 
 - Audited the non-empty wallet-ranking flow and found that the aggregate “Open Wallet Intelligence” footer silently routed to the first ranked address, duplicating row-detail behavior.

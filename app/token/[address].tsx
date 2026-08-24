@@ -23,6 +23,7 @@ import {
   type TokenDetailResponse,
 } from "@/api/schema";
 import { PriceChart } from "@/components/PriceChart";
+import { TokenAvatar } from "@/components/TokenAvatar";
 import { compactUsd, signedPercent, tokenPrice } from "@/lib/format";
 import { aggregateWhaleActivity, whaleActivityForToken } from "@/lib/whale-activity";
 import { colors, spacing } from "@/theme";
@@ -34,10 +35,10 @@ type Tab =
 const tabs = [
   { id: "overview", key: "overview" },
   { id: "whales", key: "whaleActivity" },
-  { id: "chart", key: "chart" },
-  { id: "holders", key: "holdersTab" },
-  { id: "trades", key: "trades" },
   { id: "risk", key: "risk" },
+  { id: "chart", key: "chart" },
+  { id: "trades", key: "trades" },
+  { id: "holders", key: "holdersTab" },
   { id: "intel", key: "intel" },
   { id: "pairs", key: "pairs" },
 ] as const;
@@ -184,7 +185,9 @@ export default function TokenDetail() {
           </Pressable>
         </View>
         <View style={styles.hero}>
-          <View>
+          <View style={styles.heroIdentity}>
+            <TokenAvatar symbol={token.symbol} identity={token.address} imageUrl={token.imageUrl} size={46} />
+            <View style={styles.heroCopy}>
             <Text style={styles.symbol}>{token.symbol}</Text>
             <Text style={styles.name}>
               {token.name} · {token.dex}
@@ -201,6 +204,7 @@ export default function TokenDetail() {
             >
               {signedPercent(token.change24h)} · {t("dayChange")}
             </Text>
+            </View>
           </View>
           <EvidenceBadge degraded={Boolean(detail.data?.degraded)} />
         </View>
@@ -975,6 +979,8 @@ const styles = StyleSheet.create({
     padding: spacing.lg,
     paddingTop: spacing.md,
   },
+  heroIdentity: { flex: 1, minWidth: 220, flexDirection: "row", alignItems: "flex-start", gap: spacing.md },
+  heroCopy: { flex: 1 },
   symbol: { color: colors.text, fontSize: 36, fontWeight: "900" },
   name: { color: colors.muted, marginTop: 3 },
   price: {

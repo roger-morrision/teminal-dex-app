@@ -865,3 +865,24 @@
 - Added rendered failure recovery coverage for provider artwork.
 - Verification evidence: strict TypeScript, targeted ESLint and focused component tests passed.
 - Next priority: audit the backend for a stable token-specific whale-history cursor before changing chronology claims; if absent, document the exact blocker and advance Discover/detail hierarchy.
+
+## 2026-08-24 — Slice 90: whale-history cursor contract audit
+
+- Audited the authoritative backend without modifying its unrelated active CopyTrade work. `/api/in-app-notifications` provides a bounded 30-minute current window and a seven-day historical fallback flag, but no stable token-specific history cursor or continuation contract.
+- Kept the existing bounded chronology and truthful live/historical labels unchanged; offset pagination over this mutable window would create duplicates and false history claims.
+- Exact blocker: a durable token-address-filtered endpoint ordered by observed time plus stable ID, paired cursor validation, unique immutable event identities, truthful `hasMore`, retention scope and provider provenance.
+- Continued immediately with the independent token-detail hierarchy work.
+
+## 2026-08-24 — Slice 91: token identity and safety-first detail hierarchy
+
+- Added the same resilient real-logo/initials identity used by Discover and Whales to the token-detail hero.
+- Reordered progressive disclosure to Overview, Whale Activity, Risk, Chart, Trades, Holders, Intel and Pairs, placing observed movement and safety evidence before deeper research panels without deleting any contract or provenance surface.
+- Next priority: complete the full automated regression and platform bundle certification, then retain physical-device wallet/accessibility work as explicit external evidence.
+
+## 2026-08-24 — Slice 92: release regression and Android bundle certification
+
+- Re-ran strict TypeScript and targeted ESLint for the token-detail hierarchy, then completed the full Jest regression: 62 suites / 261 tests passed.
+- Produced a fresh cache-current Android production export with 1,721 modules, 46 assets and a 5.6 MB Hermes bundle; temporary output was safely removed after verification.
+- The known upstream Noble hashes Metro subpath fallback warning remains non-fatal. No app runtime failure, secret, environment file, database, log, cache or generated artifact was retained.
+- Physical Android/iOS wallet, TalkBack/VoiceOver, background/restore and representative-device performance evidence remain external blockers requiring actual devices and supported wallet applications; no execution control was weakened to simulate closure.
+- Roadmap outcome: dependency-ready Slices 87–92 are implemented or evidence-closed. Durable whale-history pagination remains explicitly blocked on the authoritative cursor contract documented in Slice 90.

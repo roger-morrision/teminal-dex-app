@@ -14,7 +14,7 @@ export function WhaleFlowBadge({ flow }: { flow?: WhaleFlow }) {
         {t(positive ? "whalesAccumulating" : "whalesDistributing")}
       </Text>
       <Text style={styles.value}>{positive ? "+" : ""}{compactUsd(flow.netUsd)}</Text>
-      <Text style={styles.meta}>{t("whaleFlowSummary", { buys: flow.buys, sells: flow.sells, wallets: flow.uniqueWallets })}</Text>
+      <Text style={styles.meta}>{t("whaleFlowSummaryWithCoverage", { buys: flow.buys, sells: flow.sells, wallets: flow.uniqueWallets, coverage: Math.round(flow.amountCoverage * 100) })}</Text>
     </View>
   );
 }

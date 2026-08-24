@@ -660,6 +660,16 @@
 - Final verification passed: strict TypeScript, repository-wide Expo ESLint, 57 Jest suites / 228 tests, Expo Doctor 21/21, and a fresh Android production export. The existing Noble hashes fallback warning remained non-fatal; export output was written outside the repository.
 - Next priority: obtain an authoritative whale-rule mutation contract if product acceptance requires server-side whale event alerts; otherwise preserve the read-only whale objective and continue physical-device verification.
 
+## 2026-08-24 — Slice 64: phases 88–97 whale evidence foundations
+
+- Added Phase 88–97 governance for whale history integrity, flow quality, versioned wallet identity, alerts, corroboration, analytics, portfolio exposure, operations and physical-device release evidence. Dependencies propagate and complete evidence never grants execution authority.
+- Added a bounded whale-history contract requiring unique strict descending observed-time/ID order, truthful continuation metadata and an exact boundary cursor. Added versioned classification evidence with confidence, effective/expiry chronology, evidence hashes and revocation.
+- Added evaluated-only whale-alert configuration evidence with owner identity, unique token/wallet/direction filters, thresholds, cooldowns, versions and configuration hashes. It cannot substitute for the absent authoritative mutation/evaluation/delivery backend.
+- Added deterministic corroboration, historical outcome, watch-only portfolio exposure and operational SLO evaluators. Results explicitly reject predictive, advisory and execution authority.
+- Fixed derived flow completeness: missing USD values are counted separately instead of silently treated as complete zero-dollar evidence. Whale badges now render localized known-amount coverage.
+- Added the Phase 88–97 ledger with exact backend, provider, methodology, privacy, operations and physical-device evidence required for closure.
+- Strict TypeScript, repository-wide ESLint, 60 Jest suites / 239 tests, and fresh 25-route web/Android/iOS exports passed. Generated verification output was removed; the known Noble hashes fallback warning remains non-fatal.
+
 ## 2026-08-24 — Slice 64: dense whale-radar interaction hierarchy
 
 - Studied the supplied dark caller-radar screenshot as a visual/product reference only. Retained its useful scan hierarchy—fresh activity strip, compact control rail, KPI summary, dense ranking—and excluded its branding, assets, caller identities, paywall, impact scores, and predictive marketing claims.

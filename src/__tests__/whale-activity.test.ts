@@ -33,6 +33,14 @@ describe("whale activity aggregation", () => {
     expect(flows[0]?.events.map((item) => item.id)).toEqual(["sell", "smart", "buy"]);
   });
 
+  it("reports missing USD evidence instead of silently claiming complete flow", () => {
+    const [flow] = aggregateWhaleActivity([
+      event({ id: "known", type: "whale_buy", amountUsd: 10 }),
+      event({ id: "missing", type: "whale_sell", amountUsd: null }),
+    ]);
+    expect(flow).toMatchObject({ knownAmountCount: 1, missingAmountCount: 1, amountCoverage: 0.5, netUsd: 10 });
+  });
+
   it("applies direction and amount controls before deterministic sorting", () => {
     const rows = [
       event({ id: "small", type: "whale_buy", amountUsd: 5_000, observedAt: 30 }),

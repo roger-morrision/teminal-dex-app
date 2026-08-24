@@ -8,6 +8,9 @@ export type WhaleFlow = {
   buyUsd: number;
   sellUsd: number;
   netUsd: number;
+  knownAmountCount: number;
+  missingAmountCount: number;
+  amountCoverage: number;
   uniqueWallets: number;
   latestObservedAt: number;
   events: TrackNotification[];
@@ -30,12 +33,18 @@ export function aggregateWhaleActivity(events: TrackNotification[]): WhaleFlow[]
       buyUsd: 0,
       sellUsd: 0,
       netUsd: 0,
+      knownAmountCount: 0,
+      missingAmountCount: 0,
+      amountCoverage: 0,
       uniqueWallets: 0,
       latestObservedAt: 0,
       events: [],
       wallets: new Set<string>(),
     };
+    const amountKnown = event.amountUsd != null;
     const amount = event.amountUsd ?? 0;
+    if (amountKnown) current.knownAmountCount += 1;
+    else current.missingAmountCount += 1;
     const sell = event.type === "whale_sell" || event.type === "smart_take_profit";
     if (sell) {
       current.sells += 1;
@@ -53,6 +62,7 @@ export function aggregateWhaleActivity(events: TrackNotification[]): WhaleFlow[]
     .map(({ wallets, ...flow }) => ({
       ...flow,
       netUsd: flow.buyUsd - flow.sellUsd,
+      amountCoverage: flow.events.length ? flow.knownAmountCount / flow.events.length : 0,
       uniqueWallets: wallets.size,
       events: flow.events.sort((a, b) => b.observedAt - a.observedAt),
     }))

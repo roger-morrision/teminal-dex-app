@@ -2,6 +2,8 @@
 
 Date: 2026-08-24
 
+The continuation for phases 88–97 is maintained in `PHASES_88_TO_97_LEDGER.md`.
+
 This ledger records implemented client-side contracts separately from backend, device, approval, and funded-network proof. No local flag, fixture, or document grants transaction authority. Mobile signing, submission, intent consumption, mainnet execution, and CopyTrade execution remain disabled.
 
 | Phase | Delivered foundation | Required operational closure |

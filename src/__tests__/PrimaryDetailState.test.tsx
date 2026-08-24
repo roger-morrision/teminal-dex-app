@@ -1,6 +1,7 @@
 import { fireEvent, render } from "@testing-library/react-native";
 import { State as MonitorState } from "../../app/(tabs)/monitor";
 import { State as PortfolioState } from "../../app/(tabs)/portfolio";
+import { State as DiscoverState } from "../../app/(tabs)/discover";
 import { PanelState } from "../../app/token/[address]";
 import { SettingsProvider } from "@/settings/SettingsProvider";
 
@@ -52,5 +53,19 @@ describe("primary and detail dynamic states", () => {
     expect(screen.getByRole("summary").props.accessibilityState).toEqual({
       busy: true,
     });
+  });
+
+  it("guards Discover recovery while a retry is in progress", async () => {
+    const retry = jest.fn();
+    const screen = await render(
+      <DiscoverState error message="Provider failed" action="Retry" actionBusy onAction={retry} />,
+    );
+    const button = screen.getByLabelText("Retry");
+    expect(button.props.accessibilityState).toEqual({ busy: true, disabled: true });
+    await fireEvent.press(button);
+    expect(retry).not.toHaveBeenCalled();
+
+    await screen.rerender(<DiscoverState message="No evidence" action="Retry" />);
+    expect(screen.queryByLabelText("Retry")).toBeNull();
   });
 });

@@ -444,6 +444,7 @@ export default function DiscoverScreen() {
               title={t("marketUnavailable")}
               message={current.error.message}
               action={t("retry")}
+              actionBusy={current.isFetching}
               onAction={() => current.refetch()}
             />
           ) : (
@@ -465,6 +466,7 @@ export default function DiscoverScreen() {
                       : t("providerFeedEmpty", { source: firstPage?.source ?? t("providerUnavailable") })
               }
               action={activeFilterCount > 0 ? t("resetFilters") : debouncedSearch.length >= 2 ? t("clearSearch") : t("retry")}
+              actionBusy={activeFilterCount === 0 && debouncedSearch.length < 2 && current.isFetching}
               onAction={activeFilterCount > 0 ? resetFilters : debouncedSearch.length >= 2 ? () => setSearch("") : () => current.refetch()}
             />
           )
@@ -554,6 +556,7 @@ export function State({
   title,
   message,
   action,
+  actionBusy = false,
   onAction,
 }: {
   loading?: boolean;
@@ -561,6 +564,7 @@ export function State({
   title?: string;
   message: string;
   action?: string;
+  actionBusy?: boolean;
   onAction?: () => void;
 }) {
   return (
@@ -574,11 +578,13 @@ export function State({
       {loading ? <ActivityIndicator color={colors.accent} /> : null}
       {title ? <Text style={styles.errorTitle}>{title}</Text> : null}
       <Text style={styles.stateText}>{message}</Text>
-      {action ? (
+      {action && onAction ? (
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={action}
-          style={styles.retry}
+          accessibilityState={{ busy: actionBusy, disabled: actionBusy }}
+          disabled={actionBusy}
+          style={[styles.retry, actionBusy && styles.retryDisabled]}
           onPress={onAction}
         >
           <Text style={styles.retryText}>{action}</Text>
@@ -857,6 +863,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 10,
   },
+  retryDisabled: { opacity: 0.55 },
   retryText: { color: colors.background, fontWeight: "900" },
   scrim: { flex: 1, backgroundColor: "#00000099" },
   sheet: {

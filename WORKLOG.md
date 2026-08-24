@@ -966,6 +966,13 @@
 - This reduces unnecessary UI and provider traffic without changing cached evidence, backend contracts, navigation authority or transaction safety boundaries.
 - Strict TypeScript, focused ESLint and 3 primary-state/accessibility/preference suites with 36 tests passed.
 
+## 2026-08-25 — Slice 104: guarded Discover recovery
+
+- Advanced the phase review to Discover and found that error/provider-empty retry buttons remained enabled while React Query was already refetching, allowing overlapping recovery requests.
+- Added accessible busy/disabled state for actual retries and suppressed action labels that have no handler. Clear-search and reset-filter actions remain immediately available because they are local, non-network recovery.
+- No retry policy, backend request shape, provider data or token ranking semantics changed.
+- Strict TypeScript, focused ESLint and 3 Discover/state/accessibility suites with 39 tests passed.
+
 ## 2026-08-24 — Slice 100: truthful Whale wallet navigation
 
 - Audited the non-empty wallet-ranking flow and found that the aggregate “Open Wallet Intelligence” footer silently routed to the first ranked address, duplicating row-detail behavior.

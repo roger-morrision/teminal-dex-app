@@ -959,6 +959,13 @@
 - Added localized English/Vietnamese search-miss copy so filtered-empty is distinct from a successful provider response with zero qualified wallets. No ranking values or identities are inferred.
 - Strict TypeScript, focused ESLint and 3 Whale/localization/accessibility suites with 43 tests passed.
 
+## 2026-08-25 — Slice 103: mode-aware Whale controls
+
+- Audited every persistent Whale header control against the selected mode. Alerts exposed search and pull-to-refresh that could not affect its Monitor handoff, while Wallets displayed transaction evidence counts unrelated to the ranking response.
+- Search and Solana scope now remain only where evidence can be searched; transaction status and 30-second polling run only for Live/Accumulating/Distributing; Alerts omits inactive refresh; Wallets retains its independent ranking refresh.
+- This reduces unnecessary UI and provider traffic without changing cached evidence, backend contracts, navigation authority or transaction safety boundaries.
+- Strict TypeScript, focused ESLint and 3 primary-state/accessibility/preference suites with 36 tests passed.
+
 ## 2026-08-24 — Slice 100: truthful Whale wallet navigation
 
 - Audited the non-empty wallet-ranking flow and found that the aggregate “Open Wallet Intelligence” footer silently routed to the first ranked address, duplicating row-detail behavior.

@@ -920,3 +920,13 @@
 - The fallback is bounded to 160 evidence tokens and 240 newest pair rows, deduplicated by exact token address, and exposes only stored provider price, market cap, one-hour change, volume, holders, artwork and freshness. Missing evidence remains null; no market value is inferred or mocked.
 - Backend contract test, targeted ESLint and non-incremental TypeScript passed. Backend commit: `a222c72 feat: enrich whale market snapshots`.
 - Runtime replay is temporarily blocked by unrelated concurrent CopyTrade work containing a syntax error in `durable-automation-worker.ts` and a SQLite/PostgreSQL datasource mismatch in its uncommitted Prisma schema. Those files were preserved and excluded from this slice.
+
+## 2026-08-24 — Slice 97: phases 112–121 production-operations gates
+
+- Added Phase 112–121 governance for release provenance, supply chain, privacy/retention, observability, backup/restore, key rotation, incident drills, feature gates, performance budgets and final production acceptance. Dependency completion never self-approves production or execution.
+- Added strict release provenance requiring a clean source tree, commit identity, dependency inventory, passed type/lint/test gates and distinct app/web/Android/iOS artifact hashes.
+- Added production-operations evidence for telemetry-default-off redaction, retention/deletion, lockfile/build-script review, privacy-safe monitoring, provider SLOs, alert routes, backup/restore, key rotation/revocation and fail-closed feature governance.
+- Required five unique incident drills: provider outage, wallet session, unknown submission, rollback and kill switch. Duplicate drill evidence fails closed.
+- Added representative mobile performance budgets requiring low- and mid-tier samples and route-level cold-start, interaction-ready, peak-memory, dropped-frame and bundle limits.
+- Added the Phase 112–121 ledger with exact operational evidence required for closure. No production acceptance or execution authority was introduced.
+- Strict TypeScript, repository-wide ESLint, 73 Jest suites / 283 tests, and fresh 25-route web/Android/iOS exports passed. Generated verification output was removed; the known Noble hashes fallback warning remains non-fatal.

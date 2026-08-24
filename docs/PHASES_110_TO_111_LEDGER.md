@@ -2,6 +2,8 @@
 
 Date: 2026-08-24
 
+The production-operations continuation is maintained in `PHASES_112_TO_121_LEDGER.md`.
+
 These phases are production-promotion gates, not client feature flags. Local code can validate evidence but cannot create approvals, fund wallets, sign transactions, authorize production, or activate CopyTrade.
 
 | Phase | Delivered foundation | Required operational closure |

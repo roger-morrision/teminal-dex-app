@@ -156,6 +156,8 @@ export default function TradeReviewScreen() {
         ) : (
           <QuoteTokenState
             loading={detail.isLoading}
+            retrying={detail.isFetching}
+            onRetry={() => detail.refetch()}
             text={
               detail.isLoading
                 ? t("loadingTokenIdentity")
@@ -395,10 +397,15 @@ export default function TradeReviewScreen() {
 export function QuoteTokenState({
   loading,
   text,
+  retrying = false,
+  onRetry,
 }: {
   loading: boolean;
   text: string;
+  retrying?: boolean;
+  onRetry?: () => void;
 }) {
+  const { t } = useSettings();
   return (
     <View
       accessible
@@ -409,6 +416,18 @@ export function QuoteTokenState({
     >
       {loading ? <ActivityIndicator color={colors.accent} /> : null}
       <Text style={styles.error}>{text}</Text>
+      {!loading && onRetry ? (
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={t("retry")}
+          accessibilityState={{ busy: retrying, disabled: retrying }}
+          disabled={retrying}
+          onPress={onRetry}
+          style={[styles.retry, retrying && styles.disabled]}
+        >
+          <Text style={styles.retryText}>{t("retry")}</Text>
+        </Pressable>
+      ) : null}
     </View>
   );
 }
@@ -572,6 +591,16 @@ const styles = StyleSheet.create({
     marginTop: spacing.xl,
   },
   getQuoteText: { color: colors.background, fontWeight: "900" },
+  retry: {
+    minHeight: 44,
+    paddingHorizontal: spacing.lg,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: colors.accent,
+  },
+  retryText: { color: colors.accent, fontWeight: "900" },
   disabled: { opacity: 0.4 },
   flowError: { color: colors.negative, fontSize: 11, textAlign: "center", marginTop: spacing.md },
   failureGuidance: { color: colors.warning, fontSize: 10, lineHeight: 16, marginTop: spacing.sm },

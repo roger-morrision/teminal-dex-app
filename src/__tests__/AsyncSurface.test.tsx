@@ -22,16 +22,38 @@ jest.mock("@/settings/privacy", () => ({
 describe("one-off asynchronous surfaces", () => {
   it("exposes quote token loading and failures distinctly", async () => {
     const screen = await render(
-      <QuoteTokenState loading text="Loading token identity" />,
+      <SettingsProvider>
+        <QuoteTokenState loading text="Loading token identity" />
+      </SettingsProvider>,
     );
     expect(screen.getByRole("summary").props.accessibilityState).toEqual({
       busy: true,
     });
 
     await screen.rerender(
-      <QuoteTokenState loading={false} text="Provider failed" />,
+      <SettingsProvider>
+        <QuoteTokenState loading={false} text="Provider failed" />
+      </SettingsProvider>,
     );
     expect(screen.getByRole("alert")).toBeTruthy();
+  });
+
+  it("guards quote token identity recovery while refetching", async () => {
+    const retry = jest.fn();
+    const screen = await render(
+      <SettingsProvider>
+        <QuoteTokenState
+          loading={false}
+          text="Provider failed"
+          retrying
+          onRetry={retry}
+        />
+      </SettingsProvider>,
+    );
+    const button = screen.getByLabelText("Retry");
+    expect(button.props.accessibilityState).toEqual({ busy: true, disabled: true });
+    await fireEvent.press(button);
+    expect(retry).not.toHaveBeenCalled();
   });
 
   it("exposes reset busy and outcome states", async () => {

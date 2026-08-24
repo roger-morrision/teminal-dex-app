@@ -1023,6 +1023,13 @@
 - Token content, provider contracts, route identity, quote review, simulation evidence, confirmation gates and execution locks are unchanged.
 - Strict TypeScript, focused ESLint and 4 token/state/accessibility suites with 43 tests passed.
 
+## 2026-08-25 — Slice 112: recover quote token identity
+
+- Audited quote review's prerequisite reads and found a failed validated token-identity request produced a terminal alert with no recovery action.
+- Added a localized, accessible identity retry bound to the exact detail query; it is disabled and announced busy during refetch so the quote flow cannot generate overlapping identity requests.
+- Quote validation, expiry, unsigned build, inspection, Helius simulation, explicit intent confirmation, replay protection, signing lock and submission absence are unchanged.
+- Strict TypeScript, focused ESLint and 4 quote/safety/accessibility suites with 40 tests passed.
+
 ## 2026-08-24 — Slice 100: truthful Whale wallet navigation
 
 - Audited the non-empty wallet-ranking flow and found that the aggregate “Open Wallet Intelligence” footer silently routed to the first ranked address, duplicating row-detail behavior.

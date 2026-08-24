@@ -2,6 +2,8 @@
 
 Date: 2026-08-24
 
+The continuation for phases 78–87 is maintained in `PHASES_78_TO_87_LEDGER.md`.
+
 This ledger separates implementation completeness from real-world authority. A local test or Boolean cannot stand in for durable backend data, a physical-device run, a named approval, a wallet signature, or funded network evidence. Live execution remains disabled.
 
 | Phase | Delivered in this repository | Closure status |

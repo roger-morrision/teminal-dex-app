@@ -785,3 +785,10 @@
 - Simplified Whales scanning: buy/sell cards now use directional edge color, newest cards carry subtle semantic backgrounds, and price/market-cap/1h evidence uses distinct compact chips instead of an undifferentiated metadata sentence.
 - Consolidated two dense evidence disclaimers into one shield-marked evidence panel that preserves all safety meaning while reducing visual noise. No promotional, predictive or execution language was introduced.
 - Strict TypeScript, targeted ESLint and 39 focused accessibility/whale tests passed. Visual emulator verification remains externally blocked because Android reports no device and the SDK exposes no configured AVD.
+
+## 2026-08-24 — Slice 79: large-text whale evidence recovery
+
+- Reconnected to `emulator-5554` and replayed Whales at Android system font scale 1.3. The test exposed wrapped high-value whale amounts and KPI totals that made the signal cards harder to scan.
+- Added bounded single-line font fitting to newest-event amounts and KPI values, plus shrink-safe token/direction headers. Values remain complete in accessibility labels and are never truncated into a different financial value.
+- Restored the emulator font scale to 1.0 after capture. Strict TypeScript, targeted ESLint, 10 focused whale tests, native hierarchy inspection, and React Native/Android error-log checks passed.
+- Durable whale history and alert delivery remain backend-contract blocked; physical TalkBack/VoiceOver certification remains external.

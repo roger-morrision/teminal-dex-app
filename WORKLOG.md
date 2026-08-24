@@ -1009,6 +1009,13 @@
 - Feed pagination remains separately guarded; provider evidence, filters, exact-mint navigation, delivery boundaries, schemas, and backend contracts are unchanged.
 - Strict TypeScript, focused ESLint and 4 Track/state/accessibility suites with 43 tests passed.
 
+## 2026-08-25 — Slice 110: guarded Token Detail recovery
+
+- Advanced the recovery audit to Token Detail and found its shared provider-panel retry remained enabled during refetch across token identity, whale chronology, chart, and generic evidence tabs.
+- Added accessible busy/disabled state to the shared retry and routed each originating query's refetch state through it, preventing overlapping detail-provider requests.
+- Token evidence, exact-mint routing, chart timeframes, holder/security/transaction contracts, quote safety and execution locks are unchanged.
+- Strict TypeScript, focused ESLint and 5 token/state/accessibility suites with 52 tests passed.
+
 ## 2026-08-24 — Slice 100: truthful Whale wallet navigation
 
 - Audited the non-empty wallet-ranking flow and found that the aggregate “Open Wallet Intelligence” footer silently routed to the first ranked address, duplicating row-detail behavior.

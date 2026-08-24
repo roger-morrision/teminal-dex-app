@@ -152,6 +152,7 @@ export default function TokenDetail() {
           error
           title={t("tokenUnavailable")}
           message={detail.error?.message ?? t("noTokenRecord")}
+          retrying={detail.isFetching}
           onRetry={() => detail.refetch()}
         />
       </SafeAreaView>
@@ -558,7 +559,7 @@ function WhaleEvidencePanel({
 }) {
   const { t } = useSettings();
   if (query.isLoading) return <PanelState loading message={t("loadingWhaleActivity")} />;
-  if (query.isError) return <PanelState error message={query.error.message} onRetry={() => query.refetch()} />;
+  if (query.isError) return <PanelState error message={query.error.message} retrying={query.isFetching} onRetry={() => query.refetch()} />;
   const events = whaleActivityForToken(query.data?.notifications ?? [], address);
   const flow = aggregateWhaleActivity(events)[0];
   const historical = Boolean(
@@ -724,6 +725,7 @@ function ChartPanel({
           error={query.isError}
           title={query.isError ? t("chartUnavailable") : undefined}
           message={query.error?.message ?? t("loadingCandles")}
+          retrying={query.isFetching}
           onRetry={() => query.refetch()}
         />
       )}
@@ -806,6 +808,7 @@ function AsyncPanel<T>({
         error
         title={t("dataUnavailable")}
         message={query.error?.message ?? t("noValidatedResponse")}
+        retrying={query.isFetching}
         onRetry={() => query.refetch()}
       />
     );
@@ -816,12 +819,14 @@ export function PanelState({
   error,
   title,
   message,
+  retrying = false,
   onRetry,
 }: {
   loading?: boolean;
   error?: boolean;
   title?: string;
   message: string;
+  retrying?: boolean;
   onRetry?: () => void;
 }) {
   const { t } = useSettings();
@@ -840,7 +845,9 @@ export function PanelState({
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={t("retry")}
-          style={styles.retry}
+          accessibilityState={{ busy: retrying, disabled: retrying }}
+          disabled={retrying}
+          style={[styles.retry, retrying && styles.disabled]}
           onPress={onRetry}
         >
           <Text style={styles.retryTextDark}>{t("retry")}</Text>
@@ -1093,6 +1100,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 10,
   },
+  disabled: { opacity: 0.55 },
   retryTextDark: { color: colors.background, fontWeight: "900" },
   retryText: { color: colors.accent, fontWeight: "900" },
   timeframes: {

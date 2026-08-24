@@ -55,6 +55,25 @@ describe("primary and detail dynamic states", () => {
     });
   });
 
+  it("guards Token Detail recovery while refetching", async () => {
+    const retry = jest.fn();
+    const screen = await render(
+      <SettingsProvider>
+        <PanelState
+          error
+          title="Unavailable"
+          message="Provider failed"
+          retrying
+          onRetry={retry}
+        />
+      </SettingsProvider>,
+    );
+    const button = screen.getByLabelText("Retry");
+    expect(button.props.accessibilityState).toEqual({ busy: true, disabled: true });
+    await fireEvent.press(button);
+    expect(retry).not.toHaveBeenCalled();
+  });
+
   it("guards Discover recovery while a retry is in progress", async () => {
     const retry = jest.fn();
     const screen = await render(

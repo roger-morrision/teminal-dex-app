@@ -7,6 +7,7 @@
     "start": "expo start",
     "android": "expo run:android",
     "dev": "expo start --dev-client",
+    "dev:verified": "node scripts/start-verified.mjs",
     "ios": "expo start --ios",
     "web": "expo start --web",
     "typecheck": "tsc --noEmit",

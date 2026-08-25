@@ -131,3 +131,8 @@ No in-scope automated regression was found. Generated export directories were re
 
 - Android development fallback now uses `10.0.2.2:3000`, while non-Android development retains `127.0.0.1:3000`; explicit configuration and HTTPS production policy are unchanged.
 - API 37 runtime evidence confirms Whales renders without backend configuration/connection errors against the reachable host service. No mock data, credential, WEB mutation, signing, or transaction authority was introduced.
+
+## MOBILE-153 immutable device evidence
+
+- Verified development startup is fail-closed on tracked dirty state and embeds exact Git HEAD into Expo config before Metro starts.
+- App mount emits only the public commit hash or `unverified`; no secrets, endpoints, wallet identity, or transaction evidence is included. QA can now correlate Android logs with an immutable MOBILE commit.

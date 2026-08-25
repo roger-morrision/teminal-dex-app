@@ -1320,3 +1320,10 @@
 - Added a platform-aware development-origin helper. Android now defaults to `http://10.0.2.2:3000`; iOS, web and unknown non-Android development platforms retain loopback. Explicit `EXPO_PUBLIC_API_URL` still wins, and production HTTP remains rejected.
 - Focused client coverage passes 35/35, including Android plus four non-Android platform cases. TypeScript and focused lint pass. Runtime API 37 validation reached the host, removed both configuration and connection error states, rendered Whales, mounted React Native, and logged no fatal/ANR/module-resolution failure.
 - 20 findings were reconciled across QA/runtime/data/security/platform lanes. One material routing defect was fixed with six independently testable platform/runtime outcomes; shortfall 14 remains physical accessibility/quote certification, WEB-QC-gated fixtures, upstream Metro warning ownership, and the concurrent Whales/logo slice.
+
+## 2026-08-26 — MOBILE-153: immutable runtime provenance
+
+- QA could validate source and device reachability but could not bind a Metro-served JavaScript bundle to an immutable commit. Added `dev:verified`, which derives exact Git HEAD, refuses tracked dirty state, passes the public hash only to the child Expo process, and preserves interactive device tooling.
+- Expo config now exposes a nullable `mobileBuildCommit`; the app emits one bounded development-only `[MOBILE_BUILD]` marker at mount. Ordinary development remains explicitly `unverified` instead of fabricating provenance.
+- Seven focused provenance contracts, Expo config injection, dirty-state fail-closed behavior, TypeScript and warning-free lint pass. No endpoint, credential, user identity, signing, submission, or transaction data is logged.
+- 20 findings reconciled; 7 outcomes completed; shortfall 13 remains physical QA scenarios, WEB-QC-gated fixtures, upstream Metro warning ownership, and concurrent Whales/logo work.

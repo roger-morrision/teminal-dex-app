@@ -45,6 +45,13 @@
 
 **CONDITIONAL NO-GO for release certification.** Automated and static checks pass at `fd0800f`; do not claim device/runtime or DEV-acceptance sign-off until MOBILE-QA-001 and MOBILE-QA-002 are closed. No product defect was found by the available independent evidence.
 
+## Recheck — 2026-08-25T09:58:33.0856144Z
+
+- MOBILE-QA qa_scope_changed: the worktree is no longer stable. Uncommitted changes are present in `src/__tests__/TokenRow.test.tsx`, `src/components/TokenAvatar.tsx`, and `src/components/TokenRow.tsx`, with an untracked `docs/automation-handoffs/mobile-to-web-token-demographics.md`. They were not created or inspected as QA input, and no mixed-state testing was run.
+- MOBILE-QA-001 remains OPEN: `AGENTS.md` and the required `mobile-dev-latest.md` handoff are still absent.
+- MOBILE-QA-002 is narrowed but remains OPEN: Android SDK Platform Tools contains `adb.exe` at `C:\Users\tuan.tran\AppData\Local\Android\Sdk\platform-tools\adb.exe`, but it is missing from PATH. Direct `adb start-server` and `adb devices -l` did not return; multiple active adb processes exist. QA did not terminate an existing shared Android server.
+- Exact NEXT_DEV_ACTION: commit or revert the current DEV work, publish the required DEV handoff, then make a single responsive Android emulator/device available through a healthy adb server (or explicitly authorize reset of the shared server). MOBILE-QA will re-run runtime certification against that immutable commit.
+
 ## Safe evidence references
 
 - Command outputs were retained in this automation task; no secrets, backend origins, or provider diagnostics are included here.

@@ -213,6 +213,7 @@ export async function fetchDiscovery(
     period,
     sort: mode === "watchlist" ? "trending" : mode,
     limit: "50",
+    view: "mobile",
   });
   if (cursor && /^\d+$/.test(cursor)) query.set("cursor", cursor);
   if (filters.dex !== "All") query.set("dex", filters.dex);

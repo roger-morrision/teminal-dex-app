@@ -180,6 +180,20 @@ describe("backend client routing", () => {
     ).rejects.toThrow("non-advancing cursor");
   });
 
+  it("requests the bounded mobile projection for the main discovery feed", async () => {
+    jest.mocked(fetch).mockResolvedValue(
+      jsonResponse({ tokens: [token], source: "gmgn", dataQuality: "provider_live" }),
+    );
+    await fetchDiscovery("trending", "24h", {
+      dex: "All",
+      minLiquidity: "",
+      minMarketCap: "",
+    });
+    expect(jest.mocked(fetch).mock.calls[0]?.[0]).toBe(
+      "https://terminal.example/api/trending?period=24h&sort=trending&limit=50&view=mobile",
+    );
+  });
+
   it("encodes search terms and validates token detail", async () => {
     const address = "11111111111111111111111111111111";
     jest

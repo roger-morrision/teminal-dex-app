@@ -1185,3 +1185,9 @@
 - Re-ran the nine-phase review after Android emulator verification. All remaining product gaps require external provider configuration, physical-device evidence, or separately approved transaction authority; the next dependency-ready release-evidence defect was generated Expo router declarations producing an ESLint warning.
 - Excluded only `.expo/**` from lint alongside existing generated coverage/export output while retaining `.expo/types` in strict TypeScript compilation.
 - Repository-wide ESLint now completes with zero warnings, so future warnings identify source-owned regressions instead of generated-file noise.
+
+## 2026-08-25 — Slice 135: compact mobile Trending delivery
+
+- Reproduced the backend issue against the live local service: a 50-row main Trending response transferred about 257 KB because mobile received dozens of desktop-only diagnostic fields per token.
+- Added an explicit `view=mobile` projection that retains every field consumed by the strict mobile schema and current Discover UI while leaving the default web/backend contract unchanged.
+- Live verification returned the same 50 exact token rows in about 39.6 KB, an approximately 84.6% payload reduction; backend and mobile TypeScript, focused ESLint, Trending contract, and client routing tests pass.

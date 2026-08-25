@@ -147,7 +147,7 @@ export default function CopyTradeScreen() {
           <State
             compact
             error
-            text={health.error.message}
+            text={t("evidenceLoadFailed")}
             action={t("retry")}
             actionBusy={health.isFetching}
             onAction={() => health.refetch()}
@@ -186,7 +186,7 @@ export default function CopyTradeScreen() {
           <Rankings
             data={rankings.data?.traders ?? []}
             loading={rankings.isLoading}
-            error={rankings.error?.message}
+            error={rankings.error ? t("evidenceLoadFailed") : undefined}
             retrying={rankings.isFetching}
             onRetry={() => rankings.refetch()}
             source={rankings.data?.source}
@@ -202,7 +202,7 @@ export default function CopyTradeScreen() {
           <Strategies
             data={configs.data ?? []}
             loading={configs.isLoading}
-            error={configs.error?.message}
+            error={configs.error ? t("evidenceLoadFailed") : undefined}
             retrying={configs.isFetching}
             onRetry={() => configs.refetch()}
             onChanged={invalidate}
@@ -212,7 +212,7 @@ export default function CopyTradeScreen() {
             positions={positions.data ?? []}
             executions={executions.data ?? []}
             loading={positions.isLoading || executions.isLoading}
-            error={positions.error?.message ?? executions.error?.message}
+            error={positions.error || executions.error ? t("evidenceLoadFailed") : undefined}
             retrying={positions.isFetching || executions.isFetching}
             onRetry={() => {
               if (positions.error) void positions.refetch();

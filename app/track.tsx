@@ -120,7 +120,7 @@ export default function TrackScreen() {
         ) : feed.isError || !feed.data ? (
           <State
             error
-            text={feed.error?.message ?? t("trackUnavailable")}
+            text={t("trackUnavailable")}
             retrying={feed.isFetching}
             onRetry={() => feed.refetch()}
           />
@@ -157,7 +157,7 @@ export default function TrackScreen() {
               social.isLoading ? (
                 <State loading text={t("loadingSocialTrack")} />
               ) : social.isError || !social.data ? (
-                <State error text={social.error?.message ?? t("socialTrackUnavailable")} retrying={social.isFetching} onRetry={() => social.refetch()} />
+                <State error text={t("socialTrackUnavailable")} retrying={social.isFetching} onRetry={() => social.refetch()} />
               ) : social.data.data.trends.length ? (
                 <>
                   {social.data.data.trends.map((item) => (
@@ -192,7 +192,7 @@ export default function TrackScreen() {
             {history.isLoading ? (
               <State loading text={t("loadingFeedHistory")} />
             ) : history.isError || !history.data ? (
-              <State error text={history.error?.message ?? t("feedHistoryUnavailable")} retrying={history.isFetching && !history.isFetchingNextPage} onRetry={() => history.refetch()} />
+              <State error text={t("feedHistoryUnavailable")} retrying={history.isFetching && !history.isFetchingNextPage} onRetry={() => history.refetch()} />
             ) : history.data.pages.flatMap((page) => page.events).length ? (
               <>
                 {history.data.pages.flatMap((page) => page.events).slice(0, 200).map((item) => (
@@ -218,7 +218,7 @@ export default function TrackScreen() {
         ) : deliveries.isError || !deliveries.data ? (
           <State
             error
-            text={deliveries.error?.message ?? t("deliveryUnavailable")}
+            text={t("deliveryUnavailable")}
             retrying={deliveries.isFetching}
             onRetry={() => deliveries.refetch()}
           />

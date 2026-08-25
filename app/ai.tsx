@@ -141,7 +141,7 @@ export default function AiScreen() {
           <Advisories
             data={recommendations.data ?? []}
             loading={recommendations.isLoading}
-            error={recommendations.error?.message}
+            error={recommendations.error ? t("evidenceLoadFailed") : undefined}
             retrying={recommendations.isFetching}
             onRetry={() => recommendations.refetch()}
             onOpen={(address) =>
@@ -152,7 +152,7 @@ export default function AiScreen() {
           <Paper
             report={paper.data}
             loading={paper.isLoading}
-            error={paper.error?.message}
+            error={paper.error ? t("evidenceLoadFailed") : undefined}
             retrying={paper.isFetching}
             onRetry={() => paper.refetch()}
           />
@@ -168,7 +168,7 @@ export default function AiScreen() {
           <GmgnHistory
             data={gmgnHistory.data}
             loading={gmgnHistory.isLoading}
-            error={gmgnHistory.error?.message}
+            error={gmgnHistory.error ? t("evidenceLoadFailed") : undefined}
             retrying={gmgnHistory.isFetching}
             onRetry={() => gmgnHistory.refetch()}
             onOpen={(address) =>
@@ -179,7 +179,7 @@ export default function AiScreen() {
           <Governance
             data={platform.data}
             loading={platform.isLoading}
-            error={platform.error?.message}
+            error={platform.error ? t("evidenceLoadFailed") : undefined}
             retrying={platform.isFetching}
             onRetry={() => platform.refetch()}
           />

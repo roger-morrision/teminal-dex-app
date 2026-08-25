@@ -213,7 +213,7 @@ function AnalyticsPanel({
     return (
       <State
         error
-        text={market.error.message}
+        text={t("evidenceLoadFailed")}
         action={t("retry")}
         actionBusy={market.isFetching}
         onAction={() => market.refetch()}
@@ -245,7 +245,7 @@ function AnalyticsPanel({
       <SectionTitle title={t("momentumLeaders")} detail={t("momentumDetail")} />
       {gainers.error ? (
         <InlineWarning
-          text={gainers.error.message}
+          text={t("evidenceLoadFailed")}
           retrying={gainers.isFetching}
           onRetry={() => gainers.refetch()}
         />
@@ -264,7 +264,7 @@ function AnalyticsPanel({
       <SectionTitle title={t("freshPairs")} detail={t("canonicalDedup")} />
       {fresh.error ? (
         <InlineWarning
-          text={fresh.error.message}
+          text={t("evidenceLoadFailed")}
           retrying={fresh.isFetching}
           onRetry={() => fresh.refetch()}
         />
@@ -288,7 +288,7 @@ function AnalyticsPanel({
       />
       {traders.error ? (
         <InlineWarning
-          text={traders.error.message}
+          text={t("evidenceLoadFailed")}
           retrying={traders.isFetching}
           onRetry={() => traders.refetch()}
         />
@@ -357,14 +357,14 @@ function FeedPanel({
       ) : null}
       {connections.error ? (
         <InlineWarning
-          text={connections.error.message}
+          text={t("evidenceLoadFailed")}
           retrying={connections.isFetching}
           onRetry={() => connections.refetch()}
         />
       ) : null}
       {diagnostics.error ? (
         <InlineWarning
-          text={diagnostics.error.message}
+          text={t("evidenceLoadFailed")}
           retrying={diagnostics.isFetching}
           onRetry={() => diagnostics.refetch()}
         />

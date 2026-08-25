@@ -116,7 +116,7 @@ export default function WalletIntelligenceScreen() {
             data={smart}
             response={rankings.data}
             loading={rankings.isLoading}
-            error={rankings.error?.message}
+            error={rankings.error ? t("evidenceLoadFailed") : undefined}
             retrying={rankings.isFetching}
             onRetry={() => rankings.refetch()}
             selected={smartSelected}
@@ -416,7 +416,7 @@ function WalletEvidence({ address }: { address: string }) {
   });
   if (holdings.isLoading || pnl.isLoading)
     return <State loading text={t("loadingWalletEvidence")} />;
-  if (holdings.error) return <State error text={holdings.error.message} action={t("retry")} actionBusy={holdings.isFetching} onAction={() => holdings.refetch()} />;
+  if (holdings.error) return <State error text={t("evidenceLoadFailed")} action={t("retry")} actionBusy={holdings.isFetching} onAction={() => holdings.refetch()} />;
   const wallet = holdings.data?.wallet;
   return (
     <View style={styles.detail}>
@@ -450,7 +450,7 @@ function WalletEvidence({ address }: { address: string }) {
       ))}
       {pnl.error ? (
         <InlineEvidenceFailure
-          message={pnl.error.message}
+          message={t("evidenceLoadFailed")}
           retrying={pnl.isFetching}
           onRetry={() => pnl.refetch()}
         />

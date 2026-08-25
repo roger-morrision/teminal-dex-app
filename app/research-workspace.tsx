@@ -262,10 +262,11 @@ export function SnipeCard({
             <Text style={styles.meta}>
               {token.isLoading
                 ? t("loadingTokenEvidence")
-                : (token.error?.message ??
-                  (data
+                : token.error
+                  ? t("tokenUnavailable")
+                  : data
                     ? `${tokenPrice(data.price)} · ${signedPercent(data.change24h)}`
-                    : t("tokenUnavailable")))}
+                    : t("tokenUnavailable")}
             </Text>
           </View>
         </Pressable>
@@ -490,7 +491,9 @@ function ChartPanel({
           <Text style={styles.meta}>
             {token.data?.token
               ? `${tokenPrice(token.data.token.price)} · ${signedPercent(token.data.token.change24h)}`
-              : (token.error?.message ?? t("loadingTokenIdentity"))}
+              : token.error
+                ? t("tokenUnavailable")
+                : t("loadingTokenIdentity")}
           </Text>
         </Pressable>
         <RefreshChartButton
@@ -515,7 +518,7 @@ function ChartPanel({
       ) : chart.error ? (
         <State
           error
-          text={chart.error.message}
+          text={t("chartUnavailable")}
           action={t("retry")}
           actionBusy={chart.isFetching}
           onAction={() => chart.refetch()}

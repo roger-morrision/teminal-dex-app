@@ -267,7 +267,7 @@ function SignalsPanel({
       {query.isLoading ? (
         <State loading text={t("loadingSignals")} />
       ) : query.error ? (
-        <State error text={query.error.message} action={t("retry")} actionBusy={query.isFetching && !query.isFetchingNextPage} onAction={() => query.refetch()} />
+        <State error text={t("evidenceLoadFailed")} action={t("retry")} actionBusy={query.isFetching && !query.isFetchingNextPage} onAction={() => query.refetch()} />
       ) : items.length ? (
         items.map((item) => (
           <SignalCard key={item.id} item={item} onToken={onToken} />
@@ -385,7 +385,7 @@ function HeatmapPanel({
     [data],
   );
   if (query.isLoading) return <State loading text={t("loadingHeatmap")} />;
-  if (query.error) return <State error text={query.error.message} action={t("retry")} actionBusy={query.isFetching} onAction={() => query.refetch()} />;
+  if (query.error) return <State error text={t("evidenceLoadFailed")} action={t("retry")} actionBusy={query.isFetching} onAction={() => query.refetch()} />;
   return (
     <View>
       {data ? (
@@ -502,10 +502,10 @@ function ClaimsPanel({
         </>
       ) : null}
       {query.error ? (
-        <State error text={query.error.message} action={t("retry")} actionBusy={query.isFetching} onAction={() => query.refetch()} />
+        <State error text={t("evidenceLoadFailed")} action={t("retry")} actionBusy={query.isFetching} onAction={() => query.refetch()} />
       ) : data?.error ? (
         <View accessibilityRole="alert" style={styles.warningBox}>
-          <Text style={styles.warningText}>{data.error}</Text>
+          <Text style={styles.warningText}>{t("evidenceLoadFailed")}</Text>
         </View>
       ) : null}
       <View accessibilityRole="radiogroup" style={styles.filters}>

@@ -51,4 +51,23 @@ describe('audited-screen accessibility contract', () => {
     expect(source).not.toContain('query.error.message');
     expect(source).toContain('t("evidenceLoadFailed")');
   });
+
+  it.each([
+    'app/ai.tsx',
+    'app/market-intelligence.tsx',
+    'app/wallet-intelligence.tsx',
+    'app/research-workspace.tsx',
+    'app/operations.tsx',
+    'app/track.tsx',
+  ])('%s keeps auxiliary read failures private', (file) => {
+    const source = readFileSync(join(process.cwd(), file), 'utf8');
+    expect(source).not.toMatch(/(?:query|feed|social|history|deliveries|rankings|holdings|pnl|token|chart|market|gainers|fresh|traders|connections|diagnostics)\.error\??\.message/);
+  });
+
+  it('keeps CopyTrade read failures private while preserving mutation feedback', () => {
+    const source = readFileSync(join(process.cwd(), 'app/copytrade.tsx'), 'utf8');
+    expect(source).not.toMatch(/(?:health|rankings|configs|positions|executions)\.error\??\.message/);
+    expect(source).toContain('mutation.error.message');
+    expect(source).toContain('t("evidenceLoadFailed")');
+  });
 });

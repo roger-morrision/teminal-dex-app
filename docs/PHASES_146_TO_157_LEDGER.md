@@ -20,3 +20,7 @@ Date: 2026-08-25
 No local classifier, test, emulator run or ledger entry grants signing, submission, intent consumption, CopyTrade activation or production authority.
 
 Validation: strict TypeScript, warning-free source lint, 76 Jest suites / 354 tests, and fresh 25-route web/Android/iOS exports passed. The known Noble hashes fallback warning remains non-fatal.
+
+## Phase 158 continuation
+
+Monitor preference persistence now clears stale error state synchronously and records only the newest asynchronous save failure. Pagination interaction and teardown are explicitly awaited in tests, eliminating React state-update warnings without suppressing console diagnostics.

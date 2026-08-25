@@ -115,6 +115,16 @@ const NON_PAGEABLE_DISCOVERY_MODES: ReadonlySet<DiscoveryMode> = new Set([
   "pump-live",
 ]);
 
+export function getDiscoveryModeCapabilities(mode: DiscoveryMode): {
+  period: boolean;
+  filters: boolean;
+} {
+  if (mode === "new-pairs" || NON_PAGEABLE_DISCOVERY_MODES.has(mode)) {
+    return { period: false, filters: false };
+  }
+  return { period: true, filters: mode !== "watchlist" };
+}
+
 export function getDiscoveryNextPageParam(
   mode: DiscoveryMode,
   page: TrendingResponse,

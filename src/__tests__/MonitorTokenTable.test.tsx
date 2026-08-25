@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { fireEvent, render, waitFor } from "@testing-library/react-native";
+import { act, fireEvent, render, waitFor } from "@testing-library/react-native";
 import { MonitorTokenTable } from "@/components/MonitorTokenTable";
 import { SettingsProvider } from "@/settings/SettingsProvider";
 import { fetchDiscovery } from "@/api/client";
@@ -115,7 +115,9 @@ describe("MonitorTokenTable", () => {
     fireEvent.changeText(await screen.findByLabelText("Liquidity"), "100");
     await waitFor(() => expect(screen.queryByText("FIRST")).toBeNull());
     const more = await screen.findByLabelText("Load more monitor tokens");
-    fireEvent.press(more);
+    await act(async () => {
+      fireEvent.press(more);
+    });
     await waitFor(() => expect(screen.getByText("SECOND")).toBeTruthy());
     expect(mockedFetch).toHaveBeenLastCalledWith(
       "trending",
@@ -126,7 +128,9 @@ describe("MonitorTokenTable", () => {
     );
     expect(screen.queryByLabelText("Load more monitor tokens")).toBeNull();
     expect(screen.getByText(/1\/2 records/)).toBeTruthy();
-    screen.unmount();
-    client.clear();
+    await act(async () => {
+      screen.unmount();
+      client.clear();
+    });
   });
 });

@@ -2,7 +2,7 @@
 
 Audit date: 2026-08-24
 
-Audit maintained through: Slice 138
+Audit maintained through: Slice 139
 
 Backend authority: `C:\Tuan\devApps\TERMINAL_DEX_Intelligent` (source of truth; isolated Slice 43–49 contracts added with explicit write approval)
 
@@ -26,7 +26,7 @@ Completion is intentionally not claimed for requirements that need an absent bac
 | AI and auxiliary intelligence           | Verified                                     | Advisory-only AI with busy-safe advisory/paper/history/governance recovery, public simulation performance/research plus operational, mutation, lease, and cycle-fencing health, execution-disabled governance, owner-scoped durable GMGN provider discovery history with exact Solana mint/provenance/freshness/quality/confidence verification, bounded four-page Signals history with unique descending rows and fail-closed cursor continuity, accessible busy-safe Signals/Heatmap/Claims/Smart Money/wallet-holdings/partial-PnL/Snipe-candidate/Multicharts-chart recovery, wallet tracker, Snipe List, Multicharts, analytics, and GET-only feed operations with query-specific busy-safe market/inventory/channel/diagnostic recovery evidence and refresh deltas. |
 | Localization, privacy, accessibility    | Automated verification passed                | Typed English/Vietnamese copy, reduced motion, telemetry default-off, privacy reset, roles/labels/busy/error/empty/retry semantics, centralized public-error sanitization, wallet-adapter boundary redaction, private provider/audit failures, and a static all-route control/error-privacy audit.                                                                                                                                                                  |
 | Network and platform hardening          | Automated verification passed                | React Query online/offline policy, bounded retry behavior, ATS/cleartext/backup configuration, deep-link allowlisting, redaction, native-safe wallet-signature encoding, Expo Doctor, and web/Android/iOS exports. Slice 93 rebuilt and installed the development client on the API 37 emulator, repaired its required splash dependency, and verified Whales/Discover rendering, tab navigation, truthful backend-offline recovery, and clean fatal-error log inspection. |
-| Tests and build regression              | Verified                                     | TypeScript, warning-free source-owned ESLint, 76 Jest suites / 354 tests and fresh 25-route web/Android/iOS exports pass through Slice 138. Expo-generated router declarations are excluded from lint while remaining included in TypeScript. The Android debug assemble/install/runtime check also passes. The Expo Doctor 21/21 result from Slice 60 remains the latest Doctor evidence because its standalone executable is absent in this checkout. |
+| Tests and build regression              | Verified                                     | TypeScript, warning-free source-owned ESLint, and 76 Jest suites / 354 tests with warning-free Monitor pagination output pass through Slice 139; fresh 25-route web/Android/iOS exports pass through Slice 138. Expo-generated router declarations are excluded from lint while remaining included in TypeScript. The Android debug assemble/install/runtime check also passes. The Expo Doctor 21/21 result from Slice 60 remains the latest Doctor evidence because its standalone executable is absent in this checkout. |
 
 ## Remaining blockers
 

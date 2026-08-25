@@ -1212,3 +1212,9 @@
 - Added a fail-closed classifier and adversarial coverage for timeout, rate-limit, configuration, storage, simulation, delivery and unknown payloads; raw origins/secrets never become translation keys or rendered text.
 - Audited Phases 149–157 and recorded exact backend configuration/contract, physical-device, funded execution and organizational approval requirements. No execution or production authority was inferred.
 - Strict TypeScript, warning-free source lint, 76 Jest suites / 354 tests, and fresh 25-route web/Android/iOS exports passed. Generated verification output was removed; the known Noble hashes fallback warning remains non-fatal.
+
+## 2026-08-25 — Slice 139: phase 158 warning-free Monitor persistence
+
+- Removed the successful asynchronous storage-state update from Monitor table preference persistence. Stale failure UI now clears synchronously, while sequence fencing still allows only the newest save failure to surface.
+- Wrapped cursor pagination interaction and Query Client teardown in React `act` so the regression suite waits for observer notifications instead of emitting asynchronous state-update warnings.
+- Strict TypeScript, warning-free source lint, and all 76 Jest suites / 354 tests passed with clean Monitor pagination output. Rendered behavior, paging contracts, provider data and transaction authority are unchanged; the fresh Slice 138 platform exports remain applicable.

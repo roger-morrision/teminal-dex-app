@@ -96,14 +96,10 @@ export function MonitorTokenTable({ polling = true }: { polling?: boolean }) {
     const next = { ...preferences, ...change };
     const sequence = ++saveSequence.current;
     setPreferences(next);
-    void saveMonitorTablePreferences(next).then(
-      () => {
-        if (sequence === saveSequence.current) setStorageError(false);
-      },
-      () => {
-        if (sequence === saveSequence.current) setStorageError(true);
-      },
-    );
+    setStorageError(false);
+    void saveMonitorTablePreferences(next).catch(() => {
+      if (sequence === saveSequence.current) setStorageError(true);
+    });
   };
   const resetFilters = () =>
     update({

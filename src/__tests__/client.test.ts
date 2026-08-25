@@ -30,6 +30,7 @@ import {
   fetchWalletHoldings,
   fetchWalletPnl,
   getApiOrigin,
+  getDiscoveryModeCapabilities,
   getDiscoveryNextPageParam,
   pauseCopyTradeConfig,
   searchTokens,
@@ -170,6 +171,16 @@ describe("backend client routing", () => {
         pagination: { hasMore: true, nextCursor: "opaque" },
       }, [specialPage]),
     ).toBe("opaque");
+  });
+
+  it("exposes only controls consumed by each discovery request contract", () => {
+    for (const mode of ["trending", "gainers", "losers", "volume", "new"] as const) {
+      expect(getDiscoveryModeCapabilities(mode)).toEqual({ period: true, filters: true });
+    }
+    expect(getDiscoveryModeCapabilities("watchlist")).toEqual({ period: true, filters: false });
+    for (const mode of ["new-pairs", "hot-searches", "surge", "nextbc", "pump-live"] as const) {
+      expect(getDiscoveryModeCapabilities(mode)).toEqual({ period: false, filters: false });
+    }
   });
 
   it("keeps offset pagination advancing after old pages leave the bounded cache", () => {

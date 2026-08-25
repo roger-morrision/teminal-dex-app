@@ -17,6 +17,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
   fetchDiscovery,
+  getDiscoveryModeCapabilities,
   getDiscoveryNextPageParam,
   fetchAlertDeliveries,
   fetchTrackFeed,
@@ -191,6 +192,10 @@ export default function DiscoverScreen() {
     Boolean(filters.minLiquidity),
     Boolean(filters.minMarketCap),
   ].filter(Boolean).length;
+  const modeCapabilities = getDiscoveryModeCapabilities(mode);
+  const searching = debouncedSearch.length >= 2;
+  const effectiveFilterCount =
+    !searching && modeCapabilities.filters ? activeFilterCount : 0;
 
   function toggleWatch(token: MarketToken) {
     const removing = watchlist.includes(token.address);
@@ -329,6 +334,8 @@ export default function DiscoverScreen() {
                     onPress={() => {
                       setMode(item.id);
                       setSearch("");
+                      setFiltersOpen(false);
+                      setDraftFilters(filters);
                       if (item.id === "watchlist")
                         void saveWatchlistWindow(period).then(
                           () =>
@@ -353,58 +360,57 @@ export default function DiscoverScreen() {
               })}
             </ScrollView>
             <View style={styles.periodRow}>
-              {periods.map((item) => (
+              {!searching && modeCapabilities.period
+                ? periods.map((item) => (
+                    <Pressable
+                      key={item}
+                      accessibilityRole="radio"
+                      accessibilityLabel={t("selectPeriod", { period: item })}
+                      accessibilityState={{ checked: period === item }}
+                      onPress={() => {
+                        setPeriod(item);
+                        if (mode === "watchlist")
+                          void saveWatchlistWindow(item).then(
+                            () =>
+                              setWatchStorageError((current) =>
+                                current === "window" ? null : current,
+                              ),
+                            () => setWatchStorageError("window"),
+                          );
+                      }}
+                    >
+                      <Text style={[styles.period, period === item && styles.activePeriod]}>
+                        {item}
+                      </Text>
+                    </Pressable>
+                  ))
+                : null}
+              {!searching && modeCapabilities.filters ? (
                 <Pressable
-                  key={item}
-                  accessibilityRole="radio"
-                  accessibilityLabel={t("selectPeriod", { period: item })}
-                  accessibilityState={{ checked: period === item }}
-                  onPress={() => {
-                    setPeriod(item);
-                    if (mode === "watchlist")
-                      void saveWatchlistWindow(item).then(
-                        () =>
-                          setWatchStorageError((current) =>
-                            current === "window" ? null : current,
-                          ),
-                        () => setWatchStorageError("window"),
-                      );
-                  }}
-                >
-                  <Text
-                    style={[
-                      styles.period,
-                      period === item && styles.activePeriod,
-                    ]}
-                  >
-                    {item}
-                  </Text>
-                </Pressable>
-              ))}
-              <Pressable
-                accessibilityRole="button"
-                accessibilityLabel={t("openFilters")}
-                onPress={() => setFiltersOpen(true)}
-                style={[
-                  styles.filterButton,
-                  activeFilterCount > 0 && styles.filterActive,
-                ]}
-              >
-                <Ionicons
-                  name="options"
-                  size={14}
-                  color={activeFilterCount ? colors.background : colors.muted}
-                />
-                <Text
+                  accessibilityRole="button"
+                  accessibilityLabel={t("openFilters")}
+                  onPress={() => setFiltersOpen(true)}
                   style={[
-                    styles.filterText,
-                    activeFilterCount > 0 && styles.filterTextActive,
+                    styles.filterButton,
+                    effectiveFilterCount > 0 && styles.filterActive,
                   ]}
                 >
-                  {t("filter")}
-                  {activeFilterCount ? ` ${activeFilterCount}` : ""}
-                </Text>
-              </Pressable>
+                  <Ionicons
+                    name="options"
+                    size={14}
+                    color={effectiveFilterCount ? colors.background : colors.muted}
+                  />
+                  <Text
+                    style={[
+                      styles.filterText,
+                      effectiveFilterCount > 0 && styles.filterTextActive,
+                    ]}
+                  >
+                    {t("filter")}
+                    {effectiveFilterCount ? ` ${effectiveFilterCount}` : ""}
+                  </Text>
+                </Pressable>
+              ) : null}
               <Text numberOfLines={1} style={styles.source}>
                 {debouncedSearch.length >= 2
                   ? (remoteSearch.data?.source ?? t("searching"))
@@ -442,7 +448,7 @@ export default function DiscoverScreen() {
               title={
                 mode === "watchlist"
                   ? t("watchlistEmpty")
-                  : debouncedSearch.length >= 2 || activeFilterCount > 0
+                  : debouncedSearch.length >= 2 || effectiveFilterCount > 0
                     ? t("noMatchingTokens")
                     : t("providerFeedEmptyTitle")
               }
@@ -451,19 +457,19 @@ export default function DiscoverScreen() {
                   ? t("watchlistHint")
                   : debouncedSearch.length >= 2
                     ? t("searchEmptyHint")
-                    : activeFilterCount > 0
+                    : effectiveFilterCount > 0
                       ? t("filtersHint")
                       : t("providerFeedEmpty", { source: firstPage?.source ?? t("providerUnavailable") })
               }
-              action={activeFilterCount > 0 ? t("resetFilters") : debouncedSearch.length >= 2 ? t("clearSearch") : t("retry")}
-              actionBusy={activeFilterCount === 0 && debouncedSearch.length < 2 && current.isFetching}
-              onAction={activeFilterCount > 0 ? resetFilters : debouncedSearch.length >= 2 ? () => setSearch("") : () => current.refetch()}
+              action={effectiveFilterCount > 0 ? t("resetFilters") : debouncedSearch.length >= 2 ? t("clearSearch") : t("retry")}
+              actionBusy={effectiveFilterCount === 0 && debouncedSearch.length < 2 && current.isFetching}
+              onAction={effectiveFilterCount > 0 ? resetFilters : debouncedSearch.length >= 2 ? () => setSearch("") : () => current.refetch()}
             />
           )
         }
       />
       <FilterModal
-        visible={filtersOpen}
+        visible={filtersOpen && !searching && modeCapabilities.filters}
         value={draftFilters}
         onChange={setDraftFilters}
         onClose={() => {

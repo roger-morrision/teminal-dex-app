@@ -143,6 +143,16 @@ export default function CopyTradeScreen() {
           <Ionicons name="shield-checkmark" size={15} color={colors.warning} />
           <Text style={styles.safetyText}>{t("copyTradeSafety")}</Text>
         </View>
+        {health.error ? (
+          <State
+            compact
+            error
+            text={health.error.message}
+            action={t("retry")}
+            actionBusy={health.isFetching}
+            onAction={() => health.refetch()}
+          />
+        ) : null}
         <View accessibilityRole="tablist" style={styles.tabs}>
           {tabs.map((item) => (
             <Pressable
@@ -177,6 +187,8 @@ export default function CopyTradeScreen() {
             data={rankings.data?.traders ?? []}
             loading={rankings.isLoading}
             error={rankings.error?.message}
+            retrying={rankings.isFetching}
+            onRetry={() => rankings.refetch()}
             source={rankings.data?.source}
             quality={rankings.data?.dataQuality}
             period={period}
@@ -191,6 +203,8 @@ export default function CopyTradeScreen() {
             data={configs.data ?? []}
             loading={configs.isLoading}
             error={configs.error?.message}
+            retrying={configs.isFetching}
+            onRetry={() => configs.refetch()}
             onChanged={invalidate}
           />
         ) : (
@@ -199,6 +213,11 @@ export default function CopyTradeScreen() {
             executions={executions.data ?? []}
             loading={positions.isLoading || executions.isLoading}
             error={positions.error?.message ?? executions.error?.message}
+            retrying={positions.isFetching || executions.isFetching}
+            onRetry={() => {
+              if (positions.error) void positions.refetch();
+              if (executions.error) void executions.refetch();
+            }}
           />
         )}
         {selected ? (
@@ -221,6 +240,8 @@ function Rankings({
   data,
   loading,
   error,
+  retrying,
+  onRetry,
   source,
   quality,
   period,
@@ -231,6 +252,8 @@ function Rankings({
   data: TopTrader[];
   loading: boolean;
   error?: string;
+  retrying: boolean;
+  onRetry: () => void;
   source?: string;
   quality?: string;
   period: "1D" | "7D" | "30D";
@@ -240,7 +263,7 @@ function Rankings({
 }) {
   const { t } = useSettings();
   if (loading) return <State loading text={t("loadingTraderOutcomes")} />;
-  if (error) return <State error text={error} />;
+  if (error) return <State error text={error} action={t("retry")} actionBusy={retrying} onAction={onRetry} />;
   return (
     <View>
       <View style={styles.toolbar}>
@@ -674,16 +697,20 @@ function Strategies({
   data,
   loading,
   error,
+  retrying,
+  onRetry,
   onChanged,
 }: {
   data: CopyTradeConfig[];
   loading: boolean;
   error?: string;
+  retrying: boolean;
+  onRetry: () => void;
   onChanged: () => void;
 }) {
   const { t } = useSettings();
   if (loading) return <State loading text={t("loadingStrategies")} />;
-  if (error) return <State error text={error} />;
+  if (error) return <State error text={error} action={t("retry")} actionBusy={retrying} onAction={onRetry} />;
   return (
     <View>
       <Text style={styles.provenance}>{t("strategyProvenance")}</Text>
@@ -815,15 +842,19 @@ function Activity({
   executions,
   loading,
   error,
+  retrying,
+  onRetry,
 }: {
   positions: CopyPosition[];
   executions: CopyExecution[];
   loading: boolean;
   error?: string;
+  retrying: boolean;
+  onRetry: () => void;
 }) {
   const { t } = useSettings();
   if (loading) return <State loading text={t("loadingExecutionAudit")} />;
-  if (error) return <State error text={error} />;
+  if (error) return <State error text={error} action={t("retry")} actionBusy={retrying} onAction={onRetry} />;
   return (
     <View>
       <Text style={styles.provenance}>{t("activityProvenance")}</Text>
@@ -1008,10 +1039,18 @@ export function State({
   loading,
   error,
   text,
+  compact = false,
+  action,
+  actionBusy = false,
+  onAction,
 }: {
   loading?: boolean;
   error?: boolean;
   text: string;
+  compact?: boolean;
+  action?: string;
+  actionBusy?: boolean;
+  onAction?: () => void;
 }) {
   return (
     <View
@@ -1019,10 +1058,22 @@ export function State({
       accessibilityRole={error ? "alert" : "summary"}
       accessibilityLiveRegion="polite"
       accessibilityState={loading ? { busy: true } : undefined}
-      style={styles.state}
+      style={[styles.state, compact && styles.stateCompact]}
     >
       {loading ? <ActivityIndicator color={colors.accent} /> : null}
       <Text style={styles.stateText}>{text}</Text>
+      {action && onAction ? (
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={action}
+          accessibilityState={{ busy: actionBusy, disabled: actionBusy }}
+          disabled={actionBusy}
+          onPress={onAction}
+          style={[styles.retry, actionBusy && styles.disabled]}
+        >
+          <Text style={styles.retryText}>{action}</Text>
+        </Pressable>
+      ) : null}
     </View>
   );
 }
@@ -1408,5 +1459,16 @@ const styles = StyleSheet.create({
     padding: spacing.xl,
     gap: spacing.md,
   },
+  stateCompact: { minHeight: 0, marginHorizontal: spacing.lg, padding: spacing.md },
   stateText: { color: colors.muted, textAlign: "center", lineHeight: 18 },
+  retry: {
+    minHeight: 44,
+    minWidth: 88,
+    paddingHorizontal: spacing.md,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 9,
+    backgroundColor: colors.accent,
+  },
+  retryText: { color: colors.background, fontSize: 9, fontWeight: "900" },
 });

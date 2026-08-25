@@ -1126,3 +1126,10 @@
 - Phase review: runtime eligible-token/provider population remains the primary data prerequisite; navigation and core page flows are complete; token-detail execution remains intentionally locked; visual priority remains transaction-first; recovery states are verified; device accessibility is the highest dependency-ready gap; native device evidence remains external; regression coverage remains locally runnable.
 - Added localized English/Vietnamese row semantics that explicitly announce qualifying held token, whale identity, buy/sell action and amount, and traded token.
 - Kept the visual held-token-left/traded-token-right hierarchy while ensuring artwork position and color are not the only carriers of meaning.
+
+## 2026-08-25 — Slice 126: recover CopyTrade evidence
+
+- Completed the remaining auxiliary recovery audit in CopyTrade and found health/readiness, trader rankings, saved strategies, positions, and execution-audit failures relied only on pull-to-refresh or terminal states.
+- Added localized query-bound recovery to each surface. Retry controls are accessible, disabled and announced busy during refetch, health recovery remains compact so independent ranking evidence stays usable, and labels without handlers do not render inert controls.
+- Paused-only strategy creation, verified-owner gates, persisted safety previews, provider provenance, mutation behavior, and the absence of activation, signing, closing, submission, and execution authority remain unchanged.
+- Strict TypeScript, repository-wide ESLint, 74 Jest suites / 307 tests, focused CopyTrade recovery/accessibility coverage, and fresh 25-route web/Android/iOS exports passed. Generated verification output was removed; the known Noble hashes fallback warning remains non-fatal.

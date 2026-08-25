@@ -86,7 +86,7 @@ function LiveEvents({ rows, largeText, onReset, onOpen }: { rows: TrackNotificat
     const buy = item.type.endsWith("buy");
     const whale = whaleHoldingIdentity(item);
     const amount = item.amountUsd == null ? "—" : compactUsd(item.amountUsd);
-    return <Pressable key={item.id} accessibilityRole="button" accessibilityLabel={t("openWhaleRelationship", { holder: whale?.label ?? t("unverifiedWhale"), holding: whale?.tokenSymbol ?? t("unknownToken"), action: t(buy ? "bought" : "sold"), amount, traded: item.tokenSymbol })} onPress={() => onOpen(item.tokenAddress)} style={[styles.card, largeText && { alignItems: "flex-start" }, { borderLeftWidth: 3, borderLeftColor: buy ? colors.positive : colors.negative }]}>
+    return <Pressable key={item.id} accessibilityRole="button" accessibilityLabel={t("openWhaleRelationship", { holder: whale?.label ?? t("unverifiedWhale"), holding: whale?.tokenSymbol ?? t("unknownToken"), action: t(buy ? "bought" : "sold"), amount, traded: item.tokenSymbol, dex: item.market.dex ?? t("unknownDex") })} onPress={() => onOpen(item.tokenAddress)} style={[styles.card, largeText && { alignItems: "flex-start" }, { borderLeftWidth: 3, borderLeftColor: buy ? colors.positive : colors.negative }]}>
       <View style={{ width: 42, alignItems: "center", gap: 3 }}>
         <TokenAvatar symbol={whale?.tokenSymbol ?? "?"} identity={whale?.tokenAddress ?? item.wallet ?? item.id} imageUrl={whale?.imageUrl} size={38} accessible={false} />
         <Text numberOfLines={1} style={{ maxWidth: 42, color: colors.muted, fontSize: 7, fontWeight: "900" }}>{whale?.tokenSymbol ?? "—"}</Text>
@@ -100,11 +100,17 @@ function LiveEvents({ rows, largeText, onReset, onOpen }: { rows: TrackNotificat
         {whaleAmountContext(item) === "amount_exceeds_market_cap" ? <Text style={{ color: colors.warning, fontSize: 8, marginTop: 5 }}>{t("whaleAmountContextWarning")}</Text> : null}
       </View>
       <View style={{ width: 42, alignItems: "center", gap: 3 }}>
-        <View style={{ position: "relative" }}><TokenAvatar symbol={item.tokenSymbol} identity={item.tokenAddress} imageUrl={item.market.imageUrl} size={38} accessible={false} /><View style={{ position: "absolute", right: -2, bottom: -2, width: 15, height: 15, borderRadius: 8, alignItems: "center", justifyContent: "center", backgroundColor: buy ? colors.accentDim : "#401b24" }}><Ionicons name={buy ? "arrow-down" : "arrow-up"} size={10} color={buy ? colors.positive : colors.negative} /></View></View>
+        <View style={{ position: "relative" }}><TokenAvatar symbol={item.tokenSymbol} identity={item.tokenAddress} imageUrl={item.market.imageUrl} size={38} accessible={false} /><DexBadge dex={item.market.dex} /></View>
         <Text numberOfLines={1} style={{ maxWidth: 42, color: colors.muted, fontSize: 7, fontWeight: "900" }}>{item.tokenSymbol}</Text>
       </View>
     </Pressable>;
   })}</View>;
+}
+
+function DexBadge({ dex }: { dex?: string | null }) {
+  const normalized = dex?.trim().toLowerCase() ?? "";
+  const label = normalized.includes("pump") ? "P" : normalized.includes("raydium") ? "R" : normalized.includes("meteora") ? "M" : normalized ? normalized.slice(0, 1).toUpperCase() : null;
+  return <View accessible={false} style={{ position: "absolute", right: -3, bottom: -3, width: 17, height: 17, borderRadius: 9, alignItems: "center", justifyContent: "center", borderWidth: 1, borderColor: colors.background, backgroundColor: colors.surfaceRaised }}>{label ? <Text style={{ color: colors.cyan, fontSize: 7, fontWeight: "900" }}>{label}</Text> : <Ionicons name="swap-horizontal" size={10} color={colors.cyan} />}</View>;
 }
 
 export function WhaleFeedUnavailable({ reason, onWallets }: { reason?: string; onWallets: () => void }) {

@@ -957,6 +957,7 @@ export const trackFeedSchema = z
             market: z
               .object({
                 symbol: z.string().max(100).nullable(),
+                dex: z.string().trim().min(1).max(80).nullable().optional(),
                 imageUrl: z.string().url().nullable(),
                 sourceFetchedAt: z.number().nullable(),
                 freshnessSeconds: z.number().nonnegative().nullable(),

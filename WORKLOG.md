@@ -1158,3 +1158,9 @@
 - Traced missing `$` buy/sell amounts to the notification API mapping `profitEstimate` as transaction size even though indexed smart-money evidence persists the actual `amountUsd`.
 - Backend now extracts only a positive finite observed USD notional from the signal evidence, falls back to a valid legacy amount, keeps profit estimate separate, and otherwise fails closed to `—`.
 - The existing transaction-first mobile row automatically renders the corrected amount through its bounded USD formatter; backend TypeScript, focused ESLint, and the new extraction contract pass.
+
+## 2026-08-25 — Slice 131: held-token/traded-token DEX identity
+
+- Preserved the requested relationship hierarchy: qualifying held-token logo left and bought/sold-token logo right.
+- Extended the notification market snapshot with its persisted DEX venue and replaced the direction-arrow overlay with a restrained bottom-right venue badge; unknown venue evidence uses a generic exchange glyph rather than invented branding.
+- Added bounded DEX schema validation and localized screen-reader semantics that announce the venue alongside holder token, action amount, and traded token.

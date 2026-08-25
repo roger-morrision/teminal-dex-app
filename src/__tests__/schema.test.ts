@@ -986,6 +986,7 @@ describe("Track evidence schema", () => {
   const address = "11111111111111111111111111111111";
   const market = {
     symbol: "SOL",
+    dex: "Raydium",
     imageUrl: null,
     sourceFetchedAt: 1,
     freshnessSeconds: 0,
@@ -1015,6 +1016,7 @@ describe("Track evidence schema", () => {
     expect(
       trackFeedSchema.safeParse({ notifications: [item, item], ts: 1 }).success,
     ).toBe(false);
+    expect(trackFeedSchema.safeParse({ notifications: [{ ...item, market: { ...market, dex: "x".repeat(81) } }], ts: 1 }).success).toBe(false);
   });
   it("rejects malformed wallet identities and oversized windows", () => {
     expect(

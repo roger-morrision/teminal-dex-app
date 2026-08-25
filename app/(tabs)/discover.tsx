@@ -17,6 +17,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
   fetchDiscovery,
+  getDiscoveryNextPageParam,
   fetchAlertDeliveries,
   fetchTrackFeed,
   fetchUserAlerts,
@@ -128,19 +129,8 @@ export default function DiscoverScreen() {
     queryFn: ({ pageParam, signal }) =>
       fetchDiscovery(mode, period, filters, pageParam, signal),
     initialPageParam: undefined as string | undefined,
-    getNextPageParam: (page, pages) => {
-      if (page.pagination)
-        return page.pagination.hasMore
-          ? (page.pagination.nextCursor ?? undefined)
-          : undefined;
-      const loaded = pages.reduce(
-        (total, item) => total + item.tokens.length,
-        0,
-      );
-      return page.totalCount != null && loaded < page.totalCount
-        ? String(loaded)
-        : undefined;
-    },
+    getNextPageParam: (page, pages, _lastPageParam, pageParams) =>
+      getDiscoveryNextPageParam(mode, page, pages, pageParams),
     maxPages: 4,
   });
   const remoteSearch = useQuery({

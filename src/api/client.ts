@@ -108,6 +108,39 @@ export type DiscoveryFilters = {
   minMarketCap: string;
 };
 
+const NON_PAGEABLE_DISCOVERY_MODES: ReadonlySet<DiscoveryMode> = new Set([
+  "hot-searches",
+  "surge",
+  "nextbc",
+  "pump-live",
+]);
+
+export function getDiscoveryNextPageParam(
+  mode: DiscoveryMode,
+  page: TrendingResponse,
+  pages: TrendingResponse[],
+  pageParams: unknown[] = [],
+): string | undefined {
+  if (NON_PAGEABLE_DISCOVERY_MODES.has(mode)) return undefined;
+  if (page.pagination) {
+    return page.pagination.hasMore
+      ? (page.pagination.nextCursor ?? undefined)
+      : undefined;
+  }
+  if (page.nextCursor != null) return String(page.nextCursor);
+  if (mode === "new-pairs" || page.totalCount == null || page.tokens.length === 0)
+    return undefined;
+  const lastParam = pageParams.at(-1);
+  const offset =
+    typeof lastParam === "string" && /^\d+$/.test(lastParam)
+      ? Number(lastParam)
+      : pages.length === 1
+        ? 0
+        : pages.slice(0, -1).reduce((total, item) => total + item.tokens.length, 0);
+  const nextOffset = offset + page.tokens.length;
+  return nextOffset < page.totalCount ? String(nextOffset) : undefined;
+}
+
 export class ApiError extends Error {
   constructor(
     message: string,
@@ -197,9 +230,7 @@ export async function fetchDiscovery(
     }
     return page;
   };
-  const special = ["hot-searches", "surge", "nextbc", "pump-live"].includes(
-    mode,
-  );
+  const special = NON_PAGEABLE_DISCOVERY_MODES.has(mode);
   if (special)
     return getValidated(`${getApiOrigin()}/api/trending/${mode}`, signal);
   if (mode === "new-pairs") {

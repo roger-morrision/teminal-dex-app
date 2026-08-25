@@ -1198,3 +1198,10 @@
 - Fixed the concrete Monitor table gap where search, DEX, thresholds and two-level sort operated on only the first 50 provider rows. The table now requests cursor pages, deduplicates exact token addresses across pages, then applies all filters and stable sorting to the complete loaded window.
 - Added an accessible busy-safe Load more control and a component regression proving it remains reachable when page one has no filter match, cursor `1` is requested, the matching second-page token is rendered with a truthful 1/2 filtered count, and paging ends when the backend reports no continuation.
 - Verification: strict TypeScript passed; source lint passed with zero warnings; all 75 Jest suites / 343 tests passed. The local Expo CLI still delegates Doctor to the absent standalone `expo-doctor` executable, so the prior verified 21/21 Doctor result remains current.
+
+## 2026-08-25 — Slice 137: contract-aware Discovery paging
+
+- Continued the filter/order/paging audit and found that Hot Searches, Surge, NextBC and Pump Live shared the generic total-count continuation rule even though their backend endpoints accept no cursor; such responses could expose an inert load-more loop over the same first page.
+- Centralized Discovery continuation policy for both Discover and the Monitor token table. Non-pageable special modes now stop after their authoritative response, New Pairs requires its opaque cursor, explicit provider cursors take priority, and numeric Trending offsets advance from the last page parameter after older cached pages are evicted.
+- Added regression coverage for every non-pageable mode, opaque New Pairs continuation and bounded-cache offset continuity. Strict TypeScript, source ESLint, diff checks, and all 75 Jest suites / 345 tests pass.
+- Concurrent evidence-reason changes appeared during validation and were preserved but excluded from this slice.

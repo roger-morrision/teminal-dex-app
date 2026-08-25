@@ -30,6 +30,7 @@ import {
   fetchWalletHoldings,
   fetchWalletPnl,
   getApiOrigin,
+  getDiscoveryNextPageParam,
   pauseCopyTradeConfig,
   searchTokens,
   setUserAlertActive,
@@ -151,6 +152,39 @@ describe("backend client routing", () => {
       "https://terminal.example/api/trending/surge",
       expect.objectContaining({ headers: { Accept: "application/json" } }),
     );
+  });
+
+  it("exposes pagination only for discovery modes with a cursor contract", () => {
+    const specialPage = {
+      tokens: [token],
+      source: "gmgn",
+      dataQuality: "provider_live" as const,
+      totalCount: 100,
+    };
+    for (const mode of ["hot-searches", "surge", "nextbc", "pump-live"] as const) {
+      expect(getDiscoveryNextPageParam(mode, specialPage, [specialPage])).toBeUndefined();
+    }
+    expect(
+      getDiscoveryNextPageParam("new-pairs", {
+        ...specialPage,
+        pagination: { hasMore: true, nextCursor: "opaque" },
+      }, [specialPage]),
+    ).toBe("opaque");
+  });
+
+  it("keeps offset pagination advancing after old pages leave the bounded cache", () => {
+    const page = {
+      tokens: Array.from({ length: 50 }, (_, index) => ({ ...token, id: `p${index}` })),
+      source: "database",
+      dataQuality: "historical_indexed" as const,
+      totalCount: 500,
+    };
+    expect(
+      getDiscoveryNextPageParam("trending", page, [page, page, page, page], ["50", "100", "150", "200"]),
+    ).toBe("250");
+    expect(
+      getDiscoveryNextPageParam("trending", { ...page, tokens: [] }, [{ ...page, tokens: [] }]),
+    ).toBeUndefined();
   });
 
   it("loads GET-only blocked swap provider readiness", async () => {

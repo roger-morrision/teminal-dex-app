@@ -4,7 +4,10 @@ import { MonitorTokenTable } from "@/components/MonitorTokenTable";
 import { SettingsProvider } from "@/settings/SettingsProvider";
 import { fetchDiscovery } from "@/api/client";
 
-jest.mock("@/api/client", () => ({ fetchDiscovery: jest.fn() }));
+jest.mock("@/api/client", () => ({
+  ...jest.requireActual("@/api/client"),
+  fetchDiscovery: jest.fn(),
+}));
 jest.mock("expo-router", () => ({ useRouter: () => ({ push: jest.fn() }) }));
 
 const mockedFetch = fetchDiscovery as jest.MockedFunction<typeof fetchDiscovery>;

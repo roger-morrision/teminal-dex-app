@@ -1140,3 +1140,9 @@
 - Emulator inspection at 150% text exposed traded-token artwork wrapping beneath the evidence column; corrected the layout to keep held-token artwork left and traded-token artwork right while the evidence column grows vertically.
 - Current backend history contains no qualifying holding evidence, so the deployed app correctly uses the unverified/unknown held-token fallback rather than assigning whale identities from transaction size.
 - The corrected bundle and 150% recovery state were rechecked on-emulator; the final populated-row screenshot is partially verified because the local backend at `127.0.0.1:3000` became unavailable, while the focused layout regression remained green.
+
+## 2026-08-25 — Slice 128: private Whale Watch recovery copy
+
+- Phase review ranked backend availability first and privacy/recovery second; the backend process is externally unavailable, so this independent mobile slice addresses the raw transport detail exposed by the emulator failure state.
+- Replaced raw activity and wallet-ranking exception messages with localized English/Vietnamese recovery copy while retaining accessible busy-safe Retry behavior.
+- Added a regression guard preventing Whale Watch from rendering query error messages that may contain backend origins or native exception details.

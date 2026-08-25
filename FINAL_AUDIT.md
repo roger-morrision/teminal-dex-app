@@ -2,7 +2,7 @@
 
 Audit date: 2026-08-24
 
-Audit maintained through: Slice 127
+Audit maintained through: Slice 128
 
 Backend authority: `C:\Tuan\devApps\TERMINAL_DEX_Intelligent` (source of truth; isolated Slice 43–49 contracts added with explicit write approval)
 

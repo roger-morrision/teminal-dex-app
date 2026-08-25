@@ -36,5 +36,7 @@ describe('audited-screen accessibility contract', () => {
     expect(source).toContain('largeText && { alignItems: "flex-start" }');
     expect(source).toContain('largeText && { minWidth: 0 }');
     expect(source).toContain('t("openWhaleRelationship"');
+    expect(source).not.toContain('feed.error.message');
+    expect(source).not.toContain('rankings.error?.message');
   });
 });

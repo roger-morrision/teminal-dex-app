@@ -278,6 +278,18 @@ export function SnipeCard({
           <Ionicons name="trash" size={14} color={colors.negative} />
         </Pressable>
       </View>
+      {token.error ? (
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={t("retry")}
+          accessibilityState={{ busy: token.isFetching, disabled: token.isFetching }}
+          disabled={token.isFetching}
+          onPress={() => token.refetch()}
+          style={[styles.snipeRetry, token.isFetching && styles.disabled]}
+        >
+          <Text style={styles.snipeRetryText}>{t("retry")}</Text>
+        </Pressable>
+      ) : null}
       {aboveHit || belowHit ? (
         <View accessibilityRole="summary" style={styles.hit}>
           <Ionicons name="eye" size={12} color={colors.warning} />
@@ -691,6 +703,8 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   errorInline: { color: colors.negative, fontSize: 8 },
+  snipeRetry: { minHeight: 44, alignSelf: "flex-start", paddingHorizontal: spacing.lg, alignItems: "center", justifyContent: "center", borderRadius: 10, borderWidth: 1, borderColor: colors.accent },
+  snipeRetryText: { color: colors.accent, fontWeight: "900" },
   card: {
     marginHorizontal: spacing.lg,
     marginBottom: spacing.sm,

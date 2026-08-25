@@ -1058,6 +1058,13 @@
 - Watch-only identity, holdings values, PnL provenance limitations, tracker storage, no-copy/no-follow boundaries, schemas, and backend contracts are unchanged.
 - Strict TypeScript, focused ESLint and 5 wallet/state/accessibility suites with 50 tests passed.
 
+## 2026-08-25 — Slice 117: recover Snipe List token evidence
+
+- Audited the research workspace: Multicharts already guarded each combined token/chart refresh, but a failed Snipe List token identity/price request had no card-level recovery.
+- Added a localized per-candidate retry bound to the exact token query, disabled and announced busy during refetch so independent candidate failures do not strand the list or create overlapping requests.
+- Exact-mint bounds, sanitized notes, visual-only thresholds, local persistence, Monitor handoff guidance, no-background-alert and no-execution boundaries are unchanged.
+- Strict TypeScript, focused ESLint and 5 research/chart/store/accessibility suites with 42 tests passed.
+
 ## 2026-08-24 — Slice 100: truthful Whale wallet navigation
 
 - Audited the non-empty wallet-ranking flow and found that the aggregate “Open Wallet Intelligence” footer silently routed to the first ranked address, duplicating row-detail behavior.

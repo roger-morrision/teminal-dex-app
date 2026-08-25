@@ -12,6 +12,7 @@
       "expo-font",
       "expo-secure-store",
       "./plugins/withNetworkSecurity",
+      "./plugins/withAndroidDevMenuSafety",
       [
         "expo-local-authentication",
         { "faceIDPermission": "Allow Terminal DEX to re-authenticate before showing verified wallet data." }

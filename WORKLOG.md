@@ -1100,3 +1100,10 @@
 - Confirmed the read-only backend currently supplies only generic holder classification and amount-threshold candidates, not the evidence needed for authoritative named whale identity; documented the exact contract blocker without modifying backend code or fabricating holdings.
 - Strict TypeScript, focused ESLint and 4 schema/whale/localization/accessibility suites with 85 tests passed.
 - With explicit backend authorization, replaced amount-threshold selection in the authoritative feed with bounded ownership qualification, a minimum floor of $10,000, strict 100-mint eligible-token allowlist parsing, current holder/price valuation, named holding evidence, and fail-closed configuration status. Backend TypeScript, ESLint and the dedicated qualification contract test pass.
+
+## 2026-08-25 — Slice 122: distinguish whale configuration from quiet activity
+
+- Continued the phase-one data/recovery audit after ownership classification and found an unconfigured eligible-token allowlist rendered as the same generic empty state as a correctly configured but quiet market.
+- Bound the backend coverage reason to a localized configuration-specific state, disclosed that transaction size never assigns identity, retained the ranked-wallet handoff, and did not expose configuration contents.
+- No production mock data, backend mutation, credential display, transaction action, or inferred wallet identity was added.
+- Strict TypeScript, focused ESLint and 4 whale-state/localization/schema/accessibility suites with 75 tests passed.

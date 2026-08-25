@@ -1164,3 +1164,11 @@
 - Preserved the requested relationship hierarchy: qualifying held-token logo left and bought/sold-token logo right.
 - Extended the notification market snapshot with its persisted DEX venue and replaced the direction-arrow overlay with a restrained bottom-right venue badge; unknown venue evidence uses a generic exchange glyph rather than invented branding.
 - Added bounded DEX schema validation and localized screen-reader semantics that announce the venue alongside holder token, action amount, and traded token.
+
+## 2026-08-25 — Slice 132: phases 132–144 privacy and closure audit
+
+- Completed Phases 132–135: Token Detail and quote reads now use localized private recovery; quote prepare/confirm plus Monitor/CopyTrade mutations cross a centralized public-error boundary; owner watchlist/PnL/alert/delivery reads no longer render raw exceptions.
+- Added an all-audited-route regression matrix and adversarial sanitizer tests that reject backend origins, native exception text and secret-bearing payloads.
+- Audited Phases 136–144 against live environment state. The Android API 37 emulator is visible, but the whale allowlist is unset and the backend is not listening on port 3000; physical wallet/iOS evidence, provider-backed whale qualification, backend history/alert contracts, managed-submission authority and organizational production approvals remain genuine external blockers.
+- Added the Phase 132–144 ledger with exact closure evidence. Signing, submission, intent consumption, CopyTrade activation and production acceptance remain disabled.
+- Strict TypeScript, repository-wide ESLint, 75 Jest suites / 335 tests, and fresh 25-route web/Android/iOS exports passed. Generated verification output was removed; the known Noble hashes fallback warning remains non-fatal.

@@ -151,7 +151,7 @@ export default function TokenDetail() {
         <PanelState
           error
           title={t("tokenUnavailable")}
-          message={detail.error?.message ?? t("noTokenRecord")}
+          message={detail.error ? t("evidenceLoadFailed") : t("noTokenRecord")}
           retrying={detail.isFetching}
           onRetry={() => detail.refetch()}
         />
@@ -241,7 +241,7 @@ export default function TokenDetail() {
           <Overview
             token={token}
             detail={detail.data}
-            refreshError={detail.isError ? detail.error.message : null}
+            refreshError={detail.isError ? t("evidenceLoadFailed") : null}
             refreshBusy={detail.isFetching}
             onRetry={() => detail.refetch()}
           />
@@ -562,7 +562,7 @@ function WhaleEvidencePanel({
 }) {
   const { t } = useSettings();
   if (query.isLoading) return <PanelState loading message={t("loadingWhaleActivity")} />;
-  if (query.isError) return <PanelState error message={query.error.message} retrying={query.isFetching} onRetry={() => query.refetch()} />;
+  if (query.isError) return <PanelState error message={t("evidenceLoadFailed")} retrying={query.isFetching} onRetry={() => query.refetch()} />;
   const events = whaleActivityForToken(query.data?.notifications ?? [], address);
   const flow = aggregateWhaleActivity(events)[0];
   const historical = Boolean(
@@ -730,7 +730,7 @@ function ChartPanel({
           loading={query.isLoading}
           error={query.isError}
           title={query.isError ? t("chartUnavailable") : undefined}
-          message={query.error?.message ?? t("loadingCandles")}
+          message={query.error ? t("chartUnavailable") : t("loadingCandles")}
           retrying={query.isFetching}
           onRetry={() => query.refetch()}
         />
@@ -772,7 +772,7 @@ function IntelPanel({
         </>
       ) : (
         <Limitation
-          text={narrative.error?.message ?? t("narrativeUnavailable")}
+          text={t("narrativeUnavailable")}
         />
       )}
       <Text style={styles.sectionTitle}>{t("smartMoneySignals")}</Text>
@@ -790,7 +790,7 @@ function IntelPanel({
         ))
       ) : (
         <Limitation
-          text={smartMoney.error?.message ?? t("noSmartMoneySignals")}
+          text={t("noSmartMoneySignals")}
         />
       )}
       <Limitation text={t("intelligenceLimitation")} />
@@ -813,7 +813,7 @@ function AsyncPanel<T>({
       <PanelState
         error
         title={t("dataUnavailable")}
-        message={query.error?.message ?? t("noValidatedResponse")}
+        message={query.error ? t("evidenceLoadFailed") : t("noValidatedResponse")}
         retrying={query.isFetching}
         onRetry={() => query.refetch()}
       />

@@ -17,6 +17,7 @@ import { tokenSchema } from "@/api/schema";
 import { useWalletSession } from "@/security/WalletSessionProvider";
 import { evaluateSwapEvidenceChain, evaluateSwapReadiness } from "@/lib/swap-readiness";
 import { colors, spacing } from "@/theme";
+import { publicErrorMessage } from "@/lib/public-error";
 import { isSolanaAddress, parseBoundedJson } from "@/security/input";
 import { useSettings } from "@/settings/SettingsProvider";
 
@@ -161,7 +162,7 @@ export default function TradeReviewScreen() {
             text={
               detail.isLoading
                 ? t("loadingTokenIdentity")
-                : (detail.error?.message ?? t("tokenDetailUnavailable"))
+                : t("tokenDetailUnavailable")
             }
           />
         )}
@@ -290,7 +291,7 @@ export default function TradeReviewScreen() {
             accessibilityLiveRegion="polite"
             style={styles.errorBox}
           >
-            <Text style={styles.error}>{quote.error.message}</Text>
+            <Text style={styles.error}>{t("evidenceLoadFailed")}</Text>
             <Text style={styles.errorHint}>{t("noTransactionBuilt")}</Text>
           </View>
         ) : null}
@@ -365,7 +366,7 @@ export default function TradeReviewScreen() {
         <Pressable accessibilityRole="button" accessibilityLabel={t("prepareSimulation")} accessibilityState={{ disabled: !quote.data || expired || !wallet.session || wallet.locked || prepare.isPending, busy: prepare.isPending }} disabled={!quote.data || expired || !wallet.session || wallet.locked || prepare.isPending} onPress={() => prepare.mutate()} style={[styles.getQuote, (!quote.data || expired || !wallet.session || wallet.locked || prepare.isPending) && styles.disabled]}>
           {prepare.isPending ? <ActivityIndicator color={colors.background} /> : <Text style={styles.getQuoteText}>{t("prepareSimulation")}</Text>}
         </Pressable>
-        {prepare.isError ? <Text accessibilityRole="alert" style={styles.flowError}>{prepare.error.message}</Text> : null}
+        {prepare.isError ? <Text accessibilityRole="alert" style={styles.flowError}>{publicErrorMessage(prepare.error, t("actionCouldNotComplete"))}</Text> : null}
         {prepare.data ? <View accessibilityRole="summary" style={styles.simulationCard}>
           <Text style={styles.quoteTitle}>{t("simulationEvidence")}</Text>
           <QuoteRow label={t("status")} value={prepare.data.simulation.simulation.succeeded ? t("passed") : t("failed")} warning={!prepare.data.simulation.simulation.succeeded} />
@@ -387,7 +388,7 @@ export default function TradeReviewScreen() {
         {prepare.data?.simulation.simulation.succeeded && !confirm.data ? <Pressable accessibilityRole="button" accessibilityLabel={t("explicitConfirm")} accessibilityState={{ disabled: confirm.isPending || !wallet.session || wallet.locked, busy: confirm.isPending }} disabled={confirm.isPending || !wallet.session || wallet.locked} onPress={() => confirm.mutate()} style={[styles.confirmButton, (confirm.isPending || !wallet.session || wallet.locked) && styles.disabled]}>
           {confirm.isPending ? <ActivityIndicator color={colors.background} /> : <Text style={styles.getQuoteText}>{t("explicitConfirm")}</Text>}
         </Pressable> : null}
-        {confirm.isError ? <Text accessibilityRole="alert" style={styles.flowError}>{confirm.error.message}</Text> : null}
+        {confirm.isError ? <Text accessibilityRole="alert" style={styles.flowError}>{publicErrorMessage(confirm.error, t("actionCouldNotComplete"))}</Text> : null}
         {confirm.data ? <View accessibilityRole="alert" style={styles.confirmedCard}><Ionicons name="shield-checkmark" size={20} color={colors.accent} /><View style={styles.gateCopy}><Text style={styles.confirmedTitle}>{t("intentConfirmed")}</Text><Text style={styles.gateText}>{t("signatureStillLocked")}</Text></View></View> : null}
       </ScrollView>
     </SafeAreaView>

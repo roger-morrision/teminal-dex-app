@@ -31,6 +31,7 @@ import type {
   TopTrader,
 } from "@/api/schema";
 import { compactUsd, signedPercent } from "@/lib/format";
+import { publicErrorMessage } from "@/lib/public-error";
 import {
   boundedCopyNumber,
   buildPausedCopyTradeInput,
@@ -668,7 +669,7 @@ export function StrategyComposer({
       ) : null}
       {mutation.error ? (
         <Text accessibilityRole="alert" style={styles.error}>
-          {mutation.error.message}
+          {publicErrorMessage(mutation.error, t("actionCouldNotComplete"))}
         </Text>
       ) : null}
       <Pressable

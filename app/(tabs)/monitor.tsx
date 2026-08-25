@@ -29,6 +29,7 @@ import { isSolanaAddress } from "@/security/input";
 import { useWalletSession } from "@/security/WalletSessionProvider";
 import { useSettings } from "@/settings/SettingsProvider";
 import { colors, spacing } from "@/theme";
+import { publicErrorMessage } from "@/lib/public-error";
 
 type ViewMode = "live" | "rules" | "delivery";
 type AlertType = CreateAlertInput["type"];
@@ -141,7 +142,7 @@ export default function MonitorScreen() {
           <Rules
             data={rules.data?.data ?? []}
             loading={rules.isLoading}
-            error={rules.error?.message}
+            error={rules.error ? t("evidenceLoadFailed") : undefined}
             retrying={rules.isFetching}
             onRetry={() => rules.refetch()}
             onChanged={() =>
@@ -150,8 +151,8 @@ export default function MonitorScreen() {
           />
         ) : (
           <View>
-            <Delivery data={deliveries.data?.data ?? []} loading={deliveries.isLoading} error={deliveries.error?.message} retrying={deliveries.isFetching} onRetry={() => deliveries.refetch()} />
-            <EvaluationHistory data={evaluations.data?.pages.flatMap((page) => page.data) ?? []} loading={evaluations.isLoading} error={evaluations.error?.message} retrying={evaluations.isFetching && !evaluations.isFetchingNextPage} onRetry={() => evaluations.refetch()} hasMore={evaluations.hasNextPage} loadingMore={evaluations.isFetchingNextPage} onLoadMore={() => evaluations.fetchNextPage()} />
+            <Delivery data={deliveries.data?.data ?? []} loading={deliveries.isLoading} error={deliveries.error ? t("evidenceLoadFailed") : undefined} retrying={deliveries.isFetching} onRetry={() => deliveries.refetch()} />
+            <EvaluationHistory data={evaluations.data?.pages.flatMap((page) => page.data) ?? []} loading={evaluations.isLoading} error={evaluations.error ? t("evidenceLoadFailed") : undefined} retrying={evaluations.isFetching && !evaluations.isFetchingNextPage} onRetry={() => evaluations.refetch()} hasMore={evaluations.hasNextPage} loadingMore={evaluations.isFetchingNextPage} onLoadMore={() => evaluations.fetchNextPage()} />
           </View>
         )}
       </ScrollView>
@@ -394,7 +395,7 @@ export function AlertComposer({ onCreated }: { onCreated: () => void }) {
       </Text>
       {mutation.error ? (
         <Text accessibilityRole="alert" style={styles.error}>
-          {mutation.error.message}
+          {publicErrorMessage(mutation.error, t("actionCouldNotComplete"))}
         </Text>
       ) : null}
       <Pressable

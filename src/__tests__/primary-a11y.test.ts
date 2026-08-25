@@ -50,6 +50,7 @@ describe('audited-screen accessibility contract', () => {
     const source = readFileSync(join(process.cwd(), 'app/(tabs)/monitor.tsx'), 'utf8');
     expect(source).not.toContain('query.error.message');
     expect(source).toContain('t("evidenceLoadFailed")');
+    expect(source).toContain('publicErrorMessage(mutation.error');
   });
 
   it.each([
@@ -67,7 +68,12 @@ describe('audited-screen accessibility contract', () => {
   it('keeps CopyTrade read failures private while preserving mutation feedback', () => {
     const source = readFileSync(join(process.cwd(), 'app/copytrade.tsx'), 'utf8');
     expect(source).not.toMatch(/(?:health|rankings|configs|positions|executions)\.error\??\.message/);
-    expect(source).toContain('mutation.error.message');
+    expect(source).toContain('publicErrorMessage(mutation.error');
     expect(source).toContain('t("evidenceLoadFailed")');
+  });
+
+  it.each(primaryScreens)('%s never renders exception messages verbatim', (file) => {
+    const source = readFileSync(join(process.cwd(), file), 'utf8');
+    expect(source).not.toMatch(/\.error\??\.message/);
   });
 });

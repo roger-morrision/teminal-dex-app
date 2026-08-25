@@ -265,7 +265,7 @@ export default function DiscoverScreen() {
                 loading={alerts.isLoading || deliveries.isLoading}
                 alerts={alerts.data?.data ?? []}
                 deliveries={deliveries.data?.data ?? []}
-                error={alerts.error?.message ?? deliveries.error?.message}
+                error={alerts.error || deliveries.error ? t("evidenceLoadFailed") : undefined}
               />
             ) : null}
           </View>

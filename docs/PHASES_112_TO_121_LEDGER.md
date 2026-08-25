@@ -20,3 +20,5 @@ These phases cover production operations and acceptance. Local validation cannot
 ## Non-negotiable result
 
 Even fully populated evidence returns `productionAccepted: false` and `executionEnabled: false`. Final acceptance and execution authority must be granted outside this client through separately reviewed production governance.
+
+The subsequent privacy/runtime/device/execution review is recorded in [PHASES_132_TO_144_LEDGER.md](./PHASES_132_TO_144_LEDGER.md).

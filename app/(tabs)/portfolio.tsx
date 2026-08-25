@@ -352,8 +352,7 @@ export default function PortfolioScreen() {
                       accessibilityRole={pnl.error ? "alert" : undefined}
                       style={styles.warning}
                     >
-                      {pnl.error?.message ??
-                        `${t("pnlEvidence")} ${t("unavailable")}.`}
+                      {`${t("pnlEvidence")} ${t("unavailable")}.`}
                     </Text>
                   )}
                 </View>

@@ -449,9 +449,11 @@ function WalletEvidence({ address }: { address: string }) {
         <Holding key={item.mint} item={item} />
       ))}
       {pnl.error ? (
-        <Text accessibilityRole="alert" style={styles.error}>
-          {pnl.error.message}
-        </Text>
+        <InlineEvidenceFailure
+          message={pnl.error.message}
+          retrying={pnl.isFetching}
+          onRetry={() => pnl.refetch()}
+        />
       ) : (
         pnl.data?.pnl?.warnings.map((warning) => (
           <Text key={warning} style={styles.warning}>
@@ -459,6 +461,32 @@ function WalletEvidence({ address }: { address: string }) {
           </Text>
         ))
       )}
+    </View>
+  );
+}
+export function InlineEvidenceFailure({
+  message,
+  retrying = false,
+  onRetry,
+}: {
+  message: string;
+  retrying?: boolean;
+  onRetry: () => void;
+}) {
+  const { t } = useSettings();
+  return (
+    <View accessible accessibilityRole="alert" accessibilityLiveRegion="polite" style={styles.inlineFailure}>
+      <Text style={styles.error}>{message}</Text>
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel={t("retry")}
+        accessibilityState={{ busy: retrying, disabled: retrying }}
+        disabled={retrying}
+        onPress={onRetry}
+        style={[styles.inlineRetry, retrying && styles.disabled]}
+      >
+        <Text style={styles.inlineRetryText}>{t("retry")}</Text>
+      </Pressable>
     </View>
   );
 }
@@ -764,6 +792,9 @@ const styles = StyleSheet.create({
   actionText: { color: "#1a0d1e", fontSize: 9, fontWeight: "900" },
   disabled: { opacity: 0.35 },
   error: { color: colors.negative, fontSize: 8, lineHeight: 13 },
+  inlineFailure: { marginTop: spacing.sm, alignItems: "center", gap: spacing.sm },
+  inlineRetry: { minHeight: 44, paddingHorizontal: spacing.lg, alignItems: "center", justifyContent: "center", borderRadius: 10, borderWidth: 1, borderColor: colors.accent },
+  inlineRetryText: { color: colors.accent, fontWeight: "900" },
   trackedMain: {
     flex: 1,
     flexDirection: "row",

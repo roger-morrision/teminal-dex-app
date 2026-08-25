@@ -1051,6 +1051,13 @@
 - Public-address/watch-only semantics, local tracker bounds, provider classifications, indexed PnL limitations, no-copy/no-follow policy, schemas, and backend contracts are unchanged.
 - Strict TypeScript, focused ESLint and 5 wallet/state/accessibility suites with 49 tests passed.
 
+## 2026-08-25 — Slice 116: recover partial wallet PnL evidence
+
+- Completed the Wallet Intelligence recovery audit and found indexed PnL failure remained a terminal inline warning even when valid holdings stayed visible.
+- Preserved the partial holdings result and replaced only the PnL warning with a polite accessible alert plus a busy/disabled retry bound to the PnL query.
+- Watch-only identity, holdings values, PnL provenance limitations, tracker storage, no-copy/no-follow boundaries, schemas, and backend contracts are unchanged.
+- Strict TypeScript, focused ESLint and 5 wallet/state/accessibility suites with 50 tests passed.
+
 ## 2026-08-24 — Slice 100: truthful Whale wallet navigation
 
 - Audited the non-empty wallet-ranking flow and found that the aggregate “Open Wallet Intelligence” footer silently routed to the first ranked address, duplicating row-detail behavior.

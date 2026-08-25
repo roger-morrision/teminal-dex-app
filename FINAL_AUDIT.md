@@ -2,7 +2,7 @@
 
 Audit date: 2026-08-24
 
-Audit maintained through: Slice 142
+Audit maintained through: Slice 143
 
 Backend authority: `C:\Tuan\devApps\TERMINAL_DEX_Intelligent` (source of truth; isolated Slice 43–49 contracts added with explicit write approval)
 
@@ -63,3 +63,17 @@ No in-scope automated regression was found. Generated export directories were re
 - Verified: row-two percentage follows the selected 1h/6h/24h window; unavailable selected-window evidence remains unavailable.
 - Verified on Android API 37: compact rows remain readable without overlap at 1080×2400, retain ten visible market records, and expose token identity/logo semantics through the accessibility tree.
 - Externally blocked: authoritative token symbol/name, holder count, and creation time remain absent from some current backend mobile-projection records.
+
+## Slice 143 fresh nine-phase enhancement review
+
+| Phase | Current evidence and next enhancement |
+| --- | --- |
+| 1. Data/backend | Fail-closed token/whale evidence is implemented. Provider identity/holder/age enrichment plus durable whale history and alerts remain authoritative-contract blockers. |
+| 2. IA/navigation | Whale-first navigation and exact-identity handoffs are implemented; no dependency-ready navigation defect was found. |
+| 3. Primary flows | Whales, Discover, Trenches, Portfolio, Monitor and More have real API, recovery and paging foundations; physical interaction certification remains external. |
+| 4. Detail flows | Token, wallet, chart, transaction, holder, security, narrative, alert and quote-detail evidence is implemented through confirmed intent; execution remains deliberately locked. |
+| 5. Reference usability | Transaction-first compact hierarchy remains adapted without protected Moby branding, assets, identities or copy. |
+| 6. Resilience | Loading, empty, stale, offline, retry and partial-page recovery are implemented; missing upstream evidence remains visibly unavailable. |
+| 7. Quality/security | Automated accessibility, localization, privacy and error-redaction gates pass; physical screen-reader and large-text certification remains external. |
+| 8. Platforms | Android emulator and three-platform export evidence exist; physical Android/iOS wallet and resilience evidence remains external. |
+| 9. Tests/release | Implemented this run: `lint` now invokes the declared local ESLint 9 executable directly over source roots, eliminating Expo CLI/global `npx` dependency from the release gate. Next: command-level package-script resolution regression. |

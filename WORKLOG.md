@@ -1065,6 +1065,13 @@
 - Exact-mint bounds, sanitized notes, visual-only thresholds, local persistence, Monitor handoff guidance, no-background-alert and no-execution boundaries are unchanged.
 - Strict TypeScript, focused ESLint and 5 research/chart/store/accessibility suites with 42 tests passed.
 
+## 2026-08-25 — Slice 118: recover AI evidence tabs
+
+- Advanced the auxiliary audit to AI Intelligence and found advisory, paper-simulation, provider-history, and governance failures all relied only on pull-to-refresh.
+- Added localized query-specific recovery to each tab through the shared state; retries are disabled and announced busy during refetch, and labels without handlers do not render controls.
+- Advisory qualification, paper-only semantics, owner gates, GMGN mint verification, operational/governance integrity, kill switches, no-replay policy, and execution-disabled contracts are unchanged.
+- Strict TypeScript, focused ESLint and 5 AI/state/schema/accessibility suites with 87 tests passed.
+
 ## 2026-08-24 — Slice 100: truthful Whale wallet navigation
 
 - Audited the non-empty wallet-ranking flow and found that the aggregate “Open Wallet Intelligence” footer silently routed to the first ranked address, duplicating row-detail behavior.

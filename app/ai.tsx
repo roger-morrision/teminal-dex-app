@@ -142,6 +142,8 @@ export default function AiScreen() {
             data={recommendations.data ?? []}
             loading={recommendations.isLoading}
             error={recommendations.error?.message}
+            retrying={recommendations.isFetching}
+            onRetry={() => recommendations.refetch()}
             onOpen={(address) =>
               router.push({ pathname: "/token/[address]", params: { address } })
             }
@@ -151,6 +153,8 @@ export default function AiScreen() {
             report={paper.data}
             loading={paper.isLoading}
             error={paper.error?.message}
+            retrying={paper.isFetching}
+            onRetry={() => paper.refetch()}
           />
         ) : !authorized ? (
           <IdentityGate
@@ -165,6 +169,8 @@ export default function AiScreen() {
             data={gmgnHistory.data}
             loading={gmgnHistory.isLoading}
             error={gmgnHistory.error?.message}
+            retrying={gmgnHistory.isFetching}
+            onRetry={() => gmgnHistory.refetch()}
             onOpen={(address) =>
               router.push({ pathname: "/token/[address]", params: { address } })
             }
@@ -174,6 +180,8 @@ export default function AiScreen() {
             data={platform.data}
             loading={platform.isLoading}
             error={platform.error?.message}
+            retrying={platform.isFetching}
+            onRetry={() => platform.refetch()}
           />
         )}
       </ScrollView>
@@ -185,17 +193,21 @@ export function GmgnHistory({
   data,
   loading,
   error,
+  retrying = false,
+  onRetry,
   onOpen,
 }: {
   data?: AiGmgnHistory;
   loading: boolean;
   error?: string;
+  retrying?: boolean;
+  onRetry?: () => void;
   onOpen: (address: string) => void;
 }) {
   const { t } = useSettings();
   if (loading) return <State loading text={t("loadingDiscoveryHistory")} />;
   if (error || !data)
-    return <State error text={error ?? t("discoveryHistoryUnavailable")} />;
+    return <State error text={error ?? t("discoveryHistoryUnavailable")} action={t("retry")} actionBusy={retrying} onAction={onRetry} />;
   return (
     <View>
       <View accessibilityRole="summary" style={styles.phase31}>
@@ -280,16 +292,20 @@ function Advisories({
   data,
   loading,
   error,
+  retrying = false,
+  onRetry,
   onOpen,
 }: {
   data: AiRecommendation[];
   loading: boolean;
   error?: string;
+  retrying?: boolean;
+  onRetry?: () => void;
   onOpen: (address: string) => void;
 }) {
   const { t } = useSettings();
   if (loading) return <State loading text={t("loadingAdvisories")} />;
-  if (error) return <State error text={error} />;
+  if (error) return <State error text={error} action={t("retry")} actionBusy={retrying} onAction={onRetry} />;
   return (
     <View>
       <Text style={styles.provenance}>{t("advisoryProvenance")}</Text>
@@ -414,15 +430,19 @@ export function Paper({
   report,
   loading,
   error,
+  retrying = false,
+  onRetry,
 }: {
   report?: AiPaperReport;
   loading: boolean;
   error?: string;
+  retrying?: boolean;
+  onRetry?: () => void;
 }) {
   const { t } = useSettings();
   if (loading) return <State loading text={t("loadingPaper")} />;
   if (error || !report)
-    return <State error text={error ?? t("paperUnavailable")} />;
+    return <State error text={error ?? t("paperUnavailable")} action={t("retry")} actionBusy={retrying} onAction={onRetry} />;
   const totalCosts =
     report.analytics.totalFeesUsd + report.analytics.totalSlippageCostUsd;
   return (
@@ -580,15 +600,19 @@ function Governance({
   data,
   loading,
   error,
+  retrying = false,
+  onRetry,
 }: {
   data?: AiPlatform;
   loading: boolean;
   error?: string;
+  retrying?: boolean;
+  onRetry?: () => void;
 }) {
   const { t } = useSettings();
   if (loading) return <State loading text={t("loadingGovernance")} />;
   if (error || !data)
-    return <State error text={error ?? t("governanceUnavailable")} />;
+    return <State error text={error ?? t("governanceUnavailable")} action={t("retry")} actionBusy={retrying} onAction={onRetry} />;
   return (
     <View>
       <View accessibilityRole="summary" style={styles.phase31}>
@@ -763,10 +787,16 @@ export function State({
   loading,
   error,
   text,
+  action,
+  actionBusy = false,
+  onAction,
 }: {
   loading?: boolean;
   error?: boolean;
   text: string;
+  action?: string;
+  actionBusy?: boolean;
+  onAction?: () => void;
 }) {
   return (
     <View
@@ -778,6 +808,18 @@ export function State({
     >
       {loading ? <ActivityIndicator color={colors.accent} /> : null}
       <Text style={styles.stateText}>{text}</Text>
+      {action && onAction ? (
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={action}
+          accessibilityState={{ busy: actionBusy, disabled: actionBusy }}
+          disabled={actionBusy}
+          onPress={onAction}
+          style={[styles.stateAction, actionBusy && styles.disabled]}
+        >
+          <Text style={styles.stateActionText}>{action}</Text>
+        </Pressable>
+      ) : null}
     </View>
   );
 }
@@ -1081,4 +1123,7 @@ const styles = StyleSheet.create({
     gap: spacing.md,
   },
   stateText: { color: colors.muted, textAlign: "center", lineHeight: 18 },
+  stateAction: { minHeight: 44, paddingHorizontal: spacing.lg, alignItems: "center", justifyContent: "center", borderRadius: 10, backgroundColor: colors.accent },
+  stateActionText: { color: colors.background, fontWeight: "900" },
+  disabled: { opacity: 0.55 },
 });

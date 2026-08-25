@@ -109,3 +109,17 @@ it("guards partial wallet PnL recovery while preserving its alert", async () => 
   await fireEvent.press(button);
   expect(retry).not.toHaveBeenCalled();
 });
+
+it("guards AI evidence recovery and omits inert actions", async () => {
+  const retry = jest.fn();
+  const screen = await render(
+    <AiState error text="Provider failed" action="Retry" actionBusy onAction={retry} />,
+  );
+  const button = screen.getByLabelText("Retry");
+  expect(button.props.accessibilityState).toEqual({ busy: true, disabled: true });
+  await fireEvent.press(button);
+  expect(retry).not.toHaveBeenCalled();
+
+  await screen.rerender(<AiState text="No evidence" action="Retry" />);
+  expect(screen.queryByLabelText("Retry")).toBeNull();
+});

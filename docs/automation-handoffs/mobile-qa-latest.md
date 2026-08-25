@@ -1,90 +1,85 @@
 # MOBILE-QA — Latest independent validation
 
-- Run (UTC): `2026-08-25T15:00:00Z`
-- Scope: `C:\Tuan\devApps\teminal-dex-app` only — canonical Terminal DEX Expo/mobile client. CWD and Git top-level matched the required workspace; `AGENTS.md` was read. No WEB/backend workspace was accessed or modified.
-- Inspected DEV commit: `e3c46cf97a7019c1a48077b11599ba439b024513` (`fix: enforce quote expiry gates`, `MOBILE-150`), base `715d10f`.
-- Scope stability: `HEAD` was `e3c46cf` before and after every check. Concurrent uncommitted Whales/token-logo work and MOBILE-to-WEB drafts do not overlap the four MOBILE-150 implementation/test files and were excluded. Full-worktree checks are explicitly marked shared-worktree signals.
-- Environment: Windows 10.0.26100; bundled Node runtime; Expo SDK 57. Android SDK platform tools and `emulator-5554` (API emulator) are available, but Terminal DEX is not installed on that emulator.
+- Run (UTC): `2026-08-25T16:02:00Z`
+- Scope: `C:\Tuan\devApps\teminal-dex-app` only — canonical Terminal DEX Expo/mobile client. CWD and Git top-level both resolved to the required workspace before the report lock was acquired. `AGENTS.md` and the DEV handoff were read. No WEB/backend workspace was accessed or modified.
+- Inspected DEV commit: `7288c6d80722424474464086ff660c6fb0a2d5a8` (`test(android): lock startup ANR mitigation`, MOBILE-151). Implementation base: `3f3825d1ad831616cc1705a08452b7882ec9c2d5`.
+- Scope stability: the current dirty Whales/token-logo and MOBILE-to-WEB handoff files do not overlap `plugins/withAndroidDevMenuSafety.js` or `src/__tests__/android-dev-menu-safety.test.ts`. Immutable acceptance evidence is limited to those committed files. Whole-worktree type/lint/full-suite/export results are shared-worktree regression signals, not clean-release certification.
+- Environment: Windows 10.0.26100; bundled Node 24.19.0; Expo SDK 57; `emulator-5554` API 37 (`sdk_gphone64_x86_64`).
 
-## MOBILE-150 acceptance matrix (22 outcomes)
-
-All 22 outcomes are independently verified from the committed diff, immutable source, and focused regression. They are source/test-verifiable only; they are not represented as physical-device evidence.
+## MOBILE-151 acceptance matrix (6 outcomes)
 
 | ID | Result | Independent evidence |
 | --- | --- | --- |
-| MOBILE-QA-150-01 | PASS | `isSwapQuoteExpired(quotedAt, now)` uses `> 15,000`; focused TTL test proves exact 15,000 ms age stays valid. |
-| MOBILE-QA-150-02 | PASS | Focused TTL test proves age 15,001 ms is expired. |
-| MOBILE-QA-150-03 | PASS | Helper clamps negative age to zero; focused test proves future clock skew cannot create inferred expiry. |
-| MOBILE-QA-150-04 | PASS | Screen clock initializes with `useState(() => Date.now())`, not zero. |
-| MOBILE-QA-150-05 | PASS | `prepare` re-evaluates expiry at mutation invocation before preparing an intent. |
-| MOBILE-QA-150-06 | PASS | `confirm` re-evaluates expiry at mutation invocation before explicit confirmation. |
-| MOBILE-QA-150-07 | PASS | Confirm Pressable has native disabled state when expired. |
-| MOBILE-QA-150-08 | PASS | Confirm style applies `styles.disabled` under the same expiry/busy predicate. |
-| MOBILE-QA-150-09 | PASS | Confirm accessibility state reports matching disabled/busy state. |
-| MOBILE-QA-150-10 | PASS | Buy selector participates in `flowBusy`, including readiness refresh. |
-| MOBILE-QA-150-11 | PASS | Sell selector participates in `flowBusy`, including readiness refresh. |
-| MOBILE-QA-150-12 | PASS | Amount input uses `editable={!flowBusy}` during readiness refresh. |
-| MOBILE-QA-150-13 | PASS | The two buy-mode unit controls (USD and SOL) are disabled/busy during readiness refresh. |
-| MOBILE-QA-150-14 | PASS | The two sell-mode unit controls (token and USD) are disabled/busy during readiness refresh. |
-| MOBILE-QA-150-15 | PASS | 50-bps slippage control is disabled/busy during readiness refresh. |
-| MOBILE-QA-150-16 | PASS | 100-bps slippage control is disabled/busy during readiness refresh. |
-| MOBILE-QA-150-17 | PASS | 300-bps slippage control is disabled/busy during readiness refresh. |
-| MOBILE-QA-150-18 | PASS | 500-bps slippage control is disabled/busy during readiness refresh. |
-| MOBILE-QA-150-19 | PASS | Quote retrieval action is disabled while `flowBusy`, which includes readiness fetching. |
-| MOBILE-QA-150-20 | PASS | Prepare action is disabled while `flowBusy`, which includes readiness fetching. |
-| MOBILE-QA-150-21 | PASS | Confirm action is disabled while `flowBusy`, which includes readiness fetching. |
-| MOBILE-QA-150-22 | PASS | Readiness retry receives `retrying={flowBusy}`; existing busy-safe control cannot overlap other evidence-chain phases. |
+| MOBILE-QA-151-01 | PASS | Focused Jest proves the injected configuration is guarded by `BuildConfig.DEBUG` and sets only `shakeGestureEnabled = false`. |
+| MOBILE-QA-151-02 | PASS | Focused Jest proves the plugin does not set `devMenuEnabled = false` or `keyboardShortcutsEnabled = false`; source limits the change to the shake gesture. |
+| MOBILE-QA-151-03 | PASS | Focused Jest verifies the required `DevMenuConfiguration` Kotlin import is injected. |
+| MOBILE-QA-151-04 | PASS | Focused Jest verifies applying the transformation twice yields identical generated Kotlin. |
+| MOBILE-QA-151-05 | PASS | Focused Jest verifies non-Kotlin generated source fails closed with the intended message. |
+| MOBILE-QA-151-06 | PASS | Focused Jest verifies an unexpected Expo ReactHost template fails closed instead of producing a partial native mutation. |
 
 ## Commands and regression evidence
 
 | MOBILE-QA check | Result | Evidence |
 | --- | --- | --- |
-| Committed scope / whitespace | PASS | `git show --stat e3c46cf` matches declared MOBILE-150 files; `git diff --check` for slice and worktree exited 0. |
-| Source, safety, API-contract inspection | PASS | MOBILE-150 is local TTL/UI coordination only: no API schema, signing, submission, trading, CopyTrade activation, secrets, or WEB changes. |
-| Focused readiness/accessibility regression | PASS | Bundled Node ran Jest: 2/2 suites and 73/73 tests passed. |
-| TypeScript | PASS (shared-worktree signal) | `tsc --noEmit` exited 0; unrelated uncommitted mobile files were resolved, so this cannot alone certify a clean immutable release. |
-| Local ESLint | PASS (shared-worktree signal) | `eslint app src` exited 0 with the same shared-worktree limitation. |
-| Expo resolved public config / platform configuration | PASS | `expo config --type public` exited 0: Android/iOS/web targets, `terminaldex` scheme/filter, biometric permissions, and iOS ATS arbitrary-load denial resolve. No bundle output was written. |
-| Android navigation, tabs, states, large text, TalkBack | BLOCKED | ADB reports `emulator-5554`, but `pm path app.terminaldex` exits 1 and Android launch reports no activity. Runtime cannot be tied to `e3c46cf`; no UI result was fabricated. Font scale is `1.0`. |
-| Expo Doctor | SKIP | No local `expo-doctor` executable/package; no dependency download attempted. |
-| Full Jest / clean immutable release regression | BLOCKED | Unrelated uncommitted Whales/token-logo and MOBILE-to-WEB work remains. Full suite would test mixed state. |
-| Live WEB API contract/schema exercise | NOT_APPLICABLE | No MOBILE-150 API/schema delta and no approved live endpoint; WEB remains read-only. |
+| Commit scope and whitespace | PASS | `git show --stat 7288c6d` matches the DEV handoff; `git diff --check` exited 0. |
+| Focused Android plugin regression | PASS | `node node_modules/jest/bin/jest.js --runInBand --runTestsByPath src/__tests__/android-dev-menu-safety.test.ts` exited 0; 1 suite / 6 assertions pass. |
+| TypeScript | PASS (shared-worktree signal) | `node node_modules/typescript/bin/tsc --noEmit` exited 0. |
+| Local source ESLint | PASS (shared-worktree signal) | `node node_modules/eslint/bin/eslint.js app src` exited 0 without findings. |
+| Full Jest | PASS (shared-worktree signal) | `node node_modules/jest/bin/jest.js --runInBand`: 79 suites / 385 tests passed. |
+| Expo public config | PASS | `expo config --type public` resolves the Android safety plugin, Android/iOS/web targets, `terminaldex` scheme/filter, Android biometric permissions, and iOS ATS arbitrary-load denial. |
+| Generated Android Kotlin | PASS (static) | Existing `android/app/src/main/java/app/terminaldex/mobile/MainApplication.kt` contains the import and DEBUG-only `DevMenuConfiguration(shakeGestureEnabled = false)` host configuration. |
+| Android bundle export | PASS (shared-worktree signal) | `expo export --platform android --output-dir %TEMP%/mobile-qa-export-android-20260825 --max-workers 1` exited 0; 48 files, including a 5.7 MB Hermes bundle. |
+| iOS bundle export | PASS (shared-worktree signal) | Equivalent iOS export exited 0; 44 files, including a 5.4 MB Hermes bundle. |
+| Web static export | PASS (shared-worktree signal) | Equivalent web export exited 0; 64 files and 25 static routes. Expo forced process exit after successful export. |
+| Bundle warning | OPEN / P3 | All exports emit the pre-existing `@noble/hashes` `./crypto.js` exports-map fallback warning. Bundles still complete; no new MOBILE-151 code path is implicated. |
+| Expo Doctor | SKIP | No local `expo-doctor` package/executable is installed; no dependency download was attempted. |
+| Emulator / ADB developer access | PASS (non-certifying) | Debug package `app.terminaldex.mobile` is installed on API 37. `input keyevent 82` displays the Expo development menu, including Reload, DevTools, React Native dev menu, and Fast Refresh. No fatal/ANR/unresolved-module match was found in the inspected log tail. |
 
 ## Findings and carry-forward
 
 ### MOBILE-QA-001 — P3 / process traceability
 
-- Status: RESOLVED. `AGENTS.md` retains the mobile-only boundary and selective-staging requirements.
+- Status: RESOLVED. MOBILE-only boundary and selective-staging guidance remain present in `AGENTS.md`.
 - Affected files: `AGENTS.md`.
 - Regression risk: low.
 - Exact NEXT_DEV_ACTION: none.
 - WEB contract blocker: none.
 
-### MOBILE-QA-002 — P2 / release-certification blocker — current Android build unavailable
+### MOBILE-QA-002 — P2 / release-certification blocker — exact Android build and UI flow not certified
 
-- Status: OPEN (updated evidence). A usable emulator is connected, but it has no installed `app.terminaldex` package/activity. Navigation; tab/subtab coverage; loading/stale/empty/filtered-empty/offline/error/retry/partial-page recovery; large-text layout; and TalkBack disabled/busy announcements remain unverified against MOBILE-150.
-- Affected files: current installed Android development build; `app/trade/[address].tsx` acceptance coverage.
-- Regression risk: native disabled behavior and assistive announcements are not release-certified.
-- Exact NEXT_DEV_ACTION: install a development build proven from `e3c46cf`, then exercise quote, prepare, confirm, readiness retry, default/enlarged font scale, and TalkBack on `emulator-5554`.
+- Status: OPEN (updated). The emulator now has a debuggable Terminal DEX APK, but its package `lastUpdateTime` (`2026-08-25 23:31:16`) predates MOBILE-151's implementation commit (`3f3825d`, `23:34:05 +0700`). It can demonstrate retained ADB Dev Menu access, not the updated shake-sensor behavior. The app opened its development-client shell; no current Metro session was available to exercise Whales/navigation, states, large text, TalkBack, or the quote flow.
+- Affected files: `plugins/withAndroidDevMenuSafety.js`; Android development client/runtime.
+- Regression risk: the exact APK's cold/warm startup and physical accessibility behavior remain uncertified.
+- Exact NEXT_DEV_ACTION: build and install a development APK from immutable `7288c6d`, then verify cold and warm launch, Whales mount, Android Developer Options shake gesture remains disabled, ADB/keyboard developer controls remain enabled, default/enlarged text, and TalkBack traversal.
 - WEB contract blocker: none.
 
-### MOBILE-QA-003 — P2 / release-gate blocker — clean full suite deferred
+### MOBILE-QA-003 — P2 / release-gate blocker — clean immutable full suite deferred
 
-- Status: OPEN. Unrelated uncommitted files remain in `.gitignore`, `app/(tabs)/whales.tsx`, `expo-env.d.ts`, `src/__tests__/TokenRow.test.tsx`, `src/components/TokenAvatar.tsx`, `src/components/TokenRow.tsx`, `src/components/DexLogo.tsx`, and MOBILE-to-WEB drafts.
-- Regression risk: clean immutable full-suite certification is unavailable.
-- Exact NEXT_DEV_ACTION: commit or isolate the concurrent mobile slice, then run the complete Jest suite against a clean immutable `HEAD`.
+- Status: OPEN. Unrelated uncommitted Whales/token-logo files and MOBILE-to-WEB drafts remain in the worktree. The passing full suite, lint, and exports are useful shared-worktree signals only.
+- Affected files: current concurrent mobile worktree.
+- Regression risk: no clean immutable release certification.
+- Exact NEXT_DEV_ACTION: commit or isolate the concurrent MOBILE slice, then rerun TypeScript, lint, full Jest, and platform exports against a clean immutable HEAD.
+- WEB contract blocker: none.
+
+### MOBILE-QA-004 — P3 / dependency warning — Noble hashes export fallback
+
+- Status: OPEN / known non-fatal. Metro resolves `@noble/hashes/crypto.js` through a file fallback because the nested package exports map omits that subpath. Android, iOS, and web bundles complete.
+- Affected files: transitive `@solana/wallet-standard-util` dependency tree.
+- Regression risk: future Metro/package updates could turn the fallback into a bundle failure.
+- Exact NEXT_DEV_ACTION: assess a compatible upstream dependency update in a separately isolated MOBILE dependency slice; retain the warning until then.
 - WEB contract blocker: none.
 
 ## Throughput accounting and release recommendation
 
-- MOBILE-QA findings inspected/reconciled: 25 stable IDs (22 MOBILE-150 acceptance IDs and 3 standing QA IDs); new defects found: 0.
-- DEV outcomes available: 22; independently verified: 22 PASS; FAIL: 0; BLOCKED/SKIP/NOT_APPLICABLE among DEV outcomes: 0; remaining to required 20: 0.
-- Stable blocked/skipped IDs: `MOBILE-QA-002`, `MOBILE-QA-003`; Expo Doctor is SKIP.
-- Carry-forward order: `MOBILE-QA-002`, then `MOBILE-QA-003`.
+- MOBILE-QA findings inspected/reconciled: 10 stable IDs (6 MOBILE-151 acceptance IDs and 4 standing QA findings).
+- DEV outcomes available: 6; independently verified: 6 PASS; FAIL: 0; BLOCKED/SKIP/NOT_APPLICABLE among DEV outcomes: 0.
+- Required 20-outcome shortfall: 14. MOBILE-151 provides only six material, non-duplicative acceptance outcomes. No cosmetic findings were added to fill the quota.
+- Stable blocked/skipped IDs: `MOBILE-QA-002`, `MOBILE-QA-003`, `MOBILE-QA-004`; Expo Doctor is SKIP.
+- Carry-forward order: `MOBILE-QA-002`, `MOBILE-QA-003`, `MOBILE-QA-004`.
 
-**MOBILE-QA CONDITIONAL NO-GO for release certification.** MOBILE-150 satisfies all 22 committed source/test-verifiable acceptance outcomes. Do not claim Android runtime, clean full-suite, or release sign-off until current-build device evidence and a clean immutable suite close.
+**MOBILE-QA CONDITIONAL NO-GO for release certification.** MOBILE-151's six committed source/test-verifiable outcomes pass. Do not claim release readiness until an APK built from `7288c6d` is installed and independently exercised, and the concurrent worktree is isolated for a clean immutable regression run.
 
 ## Safe evidence references
 
-- No screenshots were captured. Android output contains no endpoint, credential, provider diagnostic, or private exception text.
-- All commands and inspection remained within the canonical mobile workspace and read-only WEB boundary.
+- No screenshots were retained. The ephemeral emulator UI dump only confirmed the development menu and contained no credentials, endpoints, provider diagnostics, or private exception text.
+- No MOBILE product code, tests, configuration, WEB code, or production state was modified.

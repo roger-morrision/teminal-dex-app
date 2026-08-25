@@ -1,5 +1,9 @@
 import type { SwapInspection, SwapSimulation, SwapV2Readiness } from "@/api/schema";
 
+export const SWAP_QUOTE_TTL_MS = 15_000;
+export const isSwapQuoteExpired = (quotedAt: number, currentTime = Date.now()) =>
+  Math.max(0, currentTime - quotedAt) > SWAP_QUOTE_TTL_MS;
+
 export type ReadinessBlockerCategory = "wallet" | "provider" | "execution" | "policy" | "environment";
 
 const categoryFor = (id: string): ReadinessBlockerCategory => {

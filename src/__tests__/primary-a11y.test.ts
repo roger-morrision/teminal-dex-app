@@ -118,7 +118,7 @@ describe('audited-screen accessibility contract', () => {
   it('keeps quote-defining controls immutable across quote, prepare, and confirm phases', () => {
     const source = readFileSync(join(process.cwd(), 'app/trade/[address].tsx'), 'utf8');
     expect(source).toContain(
-      'const flowBusy = quote.isFetching || prepare.isPending || confirm.isPending',
+      'const flowBusy = readiness.isFetching || quote.isFetching || prepare.isPending || confirm.isPending',
     );
     expect(source).toContain('editable={!flowBusy}');
     expect(source.match(/disabled=\{flowBusy\}/g)).toHaveLength(3);
@@ -127,7 +127,8 @@ describe('audited-screen accessibility contract', () => {
     expect(source).toContain('checked: slippageBps === value, disabled: flowBusy, busy: flowBusy');
     expect(source).toContain('disabled: !validAmount || !token || flowBusy');
     expect(source).toContain('disabled: !quote.data || expired || !wallet.session || wallet.locked || flowBusy');
-    expect(source).toContain('disabled: flowBusy || !wallet.session || wallet.locked');
+    expect(source).toContain('disabled: expired || flowBusy || !wallet.session || wallet.locked');
+    expect(source.match(/isSwapQuoteExpired\(quote\.data\.quotedAt\)/g)).toHaveLength(2);
     expect(source).not.toContain('disabled: confirm.isPending || !wallet.session');
   });
 

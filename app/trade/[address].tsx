@@ -15,7 +15,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { confirmVerifiedSwapIntent, fetchSwapQuote, fetchSwapV2Readiness, fetchTokenDetail, prepareVerifiedSwapIntent } from "@/api/client";
 import { tokenSchema } from "@/api/schema";
 import { useWalletSession } from "@/security/WalletSessionProvider";
-import { evaluateSwapEvidenceChain, evaluateSwapReadiness } from "@/lib/swap-readiness";
+import { evaluateSwapEvidenceChain, evaluateSwapReadiness, isSwapQuoteExpired, SWAP_QUOTE_TTL_MS } from "@/lib/swap-readiness";
 import { colors, spacing } from "@/theme";
 import { publicErrorMessage } from "@/lib/public-error";
 import { publicReasonKey } from "@/lib/public-evidence-reason";
@@ -23,7 +23,6 @@ import { isSolanaAddress, parseBoundedJson } from "@/security/input";
 import { useSettings } from "@/settings/SettingsProvider";
 
 const AMOUNT = /^(?:0|[1-9]\d*)(?:\.\d+)?$/;
-const QUOTE_TTL = 15_000;
 
 export default function TradeReviewScreen() {
   const router = useRouter();
@@ -51,7 +50,7 @@ export default function TradeReviewScreen() {
   const [unit, setUnit] = useState<"usd" | "sol" | "token">("usd");
   const [amount, setAmount] = useState("");
   const [slippageBps, setSlippageBps] = useState(100);
-  const [now, setNow] = useState(0);
+  const [now, setNow] = useState(() => Date.now());
   const readinessState = readiness.data ? evaluateSwapReadiness(readiness.data, now) : null;
   const request = useMemo(
     () => ({ token: address, side, amount, unit, slippageBps }),
@@ -67,22 +66,24 @@ export default function TradeReviewScreen() {
   });
   const prepare = useMutation({ mutationFn: async () => {
     if (!quote.data || !wallet.session || wallet.locked) throw new Error(t("verifiedWalletRequired"));
+    if (isSwapQuoteExpired(quote.data.quotedAt)) throw new Error(t("quoteExpired"));
     return prepareVerifiedSwapIntent(quote.data, wallet.session.wallet);
   } });
   const confirm = useMutation({ mutationFn: async () => {
     if (!quote.data || !prepare.data || !wallet.session || wallet.locked) throw new Error(t("verifiedWalletRequired"));
+    if (isSwapQuoteExpired(quote.data.quotedAt)) throw new Error(t("quoteExpired"));
     const chain = evaluateSwapEvidenceChain({ readiness: readiness.data, inspection: prepare.data.inspection, simulation: prepare.data.simulation, wallet: wallet.session.wallet });
     if (!chain.consistent) throw new Error(t("policyEvidenceInconsistent"));
     return confirmVerifiedSwapIntent(quote.data, prepare.data, wallet.session.wallet);
   } });
-  const flowBusy = quote.isFetching || prepare.isPending || confirm.isPending;
+  const flowBusy = readiness.isFetching || quote.isFetching || prepare.isPending || confirm.isPending;
   function resetSafetyFlow() { prepare.reset(); confirm.reset(); }
   useEffect(() => {
     const timer = setInterval(() => setNow(Date.now()), 1_000);
     return () => clearInterval(timer);
   }, []);
   const ageMs = quote.data ? Math.max(0, now - quote.data.quotedAt) : null;
-  const expired = ageMs != null && ageMs > QUOTE_TTL;
+  const expired = quote.data ? isSwapQuoteExpired(quote.data.quotedAt, now) : false;
   const validAmount = validAddress && AMOUNT.test(amount) && Number(amount) > 0;
   function selectSide(value: "buy" | "sell") {
     resetSafetyFlow();
@@ -143,7 +144,7 @@ export default function TradeReviewScreen() {
             {readinessState.stale ? <Text accessibilityRole="alert" style={styles.failureGuidance}>{t("providerReadinessStale")}</Text> : null}
             {readinessState.blockers.map((check) => <Text key={check.id} style={styles.checkText}>• {t("providerReadinessBlocker", { category: t(`readinessCategory_${check.category}`), evidence: check.evidence })}</Text>)}
           </View>
-        ) : readiness.error ? <ReadinessFailure retrying={readiness.isFetching} onRetry={() => readiness.refetch()} /> : null}
+        ) : readiness.error ? <ReadinessFailure retrying={flowBusy} onRetry={() => readiness.refetch()} /> : null}
         {token ? (
           <View style={styles.token}>
             <View style={styles.avatar}>
@@ -316,7 +317,7 @@ export default function TradeReviewScreen() {
               <Text style={[styles.timer, expired && styles.timerExpired]}>
                 {expired
                   ? t("expired")
-                  : `${Math.max(0, Math.ceil((QUOTE_TTL - (ageMs ?? 0)) / 1000))}s`}
+                  : `${Math.max(0, Math.ceil((SWAP_QUOTE_TTL_MS - (ageMs ?? 0)) / 1000))}s`}
               </Text>
             </View>
             <QuoteRow
@@ -394,7 +395,7 @@ export default function TradeReviewScreen() {
               : <Text accessibilityRole="alert" key={check.id} style={styles.failureGuidance}>• {t("policyCheckBlocked", { id: check.id })}</Text>)}
           </View> : <Text style={styles.checkText}>{t("legacyReplayPolicyEvidence")}</Text>}
         </View> : null}
-        {prepare.data?.simulation.simulation.succeeded && !confirm.data ? <Pressable accessibilityRole="button" accessibilityLabel={t("explicitConfirm")} accessibilityState={{ disabled: flowBusy || !wallet.session || wallet.locked, busy: flowBusy }} disabled={flowBusy || !wallet.session || wallet.locked} onPress={() => confirm.mutate()} style={[styles.confirmButton, (flowBusy || !wallet.session || wallet.locked) && styles.disabled]}>
+        {prepare.data?.simulation.simulation.succeeded && !confirm.data ? <Pressable accessibilityRole="button" accessibilityLabel={t("explicitConfirm")} accessibilityState={{ disabled: expired || flowBusy || !wallet.session || wallet.locked, busy: flowBusy }} disabled={expired || flowBusy || !wallet.session || wallet.locked} onPress={() => confirm.mutate()} style={[styles.confirmButton, (expired || flowBusy || !wallet.session || wallet.locked) && styles.disabled]}>
           {confirm.isPending ? <ActivityIndicator color={colors.background} /> : <Text style={styles.getQuoteText}>{t("explicitConfirm")}</Text>}
         </Pressable> : null}
         {confirm.isError ? <Text accessibilityRole="alert" style={styles.flowError}>{publicErrorMessage(confirm.error, t("actionCouldNotComplete"))}</Text> : null}

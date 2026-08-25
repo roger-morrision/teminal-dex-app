@@ -1,5 +1,13 @@
 # Mobile Worklog
 
+## 2026-08-25 — MOBILE-150 quote expiry TOCTOU closure
+
+- Closed the quote-expiry time-of-check/time-of-use gap: preparation and confirmation independently re-check the exact 15-second TTL at invocation, while confirmation also remains native/visual/accessibility-disabled after expiry.
+- Replaced the zero initial clock with the current time and added a pure boundary helper covering exact TTL and bounded future-clock skew without negative inferred age.
+- Readiness refresh now joins the evidence-chain busy boundary, freezing all nine quote-defining controls and quote/prepare/confirm actions; readiness retry cannot overlap another phase.
+- Added focused boundary and source regressions. Execution remains locked; no signing, submission, intent consumption, trading, or activation was added.
+- Throughput: 22 distinct expiry/readiness phase-control findings reconciled; 22 material outcomes completed; remaining to 20: 0. Android runtime remains `MOBILE-QA-002`.
+
 ## 2026-08-25 — MOBILE-149 quote evidence-chain atomicity
 
 - Reconciled 33 distinct async-state/control gaps across quote retrieval, verified intent preparation, and explicit confirmation.

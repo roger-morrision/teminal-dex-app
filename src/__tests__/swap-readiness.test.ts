@@ -1,4 +1,4 @@
-import { evaluateSwapEvidenceChain, evaluateSwapReadiness } from "@/lib/swap-readiness";
+import { evaluateSwapEvidenceChain, evaluateSwapReadiness, isSwapQuoteExpired } from "@/lib/swap-readiness";
 import type { SwapInspection, SwapSimulation, SwapV2Readiness } from "@/api/schema";
 
 const evidence = {
@@ -29,6 +29,15 @@ describe("swap readiness interpretation", () => {
 
   it("marks assessments older than 48 hours stale", () => {
     expect(evaluateSwapReadiness(evidence, Date.parse("2026-08-23T12:00:00Z")).stale).toBe(true);
+  });
+
+  it("expires quotes only after the exact fifteen-second boundary", () => {
+    expect(isSwapQuoteExpired(1_000, 16_000)).toBe(false);
+    expect(isSwapQuoteExpired(1_000, 16_001)).toBe(true);
+  });
+
+  it("does not treat bounded future clock skew as quote age", () => {
+    expect(isSwapQuoteExpired(20_000, 19_000)).toBe(false);
   });
 
   it("binds policy evidence to the exact intent and wallet", () => {

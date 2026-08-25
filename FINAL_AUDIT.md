@@ -114,3 +114,9 @@ No in-scope automated regression was found. Generated export directories were re
 - Quote retrieval, verified preparation, and explicit confirmation now share one busy boundary. Nine quote-defining controls cannot change during any phase, and quote/prepare/confirm actions cannot overlap.
 - Native disabled/editable state, visual treatment, and assistive disabled/busy semantics agree, preventing the reviewed payload from diverging from the evidence being prepared or confirmed.
 - Thirty-three phase/control boundaries are source-verified. Execution remains deliberately locked and physical Android certification remains external.
+
+## MOBILE-150 quote expiry TOCTOU closure
+
+- Exact quote TTL is now checked in both asynchronous mutation functions, not only during render. A quote expiring during network work cannot proceed to preparation or explicit confirmation.
+- Confirmation exposes matching native, visual, and assistive disabled state after expiry. Readiness refresh joins the atomic lock so evidence cannot change underneath the quote chain.
+- Twenty-two distinct boundaries are verified by pure TTL and source-level safety tests. Execution remains locked; Android runtime certification remains external.

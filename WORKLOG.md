@@ -1114,3 +1114,9 @@
 - Extended authoritative holding evidence with the indexed held token artwork and passed it through the strict mobile schema; insecure/hotlink-only URLs are discarded and exact-mint initials remain truthful fallbacks.
 - Wallet identity, ≥$10,000 ownership qualification, transaction amount independence, provenance, exact-token navigation, and non-execution boundaries are unchanged.
 - Backend and mobile TypeScript/ESLint pass; the backend qualification contract and 4 mobile schema/whale/artwork/accessibility suites with 87 tests pass.
+
+## 2026-08-25 — Slice 124: large-text whale relationship recovery
+
+- Added a runtime font-scale breakpoint so held-token → action evidence → traded-token rows wrap instead of compressing or clipping when device text reaches 150%.
+- Retained scalable text, exact-token navigation, both artwork roles, and the compact default layout at normal text sizes.
+- Recorded static regression coverage for the font-scale breakpoint and recoverable row layout.

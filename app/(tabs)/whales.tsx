@@ -19,8 +19,9 @@ const modes: Mode[] = ["live", "accumulating", "distributing", "wallets", "alert
 export default function WhalesScreen() {
   const { t } = useSettings();
   const router = useRouter();
-  const { width } = useWindowDimensions();
+  const { width, fontScale } = useWindowDimensions();
   const narrow = width < 380;
+  const largeText = fontScale >= 1.5;
   const [mode, setMode] = useState<Mode>(defaultWhaleWatchPreferences.mode);
   const [direction, setDirection] = useState<WhaleEventDirection>(defaultWhaleWatchPreferences.direction);
   const [minimumUsd, setMinimumUsd] = useState(defaultWhaleWatchPreferences.minimumUsd);
@@ -65,7 +66,7 @@ export default function WhalesScreen() {
       {activityMode ? <View accessible accessibilityRole="summary" accessibilityLabel={`${evidenceCount} ${t(historical ? "historicalEvidence" : "whaleMode_live")}. ${t("whaleEvidenceBoundary")} ${t("whaleMarketChangeBoundary")}`} style={styles.compactStatus}><View style={[styles.dot, historical && styles.stale]} /><Text numberOfLines={1} style={styles.statusText}>{evidenceCount} {t(historical ? "historicalEvidence" : "whaleMode_live").toUpperCase()}</Text><Ionicons name="information-circle-outline" size={14} color={colors.muted} /></View> : null}
       {preferencesError ? <Text accessibilityRole="alert" style={styles.preferenceError}>{t("whalePreferencesSaveFailed")}</Text> : null}
       {mode === "live" ? <WhaleControls direction={direction} minimumUsd={minimumUsd} sort={sort} onDirection={setDirection} onMinimum={setMinimumUsd} onSort={setSort} onReset={() => { setDirection("all"); setMinimumUsd(0); setSort("latest"); setQuery(""); }} /> : null}
-      {mode === "wallets" ? <WalletRankings rows={searchedWallets} hasEvidence={wallets.length > 0} loading={rankings.isLoading} refreshing={rankings.isFetching} error={rankings.error?.message} onRetry={() => rankings.refetch()} onOpenAll={() => router.push("/wallet-intelligence")} onOpen={(walletAddress) => router.push({ pathname: "/wallet-intelligence", params: { address: walletAddress } })} /> : mode === "alerts" ? <AlertsHandoff onOpen={() => router.push("/(tabs)/monitor")} /> : feed.isLoading ? <State text={t("loadingWhaleActivity")} /> : feed.isError ? <State error text={feed.error.message} retrying={feed.isFetching} onRetry={() => feed.refetch()} /> : !allEvents.length ? <WhaleFeedUnavailable reason={feed.data?.coverage?.whaleTransactions.dataQuality} onWallets={() => setMode("wallets")} /> : mode === "live" ? <LiveEvents rows={events} onReset={() => { setDirection("all"); setMinimumUsd(0); setSort("latest"); setQuery(""); }} onOpen={(address) => router.push({ pathname: "/token/[address]", params: { address } })} /> : <FlowList rows={searchedFlows.filter((item) => mode === "accumulating" ? item.netUsd > 0 : item.netUsd < 0)} onOpen={(address) => router.push({ pathname: "/token/[address]", params: { address } })} />}
+      {mode === "wallets" ? <WalletRankings rows={searchedWallets} hasEvidence={wallets.length > 0} loading={rankings.isLoading} refreshing={rankings.isFetching} error={rankings.error?.message} onRetry={() => rankings.refetch()} onOpenAll={() => router.push("/wallet-intelligence")} onOpen={(walletAddress) => router.push({ pathname: "/wallet-intelligence", params: { address: walletAddress } })} /> : mode === "alerts" ? <AlertsHandoff onOpen={() => router.push("/(tabs)/monitor")} /> : feed.isLoading ? <State text={t("loadingWhaleActivity")} /> : feed.isError ? <State error text={feed.error.message} retrying={feed.isFetching} onRetry={() => feed.refetch()} /> : !allEvents.length ? <WhaleFeedUnavailable reason={feed.data?.coverage?.whaleTransactions.dataQuality} onWallets={() => setMode("wallets")} /> : mode === "live" ? <LiveEvents rows={events} largeText={largeText} onReset={() => { setDirection("all"); setMinimumUsd(0); setSort("latest"); setQuery(""); }} onOpen={(address) => router.push({ pathname: "/token/[address]", params: { address } })} /> : <FlowList rows={searchedFlows.filter((item) => mode === "accumulating" ? item.netUsd > 0 : item.netUsd < 0)} onOpen={(address) => router.push({ pathname: "/token/[address]", params: { address } })} />}
     </ScrollView>
   </SafeAreaView>;
 }
@@ -78,18 +79,18 @@ function WhaleControls({ direction, minimumUsd, sort, onDirection, onMinimum, on
 
 function Control({ label, accessibilityLabel, active, onPress }: { label: string; accessibilityLabel: string; active: boolean; onPress: () => void }) { return <Pressable accessibilityRole="radio" accessibilityLabel={accessibilityLabel} accessibilityState={{ checked: active }} onPress={onPress} style={[styles.control, active && styles.controlActive]}><Text style={[styles.controlText, active && styles.controlTextActive]}>{label}</Text></Pressable>; }
 
-function LiveEvents({ rows, onReset, onOpen }: { rows: TrackNotification[]; onReset: () => void; onOpen: (address: string) => void }) {
+function LiveEvents({ rows, largeText, onReset, onOpen }: { rows: TrackNotification[]; largeText: boolean; onReset: () => void; onOpen: (address: string) => void }) {
   const { t } = useSettings();
   if (!rows.length) return <View style={styles.state}><Ionicons name="filter" size={24} color={colors.muted} /><Text style={styles.stateText}>{t("noWhaleFilterMatches")}</Text><Pressable accessibilityRole="button" accessibilityLabel={t("resetWhaleFilters")} onPress={onReset} style={styles.secondary}><Text style={styles.secondaryText}>{t("resetWhaleFilters")}</Text></Pressable></View>;
   return <View>{rows.map((item) => {
     const buy = item.type.endsWith("buy");
     const whale = whaleHoldingIdentity(item);
-    return <Pressable key={item.id} accessibilityRole="button" accessibilityLabel={t("openWhaleEvent", { symbol: item.tokenSymbol })} onPress={() => onOpen(item.tokenAddress)} style={[styles.card, { borderLeftWidth: 3, borderLeftColor: buy ? colors.positive : colors.negative }]}>
+    return <Pressable key={item.id} accessibilityRole="button" accessibilityLabel={t("openWhaleEvent", { symbol: item.tokenSymbol })} onPress={() => onOpen(item.tokenAddress)} style={[styles.card, largeText && { flexWrap: "wrap", alignItems: "flex-start" }, { borderLeftWidth: 3, borderLeftColor: buy ? colors.positive : colors.negative }]}>
       <View style={{ width: 42, alignItems: "center", gap: 3 }}>
         <TokenAvatar symbol={whale?.tokenSymbol ?? "?"} identity={whale?.tokenAddress ?? item.wallet ?? item.id} imageUrl={whale?.imageUrl} size={38} accessible={false} />
         <Text numberOfLines={1} style={{ maxWidth: 42, color: colors.muted, fontSize: 7, fontWeight: "900" }}>{whale?.tokenSymbol ?? "—"}</Text>
       </View>
-      <View style={styles.flex}>
+      <View style={[styles.flex, largeText && { minWidth: "70%" }]}>
         <View style={styles.row}><Text numberOfLines={1} style={styles.cardTitle}>{whale?.label ?? t("unverifiedWhale")}</Text><Text style={styles.meta}>{ageLabel(item.observedAt)}</Text></View>
         <Text style={[styles.actionText, { color: buy ? colors.positive : colors.negative }]}>{t(buy ? "bought" : "sold")} {item.amountUsd == null ? "—" : compactUsd(item.amountUsd)} {item.tokenSymbol}</Text>
         {whale ? <Text style={styles.meta}>{t("whaleHolds", { amount: compactUsd(whale.valueUsd), symbol: whale.tokenSymbol })}</Text> : null}

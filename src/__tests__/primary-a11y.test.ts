@@ -32,5 +32,7 @@ describe('audited-screen accessibility contract', () => {
     expect(source).not.toContain('maxFontSizeMultiplier');
     expect(source).toContain('horizontal showsHorizontalScrollIndicator={false} accessibilityRole="tablist"');
     expect(source).toContain('useWindowDimensions');
+    expect(source).toContain('fontScale >= 1.5');
+    expect(source).toContain('largeText && { flexWrap: "wrap"');
   });
 });

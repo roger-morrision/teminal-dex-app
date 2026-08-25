@@ -324,8 +324,10 @@ export function AlertComposer({ onCreated }: { onCreated: () => void }) {
       <Text style={styles.label}>{t("ruleName")}</Text>
       <TextInput
         accessibilityLabel={t("alertName")}
+        accessibilityState={{ disabled: mutation.isPending }}
         value={name}
         onChangeText={setName}
+        editable={!mutation.isPending}
         maxLength={100}
         placeholder={t("alertNamePlaceholder")}
         placeholderTextColor={colors.muted}
@@ -334,8 +336,10 @@ export function AlertComposer({ onCreated }: { onCreated: () => void }) {
       <Text style={styles.label}>{t("tokenAddressLabel")}</Text>
       <TextInput
         accessibilityLabel={t("alertTokenAddress")}
+        accessibilityState={{ disabled: mutation.isPending }}
         value={address}
         onChangeText={setAddress}
+        editable={!mutation.isPending}
         autoCapitalize="none"
         autoCorrect={false}
         placeholder={t("solanaMintAddress")}
@@ -356,6 +360,7 @@ export function AlertComposer({ onCreated }: { onCreated: () => void }) {
                     : t("price")
               }
               active={type === item}
+              disabled={mutation.isPending}
               onPress={() => setType(item)}
             />
           ),
@@ -366,11 +371,13 @@ export function AlertComposer({ onCreated }: { onCreated: () => void }) {
           <Choice
             label={t("aboveChoice")}
             active={condition === "above"}
+            disabled={mutation.isPending}
             onPress={() => setCondition("above")}
           />
           <Choice
             label={t("belowChoice")}
             active={condition === "below"}
+            disabled={mutation.isPending}
             onPress={() => setCondition("below")}
           />
         </View>
@@ -384,8 +391,10 @@ export function AlertComposer({ onCreated }: { onCreated: () => void }) {
       </Text>
       <TextInput
         accessibilityLabel={t("alertThreshold")}
+        accessibilityState={{ disabled: mutation.isPending }}
         value={value}
         onChangeText={setValue}
+        editable={!mutation.isPending}
         keyboardType="decimal-pad"
         placeholder={t("positiveValue")}
         placeholderTextColor={colors.muted}
@@ -630,18 +639,21 @@ function IdentityGate({
 function Choice({
   label,
   active,
+  disabled = false,
   onPress,
 }: {
   label: string;
   active: boolean;
+  disabled?: boolean;
   onPress: () => void;
 }) {
   return (
     <Pressable
       accessibilityRole="radio"
-      accessibilityState={{ checked: active }}
+      accessibilityState={{ checked: active, disabled }}
+      disabled={disabled}
       onPress={onPress}
-      style={[styles.choice, active && styles.choiceActive]}
+      style={[styles.choice, active && styles.choiceActive, disabled && styles.disabled]}
     >
       <Text style={[styles.choiceText, active && styles.choiceTextActive]}>
         {label}

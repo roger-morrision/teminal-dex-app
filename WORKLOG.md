@@ -1,5 +1,13 @@
 # Mobile Worklog
 
+## 2026-08-25 — MOBILE-148 atomic creation forms
+
+- Reconciled 36 independently actionable form controls that remained editable during in-flight Monitor alert or paused CopyTrade strategy creation.
+- Monitor now freezes three payload inputs, three signal choices, and two condition choices while saving; every frozen input/control exposes disabled semantics.
+- CopyTrade now freezes the close action, three sizing modes, active sizing input, twelve risk/limit inputs, three behavior toggles, three local-safety inputs, Anti-MEV toggle, and four exit-ladder inputs while saving.
+- Added source-level regression contracts for both forms and repository-local `AGENTS.md` scope/safety guidance, closing `MOBILE-QA-001` without counting documentation as a product outcome.
+- Throughput: 36 evidence-backed findings reconciled; 36 material outcomes completed; remaining to 20: 0. Android runtime remains `MOBILE-QA-002` and is not counted.
+
 ## 2026-08-25 — MOBILE-147 mutation privacy and concurrency hardening
 
 - Reconciled 20 distinct mutation-state gaps across Monitor alert toggle/delete and CopyTrade pause/delete: raw failure exposure, localized fallback, allowlisted safe public reasons, sibling-operation overlap, stale sibling errors, disabled interaction, and assistive busy state for each independently actionable path.

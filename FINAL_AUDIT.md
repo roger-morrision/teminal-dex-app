@@ -102,3 +102,9 @@ No in-scope automated regression was found. Generated export directories were re
 - Monitor alert activation/pause and deletion plus CopyTrade pause and deletion now use the bounded public-error classifier; backend origins, provider diagnostics, and exception messages are never rendered verbatim.
 - Sibling operations are mutually excluded, stale sibling failures are cleared before a new action, and every affected press target exposes matching disabled/busy semantics. CopyTrade cannot open a destructive confirmation while another strategy mutation is pending.
 - Source-level regression coverage locks all 20 independently testable privacy, recovery, concurrency, and accessibility outcomes. Physical Android interaction certification remains externally blocked.
+
+## MOBILE-148 atomic creation forms
+
+- Alert and paused-strategy creation now freeze every control capable of changing the reviewed payload while submission is pending. This prevents a request/visible-review race and duplicate or contradictory user interaction.
+- Text inputs use native `editable=false`; radios, checkboxes, choices, and the strategy close action use native disabled state; all expose matching accessibility state.
+- Thirty-six distinct controls are covered across the two forms. Repository-local agent guidance now fixes the MOBILE/WEB boundary and selective-staging rules; Android runtime certification remains external.

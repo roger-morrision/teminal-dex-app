@@ -480,6 +480,8 @@ export function StrategyComposer({
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={t("closeStrategyReview")}
+          accessibilityState={{ disabled: mutation.isPending }}
+          disabled={mutation.isPending}
           onPress={onClose}
         >
           <Ionicons name="close" size={20} color={colors.muted} />
@@ -492,10 +494,14 @@ export function StrategyComposer({
             <Pressable
               key={mode}
               accessibilityRole="radio"
-              accessibilityState={{ checked: draft.sizingMode === mode }}
+              accessibilityState={{
+                checked: draft.sizingMode === mode,
+                disabled: mutation.isPending,
+              }}
               accessibilityLabel={t("selectCopySizing", {
                 mode: t(`copySizing_${mode}`),
               })}
+              disabled={mutation.isPending}
               onPress={() => update("sizingMode", mode)}
               style={[
                 styles.modePill,
@@ -532,6 +538,7 @@ export function StrategyComposer({
                   : "proportionalRatio"
             ]
           }
+          disabled={mutation.isPending}
           onChange={(value) =>
             update(
               draft.sizingMode === "fixed_sol"
@@ -548,6 +555,7 @@ export function StrategyComposer({
             key={field.key}
             label={field.label}
             value={draft[field.key]}
+            disabled={mutation.isPending}
             onChange={(value) => update(field.key, value)}
           />
         ))}
@@ -557,8 +565,12 @@ export function StrategyComposer({
           <Pressable
             key={key}
             accessibilityRole="checkbox"
-            accessibilityState={{ checked: draft[key] }}
+            accessibilityState={{
+              checked: draft[key],
+              disabled: mutation.isPending,
+            }}
             accessibilityLabel={t(`copyToggle_${key}`)}
+            disabled={mutation.isPending}
             onPress={() => update(key, !draft[key])}
             style={[styles.toggle, draft[key] && styles.toggleActive]}
           >
@@ -576,24 +588,31 @@ export function StrategyComposer({
         <Input
           label={t("copyPriorityFeeSol")}
           value={safety.priorityFeeSol}
+          disabled={mutation.isPending}
           onChange={(value) => updateSafety("priorityFeeSol", value)}
         />
         <Input
           label={t("copyMinHolders")}
           value={safety.minHolderCount}
+          disabled={mutation.isPending}
           onChange={(value) => updateSafety("minHolderCount", value)}
         />
         <Input
           label={t("copyTrailingStop")}
           value={safety.trailingStopPct}
+          disabled={mutation.isPending}
           onChange={(value) => updateSafety("trailingStopPct", value)}
         />
       </View>
       <View style={styles.toggleRow}>
         <Pressable
           accessibilityRole="checkbox"
-          accessibilityState={{ checked: safety.antiMev }}
+          accessibilityState={{
+            checked: safety.antiMev,
+            disabled: mutation.isPending,
+          }}
           accessibilityLabel={t("copyAntiMevPreview")}
+          disabled={mutation.isPending}
           onPress={() => updateSafety("antiMev", !safety.antiMev)}
           style={[styles.toggle, safety.antiMev && styles.toggleActive]}
         >
@@ -609,12 +628,14 @@ export function StrategyComposer({
             key={`trigger-${index}`}
             label={t("copyLadderTrigger", { level: index + 1 })}
             value={level.triggerPct}
+            disabled={mutation.isPending}
             onChange={(value) => updateLadder(index as 0 | 1, "triggerPct", value)}
           />,
           <Input
             key={`sell-${index}`}
             label={t("copyLadderSell", { level: index + 1 })}
             value={level.sellPct}
+            disabled={mutation.isPending}
             onChange={(value) => updateLadder(index as 0 | 1, "sellPct", value)}
           />,
         ])}
@@ -1027,10 +1048,12 @@ function IdentityGate({
 function Input({
   label,
   value,
+  disabled = false,
   onChange,
 }: {
   label: string;
   value: string;
+  disabled?: boolean;
   onChange: (value: string) => void;
 }) {
   return (
@@ -1038,8 +1061,10 @@ function Input({
       <Text style={styles.inputLabel}>{label}</Text>
       <TextInput
         accessibilityLabel={label}
+        accessibilityState={{ disabled }}
         value={value}
         onChangeText={(value) => onChange(boundedCopyNumber(value))}
+        editable={!disabled}
         keyboardType="decimal-pad"
         style={styles.input}
       />

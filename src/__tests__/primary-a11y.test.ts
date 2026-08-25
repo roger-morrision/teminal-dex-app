@@ -58,6 +58,14 @@ describe('audited-screen accessibility contract', () => {
     expect(source).toContain('toggle.reset();\n    remove.mutate();');
   });
 
+  it('keeps the Monitor alert payload immutable while creation is pending', () => {
+    const source = readFileSync(join(process.cwd(), 'app/(tabs)/monitor.tsx'), 'utf8');
+    expect(source.match(/editable=\{!mutation\.isPending\}/g)).toHaveLength(3);
+    expect(source.match(/disabled=\{mutation\.isPending\}/g)).toHaveLength(3);
+    expect(source).toContain('accessibilityState={{ disabled: mutation.isPending }}');
+    expect(source).toContain('accessibilityState={{ checked: active, disabled }}');
+  });
+
   it.each([
     'app/ai.tsx',
     'app/market-intelligence.tsx',
@@ -81,6 +89,15 @@ describe('audited-screen accessibility contract', () => {
     expect(source).toContain('pause.reset();\n          remove.mutate();');
     expect(source).toContain('if (mutationBusy) return;');
     expect(source).toContain('t("evidenceLoadFailed")');
+  });
+
+  it('keeps the paused CopyTrade payload immutable while creation is pending', () => {
+    const source = readFileSync(join(process.cwd(), 'app/copytrade.tsx'), 'utf8');
+    expect(source.match(/disabled=\{mutation\.isPending\}/g)?.length).toBeGreaterThanOrEqual(9);
+    expect(source).toContain('editable={!disabled}');
+    expect(source).toContain('accessibilityState={{ disabled }}');
+    expect(source).toContain('disabled: mutation.isPending');
+    expect(source).toContain('accessibilityLabel={t("closeStrategyReview")}');
   });
 
   it.each(primaryScreens)('%s never renders exception messages verbatim', (file) => {

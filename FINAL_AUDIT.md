@@ -2,7 +2,7 @@
 
 Audit date: 2026-08-24
 
-Audit maintained through: Slice 144
+Audit maintained through: MOBILE-145
 
 Backend authority: `C:\Tuan\devApps\TERMINAL_DEX_Intelligent` (source of truth; isolated Slice 43–49 contracts added with explicit write approval)
 
@@ -83,3 +83,9 @@ No in-scope automated regression was found. Generated export directories were re
 - Verified that every quality script begins with its declared local tool executable: TypeScript for typecheck, ESLint for lint, and Jest for test/CI.
 - The regression rejects an `npx` first command and locks lint to the source-owned `app` and `src` roots.
 - Cross-team handoff status: the expected backend `docs/automation-handoffs/mobile-latest.md` artifact was absent, so no unverified backend change was consumed.
+
+## MOBILE-145 WEB contract acceptance
+
+- The WEB indexer-health handoff is now represented by a strict MOBILE schema and GET-only client reader.
+- Healthy evidence requires HTTP/upstream status consistency; unavailable evidence has explicit bounded reasons; every accepted shape requires `automationSafe: false`.
+- This evidence remains observational and cannot enable signing, submission, CopyTrade activation, or any transaction path.

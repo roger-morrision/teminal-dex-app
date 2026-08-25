@@ -14,6 +14,7 @@ import {
   fetchFeedDiagnostics,
   fetchFeedHistory,
   fetchHeatmap,
+  fetchIndexerHealth,
   fetchMonitorAlerts,
   fetchOhlcv,
   fetchPortfolioAnalytics,
@@ -1079,5 +1080,24 @@ describe("backend client routing", () => {
           (call) => !call[1]?.method || call[1]?.method === "GET",
         ),
     ).toBe(true);
+  });
+
+  it("reads the WEB indexer health envelope without execution authority", async () => {
+    jest.mocked(fetch).mockResolvedValueOnce(jsonResponse({
+      schemaVersion: 1,
+      source: "solana-indexer",
+      available: false,
+      healthy: false,
+      reason: "not_configured",
+      automationSafe: false,
+    }, false, 503));
+    await expect(fetchIndexerHealth()).resolves.toMatchObject({
+      available: false,
+      automationSafe: false,
+    });
+    expect(fetch).toHaveBeenCalledWith(
+      "https://terminal.example/api/indexer/health",
+      expect.objectContaining({ credentials: "include" }),
+    );
   });
 });

@@ -11,6 +11,7 @@ import {
   feedDiagnosticsSchema,
   feedHistorySchema,
   heatmapSchema,
+  indexerHealthSchema,
   manipulationSchema,
   monitorAlertsSchema,
   ohlcvSchema,
@@ -44,6 +45,56 @@ describe("discovery token social evidence", () => {
     expect(tokenSchema.parse({ ...token, imageUrl: "https://cdn.dexscreener.com/cms/images/token" }).imageUrl).toBe("https://cdn.dexscreener.com/cms/images/token");
     expect(tokenSchema.parse({ ...token, imageUrl: "http://cdn.example/token.png" }).imageUrl).toBeUndefined();
     expect(tokenSchema.parse({ ...token, imageUrl: "https://gmgn.ai/external-res/token.webp" }).imageUrl).toBeUndefined();
+  });
+});
+
+describe("WEB indexer health handoff", () => {
+  it("accepts bounded healthy and unavailable schema-v1 evidence", () => {
+    expect(indexerHealthSchema.parse({
+      schemaVersion: 1,
+      source: "solana-indexer",
+      available: true,
+      upstreamStatus: 200,
+      status: "healthy",
+      healthy: true,
+      reason: null,
+      tip: 100,
+      ageMs: 50,
+      staleAfterMs: 5_000,
+      updatedAt: "2026-08-25T10:00:00.000Z",
+      ingestion: { source: "rpc", commitment: "confirmed", sourceTip: 100, exportLagSlots: 0 },
+      quality: { events: { canonical: true, reason: null } },
+      automationSafe: false,
+    }).healthy).toBe(true);
+    expect(indexerHealthSchema.parse({
+      schemaVersion: 1,
+      source: "solana-indexer",
+      available: false,
+      healthy: false,
+      reason: "not_configured",
+      automationSafe: false,
+    }).available).toBe(false);
+  });
+
+  it("rejects execution claims and contradictory status evidence", () => {
+    const available = {
+      schemaVersion: 1,
+      source: "solana-indexer",
+      available: true,
+      upstreamStatus: 503,
+      status: "degraded",
+      healthy: true,
+      reason: null,
+      tip: null,
+      ageMs: null,
+      staleAfterMs: null,
+      updatedAt: null,
+      ingestion: { source: null, commitment: null, sourceTip: null, exportLagSlots: null },
+      quality: {},
+      automationSafe: false,
+    };
+    expect(indexerHealthSchema.safeParse(available).success).toBe(false);
+    expect(indexerHealthSchema.safeParse({ ...available, healthy: false, automationSafe: true }).success).toBe(false);
   });
 });
 

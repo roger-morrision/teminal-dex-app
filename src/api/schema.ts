@@ -2142,3 +2142,63 @@ export const feedDiagnosticsSchema = z
   })
   .passthrough();
 export type FeedDiagnosticsResponse = z.infer<typeof feedDiagnosticsSchema>;
+
+const indexerHealthQualityItemSchema = z
+  .object({
+    canonical: z.boolean().nullable(),
+    reason: z.string().max(256).nullable(),
+  })
+  .strict();
+
+const indexerHealthUnavailableSchema = z
+  .object({
+    schemaVersion: z.literal(1),
+    source: z.literal("solana-indexer"),
+    available: z.literal(false),
+    healthy: z.literal(false),
+    reason: z.enum(["not_configured", "unavailable", "invalid_contract"]),
+    automationSafe: z.literal(false),
+  })
+  .strict();
+
+const indexerHealthAvailableSchema = z
+  .object({
+    schemaVersion: z.literal(1),
+    source: z.literal("solana-indexer"),
+    available: z.literal(true),
+    upstreamStatus: z.union([z.literal(200), z.literal(503)]),
+    status: z.string().min(1).max(128),
+    healthy: z.boolean(),
+    reason: z.string().max(256).nullable(),
+    tip: z.number().finite().nonnegative().nullable(),
+    ageMs: z.number().finite().nonnegative().nullable(),
+    staleAfterMs: z.number().finite().nonnegative().nullable(),
+    updatedAt: z.string().min(1).max(64).nullable(),
+    ingestion: z
+      .object({
+        source: z.string().min(1).max(128).nullable(),
+        commitment: z.string().min(1).max(32).nullable(),
+        sourceTip: z.number().finite().nonnegative().nullable(),
+        exportLagSlots: z.number().finite().nonnegative().nullable(),
+      })
+      .strict(),
+    quality: z
+      .record(z.string().min(1).max(32), indexerHealthQualityItemSchema)
+      .refine((value) => Object.keys(value).length <= 9),
+    automationSafe: z.literal(false),
+  })
+  .strict()
+  .superRefine((value, context) => {
+    if ((value.upstreamStatus === 200) !== value.healthy) {
+      context.addIssue({
+        code: "custom",
+        message: "Indexer status and health evidence disagree.",
+      });
+    }
+  });
+
+export const indexerHealthSchema = z.union([
+  indexerHealthUnavailableSchema,
+  indexerHealthAvailableSchema,
+]);
+export type IndexerHealthResponse = z.infer<typeof indexerHealthSchema>;

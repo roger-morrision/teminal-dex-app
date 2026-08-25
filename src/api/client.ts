@@ -17,6 +17,7 @@ import {
   feedHistorySchema,
   socialRadarSchema,
   heatmapSchema,
+  indexerHealthSchema,
   holdersSchema,
   manipulationSchema,
   monitorAlertsSchema,
@@ -63,6 +64,7 @@ import {
   type FeedHistoryResponse,
   type SocialRadarResponse,
   type HeatmapResponse,
+  type IndexerHealthResponse,
   type HoldersResponse,
   type ManipulationResponse,
   type MonitorAlertsResponse,
@@ -961,6 +963,16 @@ export async function fetchFeedDiagnostics(
     "/api/feed/diagnostics?limit=20",
     feedDiagnosticsSchema,
     "Feed diagnostics request failed",
+    signal,
+  );
+}
+export async function fetchIndexerHealth(
+  signal?: AbortSignal,
+): Promise<IndexerHealthResponse> {
+  return readEvidence(
+    "/api/indexer/health",
+    indexerHealthSchema,
+    "Indexer health request failed",
     signal,
   );
 }

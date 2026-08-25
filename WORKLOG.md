@@ -1259,3 +1259,10 @@
 - Consumed the mobile team's prior `NEXT_TEAM_ACTION`; no backend mobile handoff existed at the start of this run, so no backend contract was inferred or fabricated.
 - Added a platform-independent regression that locks typecheck, lint, test, and CI test scripts to their declared local TypeScript, ESLint, and Jest dependencies, rejects `npx` delegation, and preserves the source-owned `app`/`src` lint boundary.
 - NEXT_TEAM_ACTION: backend should publish `docs/automation-handoffs/mobile-latest.md`; mobile should then implement its highest-ranked compatible acceptance item. Until then, the next independent mobile priority is responsive transaction-row evidence at large text scale.
+
+## 2026-08-25 — MOBILE-145: WEB indexer-health compatibility
+
+- BA/PO reconciled WEB contract `WEB-INDEXER-HEALTH-ALLOWLIST-001` with MOBILE safety requirements. User value: release and operations surfaces can consume truthful upstream availability evidence without inferring counts or granting transaction authority.
+- Acceptance implemented: strict schema-v1 healthy/degraded/unavailable parsing, bounded quality evidence, status/health consistency, read-only client routing, and hard `automationSafe: false` enforcement. No UI or execution control was added.
+- Concurrent transaction-row/logo work was preserved and excluded from this slice. MOBILE-QA-001 is addressed by the new DEV handoff; MOBILE-QA-002 remains environment-blocked pending a responsive Android/ADB session.
+- NEXT_QA_ACTION: verify the schema/client fixtures, confirm HTTP 503 unavailable evidence parses without leaking raw provider details, and confirm the commit excludes concurrent token-row/logo files.

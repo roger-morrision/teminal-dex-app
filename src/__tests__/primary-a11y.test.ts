@@ -115,6 +115,22 @@ describe('audited-screen accessibility contract', () => {
     },
   );
 
+  it('keeps quote-defining controls immutable across quote, prepare, and confirm phases', () => {
+    const source = readFileSync(join(process.cwd(), 'app/trade/[address].tsx'), 'utf8');
+    expect(source).toContain(
+      'const flowBusy = quote.isFetching || prepare.isPending || confirm.isPending',
+    );
+    expect(source).toContain('editable={!flowBusy}');
+    expect(source.match(/disabled=\{flowBusy\}/g)).toHaveLength(3);
+    expect(source).toContain('selected: side === value, disabled: flowBusy, busy: flowBusy');
+    expect(source).toContain('checked: unit === value, disabled: flowBusy, busy: flowBusy');
+    expect(source).toContain('checked: slippageBps === value, disabled: flowBusy, busy: flowBusy');
+    expect(source).toContain('disabled: !validAmount || !token || flowBusy');
+    expect(source).toContain('disabled: !quote.data || expired || !wallet.session || wallet.locked || flowBusy');
+    expect(source).toContain('disabled: flowBusy || !wallet.session || wallet.locked');
+    expect(source).not.toContain('disabled: confirm.isPending || !wallet.session');
+  });
+
   it('keeps table and CopyTrade audit provider failures private', () => {
     const table = readFileSync(join(process.cwd(), 'src/components/MonitorTokenTable.tsx'), 'utf8');
     const copyTrade = readFileSync(join(process.cwd(), 'app/copytrade.tsx'), 'utf8');

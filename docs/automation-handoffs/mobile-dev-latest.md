@@ -1,29 +1,28 @@
 # MOBILE DEV → QA handoff
 
-- Story: `MOBILE-148` — atomic Monitor and CopyTrade creation forms
-- Base: `1c6c3e4`
+- Story: `MOBILE-149` — quote evidence-chain atomicity
+- Base: `69864de`
 - Result: containing commit; QA must pin immutable `HEAD`
-- Scope: MOBILE only. WEB remained read-only. Concurrent Whale/TokenRow/TokenAvatar/DexLogo work and MOBILE→WEB drafts were preserved and excluded.
+- Scope: MOBILE only. WEB remained read-only. Concurrent QA handoff, Whale/TokenRow/TokenAvatar/DexLogo work, and MOBILE→WEB drafts were preserved and excluded.
 
-## User value and acceptance
+## Acceptance and user value
 
-While create requests are pending, the user must not be able to change the payload shown on screen, close the review, or trigger contradictory control changes. Native disabled behavior and assistive disabled state must agree. No execution authority changes.
+The quote shown to the user must remain identical to the inputs bound through quote retrieval, verified preparation, and explicit confirmation. No phase may overlap another. All native, visual, and assistive states must communicate the same lock.
 
-## Outcomes (36 material controls)
+## Outcomes (33 material state/control boundaries)
 
-- Monitor (8): name, address, threshold, three signal choices, above, below.
-- CopyTrade (28): close; three sizing modes; active sizing value; twelve server risk/limit values; three behavior toggles; priority fee, holder minimum, trailing stop; Anti-MEV; four exit-ladder values.
-- Every text input uses `editable={!pending}` plus disabled accessibility state.
-- Every radio/checkbox/button/choice uses native `disabled` plus disabled accessibility state.
-- `AGENTS.md` closes `MOBILE-QA-001` process traceability but is not counted among the 36 product outcomes.
+- Nine quote-defining controls: two sides, amount, two contextual units, and four slippage choices.
+- Each of those nine is now frozen independently during quote retrieval, preparation, and confirmation: 27 distinct phase/control outcomes.
+- Quote refresh is blocked during preparation and confirmation: 2 outcomes.
+- Preparation is blocked during quote retrieval and confirmation: 2 outcomes.
+- Confirmation is blocked during quote retrieval and preparation: 2 outcomes.
+- Total findings reconciled: 33; outcomes completed: 33; remaining to required 20: 0.
 
-Findings reconciled: 36. Outcomes complete: 36. Remaining to required 20: 0. No padding, placeholders, or documentation-only outcomes.
+No signing, submission, intent consumption, trading, or activation authority changed.
 
 ## Changed files
 
-- `AGENTS.md`
-- `app/(tabs)/monitor.tsx`
-- `app/copytrade.tsx`
+- `app/trade/[address].tsx`
 - `src/__tests__/primary-a11y.test.ts`
 - MOBILE checklist, worklog, final audit, and this handoff
 
@@ -38,6 +37,6 @@ Findings reconciled: 36. Outcomes complete: 36. Remaining to required 20: 0. No 
 
 ## Risks and NEXT_QA_ACTION
 
-- `MOBILE-QA-002` remains blocked until ADB exposes a responsive Android emulator/device.
-- `MOBILE-QA-003` clean immutable certification still requires isolation/commit of concurrent Whale/logo work; shared-worktree full-suite evidence is supporting only.
-- NEXT_QA_ACTION: pin the containing commit; verify all 36 controls are frozen while pending, assistive state matches native state, `AGENTS.md` has the exact MOBILE/WEB boundary, and the commit excludes all concurrent files.
+- `MOBILE-QA-002`: on a responsive Android device, rapidly attempt side/amount/unit/slippage changes and quote/prepare/confirm actions during each pending phase; verify TalkBack announces disabled/busy state.
+- `MOBILE-QA-003`: clean immutable full-suite certification still awaits isolation or commit of concurrent whale/logo work.
+- NEXT_QA_ACTION: pin the containing commit, independently verify all 33 phase/control boundaries, confirm execution remains locked, and ensure the commit excludes the concurrent QA/whale/logo files.

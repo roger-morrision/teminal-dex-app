@@ -75,6 +75,7 @@ export default function TradeReviewScreen() {
     if (!chain.consistent) throw new Error(t("policyEvidenceInconsistent"));
     return confirmVerifiedSwapIntent(quote.data, prepare.data, wallet.session.wallet);
   } });
+  const flowBusy = quote.isFetching || prepare.isPending || confirm.isPending;
   function resetSafetyFlow() { prepare.reset(); confirm.reset(); }
   useEffect(() => {
     const timer = setInterval(() => setNow(Date.now()), 1_000);
@@ -172,12 +173,14 @@ export default function TradeReviewScreen() {
             <Pressable
               accessibilityRole="tab"
               accessibilityLabel={t("selectSide", { side: t(value) })}
-              accessibilityState={{ selected: side === value }}
+              accessibilityState={{ selected: side === value, disabled: flowBusy, busy: flowBusy }}
               key={value}
+              disabled={flowBusy}
               onPress={() => selectSide(value)}
               style={[
                 styles.segmentItem,
                 side === value && styles.segmentActive,
+                flowBusy && styles.disabled,
               ]}
             >
               <Text
@@ -195,8 +198,10 @@ export default function TradeReviewScreen() {
         <View style={styles.amountRow}>
           <TextInput
             accessibilityLabel={t("swapAmount")}
+            accessibilityState={{ disabled: flowBusy, busy: flowBusy }}
             value={amount}
             onChangeText={(value) => { resetSafetyFlow(); setAmount(value.replace(/[^0-9.]/g, "")); }}
+            editable={!flowBusy}
             keyboardType="decimal-pad"
             placeholder="0.00"
             placeholderTextColor={colors.muted}
@@ -215,10 +220,11 @@ export default function TradeReviewScreen() {
                 <Pressable
                   accessibilityRole="radio"
                   accessibilityLabel={t("selectUnit", { unit: label })}
-                  accessibilityState={{ checked: unit === value }}
+                  accessibilityState={{ checked: unit === value, disabled: flowBusy, busy: flowBusy }}
                   key={value}
+                  disabled={flowBusy}
                   onPress={() => { resetSafetyFlow(); setUnit(value); }}
-                  style={[styles.unit, unit === value && styles.unitActive]}
+                  style={[styles.unit, unit === value && styles.unitActive, flowBusy && styles.disabled]}
                 >
                   <Text
                     style={[
@@ -241,12 +247,14 @@ export default function TradeReviewScreen() {
               <Pressable
                 accessibilityRole="radio"
                 accessibilityLabel={t("selectSlippage", { slippage: label })}
-                accessibilityState={{ checked: slippageBps === value }}
+                accessibilityState={{ checked: slippageBps === value, disabled: flowBusy, busy: flowBusy }}
                 key={value}
+                disabled={flowBusy}
                 onPress={() => { resetSafetyFlow(); setSlippageBps(value); }}
                 style={[
                   styles.slippageItem,
                   slippageBps === value && styles.unitActive,
+                  flowBusy && styles.disabled,
                 ]}
               >
                 <Text
@@ -267,14 +275,14 @@ export default function TradeReviewScreen() {
             quote.data ? t("refreshQuote") : t("getRealQuote")
           }
           accessibilityState={{
-            disabled: !validAmount || !token || quote.isFetching,
-            busy: quote.isFetching,
+            disabled: !validAmount || !token || flowBusy,
+            busy: flowBusy,
           }}
           onPress={() => { resetSafetyFlow(); void quote.refetch(); }}
-          disabled={!validAmount || !token || quote.isFetching}
+          disabled={!validAmount || !token || flowBusy}
           style={[
             styles.getQuote,
-            (!validAmount || !token || quote.isFetching) && styles.disabled,
+            (!validAmount || !token || flowBusy) && styles.disabled,
           ]}
         >
           {quote.isFetching ? (
@@ -364,7 +372,7 @@ export default function TradeReviewScreen() {
             </Text>
           </View>
         </View>
-        <Pressable accessibilityRole="button" accessibilityLabel={t("prepareSimulation")} accessibilityState={{ disabled: !quote.data || expired || !wallet.session || wallet.locked || prepare.isPending, busy: prepare.isPending }} disabled={!quote.data || expired || !wallet.session || wallet.locked || prepare.isPending} onPress={() => prepare.mutate()} style={[styles.getQuote, (!quote.data || expired || !wallet.session || wallet.locked || prepare.isPending) && styles.disabled]}>
+        <Pressable accessibilityRole="button" accessibilityLabel={t("prepareSimulation")} accessibilityState={{ disabled: !quote.data || expired || !wallet.session || wallet.locked || flowBusy, busy: flowBusy }} disabled={!quote.data || expired || !wallet.session || wallet.locked || flowBusy} onPress={() => prepare.mutate()} style={[styles.getQuote, (!quote.data || expired || !wallet.session || wallet.locked || flowBusy) && styles.disabled]}>
           {prepare.isPending ? <ActivityIndicator color={colors.background} /> : <Text style={styles.getQuoteText}>{t("prepareSimulation")}</Text>}
         </Pressable>
         {prepare.isError ? <Text accessibilityRole="alert" style={styles.flowError}>{publicErrorMessage(prepare.error, t("actionCouldNotComplete"))}</Text> : null}
@@ -386,7 +394,7 @@ export default function TradeReviewScreen() {
               : <Text accessibilityRole="alert" key={check.id} style={styles.failureGuidance}>• {t("policyCheckBlocked", { id: check.id })}</Text>)}
           </View> : <Text style={styles.checkText}>{t("legacyReplayPolicyEvidence")}</Text>}
         </View> : null}
-        {prepare.data?.simulation.simulation.succeeded && !confirm.data ? <Pressable accessibilityRole="button" accessibilityLabel={t("explicitConfirm")} accessibilityState={{ disabled: confirm.isPending || !wallet.session || wallet.locked, busy: confirm.isPending }} disabled={confirm.isPending || !wallet.session || wallet.locked} onPress={() => confirm.mutate()} style={[styles.confirmButton, (confirm.isPending || !wallet.session || wallet.locked) && styles.disabled]}>
+        {prepare.data?.simulation.simulation.succeeded && !confirm.data ? <Pressable accessibilityRole="button" accessibilityLabel={t("explicitConfirm")} accessibilityState={{ disabled: flowBusy || !wallet.session || wallet.locked, busy: flowBusy }} disabled={flowBusy || !wallet.session || wallet.locked} onPress={() => confirm.mutate()} style={[styles.confirmButton, (flowBusy || !wallet.session || wallet.locked) && styles.disabled]}>
           {confirm.isPending ? <ActivityIndicator color={colors.background} /> : <Text style={styles.getQuoteText}>{t("explicitConfirm")}</Text>}
         </Pressable> : null}
         {confirm.isError ? <Text accessibilityRole="alert" style={styles.flowError}>{publicErrorMessage(confirm.error, t("actionCouldNotComplete"))}</Text> : null}

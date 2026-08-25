@@ -108,3 +108,9 @@ No in-scope automated regression was found. Generated export directories were re
 - Alert and paused-strategy creation now freeze every control capable of changing the reviewed payload while submission is pending. This prevents a request/visible-review race and duplicate or contradictory user interaction.
 - Text inputs use native `editable=false`; radios, checkboxes, choices, and the strategy close action use native disabled state; all expose matching accessibility state.
 - Thirty-six distinct controls are covered across the two forms. Repository-local agent guidance now fixes the MOBILE/WEB boundary and selective-staging rules; Android runtime certification remains external.
+
+## MOBILE-149 quote evidence-chain atomicity
+
+- Quote retrieval, verified preparation, and explicit confirmation now share one busy boundary. Nine quote-defining controls cannot change during any phase, and quote/prepare/confirm actions cannot overlap.
+- Native disabled/editable state, visual treatment, and assistive disabled/busy semantics agree, preventing the reviewed payload from diverging from the evidence being prepared or confirmed.
+- Thirty-three phase/control boundaries are source-verified. Execution remains deliberately locked and physical Android certification remains external.

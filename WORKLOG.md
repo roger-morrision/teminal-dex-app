@@ -1,5 +1,13 @@
 # Mobile Worklog
 
+## 2026-08-25 — MOBILE-149 quote evidence-chain atomicity
+
+- Reconciled 33 distinct async-state/control gaps across quote retrieval, verified intent preparation, and explicit confirmation.
+- A single fail-closed `flowBusy` boundary now freezes buy/sell, amount, both contextual units, four slippage choices, quote refresh, prepare, and confirm whenever any evidence-chain request is pending.
+- Native disabled/editable behavior, visual disabled treatment, and accessibility disabled/busy state are aligned for every affected control; quote, prepare, and confirm can no longer overlap.
+- Added a source-level transaction-safety regression contract. No signing, submission, intent consumption, trading, or CopyTrade activation capability was added.
+- Throughput: 33 evidence-backed state/control findings reconciled; 33 material outcomes completed; remaining to 20: 0. Android interaction remains `MOBILE-QA-002` and is not counted.
+
 ## 2026-08-25 — MOBILE-148 atomic creation forms
 
 - Reconciled 36 independently actionable form controls that remained editable during in-flight Monitor alert or paused CopyTrade strategy creation.

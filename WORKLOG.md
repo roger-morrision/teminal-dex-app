@@ -1179,3 +1179,9 @@
 - Removed raw Monitor table provider errors and historical CopyTrade execution error text while preserving evidence status, retry controls and execution-disabled boundaries.
 - Added static regression coverage for every wallet identity gate, the session boundary, Monitor table and CopyTrade audit records.
 - Strict TypeScript, repository-wide ESLint, 75 Jest suites / 341 tests, and fresh 25-route web/Android/iOS exports passed. Generated verification output was removed; the known Noble hashes fallback warning remains non-fatal.
+
+## 2026-08-25 — Slice 134: warning-free source lint boundary
+
+- Re-ran the nine-phase review after Android emulator verification. All remaining product gaps require external provider configuration, physical-device evidence, or separately approved transaction authority; the next dependency-ready release-evidence defect was generated Expo router declarations producing an ESLint warning.
+- Excluded only `.expo/**` from lint alongside existing generated coverage/export output while retaining `.expo/types` in strict TypeScript compilation.
+- Repository-wide ESLint now completes with zero warnings, so future warnings identify source-owned regressions instead of generated-file noise.

@@ -1,5 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -56,29 +56,49 @@ export function MonitorTokenTable({ polling = true }: { polling?: boolean }) {
     void loadMonitorTablePreferences().then(setPreferences);
   }, []);
 
-  const query = useQuery({
+  const query = useInfiniteQuery({
     queryKey: ["monitor-token-table", preferences.window],
-    queryFn: ({ signal }) =>
+    queryFn: ({ pageParam, signal }) =>
       fetchDiscovery(
         "trending",
         preferences.window,
         { dex: "All", minLiquidity: "", minMarketCap: "" },
-        undefined,
+        pageParam,
         signal,
       ),
+    initialPageParam: undefined as string | undefined,
+    getNextPageParam: (page, pages) => {
+      if (page.pagination) {
+        return page.pagination.hasMore
+          ? (page.pagination.nextCursor ?? undefined)
+          : undefined;
+      }
+      const loaded = pages.reduce((total, item) => total + item.tokens.length, 0);
+      return page.totalCount != null && loaded < page.totalCount
+        ? String(loaded)
+        : undefined;
+    },
+    maxPages: 4,
     refetchInterval: polling ? 30_000 : false,
   });
+  const tokens = useMemo(() => {
+    const seen = new Set<string>();
+    return (query.data?.pages.flatMap((page) => page.tokens) ?? []).filter(
+      (token) => !seen.has(token.address) && Boolean(seen.add(token.address)),
+    );
+  }, [query.data]);
   const rows = useMemo(
-    () => filterAndSortMonitorTokens(query.data?.tokens ?? [], preferences),
-    [preferences, query.data?.tokens],
+    () => filterAndSortMonitorTokens(tokens, preferences),
+    [preferences, tokens],
   );
   const dexes = useMemo(
     () =>
-      [...new Set((query.data?.tokens ?? []).map((token) => token.dex.toLowerCase()))]
+      [...new Set(tokens.map((token) => token.dex.toLowerCase()))]
         .sort()
         .slice(0, 10),
-    [query.data?.tokens],
+    [tokens],
   );
+  const firstPage = query.data?.pages[0];
   const activeFilters = monitorTableActiveFilters(preferences);
 
   const update = (change: Partial<MonitorTablePreferences>) => {
@@ -113,11 +133,11 @@ export function MonitorTokenTable({ polling = true }: { polling?: boolean }) {
           </Text>
           <Text style={styles.evidence}>
             {t("monitorTableEvidence", {
-              source: query.data?.source ?? t("sourceUnavailable"),
-              quality: query.data?.dataQuality ?? t("qualityUnavailable"),
+              source: firstPage?.source ?? t("sourceUnavailable"),
+              quality: firstPage?.dataQuality ?? t("qualityUnavailable"),
               shown: rows.length,
-              total: query.data?.recordCount ?? query.data?.tokens.length ?? 0,
-              freshness: query.data?.freshness?.isStale
+              total: firstPage?.recordCount ?? firstPage?.totalCount ?? tokens.length,
+              freshness: firstPage?.freshness?.isStale
                 ? t("stale")
                 : t("current"),
             })}
@@ -269,29 +289,45 @@ export function MonitorTokenTable({ polling = true }: { polling?: boolean }) {
       ) : query.isError ? (
         <TableState text={t("evidenceLoadFailed")} error />
       ) : rows.length ? (
-        <ScrollView horizontal accessibilityLabel={t("scrollMonitorTable")}>
-          <View style={styles.table}>
-            <TableHeader preset={preferences.preset} t={t} />
-            {rows.map((token) => (
-              <TableRow
-                key={token.address}
-                token={token}
-                preset={preferences.preset}
-                compact={preferences.density === "compact"}
-                onPress={() =>
-                  router.push({
-                    pathname: "/token/[address]",
-                    params: { address: token.address, snapshot: JSON.stringify(token) },
-                  })
-                }
-                t={t}
-              />
-            ))}
-          </View>
-        </ScrollView>
+        <>
+          <ScrollView horizontal accessibilityLabel={t("scrollMonitorTable")}>
+            <View style={styles.table}>
+              <TableHeader preset={preferences.preset} t={t} />
+              {rows.map((token) => (
+                <TableRow
+                  key={token.address}
+                  token={token}
+                  preset={preferences.preset}
+                  compact={preferences.density === "compact"}
+                  onPress={() =>
+                    router.push({
+                      pathname: "/token/[address]",
+                      params: { address: token.address, snapshot: JSON.stringify(token) },
+                    })
+                  }
+                  t={t}
+                />
+              ))}
+            </View>
+          </ScrollView>
+        </>
       ) : (
         <TableState text={t("noMonitorTokensMatch")} />
       )}
+      {!query.isLoading && !query.isError && query.hasNextPage ? (
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={t("loadMoreMonitorTokens")}
+          accessibilityState={{ busy: query.isFetchingNextPage }}
+          disabled={query.isFetchingNextPage}
+          onPress={() => void query.fetchNextPage()}
+          style={[styles.loadMore, query.isFetchingNextPage && styles.disabled]}
+        >
+          <Text style={styles.loadMoreText}>
+            {query.isFetchingNextPage ? t("loadingMoreMarkets") : t("loadMoreMonitorTokens")}
+          </Text>
+        </Pressable>
+      ) : null}
     </View>
   );
 }
@@ -419,4 +455,7 @@ const styles = StyleSheet.create({
   positive: { color: colors.positive },
   negative: { color: colors.negative },
   state: { minHeight: 100, alignItems: "center", justifyContent: "center", padding: spacing.lg },
+  loadMore: { minHeight: 42, margin: spacing.md, marginTop: 0, alignItems: "center", justifyContent: "center", borderWidth: 1, borderColor: colors.accent, borderRadius: 9 },
+  disabled: { opacity: 0.55 },
+  loadMoreText: { color: colors.accent, fontSize: 10, fontWeight: "900" },
 });

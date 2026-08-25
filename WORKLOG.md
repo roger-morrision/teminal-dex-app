@@ -1191,3 +1191,10 @@
 - Reproduced the backend issue against the live local service: a 50-row main Trending response transferred about 257 KB because mobile received dozens of desktop-only diagnostic fields per token.
 - Added an explicit `view=mobile` projection that retains every field consumed by the strict mobile schema and current Discover UI while leaving the default web/backend contract unchanged.
 - Live verification returned the same 50 exact token rows in about 39.6 KB, an approximately 84.6% payload reduction; backend and mobile TypeScript, focused ESLint, Trending contract, and client routing tests pass.
+
+## 2026-08-25 — Slice 136: cross-page Monitor controls
+
+- Audited every remote cursor surface and the persisted Discover, Trenches, Track, Monitor and Signals control contracts; existing query keys reset data when server-backed filter/order inputs change and client cursor readers reject non-advancing history pages.
+- Fixed the concrete Monitor table gap where search, DEX, thresholds and two-level sort operated on only the first 50 provider rows. The table now requests cursor pages, deduplicates exact token addresses across pages, then applies all filters and stable sorting to the complete loaded window.
+- Added an accessible busy-safe Load more control and a component regression proving it remains reachable when page one has no filter match, cursor `1` is requested, the matching second-page token is rendered with a truthful 1/2 filtered count, and paging ends when the backend reports no continuation.
+- Verification: strict TypeScript passed; source lint passed with zero warnings; all 75 Jest suites / 343 tests passed. The local Expo CLI still delegates Doctor to the absent standalone `expo-doctor` executable, so the prior verified 21/21 Doctor result remains current.

@@ -1,5 +1,5 @@
 import type { TrackNotification } from "@/api/schema";
-import { aggregateWhaleActivity, buildWhaleMarketPulse, filterWhaleEvents, filterWhaleFlows, filterWhaleWalletRankings, isWhaleActivity, whaleActivityForToken, whaleAmountContext } from "@/lib/whale-activity";
+import { aggregateWhaleActivity, buildWhaleMarketPulse, filterWhaleEvents, filterWhaleFlows, filterWhaleWalletRankings, isWhaleActivity, whaleActivityForToken, whaleAmountContext, whaleHoldingIdentity } from "@/lib/whale-activity";
 
 const event = (input: Partial<TrackNotification> & Pick<TrackNotification, "id" | "type">): TrackNotification => ({
   title: "Observed activity",
@@ -19,6 +19,14 @@ describe("whale activity aggregation", () => {
   it("keeps only whale and smart-money evidence", () => {
     expect(isWhaleActivity(event({ id: "w", type: "whale_buy" }))).toBe(true);
     expect(isWhaleActivity(event({ id: "k", type: "kol_buy" }))).toBe(false);
+  });
+
+  it("qualifies ownership-based whale identity only from eligible holdings at or above $10K", () => {
+    const evidence = { tokenAddress: "Vote111111111111111111111111111111111111111", tokenSymbol: "ANSEM", valueUsd: 10_000, observedAt: 1, source: "provider.wallet_holdings", eligibleToken: true };
+    expect(whaleHoldingIdentity(event({ id: "qualified", type: "whale_buy", observedAt: 2, whaleHolding: evidence }))).toMatchObject({ label: "ANSEM Whale", valueUsd: 10_000 });
+    expect(whaleHoldingIdentity(event({ id: "small", type: "whale_buy", observedAt: 2, whaleHolding: { ...evidence, valueUsd: 9_999 } }))).toBeNull();
+    expect(whaleHoldingIdentity(event({ id: "ineligible", type: "whale_buy", observedAt: 2, whaleHolding: { ...evidence, eligibleToken: false } }))).toBeNull();
+    expect(whaleHoldingIdentity(event({ id: "future", type: "whale_buy", observedAt: 0, whaleHolding: evidence }))).toBeNull();
   });
 
   it("derives net flow, direction counts, unique wallets and newest evidence", () => {

@@ -1092,3 +1092,10 @@
 - Added query-specific localized retries to all six surfaces. Each recovery is accessible, disabled and announced busy during its exact refetch; the shared full-page state omits action labels without executable handlers.
 - GET-only provider contracts, observation counters, provenance, token handoff, refresh deltas, no-active-probe policy, and transaction authority remain unchanged.
 - Strict TypeScript, repository-wide ESLint, 73 Jest suites / 303 tests, focused recovery/accessibility coverage, and fresh 25-route web/Android/iOS exports passed. Generated verification output was removed; the known Noble hashes fallback warning remains non-fatal.
+
+## 2026-08-25 — Slice 121: ownership-based token whale identity
+
+- Replaced the mobile naming rule with a fail-closed ownership model: an eligible held token must have validated value of at least $10,000 at or before the observed trade; transaction size is independent.
+- Added a bounded optional feed schema for held-token mint/symbol/value/snapshot/source/eligibility, deterministic “TOKEN Whale” qualification, held-token search, localized bought/sold and holding evidence, plus an explicit unverified fallback.
+- Confirmed the read-only backend currently supplies only generic holder classification and amount-threshold candidates, not the evidence needed for authoritative named whale identity; documented the exact contract blocker without modifying backend code or fabricating holdings.
+- Strict TypeScript, focused ESLint and 4 schema/whale/localization/accessibility suites with 85 tests passed.

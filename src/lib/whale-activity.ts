@@ -1,5 +1,13 @@
 import type { TopTrader, TrackNotification } from "@/api/schema";
 
+export const WHALE_HOLDING_MIN_USD = 10_000;
+
+export function whaleHoldingIdentity(event: TrackNotification) {
+  const evidence = event.whaleHolding;
+  if (!evidence || !evidence.eligibleToken || evidence.valueUsd < WHALE_HOLDING_MIN_USD || evidence.observedAt > event.observedAt) return null;
+  return { label: `${evidence.tokenSymbol} Whale`, ...evidence };
+}
+
 export type WhaleFlow = {
   tokenAddress: string;
   tokenSymbol: string;
@@ -178,7 +186,7 @@ export function filterWhaleEvents(
   return events
     .filter(isWhaleActivity)
     .filter((event) =>
-      !query || [event.tokenSymbol, event.tokenAddress, event.wallet]
+      !query || [event.tokenSymbol, event.tokenAddress, event.wallet, event.whaleHolding?.tokenSymbol, event.whaleHolding?.tokenAddress]
         .some((value) => value?.toLowerCase().includes(query)),
     )
     .filter((event) => (event.amountUsd ?? 0) >= input.minimumUsd)

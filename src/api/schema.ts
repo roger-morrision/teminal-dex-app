@@ -941,6 +941,17 @@ export const trackFeedSchema = z
             observedAt: z.number().nonnegative(),
             source: z.string().max(200),
             dataQuality: z.string().max(200),
+            whaleHolding: z
+              .object({
+                tokenAddress: publicKeyString,
+                tokenSymbol: z.string().trim().min(1).max(100),
+                valueUsd: z.number().nonnegative().finite(),
+                observedAt: z.number().nonnegative(),
+                source: z.string().trim().min(1).max(200),
+                eligibleToken: z.boolean(),
+              })
+              .strict()
+              .optional(),
             txHash: z.string().max(200).optional(),
             market: z
               .object({

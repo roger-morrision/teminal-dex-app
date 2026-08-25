@@ -1033,6 +1033,12 @@ describe("Track evidence schema", () => {
       }).success,
     ).toBe(false);
   });
+  it("validates optional ownership-based whale evidence", () => {
+    const whaleHolding = { tokenAddress: address, tokenSymbol: "ANSEM", valueUsd: 10_000, observedAt: 1, source: "provider.wallet_holdings", eligibleToken: true };
+    expect(trackFeedSchema.safeParse({ notifications: [{ ...item, whaleHolding }], ts: 1 }).success).toBe(true);
+    expect(trackFeedSchema.safeParse({ notifications: [{ ...item, whaleHolding: { ...whaleHolding, valueUsd: -1 } }], ts: 1 }).success).toBe(false);
+    expect(trackFeedSchema.safeParse({ notifications: [{ ...item, whaleHolding: { ...whaleHolding, tokenAddress: `${address}1` } }], ts: 1 }).success).toBe(false);
+  });
 });
 
 describe("Wallet Intelligence evidence schema", () => {

@@ -1,5 +1,15 @@
 # MOBILE DEV → QA handoff
 
+## MOBILE-154-F1 — complete semantic ordering follow-up
+
+- Base: `7080d95`; result: containing commit.
+- Changed behavior/files: the four remaining Monitor/CopyTrade reset-before-mutate assertions use narrowly scoped whitespace-tolerant regex ordering. Product behavior is unchanged and mutual-exclusion requirements remain enforced.
+- Acceptance: focused accessibility Jest 68/68; TypeScript; zero-warning focused ESLint; full Jest 80 suites / 397 tests.
+- NEXT_QA_ACTION: pin the result commit and rerun `primary-a11y.test.ts` plus full Jest from a clean checkout; close `MOBILE-QA-007` only if both gates pass. Continue `MOBILE-QA-002` separately.
+- 20/20 reconciliation: 20 findings reviewed; four independently testable assertion outcomes completed; shortfall 16 remains device/runtime evidence, upstream dependency warning, physical-device scenarios, WEB-QC fixtures, and concurrent Whales/logo acceptance.
+
+---
+
 ## MOBILE-154 — semantic accessibility release gate
 
 - Base: `ff9ac32`; result: containing commit.

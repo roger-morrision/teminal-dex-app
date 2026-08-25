@@ -1333,3 +1333,4 @@
 - Replaced two indentation-coupled Monitor and CopyTrade privacy assertions with whitespace-tolerant semantic checks for sanitized mutation errors. Production behavior is unchanged.
 - Focused accessibility coverage passes 68/68; TypeScript and zero-warning focused ESLint pass; the complete regression gate is restored at 80 suites / 397 tests.
 - 20 findings were reconciled from QA and the ranked backlog. Two independently testable release-gate outcomes were completed; shortfall 18 remains exact Android marker/runtime evidence, upstream Noble warning ownership, physical-device scenarios, WEB-QC fixtures, and concurrent Whales/logo acceptance.
+- QA found four remaining reset-before-mutate assertions coupled to newline indentation. The MOBILE-154 follow-up converts all four to narrowly scoped semantic ordering checks; focused accessibility remains 68/68 and full Jest remains 80 suites / 397 tests.

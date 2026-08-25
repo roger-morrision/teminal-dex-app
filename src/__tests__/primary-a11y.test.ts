@@ -54,8 +54,8 @@ describe('audited-screen accessibility contract', () => {
     expect(source).toContain('publicErrorMessage(mutation.error');
     expect(source).toMatch(/publicErrorMessage\(\s*toggle\.error \?\? remove\.error/);
     expect(source).toContain('const mutationBusy = toggle.isPending || remove.isPending');
-    expect(source).toContain('remove.reset();\n    toggle.mutate();');
-    expect(source).toContain('toggle.reset();\n    remove.mutate();');
+    expect(source).toMatch(/remove\.reset\(\);\s*toggle\.mutate\(\);/);
+    expect(source).toMatch(/toggle\.reset\(\);\s*remove\.mutate\(\);/);
   });
 
   it('keeps the Monitor alert payload immutable while creation is pending', () => {
@@ -85,8 +85,8 @@ describe('audited-screen accessibility contract', () => {
     expect(source).toContain('publicErrorMessage(mutation.error');
     expect(source).toMatch(/publicErrorMessage\(\s*pause\.error \?\? remove\.error/);
     expect(source).toContain('const mutationBusy = pause.isPending || remove.isPending');
-    expect(source).toContain('remove.reset();\n    pause.mutate();');
-    expect(source).toContain('pause.reset();\n          remove.mutate();');
+    expect(source).toMatch(/remove\.reset\(\);\s*pause\.mutate\(\);/);
+    expect(source).toMatch(/pause\.reset\(\);\s*remove\.mutate\(\);/);
     expect(source).toContain('if (mutationBusy) return;');
     expect(source).toContain('t("evidenceLoadFailed")');
   });

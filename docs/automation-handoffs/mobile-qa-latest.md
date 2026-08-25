@@ -1,58 +1,60 @@
 # MOBILE-QA — Latest independent validation
 
-- Run (UTC): 2026-08-25T09:45:30.7735826Z
-- Scope: `C:\Tuan\devApps\teminal-dex-app` only (canonical Terminal DEX Expo/mobile client).
-- Inspected DEV commit: `fd0800f1788cb281e26d04460a406477ca06191f` (`test: lock local quality command contracts`).
-- Scope stability: PASS — clean worktree and unchanged HEAD before report acquisition. No WEB/backend workspace was accessed or modified.
-- DEV traceability input: BLOCKED — `AGENTS.md` and `docs/automation-handoffs/mobile-dev-latest.md` are absent. Validation is therefore anchored to HEAD, not a declared DEV acceptance slice.
+- Run (UTC): 2026-08-25T10:45:30.4324471Z
+- Scope: `C:\Tuan\devApps\teminal-dex-app` only — canonical Terminal DEX Expo/mobile client. No WEB/backend workspace was accessed or modified.
+- Inspected DEV commit: `c989842da854248783d5dcc4155bd3b0dbc4ccd5` (`feat: accept indexer health evidence`), based on DEV handoff `MOBILE-145`.
+- Scope stability: HEAD remained `c989842` before and after validation. `qa_scope_changed` is present in the shared worktree: uncommitted Whale/token-row/logo and MOBILE→WEB handoff files are explicitly excluded by the DEV handoff. QA did not run the full regression suite or device flow tests against that mixed state.
+- Environment: Windows 10.0.26100; bundled workspace Node runtime; Expo SDK 57; no responsive Android device/emulator session available.
 
 ## Acceptance and regression results
 
 | MOBILE-QA area | Result | Evidence |
 | --- | --- | --- |
-| Latest increment: local quality-script contract | PASS | HEAD adds a regression test covering locally resolved TypeScript, ESLint, and Jest command contracts; full suite passes. |
-| TypeScript | PASS | `node node_modules/typescript/bin/tsc --noEmit` exited 0. |
-| Source lint | PASS | `node node_modules/eslint/bin/eslint.js app src` exited 0. |
-| Full automated regression | PASS | `node node_modules/jest/bin/jest.js --ci --runInBand`: 77/77 suites and 366/366 tests passed. Relevant coverage includes routing/UI async states, offline/recovery, paging, schemas/contracts, accessibility, error privacy, security input, and package scripts. |
-| Expo config resolution | PASS | `node node_modules/expo/bin/cli config --type public` exited 0 for iOS, Android, and web. |
-| Platform hardening | PASS (static) | `app.json` resolves `terminaldex`; iOS ATS disallows arbitrary loads; Android manifest has `allowBackup="false"`, production `usesCleartextTraffic="false"`, exported activity, and explicit `terminaldex`/development schemes. Debug manifests intentionally enable cleartext. |
-| Bundle/build artifact | PASS (artifact inspection) | Existing `android/app/build/outputs/apk/debug/app-debug.apk` is present (269,585,012 bytes, 2026-08-25 13:51 local). No rebuild/export was performed under read-only QA scope. |
-| Expo Doctor | SKIP | `expo-doctor` is not installed in this checkout; downloading/running it was outside this read-only validation. |
-| Android emulator/device navigation, all tabs/subtabs, loading/stale/empty/filtered-empty/offline/error/retry/partial-page recovery, large text and screen reader traversal | BLOCKED | `adb` is unavailable on PATH and no device/emulator evidence could be collected. Automated coverage is not a substitute for physical/runtime evidence. |
-| Live API contract compatibility | NOT RUN | No approved DEV handoff/environment endpoint was supplied; WEB contracts remain read-only and were not contacted. |
+| MOBILE-145 schema-v1 compatibility | PASS | Manual review confirms strict schema version/source, bounded fields and quality map, strict unavailable envelope, GET-only client routing, credential-aware read, and literal `automationSafe: false`. Status and health must agree (`200` iff healthy). |
+| Valid unavailable response | PASS | Focused client test accepts HTTP 503 `not_configured` unavailable evidence without execution authority; request targets only `/api/indexer/health`. |
+| Adversarial contract rejection | PASS | Focused schema test rejects contradictory `503`/healthy evidence and `automationSafe: true`. |
+| TypeScript | PASS (shared-worktree signal) | `node_modules/typescript/bin/tsc --noEmit` exited 0. The result is not a clean-baseline release gate because unrelated edits were present. |
+| Source lint | PASS (shared-worktree signal) | `node_modules/eslint/bin/eslint.js app src` exited 0, with the same shared-worktree limitation. |
+| Focused regression | PASS | `node_modules/jest/bin/jest.js --runInBand src/__tests__/schema.test.ts src/__tests__/client.test.ts`: 2/2 suites, 73/73 tests passed. |
+| Full automated regression | BLOCKED | Not run: `src/__tests__/TokenRow.test.tsx` and its rendered components are uncommitted concurrent work. Running the full suite would mix DEV increments. |
+| Expo public config | PASS | `node_modules/expo/bin/cli config --type public` exited 0 and resolved iOS, Android, and web targets with `terminaldex` scheme. |
+| Platform hardening / bundle artifact | PASS (static) | Android release manifest denies backup and cleartext; iOS ATS forbids arbitrary loads; existing debug APK is present (269,585,012 bytes, 2026-08-25 13:51 local). No rebuild was performed. |
+| Expo Doctor | SKIP | `expo-doctor` is absent; no download was attempted. |
+| Android runtime navigation, all tabs/subtabs, recovery states, large text, and accessibility traversal | BLOCKED | Android SDK `adb.exe` exists but is absent from PATH; prior shared-server commands were unresponsive. No shared ADB server was modified. |
+| Live WEB API contract compatibility | NOT RUN | No approved runtime endpoint/environment was supplied. WEB remains a read-only external contract. |
 
 ## Findings
 
-### MOBILE-QA-001 — P2 / release-process blocker — missing required QA inputs
+### MOBILE-QA-001 — P3 / process traceability — partially resolved
+
+- Status: PARTIALLY RESOLVED. `docs/automation-handoffs/mobile-dev-latest.md` now provides commit, scope, criteria, contract assumptions, and QA focus. Repository `AGENTS.md` is still absent.
+- Affected files: required automation guidance (missing); no product files changed by QA.
+- Regression risk: lower confidence that future automation has repository-local operating instructions.
+- Exact NEXT_DEV_ACTION: add repository `AGENTS.md` guidance or explicitly record that no repository-local guidance is required.
+- WEB contract blocker: none.
+
+### MOBILE-QA-002 — P2 / release-certification blocker — Android runtime unavailable
 
 - Status: OPEN.
-- Reproduction: repository root has no `AGENTS.md`; `docs/automation-handoffs/mobile-dev-latest.md` and its parent handoff directory were absent before this report was created.
-- Affected files: required process artifacts (missing); no product files changed by QA.
-- Regression risk: acceptance scope and intended DEV change cannot be independently traced; future QA could test an incorrect baseline.
-- Exact NEXT_DEV_ACTION: publish `docs/automation-handoffs/mobile-dev-latest.md` with commit SHA, acceptance criteria, contract assumptions, test evidence, known risks, and explicit QA focus; add the repository `AGENTS.md` guidance if it is intended to govern automation.
-- WEB contract blocker: none; no WEB access is requested.
+- Reproduction: `adb` is not available on PATH; the SDK executable is at `C:\Users\tuan.tran\AppData\Local\Android\Sdk\platform-tools\adb.exe`, but no responsive device/emulator session is available for safe QA use.
+- Regression risk: installed-build navigation, live/stale/empty/filtered-empty/offline/error/retry/partial-page recovery, responsive large text, and TalkBack behavior remain uncertified.
+- Exact NEXT_DEV_ACTION: provide one responsive Android emulator/device via a healthy ADB server, then certify the five-tab shell and affected routes at default and enlarged font scale.
+- WEB contract blocker: none.
 
-### MOBILE-QA-002 — P2 / release-certification blocker — no Android runtime evidence
+### MOBILE-QA-003 — P2 / release-gate blocker — full suite deferred for concurrent work
 
 - Status: OPEN.
-- Reproduction: run `adb devices -l` from the mobile workspace; `adb` is unavailable on PATH.
-- Affected files: none.
-- Regression risk: navigation, live-data/recovery behavior, responsive large-text layout, TalkBack semantics, offline/reconnect, and installed-build behavior remain unverified for this increment.
-- Exact NEXT_DEV_ACTION: provide an Android emulator/device with `adb` available, then certify the five-tab shell and relevant nested routes against live, stale, empty, filtered-empty, offline, error/retry, and partial-page recovery states at default and enlarged font scale.
+- Reproduction: shared worktree includes uncommitted `TokenRow`/`TokenAvatar`/Whales/DEX-logo changes outside `MOBILE-145`; full Jest would not represent immutable commit `c989842`.
+- Affected files: concurrent files only; `MOBILE-145` schema/client files were unchanged during QA.
+- Regression risk: no clean-baseline full-suite evidence for this increment.
+- Exact NEXT_DEV_ACTION: commit or isolate the concurrent mobile slice, then run `node_modules/jest/bin/jest.js --ci --runInBand` against a clean immutable HEAD.
 - WEB contract blocker: none.
 
 ## Release recommendation
 
-**CONDITIONAL NO-GO for release certification.** Automated and static checks pass at `fd0800f`; do not claim device/runtime or DEV-acceptance sign-off until MOBILE-QA-001 and MOBILE-QA-002 are closed. No product defect was found by the available independent evidence.
-
-## Recheck — 2026-08-25T09:58:33.0856144Z
-
-- MOBILE-QA qa_scope_changed: the worktree is no longer stable. Uncommitted changes are present in `src/__tests__/TokenRow.test.tsx`, `src/components/TokenAvatar.tsx`, and `src/components/TokenRow.tsx`, with an untracked `docs/automation-handoffs/mobile-to-web-token-demographics.md`. They were not created or inspected as QA input, and no mixed-state testing was run.
-- MOBILE-QA-001 remains OPEN: `AGENTS.md` and the required `mobile-dev-latest.md` handoff are still absent.
-- MOBILE-QA-002 is narrowed but remains OPEN: Android SDK Platform Tools contains `adb.exe` at `C:\Users\tuan.tran\AppData\Local\Android\Sdk\platform-tools\adb.exe`, but it is missing from PATH. Direct `adb start-server` and `adb devices -l` did not return; multiple active adb processes exist. QA did not terminate an existing shared Android server.
-- Exact NEXT_DEV_ACTION: commit or revert the current DEV work, publish the required DEV handoff, then make a single responsive Android emulator/device available through a healthy adb server (or explicitly authorize reset of the shared server). MOBILE-QA will re-run runtime certification against that immutable commit.
+**MOBILE-QA CONDITIONAL NO-GO for release certification.** `MOBILE-145` passes its focused schema/client acceptance evidence and static configuration checks. Do not claim full regression or physical Android sign-off until MOBILE-QA-002 and MOBILE-QA-003 close; resolve the remaining MOBILE-QA-001 traceability gap before the next automation run.
 
 ## Safe evidence references
 
-- Command outputs were retained in this automation task; no secrets, backend origins, or provider diagnostics are included here.
-- Existing artifact: `android/app/build/outputs/apk/debug/app-debug.apk` (inspection only).
+- Commands and outputs were captured in this automation task; no secrets, backend origins, or provider diagnostics are included here.
+- Existing artifact inspected only: `android/app/build/outputs/apk/debug/app-debug.apk`.

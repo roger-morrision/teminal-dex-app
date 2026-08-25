@@ -1,34 +1,47 @@
 # MOBILE DEV → QA handoff
 
-- Story: `MOBILE-145` — WEB indexer-health schema-v1 compatibility.
-- Base commit: `8317820`.
-- Result commit: the commit containing this handoff; QA must resolve and pin `git rev-parse HEAD` before testing.
-- Scope: `src/api/schema.ts`, `src/api/client.ts`, focused schema/client tests, and MOBILE audit records only.
-- Concurrent scope excluded: token-row, token-avatar, DEX-logo, Whales, and MOBILE→WEB handoff changes already present in the worktree.
+- Story: `MOBILE-146` — observable indexer health in Feed Data.
+- Base commit: `ccf1d77`.
+- Result commit: the commit containing this handoff; QA must pin `git rev-parse HEAD` before testing.
+- Scope: `app/operations.tsx`, localized settings copy, `IndexerHealthCard` tests, and MOBILE audit records.
+- Excluded concurrent scope: Whale/token-row/token-avatar/DEX-logo and MOBILE→WEB handoff files already present in the worktree.
 
-## Changed behavior
+## 20/20 acceptance matrix
 
-- MOBILE can parse `GET /api/indexer/health` schema version 1 as healthy/degraded or explicitly unavailable.
-- The contract rejects unknown execution authority, contradictory upstream status/health pairs, oversized quality maps, and malformed evidence.
-- The client performs a credential-aware GET and accepts a valid unavailable envelope returned with HTTP 503.
+| ID | Independently testable outcome |
+| --- | --- |
+| MOBILE-146-01 | Feed Data exposes indexer health. |
+| MOBILE-146-02 | The query is enabled only on the Feed Data tab. |
+| MOBILE-146-03 | Pull-to-refresh includes indexer health. |
+| MOBILE-146-04 | Initial loading coordinates all three feed evidence queries. |
+| MOBILE-146-05 | Indexer failure has independent retry. |
+| MOBILE-146-06 | Retry is disabled and announced busy while fetching. |
+| MOBILE-146-07 | Not-configured evidence is distinct. |
+| MOBILE-146-08 | Invalid-contract evidence is distinct. |
+| MOBILE-146-09 | Generic unavailable evidence is distinct. |
+| MOBILE-146-10 | Healthy evidence uses positive status semantics. |
+| MOBILE-146-11 | Degraded evidence uses warning semantics. |
+| MOBILE-146-12 | Missing numeric evidence is never rendered as zero. |
+| MOBILE-146-13 | Exact observed tip is rendered when present. |
+| MOBILE-146-14 | Update freshness is rendered from the bounded timestamp. |
+| MOBILE-146-15 | Export lag is rendered independently. |
+| MOBILE-146-16 | Ingestion source and commitment are rendered independently. |
+| MOBILE-146-17 | Bounded canonical and non-canonical quality evidence is rendered. |
+| MOBILE-146-18 | Empty quality evidence has an explicit unavailable state. |
+| MOBILE-146-19 | The card exposes accessible summary status and an explicit non-execution boundary. |
+| MOBILE-146-20 | All new public copy is available in English and Vietnamese. |
 
-## Acceptance checklist
+## Verification and QA scenarios
 
-- [x] Source and schema version are exact.
-- [x] Missing configuration, unavailable upstream, and invalid contract remain distinct.
-- [x] Healthy and degraded evidence retain bounded tip/freshness/ingestion/quality fields.
-- [x] `automationSafe` is always literal `false`.
-- [x] No UI, signing, submission, trading, or backend write path is introduced.
+- TypeScript: local `tsc --noEmit`.
+- Lint: local ESLint over `app` and `src`.
+- Focused: `IndexerHealthCard`, schema, and client suites.
+- Full: all Jest suites after the focused gate.
+- Verify healthy `200`, degraded `503`, unavailable `503`, quality-empty, and retry-busy states.
+- Confirm `git show --name-only HEAD` excludes every concurrent file listed above.
 
-## QA commands and scenarios
+## Risks and next action
 
-- Focused: run `jest --runInBand src/__tests__/schema.test.ts src/__tests__/client.test.ts`.
-- Gates: run TypeScript, local ESLint over `app` and `src`, then the full Jest suite.
-- Inspect a valid 200 healthy envelope, a valid 503 unavailable envelope, and rejected 503/healthy plus `automationSafe: true` adversarial shapes.
-- Confirm `git show --name-only HEAD` excludes the concurrent token-row/logo work listed above.
-
-## Known risks and next action
-
-- No production screen consumes this health evidence yet; visual presentation remains a separate BA/PO story.
-- `MOBILE-QA-002` remains blocked on a stable Android/ADB runtime.
-- `NEXT_QA_ACTION`: independently verify the immutable result commit and record pass/fail evidence without modifying product code.
+- Android runtime certification remains blocked by `MOBILE-QA-002`.
+- Full clean-baseline release certification remains blocked until the concurrent token-row/logo slice is committed or isolated (`MOBILE-QA-003`).
+- `NEXT_QA_ACTION`: validate all 20 outcomes against the immutable result commit and record the exact pass/fail/blocked count.

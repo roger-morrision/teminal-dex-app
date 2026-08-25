@@ -16,9 +16,10 @@ import {
   fetchDiscovery,
   fetchFeedConnections,
   fetchFeedDiagnostics,
+  fetchIndexerHealth,
   fetchTopTraders,
 } from "@/api/client";
-import type { FeedConnectionsResponse, MarketToken } from "@/api/schema";
+import type { FeedConnectionsResponse, IndexerHealthResponse, MarketToken } from "@/api/schema";
 import { compactUsd, signedPercent, tokenPrice } from "@/lib/format";
 import {
   feedCounterSnapshot,
@@ -80,6 +81,13 @@ export default function OperationsScreen() {
     refetchInterval: 30_000,
     retry: 1,
   });
+  const indexerHealth = useQuery({
+    queryKey: ["indexer-health"],
+    queryFn: ({ signal }) => fetchIndexerHealth(signal),
+    enabled: tab === "feed",
+    refetchInterval: 30_000,
+    retry: 1,
+  });
   const refreshing = [
     market,
     gainers,
@@ -87,6 +95,7 @@ export default function OperationsScreen() {
     traders,
     connections,
     diagnostics,
+    indexerHealth,
   ].some((query) => query.isRefetching);
   const refresh = () =>
     tab === "analytics"
@@ -96,7 +105,7 @@ export default function OperationsScreen() {
           fresh.refetch(),
           traders.refetch(),
         ])
-      : Promise.all([connections.refetch(), diagnostics.refetch()]);
+      : Promise.all([connections.refetch(), diagnostics.refetch(), indexerHealth.refetch()]);
   return (
     <SafeAreaView style={styles.safe}>
       <ScrollView
@@ -163,7 +172,7 @@ export default function OperationsScreen() {
             }
           />
         ) : (
-          <FeedPanel connections={connections} diagnostics={diagnostics} />
+          <FeedPanel connections={connections} diagnostics={diagnostics} indexerHealth={indexerHealth} />
         )}
       </ScrollView>
     </SafeAreaView>
@@ -328,21 +337,32 @@ type ConnectionsQuery = ReturnType<
 type DiagnosticsQuery = ReturnType<
   typeof useQuery<Awaited<ReturnType<typeof fetchFeedDiagnostics>>, Error>
 >;
+type IndexerHealthQuery = ReturnType<
+  typeof useQuery<Awaited<ReturnType<typeof fetchIndexerHealth>>, Error>
+>;
 function FeedPanel({
   connections,
   diagnostics,
+  indexerHealth,
 }: {
   connections: ConnectionsQuery;
   diagnostics: DiagnosticsQuery;
+  indexerHealth: IndexerHealthQuery;
 }) {
   const { t } = useSettings();
   const inventory = connections.data;
   const health = diagnostics.data;
   const currentCounters = feedCounterSnapshot(inventory);
-  if (connections.isLoading && diagnostics.isLoading)
+  if (connections.isLoading && diagnostics.isLoading && indexerHealth.isLoading)
     return <State loading text={t("loadingFeedEvidence")} />;
   return (
     <View>
+      <IndexerHealthCard
+        evidence={indexerHealth.data}
+        error={Boolean(indexerHealth.error)}
+        retrying={indexerHealth.isFetching}
+        onRetry={() => indexerHealth.refetch()}
+      />
       {inventory ? (
         <EvidenceBar
           warning={
@@ -492,6 +512,68 @@ function FeedPanel({
       <Text accessibilityRole="summary" style={styles.boundary}>
         {t("feedBoundary")}
       </Text>
+    </View>
+  );
+}
+
+export function IndexerHealthCard({
+  evidence,
+  error,
+  retrying,
+  onRetry,
+}: {
+  evidence?: IndexerHealthResponse;
+  error: boolean;
+  retrying: boolean;
+  onRetry: () => unknown;
+}) {
+  const { t } = useSettings();
+  if (error) {
+    return <InlineWarning text={t("indexerHealthLoadFailed")} retrying={retrying} onRetry={onRetry} />;
+  }
+  if (!evidence) return null;
+  if (!evidence.available) {
+    const reason = evidence.reason === "not_configured"
+      ? t("indexerNotConfigured")
+      : evidence.reason === "invalid_contract"
+        ? t("indexerInvalidContract")
+        : t("indexerUnavailable");
+    return (
+      <View accessibilityRole="summary" accessibilityLabel={`${t("indexerHealth")}: ${reason}`} style={styles.indexerCard}>
+        <View style={styles.cardTop}>
+          <View style={[styles.dot, { backgroundColor: colors.warning }]} />
+          <Text style={styles.rowTitle}>{t("indexerHealth")}</Text>
+          <Text style={[styles.status, styles.warn]}>{t("unavailable")}</Text>
+        </View>
+        <Text style={styles.meta}>{reason}</Text>
+        <Text style={styles.freshness}>{t("indexerReadOnlyBoundary")}</Text>
+      </View>
+    );
+  }
+  const quality = Object.entries(evidence.quality);
+  const status = evidence.healthy ? t("healthy") : t("degraded");
+  return (
+    <View accessibilityRole="summary" accessibilityLabel={`${t("indexerHealth")}: ${status}`} style={styles.indexerCard}>
+      <View style={styles.cardTop}>
+        <View style={[styles.dot, { backgroundColor: evidence.healthy ? colors.positive : colors.warning }]} />
+        <Text style={styles.rowTitle}>{t("indexerHealth")}</Text>
+        <Text style={[styles.status, !evidence.healthy && styles.warn]}>{status}</Text>
+      </View>
+      <Text style={styles.meta}>{t("indexerEvidenceSummary", {
+        tip: evidence.tip == null ? t("unavailable") : evidence.tip.toLocaleString(),
+        age: evidence.updatedAt ? ageLabel(Date.parse(evidence.updatedAt), t) : t("unavailable"),
+        lag: evidence.ingestion.exportLagSlots == null ? t("unavailable") : evidence.ingestion.exportLagSlots,
+      })}</Text>
+      <Text style={styles.meta}>{t("indexerIngestionSummary", {
+        source: evidence.ingestion.source ?? t("sourceUnavailable"),
+        commitment: evidence.ingestion.commitment ?? t("unavailable"),
+      })}</Text>
+      {quality.length ? <View style={styles.indexerQuality}>{quality.map(([key, item]) => (
+        <Text key={key} style={[styles.freshness, item.canonical !== true && styles.warn]}>
+          {key}: {item.canonical === true ? t("canonical") : item.canonical === false ? t("notCanonical") : t("unavailable")}
+        </Text>
+      ))}</View> : <Text style={styles.freshness}>{t("indexerQualityUnavailable")}</Text>}
+      <Text style={styles.freshness}>{t("indexerReadOnlyBoundary")}</Text>
     </View>
   );
 }
@@ -1048,6 +1130,16 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
     backgroundColor: colors.surface,
   },
+  indexerCard: {
+    marginBottom: spacing.md,
+    padding: spacing.md,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: colors.border,
+    backgroundColor: colors.surface,
+    gap: 6,
+  },
+  indexerQuality: { marginTop: 2, gap: 3 },
   recoveryGrid: {
     marginTop: spacing.md,
     flexDirection: "row",

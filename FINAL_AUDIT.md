@@ -2,7 +2,7 @@
 
 Audit date: 2026-08-24
 
-Audit maintained through: MOBILE-145
+Audit maintained through: MOBILE-146
 
 Backend authority: `C:\Tuan\devApps\TERMINAL_DEX_Intelligent` (source of truth; isolated Slice 43–49 contracts added with explicit write approval)
 
@@ -89,3 +89,10 @@ No in-scope automated regression was found. Generated export directories were re
 - The WEB indexer-health handoff is now represented by a strict MOBILE schema and GET-only client reader.
 - Healthy evidence requires HTTP/upstream status consistency; unavailable evidence has explicit bounded reasons; every accepted shape requires `automationSafe: false`.
 - This evidence remains observational and cannot enable signing, submission, CopyTrade activation, or any transaction path.
+
+## MOBILE-146 Feed Data health presentation
+
+- Feed Data now consumes the strict indexer-health contract only while its tab is active, participates in refresh/loading, and retains independent busy-safe recovery.
+- Healthy, degraded, unconfigured, unavailable, and invalid-contract evidence have distinct localized public presentation. Missing tip, freshness, lag, source, commitment, or quality evidence remains unavailable rather than zero.
+- The card has summary semantics, bounded quality rows, English/Vietnamese copy, and an explicit observational-only boundary. It exposes no control that can enable automation, signing, submission, or trading.
+- 20/20 contract: 20 distinct acceptance gaps closed in this slice; device runtime certification remains externally blocked and is not counted as complete.

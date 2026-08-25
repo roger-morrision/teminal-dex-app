@@ -210,7 +210,15 @@ function AnalyticsPanel({
   ].slice(0, 5);
   if (market.isLoading) return <State loading text={t("loadingAnalytics")} />;
   if (market.error && !usable.length)
-    return <State error text={market.error.message} />;
+    return (
+      <State
+        error
+        text={market.error.message}
+        action={t("retry")}
+        actionBusy={market.isFetching}
+        onAction={() => market.refetch()}
+      />
+    );
   return (
     <View>
       <EvidenceBar
@@ -236,7 +244,11 @@ function AnalyticsPanel({
       </View>
       <SectionTitle title={t("momentumLeaders")} detail={t("momentumDetail")} />
       {gainers.error ? (
-        <InlineWarning text={gainers.error.message} />
+        <InlineWarning
+          text={gainers.error.message}
+          retrying={gainers.isFetching}
+          onRetry={() => gainers.refetch()}
+        />
       ) : (
         leaders.map((token) => (
           <MarketRow
@@ -251,7 +263,11 @@ function AnalyticsPanel({
       ) : null}
       <SectionTitle title={t("freshPairs")} detail={t("canonicalDedup")} />
       {fresh.error ? (
-        <InlineWarning text={fresh.error.message} />
+        <InlineWarning
+          text={fresh.error.message}
+          retrying={fresh.isFetching}
+          onRetry={() => fresh.refetch()}
+        />
       ) : (
         newPairs.map((token) => (
           <MarketRow
@@ -271,7 +287,11 @@ function AnalyticsPanel({
         })}
       />
       {traders.error ? (
-        <InlineWarning text={traders.error.message} />
+        <InlineWarning
+          text={traders.error.message}
+          retrying={traders.isFetching}
+          onRetry={() => traders.refetch()}
+        />
       ) : (
         (traders.data?.traders ?? []).slice(0, 5).map((trader) => (
           <View key={trader.address} style={styles.trader}>
@@ -336,10 +356,18 @@ function FeedPanel({
         />
       ) : null}
       {connections.error ? (
-        <InlineWarning text={connections.error.message} />
+        <InlineWarning
+          text={connections.error.message}
+          retrying={connections.isFetching}
+          onRetry={() => connections.refetch()}
+        />
       ) : null}
       {diagnostics.error ? (
-        <InlineWarning text={diagnostics.error.message} />
+        <InlineWarning
+          text={diagnostics.error.message}
+          retrying={diagnostics.isFetching}
+          onRetry={() => diagnostics.refetch()}
+        />
       ) : null}
       {inventory ? (
         <View style={styles.kpis}>
@@ -742,10 +770,36 @@ function SectionTitle({ title, detail }: { title: string; detail: string }) {
     </View>
   );
 }
-function InlineWarning({ text }: { text: string }) {
+export function InlineWarning({
+  text,
+  retrying = false,
+  onRetry,
+}: {
+  text: string;
+  retrying?: boolean;
+  onRetry?: () => void;
+}) {
+  const { t } = useSettings();
   return (
-    <View accessibilityRole="alert" style={styles.warningBox}>
+    <View
+      accessible
+      accessibilityRole="alert"
+      accessibilityLiveRegion="polite"
+      style={styles.warningBox}
+    >
       <Text style={styles.warningText}>{text}</Text>
+      {onRetry ? (
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={t("retry")}
+          accessibilityState={{ busy: retrying, disabled: retrying }}
+          disabled={retrying}
+          onPress={onRetry}
+          style={[styles.retry, retrying && styles.retryDisabled]}
+        >
+          <Text style={styles.retryText}>{t("retry")}</Text>
+        </Pressable>
+      ) : null}
     </View>
   );
 }
@@ -760,10 +814,16 @@ export function State({
   loading,
   error,
   text,
+  action,
+  actionBusy = false,
+  onAction,
 }: {
   loading?: boolean;
   error?: boolean;
   text: string;
+  action?: string;
+  actionBusy?: boolean;
+  onAction?: () => void;
 }) {
   return (
     <View
@@ -779,6 +839,18 @@ export function State({
         <Ionicons name="information-circle" size={20} color={colors.muted} />
       )}
       <Text style={styles.stateText}>{text}</Text>
+      {action && onAction ? (
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={action}
+          accessibilityState={{ busy: actionBusy, disabled: actionBusy }}
+          disabled={actionBusy}
+          onPress={onAction}
+          style={[styles.retry, actionBusy && styles.retryDisabled]}
+        >
+          <Text style={styles.retryText}>{action}</Text>
+        </Pressable>
+      ) : null}
     </View>
   );
 }
@@ -940,6 +1012,19 @@ const styles = StyleSheet.create({
     backgroundColor: "#241d10",
   },
   warningText: { color: colors.warning, fontSize: 8, lineHeight: 12 },
+  retry: {
+    alignSelf: "center",
+    marginTop: spacing.sm,
+    minHeight: 44,
+    minWidth: 88,
+    paddingHorizontal: spacing.md,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 9,
+    backgroundColor: colors.accent,
+  },
+  retryDisabled: { opacity: 0.55 },
+  retryText: { color: colors.background, fontSize: 9, fontWeight: "900" },
   empty: {
     marginHorizontal: spacing.lg,
     padding: spacing.lg,

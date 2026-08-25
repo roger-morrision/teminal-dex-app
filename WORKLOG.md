@@ -1085,3 +1085,10 @@
 - Separated the intents: ranked rows continue to open their exact public-wallet dossier, while the footer now opens the complete Smart Money research workspace with no implicit address selection.
 - This changes navigation only; it adds no inferred identity, tracking, following, copying, signing or execution authority.
 - Strict TypeScript, focused ESLint and 2 primary-state/accessibility suites with 34 tests passed.
+
+## 2026-08-25 — Slice 120: recover Operations evidence
+
+- Completed the auxiliary recovery audit in Analytics/Feed Data and found market inventory, gainers, fresh pairs, historical traders, feed connections, and feed diagnostics errors relied only on pull-to-refresh or terminal warnings.
+- Added query-specific localized retries to all six surfaces. Each recovery is accessible, disabled and announced busy during its exact refetch; the shared full-page state omits action labels without executable handlers.
+- GET-only provider contracts, observation counters, provenance, token handoff, refresh deltas, no-active-probe policy, and transaction authority remain unchanged.
+- Strict TypeScript, repository-wide ESLint, 73 Jest suites / 303 tests, focused recovery/accessibility coverage, and fresh 25-route web/Android/iOS exports passed. Generated verification output was removed; the known Noble hashes fallback warning remains non-fatal.

@@ -2,7 +2,7 @@ import { fireEvent, render } from "@testing-library/react-native";
 import { State as AiState } from "../../app/ai";
 import { State as CopyTradeState } from "../../app/copytrade";
 import { State as MarketIntelligenceState } from "../../app/market-intelligence";
-import { State as OperationsState } from "../../app/operations";
+import { InlineWarning as OperationsWarning, State as OperationsState } from "../../app/operations";
 import { State as ResearchState } from "../../app/research-workspace";
 import { InlineEvidenceFailure, State as WalletIntelligenceState } from "../../app/wallet-intelligence";
 import { State as TrackState } from "../../app/track";
@@ -136,4 +136,36 @@ it("guards research chart recovery and omits inert actions", async () => {
 
   await screen.rerender(<ResearchState text="No chart" action="Retry" />);
   expect(screen.queryByLabelText("Retry")).toBeNull();
+});
+
+it("guards operations recovery and omits inert actions", async () => {
+  const retry = jest.fn();
+  const screen = await render(
+    <SettingsProvider>
+      <OperationsState error text="Provider failed" action="Retry" actionBusy onAction={retry} />
+    </SettingsProvider>,
+  );
+  const button = screen.getByLabelText("Retry");
+  expect(button.props.accessibilityState).toEqual({ busy: true, disabled: true });
+  await fireEvent.press(button);
+  expect(retry).not.toHaveBeenCalled();
+
+  await screen.rerender(
+    <SettingsProvider><OperationsState text="No evidence" action="Retry" /></SettingsProvider>,
+  );
+  expect(screen.queryByLabelText("Retry")).toBeNull();
+});
+
+it("guards partial operations recovery while preserving its alert", async () => {
+  const retry = jest.fn();
+  const screen = await render(
+    <SettingsProvider>
+      <OperationsWarning text="Feed unavailable" retrying onRetry={retry} />
+    </SettingsProvider>,
+  );
+  expect(screen.getByRole("alert")).toBeTruthy();
+  const button = screen.getByLabelText("Retry");
+  expect(button.props.accessibilityState).toEqual({ busy: true, disabled: true });
+  await fireEvent.press(button);
+  expect(retry).not.toHaveBeenCalled();
 });

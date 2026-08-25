@@ -160,7 +160,7 @@ export default function AiScreen() {
           <IdentityGate
             locked={wallet.locked}
             busy={wallet.busy}
-            error={wallet.error}
+            error={wallet.error ? t("actionCouldNotComplete") : null}
             onUnlock={wallet.unlock}
             onVerify={wallet.connectAndVerify}
           />

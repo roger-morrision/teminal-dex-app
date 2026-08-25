@@ -179,7 +179,7 @@ export default function CopyTradeScreen() {
           <IdentityGate
             locked={wallet.locked}
             busy={wallet.busy}
-            error={wallet.error}
+            error={wallet.error ? t("actionCouldNotComplete") : null}
             onUnlock={wallet.unlock}
             onVerify={wallet.connectAndVerify}
           />
@@ -898,7 +898,7 @@ function ExecutionRow({ execution }: { execution: CopyExecution }) {
           {short(execution.idempotencyKey)}
         </Text>
         {execution.error ? (
-          <Text style={styles.error}>{execution.error}</Text>
+          <Text style={styles.error}>{t("actionCouldNotComplete")}</Text>
         ) : null}
       </View>
       <Text style={styles.auditValue}>

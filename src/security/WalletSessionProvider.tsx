@@ -31,7 +31,7 @@ export function WalletSessionProvider({ children }: { children: ReactNode }) {
       const result = await verifyResponse.json() as { success?: boolean; wallet?: string };
       if (!result.success || result.wallet !== walletAddress) throw new Error('Backend did not confirm the connected wallet.');
       const verified = await persistVerifiedSession(walletAddress); setSession(verified); setLocked(false);
-    } catch (cause) { setError(cause instanceof Error ? cause.message : 'Wallet verification failed.'); } finally { setBusy(false); }
+    } catch { setError('Wallet verification failed.'); } finally { setBusy(false); }
   }, [wallet]);
   const disconnect = useCallback(async () => { setBusy(true); try { await clearVerifiedSession(); await secureWalletCache.clear(); await clearAppCookies().catch(() => undefined); await wallet.disconnect().catch(() => undefined); setSession(null); setLocked(false); setError(null); } finally { setBusy(false); } }, [wallet]);
   const value = useMemo(() => ({ session, accountAddress: wallet.account ? String(wallet.account.address) : null, locked, busy, error, connectAndVerify, unlock, disconnect }), [session, wallet.account, locked, busy, error, connectAndVerify, unlock, disconnect]);

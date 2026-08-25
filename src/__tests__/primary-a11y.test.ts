@@ -76,4 +76,27 @@ describe('audited-screen accessibility contract', () => {
     const source = readFileSync(join(process.cwd(), file), 'utf8');
     expect(source).not.toMatch(/\.error\??\.message/);
   });
+
+  it.each(['app/ai.tsx', 'app/copytrade.tsx', 'app/(tabs)/monitor.tsx', 'app/(tabs)/portfolio.tsx'])(
+    '%s never renders wallet adapter errors verbatim',
+    (file) => {
+      const source = readFileSync(join(process.cwd(), file), 'utf8');
+      expect(source).not.toContain('error={wallet.error}');
+      expect(source).not.toMatch(/>\s*\{wallet\.error\}\s*</);
+      expect(source).toContain('t("actionCouldNotComplete")');
+    },
+  );
+
+  it('keeps table and CopyTrade audit provider failures private', () => {
+    const table = readFileSync(join(process.cwd(), 'src/components/MonitorTokenTable.tsx'), 'utf8');
+    const copyTrade = readFileSync(join(process.cwd(), 'app/copytrade.tsx'), 'utf8');
+    expect(table).not.toContain('query.error.message');
+    expect(copyTrade).not.toContain('{execution.error}');
+  });
+
+  it('sanitizes wallet adapter exceptions at the session boundary', () => {
+    const source = readFileSync(join(process.cwd(), 'src/security/WalletSessionProvider.tsx'), 'utf8');
+    expect(source).not.toContain('cause.message');
+    expect(source).toContain("setError('Wallet verification failed.')");
+  });
 });

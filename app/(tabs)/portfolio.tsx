@@ -100,7 +100,7 @@ export default function PortfolioScreen() {
           />
           {wallet.error ? (
             <Text accessibilityRole="alert" style={styles.error}>
-              {wallet.error}
+              {t("actionCouldNotComplete")}
             </Text>
           ) : null}
           <Pressable
@@ -159,7 +159,7 @@ export default function PortfolioScreen() {
             />
             {wallet.error ? (
               <Text accessibilityRole="alert" style={styles.error}>
-                {wallet.error}
+                {t("actionCouldNotComplete")}
               </Text>
             ) : null}
             <View style={styles.divider}>

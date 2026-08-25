@@ -1172,3 +1172,10 @@
 - Audited Phases 136–144 against live environment state. The Android API 37 emulator is visible, but the whale allowlist is unset and the backend is not listening on port 3000; physical wallet/iOS evidence, provider-backed whale qualification, backend history/alert contracts, managed-submission authority and organizational production approvals remain genuine external blockers.
 - Added the Phase 132–144 ledger with exact closure evidence. Signing, submission, intent consumption, CopyTrade activation and production acceptance remain disabled.
 - Strict TypeScript, repository-wide ESLint, 75 Jest suites / 335 tests, and fresh 25-route web/Android/iOS exports passed. Generated verification output was removed; the known Noble hashes fallback warning remains non-fatal.
+
+## 2026-08-25 — Slice 133: phase 145 wallet and audit privacy
+
+- Sanitized wallet-adapter exceptions at the shared session boundary and replaced direct wallet error rendering across AI, CopyTrade, Monitor and Portfolio with localized public recovery copy.
+- Removed raw Monitor table provider errors and historical CopyTrade execution error text while preserving evidence status, retry controls and execution-disabled boundaries.
+- Added static regression coverage for every wallet identity gate, the session boundary, Monitor table and CopyTrade audit records.
+- Strict TypeScript, repository-wide ESLint, 75 Jest suites / 341 tests, and fresh 25-route web/Android/iOS exports passed. Generated verification output was removed; the known Noble hashes fallback warning remains non-fatal.

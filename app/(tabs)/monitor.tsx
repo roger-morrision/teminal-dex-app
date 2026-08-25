@@ -136,7 +136,7 @@ export default function MonitorScreen() {
             busy={wallet.busy}
             onUnlock={wallet.unlock}
             onVerify={wallet.connectAndVerify}
-            error={wallet.error}
+            error={wallet.error ? t("actionCouldNotComplete") : null}
           />
         ) : mode === "rules" ? (
           <Rules

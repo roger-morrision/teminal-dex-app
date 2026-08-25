@@ -267,7 +267,7 @@ export function MonitorTokenTable({ polling = true }: { polling?: boolean }) {
       {query.isLoading ? (
         <TableState text={t("loadingMonitorTokens")} busy />
       ) : query.isError ? (
-        <TableState text={query.error.message} error />
+        <TableState text={t("evidenceLoadFailed")} error />
       ) : rows.length ? (
         <ScrollView horizontal accessibilityLabel={t("scrollMonitorTable")}>
           <View style={styles.table}>

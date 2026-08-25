@@ -23,3 +23,7 @@ This ledger separates implemented client safeguards from evidence that cannot be
 ## Safety result
 
 Completing local tests or this ledger never grants financial authority. Mobile execution, signing, submission, intent consumption, CopyTrade activation and production acceptance remain false until independently reviewed backend and operational releases provide the required external evidence.
+
+## Phase 145 continuation
+
+Wallet-adapter exceptions are sanitized at the shared session boundary, all identity gates use localized public copy, and Monitor table plus historical CopyTrade audit failures no longer expose provider text. This privacy hardening changes no ownership, execution, or submission authority.

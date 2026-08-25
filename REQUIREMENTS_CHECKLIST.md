@@ -96,3 +96,4 @@ Status legend: `[x]` verified, `[ ]` incomplete, `[~]` intentionally visible but
 - [x] Android debug startup disables only shake-to-open sensing through an idempotent, fail-closed Expo config plugin; keyboard/ADB developer access remains available, and API 37 cold launch completes without ANR.
 - [x] Unconfigured Android development builds use the emulator's host alias for the local backend, while iOS/web keep loopback; explicit origins and production HTTPS enforcement remain authoritative.
 - [x] Verified development sessions refuse tracked dirty state, embed the exact Git HEAD in Expo config, and emit a bounded device-log build marker so QA can bind runtime evidence to an immutable MOBILE commit.
+- [x] Privacy/accessibility regression assertions verify Monitor and CopyTrade mutation sanitization semantically across formatting changes; the full Jest release gate is restored.

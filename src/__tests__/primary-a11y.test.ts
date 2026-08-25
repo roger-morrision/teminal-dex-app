@@ -52,7 +52,7 @@ describe('audited-screen accessibility contract', () => {
     expect(source).not.toContain('(toggle.error ?? remove.error)?.message');
     expect(source).toContain('t("evidenceLoadFailed")');
     expect(source).toContain('publicErrorMessage(mutation.error');
-    expect(source).toContain('publicErrorMessage(\n            toggle.error ?? remove.error');
+    expect(source).toMatch(/publicErrorMessage\(\s*toggle\.error \?\? remove\.error/);
     expect(source).toContain('const mutationBusy = toggle.isPending || remove.isPending');
     expect(source).toContain('remove.reset();\n    toggle.mutate();');
     expect(source).toContain('toggle.reset();\n    remove.mutate();');
@@ -83,7 +83,7 @@ describe('audited-screen accessibility contract', () => {
     expect(source).not.toMatch(/(?:health|rankings|configs|positions|executions)\.error\??\.message/);
     expect(source).not.toContain('(pause.error ?? remove.error)?.message');
     expect(source).toContain('publicErrorMessage(mutation.error');
-    expect(source).toContain('publicErrorMessage(\n            pause.error ?? remove.error');
+    expect(source).toMatch(/publicErrorMessage\(\s*pause\.error \?\? remove\.error/);
     expect(source).toContain('const mutationBusy = pause.isPending || remove.isPending');
     expect(source).toContain('remove.reset();\n    pause.mutate();');
     expect(source).toContain('pause.reset();\n          remove.mutate();');

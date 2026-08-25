@@ -1,5 +1,16 @@
 # MOBILE DEV → QA handoff
 
+## MOBILE-154 — semantic accessibility release gate
+
+- Base: `ff9ac32`; result: containing commit.
+- Changed behavior/files: `src/__tests__/primary-a11y.test.ts` now validates Monitor and CopyTrade sanitizer calls with whitespace-tolerant semantic patterns instead of exact indentation. Product code is unchanged.
+- Acceptance: focused accessibility Jest 68/68; TypeScript; zero-warning focused ESLint; full Jest 80 suites / 397 tests.
+- Security/accessibility: both surfaces must still route mutation errors through `publicErrorMessage`; raw provider and adapter messages remain forbidden.
+- NEXT_QA_ACTION: pin the result commit, rerun the focused and full suites, then continue `MOBILE-QA-002` immutable Android marker evidence. `MOBILE-QA-004` remains an isolated dependency lane.
+- 20/20 reconciliation: 20 findings reviewed; 2 material release-gate outcomes completed; shortfall 18. Carry forward runtime-marker/device evidence, upstream dependency warning, physical-device scenarios, WEB-QC fixtures, and concurrent Whales/logo acceptance.
+
+---
+
 ## MOBILE-153 — immutable runtime provenance
 
 - Base: `f73c3a0`; result: containing commit.

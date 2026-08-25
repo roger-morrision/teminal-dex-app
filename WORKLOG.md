@@ -1327,3 +1327,9 @@
 - Expo config now exposes a nullable `mobileBuildCommit`; the app emits one bounded development-only `[MOBILE_BUILD]` marker at mount. Ordinary development remains explicitly `unverified` instead of fabricating provenance.
 - Seven focused provenance contracts, Expo config injection, dirty-state fail-closed behavior, TypeScript and warning-free lint pass. No endpoint, credential, user identity, signing, submission, or transaction data is logged.
 - 20 findings reconciled; 7 outcomes completed; shortfall 13 remains physical QA scenarios, WEB-QC-gated fixtures, upstream Metro warning ownership, and concurrent Whales/logo work.
+
+## 2026-08-26 — MOBILE-154: restore semantic accessibility release gate
+
+- Replaced two indentation-coupled Monitor and CopyTrade privacy assertions with whitespace-tolerant semantic checks for sanitized mutation errors. Production behavior is unchanged.
+- Focused accessibility coverage passes 68/68; TypeScript and zero-warning focused ESLint pass; the complete regression gate is restored at 80 suites / 397 tests.
+- 20 findings were reconciled from QA and the ranked backlog. Two independently testable release-gate outcomes were completed; shortfall 18 remains exact Android marker/runtime evidence, upstream Noble warning ownership, physical-device scenarios, WEB-QC fixtures, and concurrent Whales/logo acceptance.

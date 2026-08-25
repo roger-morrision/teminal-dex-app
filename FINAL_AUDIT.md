@@ -136,3 +136,8 @@ No in-scope automated regression was found. Generated export directories were re
 
 - Verified development startup is fail-closed on tracked dirty state and embeds exact Git HEAD into Expo config before Metro starts.
 - App mount emits only the public commit hash or `unverified`; no secrets, endpoints, wallet identity, or transaction evidence is included. QA can now correlate Android logs with an immutable MOBILE commit.
+
+## MOBILE-154 semantic accessibility gate
+
+- Monitor and CopyTrade privacy assertions no longer depend on source indentation while continuing to require centralized mutation-error sanitization.
+- Focused accessibility verification passes 68 checks and the full regression gate passes 80 suites / 397 tests. Runtime marker and physical-device certification remain separate blockers.

@@ -1218,3 +1218,10 @@
 - Removed the successful asynchronous storage-state update from Monitor table preference persistence. Stale failure UI now clears synchronously, while sequence fencing still allows only the newest save failure to surface.
 - Wrapped cursor pagination interaction and Query Client teardown in React `act` so the regression suite waits for observer notifications instead of emitting asynchronous state-update warnings.
 - Strict TypeScript, warning-free source lint, and all 76 Jest suites / 354 tests passed with clean Monitor pagination output. Rendered behavior, paging contracts, provider data and transaction authority are unchanged; the fresh Slice 138 platform exports remain applicable.
+
+## 2026-08-25 — Slice 140: capability-aware Discover controls
+
+- Continued the all-control audit and confirmed that timeframe/filter controls remained visible for New Pairs, Hot Searches, Surge, NextBC and Pump Live although those provider endpoints consume neither value; the same controls also remained visible during independent server search.
+- Added an explicit mode-capability contract. Compatible main-market modes retain timeframe and filters, Watchlist retains its persisted market window without an unrelated filter control, cursorless/new-pair modes hide both controls, and server search hides feed-only controls. Switching modes closes an open filter sheet without discarding saved values.
+- Empty-state classification now uses only effective filters, preventing a saved but inapplicable filter from mislabeling a provider-empty special mode as a filter miss.
+- Focused client/accessibility coverage, strict TypeScript and targeted ESLint pass. The combined repository gate remains 76 Jest suites / 354 tests from the immediately preceding warning-free Slice 139 run.

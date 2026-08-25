@@ -2,7 +2,7 @@
 
 Audit date: 2026-08-24
 
-Audit maintained through: Slice 143
+Audit maintained through: Slice 144
 
 Backend authority: `C:\Tuan\devApps\TERMINAL_DEX_Intelligent` (source of truth; isolated Slice 43–49 contracts added with explicit write approval)
 
@@ -77,3 +77,9 @@ No in-scope automated regression was found. Generated export directories were re
 | 7. Quality/security | Automated accessibility, localization, privacy and error-redaction gates pass; physical screen-reader and large-text certification remains external. |
 | 8. Platforms | Android emulator and three-platform export evidence exist; physical Android/iOS wallet and resilience evidence remains external. |
 | 9. Tests/release | Implemented this run: `lint` now invokes the declared local ESLint 9 executable directly over source roots, eliminating Expo CLI/global `npx` dependency from the release gate. Next: command-level package-script resolution regression. |
+
+## Slice 144 release-command evidence
+
+- Verified that every quality script begins with its declared local tool executable: TypeScript for typecheck, ESLint for lint, and Jest for test/CI.
+- The regression rejects an `npx` first command and locks lint to the source-owned `app` and `src` roots.
+- Cross-team handoff status: the expected backend `docs/automation-handoffs/mobile-latest.md` artifact was absent, so no unverified backend change was consumed.

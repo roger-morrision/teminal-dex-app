@@ -276,7 +276,8 @@ export default function DiscoverScreen() {
           if (
             debouncedSearch.length < 2 &&
             feed.hasNextPage &&
-            !feed.isFetchingNextPage
+            !feed.isFetchingNextPage &&
+            !feed.isFetchNextPageError
           )
             void feed.fetchNextPage();
         }}
@@ -288,6 +289,20 @@ export default function DiscoverScreen() {
               label={t("loadingMoreMarkets")}
               style={styles.footer}
             />
+          ) : feed.isFetchNextPageError && rows.length && debouncedSearch.length < 2 ? (
+            <View accessibilityRole="alert" accessibilityLiveRegion="polite" style={styles.footerError}>
+              <Text style={styles.stateText}>{t("evidenceLoadFailed")}</Text>
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={t("retry")}
+                accessibilityState={{ busy: feed.isFetchingNextPage }}
+                disabled={feed.isFetchingNextPage}
+                onPress={() => void feed.fetchNextPage()}
+                style={[styles.retry, feed.isFetchingNextPage && styles.retryDisabled]}
+              >
+                <Text style={styles.retryText}>{t("retry")}</Text>
+              </Pressable>
+            </View>
           ) : null
         }
         ListHeaderComponent={
@@ -715,6 +730,7 @@ const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.background },
   grow: { flexGrow: 1 },
   footer: { padding: spacing.xl },
+  footerError: { alignItems: "center", gap: spacing.sm, padding: spacing.lg },
   header: {
     padding: spacing.lg,
     paddingTop: spacing.md,

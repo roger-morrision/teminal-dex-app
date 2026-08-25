@@ -1232,3 +1232,9 @@
 - Added localized, accessible pagination-only recovery that is disabled and announced busy while retrying the failed cursor; raw backend origins and exception details never render.
 - Added isolated storage and adversarial cursor coverage proving the first page remains visible, the raw failure stays private, and retry renders the recovered second page.
 - Strict TypeScript, warning-free source lint, 76 Jest suites / 356 tests, and fresh 25-route web/Android/iOS exports passed. Generated verification output was removed; the known Noble hashes fallback warning remains non-fatal.
+
+## 2026-08-25 — Slice 142: recoverable Discover page failures
+
+- Audited partial cursor failures after completing control relevance. Discover previously retained loaded rows internally but showed no visible page-error recovery, while `onEndReached` could immediately retry the failed cursor again.
+- Preserved all loaded rows, filters and ordering on a later-page failure; automatic end-reached retries now stop until the user chooses a localized, accessible, busy-safe Retry. Raw provider/transport errors remain private.
+- Added a regression contract for retained-row recovery, explicit failed-cursor retry and polite announcement. Concurrent Monitor recovery work was preserved and remains independently committed.

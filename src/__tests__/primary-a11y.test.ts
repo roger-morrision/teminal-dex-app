@@ -115,4 +115,13 @@ describe('audited-screen accessibility contract', () => {
     expect(readFileSync(join(process.cwd(), 'app/operations.tsx'), 'utf8')).not.toContain('error: item.runtime.lastError');
     expect(readFileSync(join(process.cwd(), 'app/trade/[address].tsx'), 'utf8')).not.toContain('error: prepare.data.simulation.simulation.error');
   });
+
+  it('keeps loaded Discover rows visible and exposes explicit recovery after a page failure', () => {
+    const source = readFileSync(join(process.cwd(), 'app/(tabs)/discover.tsx'), 'utf8');
+    expect(source).toContain('feed.isFetchNextPageError && rows.length');
+    expect(source).toContain('!feed.isFetchNextPageError');
+    expect(source).toContain('onPress={() => void feed.fetchNextPage()}');
+    expect(source).toContain('accessibilityLiveRegion="polite"');
+    expect(source).not.toContain('feed.error.message');
+  });
 });

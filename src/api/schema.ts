@@ -945,6 +945,7 @@ export const trackFeedSchema = z
               .object({
                 tokenAddress: publicKeyString,
                 tokenSymbol: z.string().trim().min(1).max(100),
+                imageUrl: safeTokenImageUrl,
                 valueUsd: z.number().nonnegative().finite(),
                 observedAt: z.number().nonnegative(),
                 source: z.string().trim().min(1).max(200),

@@ -1107,3 +1107,10 @@
 - Bound the backend coverage reason to a localized configuration-specific state, disclosed that transaction size never assigns identity, retained the ranked-wallet handoff, and did not expose configuration contents.
 - No production mock data, backend mutation, credential display, transaction action, or inferred wallet identity was added.
 - Strict TypeScript, focused ESLint and 4 whale-state/localization/schema/accessibility suites with 75 tests passed.
+
+## 2026-08-25 — Slice 123: held-token to traded-token row hierarchy
+
+- Applied the requested whale relationship layout: held-token logo/symbol on the left, named identity plus buy/sell amount and market evidence in the center, and the traded-token logo/symbol with direction badge on the right.
+- Extended authoritative holding evidence with the indexed held token artwork and passed it through the strict mobile schema; insecure/hotlink-only URLs are discarded and exact-mint initials remain truthful fallbacks.
+- Wallet identity, ≥$10,000 ownership qualification, transaction amount independence, provenance, exact-token navigation, and non-execution boundaries are unchanged.
+- Backend and mobile TypeScript/ESLint pass; the backend qualification contract and 4 mobile schema/whale/artwork/accessibility suites with 87 tests pass.

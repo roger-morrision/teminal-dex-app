@@ -81,10 +81,28 @@ function Control({ label, accessibilityLabel, active, onPress }: { label: string
 function LiveEvents({ rows, onReset, onOpen }: { rows: TrackNotification[]; onReset: () => void; onOpen: (address: string) => void }) {
   const { t } = useSettings();
   if (!rows.length) return <View style={styles.state}><Ionicons name="filter" size={24} color={colors.muted} /><Text style={styles.stateText}>{t("noWhaleFilterMatches")}</Text><Pressable accessibilityRole="button" accessibilityLabel={t("resetWhaleFilters")} onPress={onReset} style={styles.secondary}><Text style={styles.secondaryText}>{t("resetWhaleFilters")}</Text></Pressable></View>;
-  return <View>{rows.map((item) => { const buy = item.type.endsWith("buy"); const whale = whaleHoldingIdentity(item); return <Pressable key={item.id} accessibilityRole="button" accessibilityLabel={t("openWhaleEvent", { symbol: item.tokenSymbol })} onPress={() => onOpen(item.tokenAddress)} style={[styles.card, { borderLeftWidth: 3, borderLeftColor: buy ? colors.positive : colors.negative }]}>
-    <View style={{ position: "relative" }}><TokenAvatar symbol={item.tokenSymbol} identity={item.tokenAddress} imageUrl={item.market.imageUrl} size={36} accessible={false} /><View style={{ position: "absolute", right: -2, bottom: -2, width: 15, height: 15, borderRadius: 8, alignItems: "center", justifyContent: "center", backgroundColor: buy ? colors.accentDim : "#401b24" }}><Ionicons name={buy ? "arrow-down" : "arrow-up"} size={10} color={buy ? colors.positive : colors.negative} /></View></View>
-    <View style={styles.flex}><View style={styles.row}><View style={styles.flex}><Text style={styles.cardTitle}>{item.tokenSymbol}</Text><Text style={[styles.actionText, { color: buy ? colors.positive : colors.negative }]}>{whale?.label ?? t("unverifiedWhale")} · {t(buy ? "bought" : "sold")} {item.amountUsd == null ? "—" : compactUsd(item.amountUsd)}</Text>{whale ? <Text style={styles.meta}>{t("whaleHolds", { amount: compactUsd(whale.valueUsd), symbol: whale.tokenSymbol })}</Text> : null}</View><View style={styles.eventContext}><Text numberOfLines={1} style={styles.meta}>{item.wallet ? short(item.wallet) : item.source} · {ageLabel(item.observedAt)}</Text></View></View><View style={styles.evidenceRow}><MarketSnapshot item={item} compact /><Text numberOfLines={1} style={styles.evidence}>{item.source} · {item.dataQuality}</Text></View>{whaleAmountContext(item) === "amount_exceeds_market_cap" ? <Text style={{ color: colors.warning, fontSize: 8, marginTop: 5 }}>{t("whaleAmountContextWarning")}</Text> : null}</View>
-  </Pressable>; })}</View>;
+  return <View>{rows.map((item) => {
+    const buy = item.type.endsWith("buy");
+    const whale = whaleHoldingIdentity(item);
+    return <Pressable key={item.id} accessibilityRole="button" accessibilityLabel={t("openWhaleEvent", { symbol: item.tokenSymbol })} onPress={() => onOpen(item.tokenAddress)} style={[styles.card, { borderLeftWidth: 3, borderLeftColor: buy ? colors.positive : colors.negative }]}>
+      <View style={{ width: 42, alignItems: "center", gap: 3 }}>
+        <TokenAvatar symbol={whale?.tokenSymbol ?? "?"} identity={whale?.tokenAddress ?? item.wallet ?? item.id} imageUrl={whale?.imageUrl} size={38} accessible={false} />
+        <Text numberOfLines={1} style={{ maxWidth: 42, color: colors.muted, fontSize: 7, fontWeight: "900" }}>{whale?.tokenSymbol ?? "—"}</Text>
+      </View>
+      <View style={styles.flex}>
+        <View style={styles.row}><Text numberOfLines={1} style={styles.cardTitle}>{whale?.label ?? t("unverifiedWhale")}</Text><Text style={styles.meta}>{ageLabel(item.observedAt)}</Text></View>
+        <Text style={[styles.actionText, { color: buy ? colors.positive : colors.negative }]}>{t(buy ? "bought" : "sold")} {item.amountUsd == null ? "—" : compactUsd(item.amountUsd)} {item.tokenSymbol}</Text>
+        {whale ? <Text style={styles.meta}>{t("whaleHolds", { amount: compactUsd(whale.valueUsd), symbol: whale.tokenSymbol })}</Text> : null}
+        <MarketSnapshot item={item} compact />
+        <Text numberOfLines={1} style={styles.evidence}>{item.wallet ? short(item.wallet) : item.source} · {item.source} · {item.dataQuality}</Text>
+        {whaleAmountContext(item) === "amount_exceeds_market_cap" ? <Text style={{ color: colors.warning, fontSize: 8, marginTop: 5 }}>{t("whaleAmountContextWarning")}</Text> : null}
+      </View>
+      <View style={{ width: 42, alignItems: "center", gap: 3 }}>
+        <View style={{ position: "relative" }}><TokenAvatar symbol={item.tokenSymbol} identity={item.tokenAddress} imageUrl={item.market.imageUrl} size={38} accessible={false} /><View style={{ position: "absolute", right: -2, bottom: -2, width: 15, height: 15, borderRadius: 8, alignItems: "center", justifyContent: "center", backgroundColor: buy ? colors.accentDim : "#401b24" }}><Ionicons name={buy ? "arrow-down" : "arrow-up"} size={10} color={buy ? colors.positive : colors.negative} /></View></View>
+        <Text numberOfLines={1} style={{ maxWidth: 42, color: colors.muted, fontSize: 7, fontWeight: "900" }}>{item.tokenSymbol}</Text>
+      </View>
+    </Pressable>;
+  })}</View>;
 }
 
 export function WhaleFeedUnavailable({ reason, onWallets }: { reason?: string; onWallets: () => void }) {

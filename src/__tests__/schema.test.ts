@@ -1034,8 +1034,9 @@ describe("Track evidence schema", () => {
     ).toBe(false);
   });
   it("validates optional ownership-based whale evidence", () => {
-    const whaleHolding = { tokenAddress: address, tokenSymbol: "ANSEM", valueUsd: 10_000, observedAt: 1, source: "provider.wallet_holdings", eligibleToken: true };
+    const whaleHolding = { tokenAddress: address, tokenSymbol: "ANSEM", imageUrl: "https://cdn.example/ansem.png", valueUsd: 10_000, observedAt: 1, source: "provider.wallet_holdings", eligibleToken: true };
     expect(trackFeedSchema.safeParse({ notifications: [{ ...item, whaleHolding }], ts: 1 }).success).toBe(true);
+    expect(trackFeedSchema.parse({ notifications: [{ ...item, whaleHolding: { ...whaleHolding, imageUrl: "http://insecure.example/ansem.png" } }], ts: 1 }).notifications[0]?.whaleHolding?.imageUrl).toBeUndefined();
     expect(trackFeedSchema.safeParse({ notifications: [{ ...item, whaleHolding: { ...whaleHolding, valueUsd: -1 } }], ts: 1 }).success).toBe(false);
     expect(trackFeedSchema.safeParse({ notifications: [{ ...item, whaleHolding: { ...whaleHolding, tokenAddress: `${address}1` } }], ts: 1 }).success).toBe(false);
   });

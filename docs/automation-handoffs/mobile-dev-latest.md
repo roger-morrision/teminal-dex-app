@@ -1,47 +1,54 @@
 # MOBILE DEV → QA handoff
 
-- Story: `MOBILE-146` — observable indexer health in Feed Data.
-- Base commit: `ccf1d77`.
-- Result commit: the commit containing this handoff; QA must pin `git rev-parse HEAD` before testing.
-- Scope: `app/operations.tsx`, localized settings copy, `IndexerHealthCard` tests, and MOBILE audit records.
-- Excluded concurrent scope: Whale/token-row/token-avatar/DEX-logo and MOBILE→WEB handoff files already present in the worktree.
+- Story: `MOBILE-147` — private, mutually exclusive Monitor/CopyTrade mutations
+- Base: `98de6e2`
+- Result: containing commit; QA must pin immutable `HEAD`
+- Scope: MOBILE workspace only. WEB was read-only. Concurrent Whale/TokenRow/TokenAvatar/DexLogo work and three MOBILE→WEB drafts were preserved and excluded.
 
-## 20/20 acceptance matrix
+## Changed behavior and files
 
-| ID | Independently testable outcome |
-| --- | --- |
-| MOBILE-146-01 | Feed Data exposes indexer health. |
-| MOBILE-146-02 | The query is enabled only on the Feed Data tab. |
-| MOBILE-146-03 | Pull-to-refresh includes indexer health. |
-| MOBILE-146-04 | Initial loading coordinates all three feed evidence queries. |
-| MOBILE-146-05 | Indexer failure has independent retry. |
-| MOBILE-146-06 | Retry is disabled and announced busy while fetching. |
-| MOBILE-146-07 | Not-configured evidence is distinct. |
-| MOBILE-146-08 | Invalid-contract evidence is distinct. |
-| MOBILE-146-09 | Generic unavailable evidence is distinct. |
-| MOBILE-146-10 | Healthy evidence uses positive status semantics. |
-| MOBILE-146-11 | Degraded evidence uses warning semantics. |
-| MOBILE-146-12 | Missing numeric evidence is never rendered as zero. |
-| MOBILE-146-13 | Exact observed tip is rendered when present. |
-| MOBILE-146-14 | Update freshness is rendered from the bounded timestamp. |
-| MOBILE-146-15 | Export lag is rendered independently. |
-| MOBILE-146-16 | Ingestion source and commitment are rendered independently. |
-| MOBILE-146-17 | Bounded canonical and non-canonical quality evidence is rendered. |
-| MOBILE-146-18 | Empty quality evidence has an explicit unavailable state. |
-| MOBILE-146-19 | The card exposes accessible summary status and an explicit non-execution boundary. |
-| MOBILE-146-20 | All new public copy is available in English and Vietnamese. |
+- `app/(tabs)/monitor.tsx`: redacted toggle/delete failures, sibling-error reset, cross-action mutual exclusion, consistent disabled/busy semantics.
+- `app/copytrade.tsx`: redacted pause/delete failures, sibling-error reset, cross-action mutual exclusion, guarded delete confirmation, consistent disabled/busy semantics.
+- `src/__tests__/primary-a11y.test.ts`: source contract for privacy and concurrency invariants.
+- MOBILE checklist/worklog/audit: evidence and carry-forward.
 
-## Verification and QA scenarios
+## Acceptance checklist — 20/20
 
-- TypeScript: local `tsc --noEmit`.
-- Lint: local ESLint over `app` and `src`.
-- Focused: `IndexerHealthCard`, schema, and client suites.
-- Full: all Jest suites after the focused gate.
-- Verify healthy `200`, degraded `503`, unavailable `503`, quality-empty, and retry-busy states.
-- Confirm `git show --name-only HEAD` excludes every concurrent file listed above.
+1. Monitor toggle errors are classified before display.
+2. Monitor delete errors are classified before display.
+3. Monitor uses localized generic fallback for unknown failures.
+4. Monitor retains allowlisted safe public reasons.
+5. Monitor toggle is disabled while delete is pending.
+6. Monitor delete is disabled while toggle is pending.
+7. Monitor toggle reports busy for either pending mutation.
+8. Monitor delete reports busy for either pending mutation.
+9. Starting toggle clears stale delete failure.
+10. Starting delete clears stale toggle failure.
+11. CopyTrade pause errors are classified before display.
+12. CopyTrade delete errors are classified before display.
+13. CopyTrade uses localized generic fallback for unknown failures.
+14. CopyTrade retains allowlisted safe public reasons.
+15. CopyTrade pause is disabled while delete is pending.
+16. CopyTrade delete is disabled while pause is pending.
+17. CopyTrade pause reports busy for either pending mutation.
+18. CopyTrade delete reports busy for either pending mutation.
+19. Starting either CopyTrade action clears the sibling failure.
+20. Destructive confirmation cannot open while another strategy mutation is pending.
 
-## Risks and next action
+Each item maps to an independently assertable behavior on a distinct action/state boundary.
 
-- Android runtime certification remains blocked by `MOBILE-QA-002`.
-- Full clean-baseline release certification remains blocked until the concurrent token-row/logo slice is committed or isolated (`MOBILE-QA-003`).
-- `NEXT_QA_ACTION`: validate all 20 outcomes against the immutable result commit and record the exact pass/fail/blocked count.
+## Verification
+
+- `typescript/bin/tsc --noEmit`
+- `eslint/bin/eslint.js app src`
+- `jest/bin/jest.js --ci --runInBand src/__tests__/primary-a11y.test.ts`
+- `jest/bin/jest.js --ci --runInBand`
+- `git diff --check`
+
+Record exact final counts from the containing commit. Android runtime remains blocked by `MOBILE-QA-002`; do not infer device passage.
+
+## Known risks and NEXT_QA_ACTION
+
+- `MOBILE-QA-002`: independently exercise rapid alternate actions and screen-reader busy announcements on a responsive Android emulator/device.
+- `MOBILE-QA-003`: full clean immutable-suite certification becomes available after the unrelated concurrent slice is committed or isolated; DEV full-suite evidence in the shared worktree is supporting, not clean-baseline release certification.
+- `NEXT_QA_ACTION`: pin the containing commit, verify all 20 outcomes, ensure raw sentinel exception text is absent, and confirm the commit excludes concurrent Whale/token-logo files.

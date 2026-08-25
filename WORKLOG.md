@@ -1,5 +1,13 @@
 # Mobile Worklog
 
+## 2026-08-25 — MOBILE-147 mutation privacy and concurrency hardening
+
+- Reconciled 20 distinct mutation-state gaps across Monitor alert toggle/delete and CopyTrade pause/delete: raw failure exposure, localized fallback, allowlisted safe public reasons, sibling-operation overlap, stale sibling errors, disabled interaction, and assistive busy state for each independently actionable path.
+- Routed all four mutation failures through `publicErrorMessage`, preserved the existing localized fallback, and removed the final two compound raw `.message` render paths from audited screens.
+- Added per-card mutual exclusion so pause/toggle and delete cannot overlap, resets the sibling mutation before a new action, blocks CopyTrade delete confirmation while another mutation is pending, and announces both controls disabled/busy consistently.
+- Extended the primary accessibility/privacy contract to lock redaction, sibling reset, mutual-exclusion, and confirmation-guard behavior for both surfaces.
+- Throughput: 20 findings reconciled; 20 independently testable material outcomes completed; shortfall 0. Android device certification remains `MOBILE-QA-002` and is not counted.
+
 ## 2026-08-22 — Slice 1: application foundation and Discovery Trending
 
 - Initial repo audit: clean tree, only initial commit and README; no pre-existing app, checklist, tests, or user changes.

@@ -96,3 +96,9 @@ No in-scope automated regression was found. Generated export directories were re
 - Healthy, degraded, unconfigured, unavailable, and invalid-contract evidence have distinct localized public presentation. Missing tip, freshness, lag, source, commitment, or quality evidence remains unavailable rather than zero.
 - The card has summary semantics, bounded quality rows, English/Vietnamese copy, and an explicit observational-only boundary. It exposes no control that can enable automation, signing, submission, or trading.
 - 20/20 contract: 20 distinct acceptance gaps closed in this slice; device runtime certification remains externally blocked and is not counted as complete.
+
+## MOBILE-147 private mutation recovery
+
+- Monitor alert activation/pause and deletion plus CopyTrade pause and deletion now use the bounded public-error classifier; backend origins, provider diagnostics, and exception messages are never rendered verbatim.
+- Sibling operations are mutually excluded, stale sibling failures are cleared before a new action, and every affected press target exposes matching disabled/busy semantics. CopyTrade cannot open a destructive confirmation while another strategy mutation is pending.
+- Source-level regression coverage locks all 20 independently testable privacy, recovery, concurrency, and accessibility outcomes. Physical Android interaction certification remains externally blocked.

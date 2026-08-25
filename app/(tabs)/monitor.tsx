@@ -443,6 +443,15 @@ export function AlertCard({
     mutationFn: () => deleteUserAlert(alert.id),
     onSuccess: onChanged,
   });
+  const mutationBusy = toggle.isPending || remove.isPending;
+  const toggleAlert = () => {
+    remove.reset();
+    toggle.mutate();
+  };
+  const removeAlert = () => {
+    toggle.reset();
+    remove.mutate();
+  };
   return (
     <View style={styles.rule}>
       <View style={styles.ruleTop}>
@@ -456,14 +465,14 @@ export function AlertCard({
           accessibilityRole="switch"
           accessibilityState={{
             checked: alert.active,
-            disabled: toggle.isPending,
-            busy: toggle.isPending,
+            disabled: mutationBusy,
+            busy: mutationBusy,
           }}
           accessibilityLabel={t(alert.active ? "pauseAlert" : "activateAlert", {
             name: alert.name,
           })}
-          onPress={() => toggle.mutate()}
-          disabled={toggle.isPending}
+          onPress={toggleAlert}
+          disabled={mutationBusy}
           style={[styles.switch, alert.active && styles.switchOn]}
         >
           <View style={[styles.knob, alert.active && styles.knobOn]} />
@@ -483,11 +492,11 @@ export function AlertCard({
           accessibilityRole="button"
           accessibilityLabel={t("deleteAlert", { name: alert.name })}
           accessibilityState={{
-            disabled: remove.isPending,
-            busy: remove.isPending,
+            disabled: mutationBusy,
+            busy: mutationBusy,
           }}
-          onPress={() => remove.mutate()}
-          disabled={remove.isPending}
+          onPress={removeAlert}
+          disabled={mutationBusy}
         >
           <Text style={styles.delete}>
             {remove.isPending ? t("deleting") : t("delete")}
@@ -496,7 +505,10 @@ export function AlertCard({
       </View>
       {toggle.error || remove.error ? (
         <Text accessibilityRole="alert" style={styles.error}>
-          {(toggle.error ?? remove.error)?.message}
+          {publicErrorMessage(
+            toggle.error ?? remove.error,
+            t("actionCouldNotComplete"),
+          )}
         </Text>
       ) : null}
     </View>

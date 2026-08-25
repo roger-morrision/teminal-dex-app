@@ -738,16 +738,26 @@ function StrategyCard({
     mutationFn: () => deleteCopyTradeConfig(config.id),
     onSuccess: onChanged,
   });
+  const mutationBusy = pause.isPending || remove.isPending;
+  const pauseStrategy = () => {
+    remove.reset();
+    pause.mutate();
+  };
   const label = config.sourceWalletLabel || "strategy";
-  const confirmRemove = () =>
+  const confirmRemove = () => {
+    if (mutationBusy) return;
     Alert.alert(t("removeStrategyQuestion"), t("removeStrategyDescription"), [
       { text: t("cancel"), style: "cancel" },
       {
         text: t("remove"),
         style: "destructive",
-        onPress: () => remove.mutate(),
+        onPress: () => {
+          pause.reset();
+          remove.mutate();
+        },
       },
     ]);
+  };
   return (
     <View style={[styles.card, config.isActive && styles.activeCard]}>
       <View style={styles.cardTop}>
@@ -773,11 +783,11 @@ function StrategyCard({
             accessibilityRole="button"
             accessibilityLabel={t("pauseStrategy", { strategy: label })}
             accessibilityState={{
-              disabled: pause.isPending,
-              busy: pause.isPending,
+              disabled: mutationBusy,
+              busy: mutationBusy,
             }}
-            onPress={() => pause.mutate()}
-            disabled={pause.isPending}
+            onPress={pauseStrategy}
+            disabled={mutationBusy}
             style={styles.pause}
           >
             <Text style={styles.pauseText}>
@@ -814,7 +824,12 @@ function StrategyCard({
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={t("deleteStrategy", { strategy: label })}
+          accessibilityState={{
+            disabled: mutationBusy,
+            busy: mutationBusy,
+          }}
           onPress={confirmRemove}
+          disabled={mutationBusy}
         >
           <Text style={styles.delete}>{t("delete")}</Text>
         </Pressable>
@@ -831,7 +846,10 @@ function StrategyCard({
       </Text>
       {pause.error || remove.error ? (
         <Text accessibilityRole="alert" style={styles.error}>
-          {(pause.error ?? remove.error)?.message}
+          {publicErrorMessage(
+            pause.error ?? remove.error,
+            t("actionCouldNotComplete"),
+          )}
         </Text>
       ) : null}
     </View>

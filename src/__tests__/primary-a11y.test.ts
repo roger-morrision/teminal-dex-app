@@ -39,4 +39,16 @@ describe('audited-screen accessibility contract', () => {
     expect(source).not.toContain('feed.error.message');
     expect(source).not.toContain('rankings.error?.message');
   });
+
+  it.each(['app/(tabs)/discover.tsx', 'app/(tabs)/trenches.tsx', 'app/(tabs)/portfolio.tsx'])('%s does not render raw query errors', (file) => {
+    const source = readFileSync(join(process.cwd(), file), 'utf8');
+    expect(source).not.toContain('.error.message');
+    expect(source).toContain('t("evidenceLoadFailed")');
+  });
+
+  it('keeps Monitor read failures private while preserving mutation feedback', () => {
+    const source = readFileSync(join(process.cwd(), 'app/(tabs)/monitor.tsx'), 'utf8');
+    expect(source).not.toContain('query.error.message');
+    expect(source).toContain('t("evidenceLoadFailed")');
+  });
 });

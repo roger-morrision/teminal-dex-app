@@ -173,7 +173,7 @@ function LiveFeed({
     return (
       <State
         error
-        text={query.error.message}
+        text={t("evidenceLoadFailed")}
         action={t("retry")}
         actionBusy={query.isFetching}
         onAction={() => query.refetch()}

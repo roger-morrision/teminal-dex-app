@@ -442,7 +442,7 @@ export default function DiscoverScreen() {
             <State
               error
               title={t("marketUnavailable")}
-              message={current.error.message}
+              message={t("evidenceLoadFailed")}
               action={t("retry")}
               actionBusy={current.isFetching}
               onAction={() => current.refetch()}

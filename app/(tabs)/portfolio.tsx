@@ -257,7 +257,7 @@ export default function PortfolioScreen() {
             ) : analytics.isError ? (
               <State
                 error
-                text={analytics.error.message}
+                text={t("evidenceLoadFailed")}
                 action={t("retry")}
                 actionBusy={analytics.isFetching}
                 onAction={() => analytics.refetch()}

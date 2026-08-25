@@ -1146,3 +1146,9 @@
 - Phase review ranked backend availability first and privacy/recovery second; the backend process is externally unavailable, so this independent mobile slice addresses the raw transport detail exposed by the emulator failure state.
 - Replaced raw activity and wallet-ranking exception messages with localized English/Vietnamese recovery copy while retaining accessible busy-safe Retry behavior.
 - Added a regression guard preventing Whale Watch from rendering query error messages that may contain backend origins or native exception details.
+
+## 2026-08-25 — Slice 129: private primary-tab read recovery
+
+- Phase review confirmed backend data availability remains externally blocked and identified raw read-query errors on Discover, Trenches, Portfolio analytics, and Monitor as the next dependency-ready privacy/recovery gap.
+- Replaced raw transport/provider messages on those primary read surfaces with localized English/Vietnamese connection-and-retry guidance; existing busy-safe Retry behavior remains unchanged.
+- Kept Monitor mutation feedback separate because user-initiated validation failures require bounded field-level context; static regression coverage now prevents raw read errors from returning to primary tabs.

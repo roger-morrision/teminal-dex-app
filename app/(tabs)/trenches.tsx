@@ -215,7 +215,7 @@ export default function TrenchesScreen() {
           ) : query.isError ? (
             <State
               error
-              text={query.error.message}
+              text={t("evidenceLoadFailed")}
               action={t("retry")}
               actionBusy={query.isFetching}
               onAction={() => query.refetch()}

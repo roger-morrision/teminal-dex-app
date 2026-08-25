@@ -31,6 +31,7 @@ import {
   fetchWalletHoldings,
   fetchWalletPnl,
   getApiOrigin,
+  getDevelopmentApiOrigin,
   getDiscoveryModeCapabilities,
   getDiscoveryNextPageParam,
   pauseCopyTradeConfig,
@@ -294,6 +295,17 @@ describe("backend client routing", () => {
     delete process.env.EXPO_PUBLIC_API_URL;
     expect(getApiOrigin()).toBe("http://127.0.0.1:3000");
   });
+
+  it("routes an unconfigured Android development build to the emulator host", () => {
+    expect(getDevelopmentApiOrigin("android")).toBe("http://10.0.2.2:3000");
+  });
+
+  it.each(["ios", "web", "windows", "unknown"])(
+    "keeps %s development traffic on loopback",
+    (platform) => {
+      expect(getDevelopmentApiOrigin(platform)).toBe("http://127.0.0.1:3000");
+    },
+  );
 
   it("routes token panels and chart timeframes without leaking parameters", async () => {
     const address = "11111111111111111111111111111111";

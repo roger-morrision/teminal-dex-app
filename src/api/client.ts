@@ -93,6 +93,7 @@ import {
 import { isSolanaAddress } from "@/security/input";
 import { recordFeedCounterSample } from "@/lib/feed-recovery";
 import { assertMobileRequestPolicy } from "@/security/execution-policy";
+import { Platform } from "react-native";
 
 export type TrendingPeriod = "1h" | "6h" | "24h";
 export type TrendingSort = "trending" | "gainers" | "losers" | "volume" | "new";
@@ -162,11 +163,17 @@ export class ApiError extends Error {
   }
 }
 
+export function getDevelopmentApiOrigin(platform: string): string {
+  return platform === "android"
+    ? "http://10.0.2.2:3000"
+    : "http://127.0.0.1:3000";
+}
+
 export function getApiOrigin(): string {
   const configured = (
     process.env.EXPO_PUBLIC_API_URL?.trim() ||
     (typeof __DEV__ !== "undefined" && __DEV__
-      ? "http://127.0.0.1:3000"
+      ? getDevelopmentApiOrigin(Platform.OS)
       : "")
   ).replace(/\/$/, "");
   if (!configured)

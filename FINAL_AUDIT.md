@@ -126,3 +126,8 @@ No in-scope automated regression was found. Generated export directories were re
 - Verified generated native configuration disables only debug shake sensing and survives repeated prebuild transformation.
 - Verified API 37 development APK build/install, 2.4-second cold startup, React Native `main` mount, live process/focused activity, and rendered Whales accessibility hierarchy without ANR, fatal exception, or unresolved module.
 - Physical-device TalkBack, quote-flow interaction, and production release certification remain separate QA evidence; no transaction authority changed.
+
+## MOBILE-152 Android local-backend routing
+
+- Android development fallback now uses `10.0.2.2:3000`, while non-Android development retains `127.0.0.1:3000`; explicit configuration and HTTPS production policy are unchanged.
+- API 37 runtime evidence confirms Whales renders without backend configuration/connection errors against the reachable host service. No mock data, credential, WEB mutation, signing, or transaction authority was introduced.

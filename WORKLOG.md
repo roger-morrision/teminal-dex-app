@@ -1313,3 +1313,10 @@
 - Added a regeneration-safe Expo plugin that disables only the debug shake gesture. Native regeneration, JDK 17 x86_64 assembly, APK replacement, Metro bundling, and a 2.4-second cold launch passed; the process remained alive and the Whales screen appeared in the accessibility tree.
 - Added six focused regression contracts covering debug-only gating, retained keyboard/ADB access, required import, idempotency, Kotlin enforcement, and fail-closed template drift.
 - MOBILE throughput: 20 findings reconciled; 6 independently testable outcomes completed in this follow-up increment; shortfall 14. Remaining findings require physical QA, WEB-QC approval, or overlap the active concurrent Whales/logo slice.
+
+## 2026-08-26 — MOBILE-152: Android emulator backend routing
+
+- Reproduced the backend recovery state with a healthy host service: the development fallback used `127.0.0.1`, which resolves inside Android emulators rather than to the workstation. The existing security allowlist already permitted Android's standard `10.0.2.2` host alias.
+- Added a platform-aware development-origin helper. Android now defaults to `http://10.0.2.2:3000`; iOS, web and unknown non-Android development platforms retain loopback. Explicit `EXPO_PUBLIC_API_URL` still wins, and production HTTP remains rejected.
+- Focused client coverage passes 35/35, including Android plus four non-Android platform cases. TypeScript and focused lint pass. Runtime API 37 validation reached the host, removed both configuration and connection error states, rendered Whales, mounted React Native, and logged no fatal/ANR/module-resolution failure.
+- 20 findings were reconciled across QA/runtime/data/security/platform lanes. One material routing defect was fixed with six independently testable platform/runtime outcomes; shortfall 14 remains physical accessibility/quote certification, WEB-QC-gated fixtures, upstream Metro warning ownership, and the concurrent Whales/logo slice.

@@ -1,5 +1,16 @@
 # MOBILE DEV → QA handoff
 
+## MOBILE-152 — Android emulator backend routing
+
+- Base: `d9d5622`; result: containing commit.
+- Behavior/files: `src/api/client.ts` selects `10.0.2.2:3000` only for unconfigured Android development; `src/__tests__/client.test.ts` verifies Android and non-Android defaults. Explicit environment configuration and production HTTPS policy are unchanged.
+- Acceptance/evidence: focused client Jest 35/35; TypeScript; warning-free focused ESLint; host `/api/trending` HTTP 200; emulator host ping; API 37 cold launch; React Native mount; Whales accessibility hierarchy; no configuration/connection error and no fatal/ANR/unresolved-module log.
+- Security: no production mock data, secret, credential, WEB write, signing, submission, or transaction capability.
+- NEXT_QA_ACTION: pin the result commit; verify explicit configured-origin precedence, Android no-config host routing, non-Android loopback, and production HTTP rejection. Recheck Whales with the host backend running.
+- 20/20 reconciliation: 20 findings reviewed; six material platform/runtime outcomes completed; shortfall 14. Carry forward physical TalkBack/large text/quote checks, WEB-QC-gated fixtures, upstream Metro warning ownership, and the overlapping concurrent Whales/logo slice.
+
+---
+
 ## MOBILE-151 — Android development startup safety
 
 - Base: `3f3825d`; result: containing follow-up regression commit.

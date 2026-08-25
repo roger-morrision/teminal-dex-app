@@ -339,6 +339,8 @@ const en = {
   resetFilters: "Reset filters",
   monitorTableStorageUnavailable:
     "This table changed on screen, but the device could not save its preferences.",
+  monitorPaginationUnavailable: "More market evidence could not be loaded. Existing rows remain available.",
+  retryMonitorPagination: "Retry loading more monitor tokens",
   loadingMonitorTokens: "Loading provider-backed Monitor tokens…",
   scrollMonitorTable: "Horizontally scrollable Monitor token table",
   noMonitorTokensMatch: "No provider-backed tokens match these saved filters.",
@@ -1391,6 +1393,8 @@ const vi: { [K in TranslationKey]: string } = {
   resetFilters: "Đặt lại bộ lọc",
   monitorTableStorageUnavailable:
     "Bảng đã đổi trên màn hình nhưng thiết bị không thể lưu tùy chọn.",
+  monitorPaginationUnavailable: "Không thể tải thêm bằng chứng thị trường. Các hàng hiện có vẫn khả dụng.",
+  retryMonitorPagination: "Thử tải thêm token theo dõi",
   loadingMonitorTokens: "Đang tải token Theo dõi từ nhà cung cấp…",
   scrollMonitorTable: "Bảng token Theo dõi cuộn ngang",
   noMonitorTokensMatch: "Không có token từ nhà cung cấp khớp bộ lọc đã lưu.",

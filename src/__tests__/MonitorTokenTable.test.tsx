@@ -1,4 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { act, fireEvent, render, waitFor } from "@testing-library/react-native";
 import { MonitorTokenTable } from "@/components/MonitorTokenTable";
 import { SettingsProvider } from "@/settings/SettingsProvider";
@@ -13,7 +14,10 @@ jest.mock("expo-router", () => ({ useRouter: () => ({ push: jest.fn() }) }));
 const mockedFetch = fetchDiscovery as jest.MockedFunction<typeof fetchDiscovery>;
 
 describe("MonitorTokenTable", () => {
-  beforeEach(() => mockedFetch.mockReset());
+  beforeEach(async () => {
+    mockedFetch.mockReset();
+    await AsyncStorage.clear();
+  });
 
   it("keeps provider market rows explicitly monitor-only across presets", async () => {
     mockedFetch.mockResolvedValue({
@@ -132,5 +136,39 @@ describe("MonitorTokenTable", () => {
       screen.unmount();
       client.clear();
     });
+  });
+
+  it("keeps loaded rows visible when a later page fails and retries that cursor", async () => {
+    const token = (address: string, symbol: string) => ({
+      id: address, symbol, name: `${symbol} token`, address, pairAddress: `pair-${address}`,
+      dex: "raydium", quoteSymbol: "SOL", price: 1, marketCap: 100, liquidity: 50,
+      volume24h: 200, volume1h: 20, change24h: 3, change1h: 1,
+      txns5m: { buys: 2, sells: 1 }, ageLabel: "1h", ageMinutes: 60,
+      source: "provider", dataQuality: "live" as const,
+    });
+    mockedFetch
+      .mockResolvedValueOnce({
+        tokens: [token("11111111111111111111111111111111", "FIRST")],
+        source: "provider", dataQuality: "live", recordCount: 2,
+        pagination: { hasMore: true, nextCursor: "1" },
+      })
+      .mockRejectedValueOnce(new Error("http://127.0.0.1:3000 secret=abc"))
+      .mockResolvedValueOnce({
+        tokens: [token("11111111111111111111111111111112", "SECOND")],
+        source: "provider", dataQuality: "live", recordCount: 2,
+        pagination: { hasMore: false, nextCursor: null },
+      });
+    const client = new QueryClient({ defaultOptions: { queries: { retry: false, gcTime: Infinity } } });
+    const screen = await render(
+      <SettingsProvider><QueryClientProvider client={client}><MonitorTokenTable polling={false} /></QueryClientProvider></SettingsProvider>,
+    );
+    const more = await screen.findByLabelText("Load more monitor tokens");
+    await act(async () => { fireEvent.press(more); });
+    expect(await screen.findByText(/existing rows remain available/i)).toBeTruthy();
+    expect(screen.getByText("FIRST")).toBeTruthy();
+    expect(screen.queryByText(/127\.0\.0\.1|secret=abc/i)).toBeNull();
+    await act(async () => { fireEvent.press(screen.getByLabelText("Retry loading more monitor tokens")); });
+    await waitFor(() => expect(screen.getByText("SECOND")).toBeTruthy());
+    await act(async () => { screen.unmount(); client.clear(); });
   });
 });

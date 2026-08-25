@@ -24,3 +24,7 @@ Validation: strict TypeScript, warning-free source lint, 76 Jest suites / 354 te
 ## Phase 158 continuation
 
 Monitor preference persistence now clears stale error state synchronously and records only the newest asynchronous save failure. Pagination interaction and teardown are explicitly awaited in tests, eliminating React state-update warnings without suppressing console diagnostics.
+
+## Phase 159 continuation
+
+Monitor later-page failures preserve validated rows and provide a localized, busy-safe retry for the failed cursor. Initial-load failure remains distinct, raw transport details remain private, and successful retry merges and deduplicates the next page normally.

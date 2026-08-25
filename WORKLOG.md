@@ -1225,3 +1225,10 @@
 - Added an explicit mode-capability contract. Compatible main-market modes retain timeframe and filters, Watchlist retains its persisted market window without an unrelated filter control, cursorless/new-pair modes hide both controls, and server search hides feed-only controls. Switching modes closes an open filter sheet without discarding saved values.
 - Empty-state classification now uses only effective filters, preventing a saved but inapplicable filter from mislabeling a provider-empty special mode as a filter miss.
 - Focused client/accessibility coverage, strict TypeScript and targeted ESLint pass. The combined repository gate remains 76 Jest suites / 354 tests from the immediately preceding warning-free Slice 139 run.
+
+## 2026-08-25 — Slice 141: phase 159 resilient Monitor pagination
+
+- Preserved already validated Monitor rows when a later cursor page fails instead of replacing the complete table with a first-load error state.
+- Added localized, accessible pagination-only recovery that is disabled and announced busy while retrying the failed cursor; raw backend origins and exception details never render.
+- Added isolated storage and adversarial cursor coverage proving the first page remains visible, the raw failure stays private, and retry renders the recovered second page.
+- Strict TypeScript, warning-free source lint, 76 Jest suites / 356 tests, and fresh 25-route web/Android/iOS exports passed. Generated verification output was removed; the known Noble hashes fallback warning remains non-fatal.

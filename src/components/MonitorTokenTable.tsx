@@ -273,7 +273,7 @@ export function MonitorTokenTable({ polling = true }: { polling?: boolean }) {
       ) : null}
       {query.isLoading ? (
         <TableState text={t("loadingMonitorTokens")} busy />
-      ) : query.isError ? (
+      ) : query.isError && !query.data ? (
         <TableState text={t("evidenceLoadFailed")} error />
       ) : rows.length ? (
         <>
@@ -301,7 +301,21 @@ export function MonitorTokenTable({ polling = true }: { polling?: boolean }) {
       ) : (
         <TableState text={t("noMonitorTokensMatch")} />
       )}
-      {!query.isLoading && !query.isError && query.hasNextPage ? (
+      {query.isFetchNextPageError ? (
+        <View accessibilityRole="alert" accessibilityLiveRegion="polite" style={styles.paginationError}>
+          <Text style={styles.error}>{t("monitorPaginationUnavailable")}</Text>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={t("retryMonitorPagination")}
+            accessibilityState={{ busy: query.isFetchingNextPage, disabled: query.isFetchingNextPage }}
+            disabled={query.isFetchingNextPage}
+            onPress={() => void query.fetchNextPage()}
+            style={[styles.loadMore, query.isFetchingNextPage && styles.disabled]}
+          >
+            <Text style={styles.loadMoreText}>{t("retry")}</Text>
+          </Pressable>
+        </View>
+      ) : !query.isLoading && !query.isError && query.hasNextPage ? (
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={t("loadMoreMonitorTokens")}
@@ -445,4 +459,5 @@ const styles = StyleSheet.create({
   loadMore: { minHeight: 42, margin: spacing.md, marginTop: 0, alignItems: "center", justifyContent: "center", borderWidth: 1, borderColor: colors.accent, borderRadius: 9 },
   disabled: { opacity: 0.55 },
   loadMoreText: { color: colors.accent, fontSize: 10, fontWeight: "900" },
+  paginationError: { marginHorizontal: spacing.lg, alignItems: "center" },
 });

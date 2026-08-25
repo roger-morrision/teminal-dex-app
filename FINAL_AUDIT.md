@@ -140,5 +140,5 @@ No in-scope automated regression was found. Generated export directories were re
 ## MOBILE-154 semantic accessibility gate
 
 - Monitor and CopyTrade privacy assertions no longer depend on source indentation while continuing to require centralized mutation-error sanitization.
-- Focused accessibility verification passes 68 checks and the full regression gate passes 80 suites / 397 tests. Runtime marker and physical-device certification remain separate blockers.
+- Focused accessibility verification passes 68 checks and the immutable committed regression gate passes 80 suites / 395 tests. The two additional primary-worktree tests belong to the separate uncommitted TokenRow slice. Runtime marker and physical-device certification remain separate blockers.
 - QA follow-up now verifies reset-before-mutate ordering for Monitor toggle/remove and CopyTrade pause/remove without source-indentation coupling.

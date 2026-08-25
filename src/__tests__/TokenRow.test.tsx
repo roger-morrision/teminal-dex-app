@@ -28,6 +28,29 @@ describe('TokenRow', () => {
     expect(screen.queryByText(/PUMP\.FUN/i)).toBeNull();
   });
 
+  it('uses the selected period change on the market-cap line', async () => {
+    const screen = await render(<TokenRow token={{ ...token, change1h: 2, change24h: -8.34 }} period="24h" onPress={jest.fn()} dense />);
+    expect(screen.getByText('-8.34%')).toBeTruthy();
+    expect(screen.queryByText('+2.00%')).toBeNull();
+  });
+
+  it('fails closed for unverified holder and age evidence and keeps exact token identity', async () => {
+    const screen = await render(<TokenRow token={{ ...token, symbol: '', name: '', ageLabel: 'new', ageMinutes: 0, holderCount: null }} onPress={jest.fn()} dense />);
+    expect(screen.getByText('mint…mint')).toBeTruthy();
+    expect(screen.getByText('— holders · $4 vol')).toBeTruthy();
+    expect(screen.queryByText('new')).toBeNull();
+  });
+
+  it('marks lower-bound holder evidence', async () => {
+    const lowerBound = await render(<TokenRow token={{ ...token, holderCount: 1_418, holderCountExact: false }} onPress={jest.fn()} />);
+    expect(lowerBound.getByText('1.4K+ holders · $4 vol')).toBeTruthy();
+  });
+
+  it('rejects stale holder evidence', async () => {
+    const stale = await render(<TokenRow token={{ ...token, holderCount: 1_418, holderCountFreshness: 'stale' }} onPress={jest.fn()} />);
+    expect(stale.getByText('— holders · $4 vol')).toBeTruthy();
+  });
+
   it('recovers failed provider artwork to the shared accessible identity fallback', async () => {
     const screen = await render(<TokenRow token={{ ...token, imageUrl: 'https://cdn.example/token.png' }} onPress={jest.fn()} />);
     await fireEvent(screen.getByLabelText('DEX token logo'), 'error');

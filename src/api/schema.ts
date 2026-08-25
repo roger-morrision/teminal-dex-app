@@ -40,6 +40,7 @@ export const tokenSchema = z
     volume24h: z.number(),
     volume1h: z.number(),
     change24h: z.number(),
+    change6h: z.number().nullable().optional(),
     change1h: z.number(),
     txns5m: transactionCount,
     ageLabel: z.string(),
@@ -49,6 +50,10 @@ export const tokenSchema = z
     dataQuality: z.string().optional(),
     sourceFetchedAt: z.number().optional(),
     holderCount: z.number().nullable().optional(),
+    holderCountExact: z.boolean().optional(),
+    holderCountFreshness: z.string().optional(),
+    holderCountSafeForAutomation: z.boolean().optional(),
+    migrationStatus: z.string().optional(),
     social: z
       .object({
         twitter: z.string().url().nullable().optional().catch(undefined),

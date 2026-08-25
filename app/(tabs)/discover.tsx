@@ -248,6 +248,7 @@ export default function DiscoverScreen() {
             <TokenRow
               token={item}
               dense
+              period={period}
               onPress={() => openToken(item)}
               watched={watchlist.includes(item.address)}
               onToggleWatch={() => toggleWatch(item)}

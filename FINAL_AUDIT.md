@@ -55,3 +55,11 @@ No in-scope automated regression was found. Generated export directories were re
 | 7. Quality/security | Typed localization, bounded schemas, privacy reset, scalable Whale Watch text, narrow-width recovery, and automated accessibility gates pass; physical large-text/screen-reader evidence remains. |
 | 8. Platforms | Web/Android/iOS export baseline and Android emulator deployment exist; physical Android/iOS development-build certification remains external. |
 | 9. Tests/release | Deterministic pulse coverage is added; the current run must pass TypeScript, lint, full Jest and Android export before commit. |
+## Discover compact-row evidence audit — 2026-08-25
+
+- Verified: token artwork remains primary, with exact-mint identity fallback when provider symbol/name is blank.
+- Verified: holder evidence rejects null, invalid, stale, and explicitly unsafe values; lower-bound values are visibly qualified.
+- Verified: zero/`new` placeholder ages are not presented as authoritative age evidence.
+- Verified: row-two percentage follows the selected 1h/6h/24h window; unavailable selected-window evidence remains unavailable.
+- Verified on Android API 37: compact rows remain readable without overlap at 1080×2400, retain ten visible market records, and expose token identity/logo semantics through the accessibility tree.
+- Externally blocked: authoritative token symbol/name, holder count, and creation time remain absent from some current backend mobile-projection records.

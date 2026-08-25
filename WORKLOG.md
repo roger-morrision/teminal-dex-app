@@ -1238,3 +1238,11 @@
 - Audited partial cursor failures after completing control relevance. Discover previously retained loaded rows internally but showed no visible page-error recovery, while `onEndReached` could immediately retry the failed cursor again.
 - Preserved all loaded rows, filters and ordering on a later-page failure; automatic end-reached retries now stop until the user chooses a localized, accessible, busy-safe Retry. Raw provider/transport errors remain private.
 - Added a regression contract for retained-row recovery, explicit failed-cursor retry and polite announcement. Concurrent Monitor recovery work was preserved and remains independently committed.
+## 2026-08-25 — Discover identity and evidence-truth row correction
+
+- Reproduced the live mobile projection defect: populated trending rows could contain usable artwork but empty `symbol`/`name`, `holderCount: null`, and contradictory migrated-pool `ageMinutes: 0` / `ageLabel: new` evidence.
+- Updated the Discover row to preserve exact token identity through an abbreviated mint fallback, retain validated artwork and launchpad badges, suppress unverified age placeholders, hide stale/unsafe holder values, and mark provider lower bounds with `+`.
+- Moved percentage change onto the price/market-cap stack's second line and bound it to the selected Discover period. Missing 6h evidence now displays `—` instead of borrowing the 1h value.
+- Verification: `TokenRow` plus discovery-store regression tests passed (2 suites / 11 tests); TypeScript, direct ESLint over `app` and `src`, and `git diff --check` passed.
+- Android API 37 verification passed after clearing Metro's resolver cache: Trending rendered ten dense rows with exact-mint fallback identities, logo/fallback surfaces plus launchpad badges, truthful unavailable-holder evidence, no false `new` age labels, and 24h change aligned beside market cap. No fatal Android or React Native log entry was observed.
+- External data blocker: the current backend mobile projection still returns blank token identity and unavailable holder/age evidence for some provider-live rows. Mobile now represents that truthfully; populated values require backend/provider enrichment.

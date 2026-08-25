@@ -1205,3 +1205,10 @@
 - Centralized Discovery continuation policy for both Discover and the Monitor token table. Non-pageable special modes now stop after their authoritative response, New Pairs requires its opaque cursor, explicit provider cursors take priority, and numeric Trending offsets advance from the last page parameter after older cached pages are evicted.
 - Added regression coverage for every non-pageable mode, opaque New Pairs continuation and bounded-cache offset continuity. Strict TypeScript, source ESLint, diff checks, and all 75 Jest suites / 345 tests pass.
 - Concurrent evidence-reason changes appeared during validation and were preserved but excluded from this slice.
+
+## 2026-08-25 — Slice 138: phases 146–157 provider privacy and closure audit
+
+- Completed Phases 146–148 by replacing provider-supplied Track, Monitor, simulation and Operations diagnostic text with seven bounded localized public reason categories.
+- Added a fail-closed classifier and adversarial coverage for timeout, rate-limit, configuration, storage, simulation, delivery and unknown payloads; raw origins/secrets never become translation keys or rendered text.
+- Audited Phases 149–157 and recorded exact backend configuration/contract, physical-device, funded execution and organizational approval requirements. No execution or production authority was inferred.
+- Strict TypeScript, warning-free source lint, 76 Jest suites / 354 tests, and fresh 25-route web/Android/iOS exports passed. Generated verification output was removed; the known Noble hashes fallback warning remains non-fatal.

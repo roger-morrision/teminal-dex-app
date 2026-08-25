@@ -16,6 +16,7 @@ import {
   type TrackFilter,
 } from "@/store/track";
 import { colors, spacing } from "@/theme";
+import { publicReasonKey } from "@/lib/public-evidence-reason";
 
 const typeTone = (type: TrackNotification["type"]) =>
   type.includes("sell") || type.includes("take_profit")
@@ -239,7 +240,7 @@ export default function TrackScreen() {
                 {new Date(item.updatedAt).toLocaleString()}
               </Text>
               {item.reason ? (
-                <Text style={styles.reason}>{item.reason}</Text>
+                <Text style={styles.reason}>{t(publicReasonKey(item.reason))}</Text>
               ) : null}
             </View>
           ))
@@ -283,7 +284,7 @@ export function SocialTrendCard({ item, onOpen }: { item: SocialRadarTrend; onOp
           {evidence.provider ?? t("unavailable")} · {evidence.text}
         </Text>
       ) : null)}
-      {item.trend.warnings.length ? <Text style={styles.reason}>{item.trend.warnings.join(" · ")}</Text> : null}
+      {item.trend.warnings.length ? <Text style={styles.reason}>{t(publicReasonKey(item.trend.warnings[0]))}</Text> : null}
       <Text style={styles.dedupe}>{item.token.address}</Text>
     </Pressable>
   );

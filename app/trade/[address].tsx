@@ -18,6 +18,7 @@ import { useWalletSession } from "@/security/WalletSessionProvider";
 import { evaluateSwapEvidenceChain, evaluateSwapReadiness } from "@/lib/swap-readiness";
 import { colors, spacing } from "@/theme";
 import { publicErrorMessage } from "@/lib/public-error";
+import { publicReasonKey } from "@/lib/public-evidence-reason";
 import { isSolanaAddress, parseBoundedJson } from "@/security/input";
 import { useSettings } from "@/settings/SettingsProvider";
 
@@ -373,7 +374,7 @@ export default function TradeReviewScreen() {
           <QuoteRow label={t("contextSlot")} value={String(prepare.data.simulation.simulation.slot)} />
           <QuoteRow label={t("computeUnits")} value={String(prepare.data.simulation.simulation.unitsConsumed ?? t("unknown"))} />
           <Check text={t("simulationChecksBound")} /><Check text={t("simulationUnsigned")} />
-          {prepare.data.simulation.simulation.error ? <Text accessibilityRole="alert" style={styles.flowError}>{t("simulationError", { error: prepare.data.simulation.simulation.error })}</Text> : null}
+          {prepare.data.simulation.simulation.error ? <Text accessibilityRole="alert" style={styles.flowError}>{t(publicReasonKey(prepare.data.simulation.simulation.error))}</Text> : null}
           {!prepare.data.simulation.simulation.succeeded ? <Text style={styles.failureGuidance}>{t("simulationFailureRecovery")}</Text> : null}
           {prepare.data.simulation.simulation.policyTrace ? <View style={styles.policyTrace}>
             <Text style={styles.gateTitle}>{t("policyTrace")}</Text>

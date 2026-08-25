@@ -25,6 +25,7 @@ import {
   type FeedCounterSnapshot,
 } from "@/lib/feed-recovery";
 import { isSolanaAddress } from "@/security/input";
+import { publicReasonKey } from "@/lib/public-evidence-reason";
 import { useSettings } from "@/settings/SettingsProvider";
 import { colors, spacing } from "@/theme";
 
@@ -655,7 +656,7 @@ export function FeedConnectionCard({
           </Text>
           {item.runtime?.lastError ? (
             <Text style={styles.warn}>
-              {t("lastRuntimeError", { error: item.runtime.lastError })}
+              {t(publicReasonKey(item.runtime.lastError))}
             </Text>
           ) : null}
         </View>

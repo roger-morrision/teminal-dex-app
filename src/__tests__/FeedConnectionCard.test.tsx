@@ -95,7 +95,8 @@ describe("FeedConnectionCard", () => {
     expect(
       screen.getByText(/Connected no · subscriptions 0 · receiving no/i),
     ).toBeTruthy();
-    expect(screen.getByText(/subscription_ack_timeout/i)).toBeTruthy();
+    expect(screen.getByText(/provider timed out/i)).toBeTruthy();
+    expect(screen.queryByText(/subscription_ack_timeout/i)).toBeNull();
     expect(
       screen.getByText(/Requests 8 · limited 1 · queued 2 · cooldown 4s/i),
     ).toBeTruthy();

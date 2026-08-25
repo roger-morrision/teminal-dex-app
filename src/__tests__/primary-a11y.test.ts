@@ -99,4 +99,20 @@ describe('audited-screen accessibility contract', () => {
     expect(source).not.toContain('cause.message');
     expect(source).toContain("setError('Wallet verification failed.')");
   });
+
+  it('classifies provider evidence before rendering diagnostic reasons', () => {
+    const files = [
+      'app/track.tsx',
+      'app/(tabs)/monitor.tsx',
+      'app/trade/[address].tsx',
+      'app/operations.tsx',
+    ];
+    for (const file of files) {
+      const source = readFileSync(join(process.cwd(), file), 'utf8');
+      expect(source).toContain('publicReasonKey');
+    }
+    expect(readFileSync(join(process.cwd(), 'app/track.tsx'), 'utf8')).not.toContain('{item.reason}');
+    expect(readFileSync(join(process.cwd(), 'app/operations.tsx'), 'utf8')).not.toContain('error: item.runtime.lastError');
+    expect(readFileSync(join(process.cwd(), 'app/trade/[address].tsx'), 'utf8')).not.toContain('error: prepare.data.simulation.simulation.error');
+  });
 });

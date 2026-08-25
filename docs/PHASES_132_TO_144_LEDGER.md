@@ -27,3 +27,5 @@ Completing local tests or this ledger never grants financial authority. Mobile e
 ## Phase 145 continuation
 
 Wallet-adapter exceptions are sanitized at the shared session boundary, all identity gates use localized public copy, and Monitor table plus historical CopyTrade audit failures no longer expose provider text. This privacy hardening changes no ownership, execution, or submission authority.
+
+The subsequent provider-payload and external-closure review is recorded in [PHASES_146_TO_157_LEDGER.md](./PHASES_146_TO_157_LEDGER.md).

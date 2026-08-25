@@ -1,46 +1,66 @@
-# MOBILE-QA — Scope-change validation
+# MOBILE-QA — MOBILE-154 semantic accessibility release gate
 
-- Run (UTC): `2026-08-25T19:42:04Z`.
-- Scope: canonical `C:\Tuan\devApps\teminal-dex-app` only. CWD and Git top-level both resolved to the canonical MOBILE workspace before acquiring the MOBILE QA/report lock. `AGENTS.md`, the DEV handoff, requirements checklist, worklog, final audit, Git history/status, prior QA handoff, and the pending working-tree diff were inspected. No WEB workspace or backend was accessed or changed.
-- Inspected committed baseline: `edfbd83d046d30583ed22cadf29eb590125a3a36` (`docs: record MOBILE-153 QA validation`), whose implemented DEV commit remains `290933fb824b242b892d12d753cb707e05ec3c1f` (`MOBILE-153`).
-- Scope stability: **qa_scope_changed**. The primary MOBILE worktree contains uncommitted product/test/config changes and untracked delivery handoffs. There is no committed DEV result or updated DEV handoff identifying an immutable increment. Under the QA contract, no command, emulator, bundle, or runtime check was run against this mixed state.
-- Environment/device: Windows 10.0.26100; no runtime device evidence collected this run because the inspected state is unstable.
+- Run (UTC): `2026-08-25T20:50:49Z`.
+- Scope: canonical `C:\Tuan\devApps\teminal-dex-app` only. CWD and Git top-level resolved to that workspace. `AGENTS.md`, DEV handoff, checklist, worklog, final audit, Git history/status, prior QA report, and current runtime/tooling state were inspected. No WEB workspace or backend was accessed or changed.
+- Inspected immutable DEV result: `e84603b8ae5ede350ca75ae59b9f7142376f4064` (`test(a11y): restore semantic privacy gate`), MOBILE-154; base `ff9ac32`. The primary worktree concurrently contains the separate uncommitted Whales/logo slice, so all command evidence below was collected from a clean detached checkout pinned exactly to `e84603b`.
+- Environment: Windows 10.0.26100; bundled Node runtime; clean checkout at `%TEMP%\mobile-qa-e84603b-run2`; no ADB on PATH and no Expo Doctor package installed. No device, network, signing, submission, trading, or CopyTrade activation was exercised.
 
-## MOBILE-QA-006 — P1 / QA scope instability
+## Acceptance result
 
-- Status: OPEN (new this run).
-- Evidence: `git status --short` reports modified `.gitignore`, `app/(tabs)/whales.tsx`, `expo-env.d.ts`, `src/__tests__/TokenRow.test.tsx`, `src/components/TokenAvatar.tsx`, and `src/components/TokenRow.tsx`; plus untracked `src/components/DexLogo.tsx` and three `docs/automation-handoffs/mobile-to-web-*.md` files.
-- Affected files: the nine paths above. The source diff changes DEX-logo rendering, token image URL normalization, unavailable age/holder copy, generated Expo environment declarations, and corresponding tests; it must be assessed as one immutable DEV slice rather than mixed with the prior QA-certified baseline.
-- Reproduction: from the canonical workspace run `git status --short` and `git rev-parse HEAD`; the result is `edfbd83…` with the listed pending paths.
-- Regression risk: high. Testing now would combine uncommitted source, test, generated declaration, ignore-rule, and handoff changes with the prior `MOBILE-153` baseline, invalidating evidence attribution.
-- Exact NEXT_DEV_ACTION: commit or isolate the complete Whales/token-logo/demographics slice, update `docs/automation-handoffs/mobile-dev-latest.md` with its exact result commit and acceptance criteria, then request a new MOBILE-QA run. Do not amend the previously certified MOBILE-153 evidence.
-- WEB contract blocker: none for QA execution. The pending MOBILE-to-WEB drafts identify external evidence needs, but they are not a substitute for an immutable MOBILE client result.
-
-## Preserved prior findings and release gates
-
-| ID | Status | Current disposition |
+| MOBILE-154 acceptance criterion | Result | Independent evidence |
 | --- | --- | --- |
-| MOBILE-QA-153-01 through MOBILE-QA-153-06 | PASS | Prior clean immutable source/configuration/launcher verification remains recorded for `290933f`; not re-executed against the unstable current tree. |
-| MOBILE-QA-153-07 / MOBILE-QA-002 | BLOCKED / P2 | Exact immutable Android `[MOBILE_BUILD] commit=<HEAD>` log marker remains absent. Rebuild/install a matching development client and cold/warm launch it before device-flow certification. |
-| MOBILE-QA-004 | OPEN / P3 | Existing Noble hashes Metro export-map fallback remains an upstream dependency risk; no new export was run. |
-| MOBILE-QA-005 | OPEN / P2 | Prior full-Jest release gate failed two indentation-coupled `primary-a11y.test.ts` assertions. Replace only brittle assertions with semantic checks, then re-run the clean full suite. |
+| Monitor sanitizer assertion is whitespace-tolerant | PASS | The new `publicErrorMessage(\s*toggle.error ?? remove.error` matcher is present and its privacy assertion passes. |
+| CopyTrade sanitizer assertion is whitespace-tolerant | PASS | The new `publicErrorMessage(\s*pause.error ?? remove.error` matcher is present and its privacy assertion passes. |
+| Focused accessibility Jest: 68/68 | FAIL | `primary-a11y.test.ts`: 66 pass, 2 fail. |
+| Full Jest: 80 suites / 397 tests | FAIL | 79 suites pass / 1 fails; 393 tests pass / 2 fail (395 total), exit 1. |
+| TypeScript | PASS | `tsc --noEmit` exits 0. |
+| Source ESLint | PASS | `eslint app src` exits 0 with no findings. |
 
-## Verification record
+## MOBILE-QA-007 — P1 / remaining indentation-coupled release assertions
 
-| MOBILE-QA check | Result | Evidence |
+- Status: OPEN; regression of the stated semantic release-gate objective.
+- Evidence: the commit makes only the two sanitizer-call checks whitespace-tolerant. In the same file, line 56 still requires the exact Monitor string `remove.reset();\n    toggle.mutate();`, and line 88 still requires the exact CopyTrade string `remove.reset();\n    pause.mutate();`. The committed screen formatting uses a different indentation, so both tests fail even though the reset/mutate behavior exists.
+- Affected files: `src/__tests__/primary-a11y.test.ts`; assertions inspect `app/(tabs)/monitor.tsx` and `app/copytrade.tsx` without a product-code defect demonstrated.
+- Reproduction: in a clean checkout of `e84603b`, run `node node_modules/jest/bin/jest.js --runInBand --runTestsByPath src/__tests__/primary-a11y.test.ts`; expect 66 pass / 2 fail. Run the same Jest executable with only `--runInBand`; expect 79 suites / 393 tests pass and this one suite to fail.
+- Severity/priority: P1 release gate; user-facing privacy behavior is not shown broken, but the claimed formatting-independent regression protection and full release suite are not restored.
+- Regression risk: medium. Further non-semantic formatting can still red-gate the build or lead future maintainers to weaken the wrong tests.
+- Exact NEXT_DEV_ACTION: replace the four remaining exact newline/indentation `toContain` checks for `toggleAlert`, `removeAlert`, `pauseStrategy`, and `removeStrategy` with narrowly scoped whitespace-tolerant matchers that still require reset-before-mutate ordering; retain the privacy and mutual-exclusion assertions. Commit the isolated MOBILE-154 follow-up, update the DEV handoff with its exact hash, then request QA rerun.
+- WEB contract blocker: none.
+
+## Regression and platform evidence
+
+| MOBILE-QA finding | Status | Evidence / disposition |
 | --- | --- | --- |
-| Canonical project boundary | PASS | CWD and Git top-level both resolve to `C:\Tuan\devApps\teminal-dex-app`. |
-| AGENTS and required evidence review | PASS | Required project instructions, DEV handoff, checklist, worklog, final audit, prior QA report, history, and status were read. |
-| Immutable DEV commit availability | BLOCKED | `HEAD` is the prior QA-report commit `edfbd83`; the pending slice is uncommitted and has no result commit in the DEV handoff. |
-| Pending-slice diff inspection | PASS | Nine pending paths were identified and summarized without modifying product code, tests, or configuration. |
-| TypeScript, ESLint, Jest, Expo diagnostics/config/export, Android runtime | SKIP | Deliberately not run: all would test a mixed, non-attributable state. |
-| Navigation, pages/tabs, loading/stale/empty/offline/error/retry, paging, accessibility, privacy, and release readiness | SKIP | No immutable candidate exists for valid independent execution evidence. |
+| MOBILE-QA-154-01 through -15: explicit Pressable role on each audited primary route | PASS | All 15 parameterized primary-route checks passed. |
+| MOBILE-QA-154-16 through -30: accessible TextInput label on each audited primary route | PASS | All 15 parameterized primary-route checks passed. |
+| MOBILE-QA-154-31: Whale scalable tab rail | PASS | Focused assertion passed: no font-scaling suppression and accessible horizontal tab rail retained. |
+| MOBILE-QA-154-32 through -34: Discover, Trenches, and Portfolio raw read-error privacy | PASS | All three focused assertions passed. |
+| MOBILE-QA-154-35: Monitor form immutability while pending | PASS | Focused assertion passed. |
+| MOBILE-QA-154-36 through -41: auxiliary private read-error boundaries | PASS | All six focused assertions passed. |
+| MOBILE-QA-154-42: CopyTrade form immutability while pending | PASS | Focused assertion passed. |
+| MOBILE-QA-154-43: exact immutable development provenance launcher | PASS | `scripts/start-verified.mjs --help` printed exact `e84603b…` before Expo help. |
+| MOBILE-QA-154-44: public Expo config and Android security/intent contract | PASS | Expo public config exits 0; Android package, `terminaldex` VIEW intent and biometric permissions, and iOS ATS denial are present. |
+| MOBILE-QA-154-45: Android bundle | PASS | Expo Android export succeeds: 1 bundle, 46 assets. |
+| MOBILE-QA-154-46: iOS bundle | PASS | Expo iOS export succeeds: 1 bundle, 42 assets. |
+| MOBILE-QA-154-47: web routing bundle | PASS | Expo web export succeeds with 25 static routes, including primary tabs, auxiliary routes, token and trade patterns. |
+| MOBILE-QA-004: Noble hashes exports-map fallback | OPEN / P3 | Reproduced in all three exports; bundles complete. Upstream dependency warning remains non-fatal. |
+| MOBILE-QA-002: exact immutable Android marker/device flow | BLOCKED / P2 | No `adb` executable/device is available, so no exact `MOBILE_BUILD` log, navigation, loading/stale/empty/offline/retry, paging, large-text, TalkBack, or partial-page recovery session could be evidenced. |
+| MOBILE-QA-008: Expo Doctor availability | BLOCKED / P3 | `node_modules/expo-doctor/build/index.js` is absent; no current Doctor run can be claimed. |
+
+## Commands and safe artifacts
+
+- `node node_modules/typescript/bin/tsc --noEmit` — PASS.
+- `node node_modules/eslint/bin/eslint.js app src` — PASS.
+- `node node_modules/jest/bin/jest.js --runInBand --runTestsByPath src/__tests__/primary-a11y.test.ts` — FAIL, 66/68 pass; safe console output only.
+- `node node_modules/jest/bin/jest.js --runInBand` — FAIL, 79/80 suites and 393/395 tests pass; only `MOBILE-QA-007` fails.
+- `node node_modules/expo/bin/cli config --type public` — PASS.
+- `node node_modules/expo/bin/cli export --platform android|ios|web` — PASS; temporary outputs only, no screenshot or device log exists.
+- `node scripts/start-verified.mjs --help` — PASS; printed the exact inspected commit.
 
 ## Throughput and release recommendation
 
-- Findings inspected/reconciled: 12 stable MOBILE-QA findings (`MOBILE-QA-006`, the seven MOBILE-153 outcomes, and four standing/release findings). No cosmetic findings were added.
-- DEV outcomes available: 0 for the current pending slice; outcomes verified: 0; PASS: 0; FAIL: 0; BLOCKED: 1 scope gate; SKIP: 8 verification lanes; NOT_APPLICABLE: 0.
-- Required 20-outcome shortfall: 20. Stable blocked/skipped IDs: `MOBILE-QA-006`, `MOBILE-QA-002`, `MOBILE-QA-004`, and `MOBILE-QA-005`; the eight skipped lanes are listed in the verification record.
-- Carry-forward order: (1) commit/isolate the pending MOBILE slice and supply its DEV handoff, (2) repair the clean full-Jest gate (`MOBILE-QA-005`), (3) obtain immutable Android marker/device evidence (`MOBILE-QA-002`), (4) assess the Noble dependency warning (`MOBILE-QA-004`).
+- Findings inspected/reconciled: 47 distinct evidence-backed MOBILE-QA checks in this run (30 route semantics, six auxiliary/privacy checks, five form/provenance/config checks, three bundles, and three standing blockers/findings). No finding was created from a viewport-only variation.
+- Current DEV outcomes available: 2 semantic assertion changes; outcomes independently verified: 2; PASS: 0; FAIL: 2; BLOCKED: 0; SKIP/NOT_APPLICABLE: device-only interaction and Doctor checks as recorded above.
+- 20/20 DEV-outcome shortfall: 18. The committed increment contains only two material changes; `MOBILE-QA-007` blocks both. Carry-forward order: (1) close `MOBILE-QA-007` with a committed semantic follow-up, (2) rerun full Jest clean, (3) obtain exact current Android marker and device accessibility/recovery evidence for `MOBILE-QA-002`, (4) resolve or formally accept `MOBILE-QA-004`, (5) restore an Expo Doctor-capable diagnostic lane.
 
-**MOBILE-QA NO-GO.** This run has correctly avoided fabricating mixed-state test evidence. No signing, submission, trading, CopyTrade activation, backend mutation, secret exposure, or WEB change was exercised or enabled.
+**MOBILE-QA NO-GO.** The full regression gate fails. The separate uncommitted Whales/logo slice was not tested, changed, staged, or attributed to MOBILE-154. No transaction signing, submission, trading, CopyTrade activation, backend mutation, secrets, or WEB changes were exercised or enabled.

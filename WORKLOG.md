@@ -1133,3 +1133,10 @@
 - Added localized query-bound recovery to each surface. Retry controls are accessible, disabled and announced busy during refetch, health recovery remains compact so independent ranking evidence stays usable, and labels without handlers do not render inert controls.
 - Paused-only strategy creation, verified-owner gates, persisted safety previews, provider provenance, mutation behavior, and the absence of activation, signing, closing, submission, and execution authority remain unchanged.
 - Strict TypeScript, repository-wide ESLint, 74 Jest suites / 307 tests, focused CopyTrade recovery/accessibility coverage, and fresh 25-route web/Android/iOS exports passed. Generated verification output was removed; the known Noble hashes fallback warning remains non-fatal.
+
+## 2026-08-25 — Slice 127: Android deployment and large-text UI correction
+
+- Rebuilt and installed the Expo development APK on the Android API 37 emulator with JDK 17, launched it against Metro, and verified the real historical whale feed without React Native runtime exceptions.
+- Emulator inspection at 150% text exposed traded-token artwork wrapping beneath the evidence column; corrected the layout to keep held-token artwork left and traded-token artwork right while the evidence column grows vertically.
+- Current backend history contains no qualifying holding evidence, so the deployed app correctly uses the unverified/unknown held-token fallback rather than assigning whale identities from transaction size.
+- The corrected bundle and 150% recovery state were rechecked on-emulator; the final populated-row screenshot is partially verified because the local backend at `127.0.0.1:3000` became unavailable, while the focused layout regression remained green.

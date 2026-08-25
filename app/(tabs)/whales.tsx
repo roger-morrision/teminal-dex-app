@@ -86,12 +86,12 @@ function LiveEvents({ rows, largeText, onReset, onOpen }: { rows: TrackNotificat
     const buy = item.type.endsWith("buy");
     const whale = whaleHoldingIdentity(item);
     const amount = item.amountUsd == null ? "—" : compactUsd(item.amountUsd);
-    return <Pressable key={item.id} accessibilityRole="button" accessibilityLabel={t("openWhaleRelationship", { holder: whale?.label ?? t("unverifiedWhale"), holding: whale?.tokenSymbol ?? t("unknownToken"), action: t(buy ? "bought" : "sold"), amount, traded: item.tokenSymbol })} onPress={() => onOpen(item.tokenAddress)} style={[styles.card, largeText && { flexWrap: "wrap", alignItems: "flex-start" }, { borderLeftWidth: 3, borderLeftColor: buy ? colors.positive : colors.negative }]}>
+    return <Pressable key={item.id} accessibilityRole="button" accessibilityLabel={t("openWhaleRelationship", { holder: whale?.label ?? t("unverifiedWhale"), holding: whale?.tokenSymbol ?? t("unknownToken"), action: t(buy ? "bought" : "sold"), amount, traded: item.tokenSymbol })} onPress={() => onOpen(item.tokenAddress)} style={[styles.card, largeText && { alignItems: "flex-start" }, { borderLeftWidth: 3, borderLeftColor: buy ? colors.positive : colors.negative }]}>
       <View style={{ width: 42, alignItems: "center", gap: 3 }}>
         <TokenAvatar symbol={whale?.tokenSymbol ?? "?"} identity={whale?.tokenAddress ?? item.wallet ?? item.id} imageUrl={whale?.imageUrl} size={38} accessible={false} />
         <Text numberOfLines={1} style={{ maxWidth: 42, color: colors.muted, fontSize: 7, fontWeight: "900" }}>{whale?.tokenSymbol ?? "—"}</Text>
       </View>
-      <View style={[styles.flex, largeText && { minWidth: "70%" }]}>
+      <View style={[styles.flex, largeText && { minWidth: 0 }]}>
         <View style={styles.row}><Text numberOfLines={1} style={styles.cardTitle}>{whale?.label ?? t("unverifiedWhale")}</Text><Text style={styles.meta}>{ageLabel(item.observedAt)}</Text></View>
         <Text style={[styles.actionText, { color: buy ? colors.positive : colors.negative }]}>{t(buy ? "bought" : "sold")} {amount} {item.tokenSymbol}</Text>
         {whale ? <Text style={styles.meta}>{t("whaleHolds", { amount: compactUsd(whale.valueUsd), symbol: whale.tokenSymbol })}</Text> : null}

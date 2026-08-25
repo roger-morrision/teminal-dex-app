@@ -33,7 +33,8 @@ describe('audited-screen accessibility contract', () => {
     expect(source).toContain('horizontal showsHorizontalScrollIndicator={false} accessibilityRole="tablist"');
     expect(source).toContain('useWindowDimensions');
     expect(source).toContain('fontScale >= 1.5');
-    expect(source).toContain('largeText && { flexWrap: "wrap"');
+    expect(source).toContain('largeText && { alignItems: "flex-start" }');
+    expect(source).toContain('largeText && { minWidth: 0 }');
     expect(source).toContain('t("openWhaleRelationship"');
   });
 });

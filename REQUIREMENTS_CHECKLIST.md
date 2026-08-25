@@ -99,3 +99,4 @@ Status legend: `[x]` verified, `[ ]` incomplete, `[~]` intentionally visible but
 - [x] Privacy/accessibility regression assertions verify Monitor and CopyTrade mutation sanitization semantically across formatting changes; the full Jest release gate is restored.
 - [x] Monitor and CopyTrade mutual-exclusion tests enforce reset-before-mutate ordering with formatting-independent semantic matchers for all four mutation paths.
 - [x] Release evidence reports test totals from the immutable committed checkout and excludes concurrent uncommitted test inventory.
+- [x] SnipeCard interaction tests await initial token-evidence settlement before teardown, preventing post-test React updates and overlapping `act` warnings.

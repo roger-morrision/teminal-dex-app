@@ -1334,3 +1334,9 @@
 - Focused accessibility coverage passes 68/68; TypeScript and zero-warning focused ESLint pass; the immutable committed regression gate is restored at 80 suites / 395 tests. The primary dirty worktree reported 397 because its concurrent TokenRow slice adds two uncommitted tests.
 - 20 findings were reconciled from QA and the ranked backlog. Two independently testable release-gate outcomes were completed; shortfall 18 remains exact Android marker/runtime evidence, upstream Noble warning ownership, physical-device scenarios, WEB-QC fixtures, and concurrent Whales/logo acceptance.
 - QA found four remaining reset-before-mutate assertions coupled to newline indentation. The MOBILE-154 follow-up converts all four to narrowly scoped semantic ordering checks; focused accessibility remains 68/68 and immutable full Jest remains 80 suites / 395 tests.
+
+## 2026-08-26 — MOBILE-156: warning-free SnipeCard settlement
+
+- The first two SnipeCard tests now await their initial token-evidence query before teardown, preventing asynchronous React updates from leaking into later tests while preserving research, removal, and visual-threshold behavior.
+- Focused SnipeCard passes 3/3; TypeScript and zero-warning focused ESLint pass. The primary worktree full suite passes 80/397 without the prior `act` console warning; immutable QA should report 80/395 until the separate TokenRow slice is committed.
+- 20 findings reviewed; two independently testable settlement outcomes completed; shortfall 18 remains device/runtime evidence, upstream dependency warning, Doctor availability, WEB-QC fixtures, physical-device scenarios, and concurrent Whales/logo acceptance.

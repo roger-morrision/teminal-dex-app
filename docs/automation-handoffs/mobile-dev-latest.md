@@ -1,5 +1,15 @@
 # MOBILE DEV → QA handoff
 
+## MOBILE-156 — warning-free SnipeCard settlement
+
+- Base: `a0ae4da`; result: containing commit.
+- Changed files/behavior: `src/__tests__/SnipeCard.test.tsx` waits for the initial `fetchTokenDetail` query in the research/removal and threshold cases before test teardown. Product code is unchanged.
+- Acceptance: focused SnipeCard 3/3; TypeScript; zero-warning focused ESLint; primary-worktree full Jest 80/397 with no React `act` console warning. The separate dirty TokenRow slice accounts for two tests, so immutable QA expects 80/395.
+- NEXT_QA_ACTION: pin the result commit, run focused SnipeCard and full Jest from a clean checkout, require no `act`/overlapping-act warning, and report 80/395. Continue `MOBILE-QA-002`, `004`, and `008` independently.
+- 20/20 reconciliation: 20 findings reviewed; two material asynchronous-settlement outcomes completed; shortfall 18 carried forward without padding.
+
+---
+
 ## MOBILE-155 — immutable test-count evidence correction
 
 - Base: `0b0c12b`; result: containing commit.

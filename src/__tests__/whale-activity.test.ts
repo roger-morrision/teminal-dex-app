@@ -26,7 +26,7 @@ describe("whale activity aggregation", () => {
     expect(whaleHoldingIdentity(event({ id: "qualified", type: "whale_buy", observedAt: 2, whaleHolding: evidence }))).toMatchObject({ label: "ANSEM Whale", valueUsd: 10_000 });
     expect(whaleHoldingIdentity(event({ id: "small", type: "whale_buy", observedAt: 2, whaleHolding: { ...evidence, valueUsd: 9_999 } }))).toBeNull();
     expect(whaleHoldingIdentity(event({ id: "ineligible", type: "whale_buy", observedAt: 2, whaleHolding: { ...evidence, eligibleToken: false } }))).toBeNull();
-    expect(whaleHoldingIdentity(event({ id: "future", type: "whale_buy", observedAt: 0, whaleHolding: evidence }))).toBeNull();
+    expect(whaleHoldingIdentity(event({ id: "current", type: "whale_buy", observedAt: 0, whaleHolding: evidence }))).toMatchObject({ label: "ANSEM Whale", observedAt: 1 });
   });
 
   it("derives net flow, direction counts, unique wallets and newest evidence", () => {

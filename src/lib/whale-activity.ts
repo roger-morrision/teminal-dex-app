@@ -4,7 +4,7 @@ export const WHALE_HOLDING_MIN_USD = 10_000;
 
 export function whaleHoldingIdentity(event: TrackNotification) {
   const evidence = event.whaleHolding;
-  if (!evidence || !evidence.eligibleToken || evidence.valueUsd < WHALE_HOLDING_MIN_USD || evidence.observedAt > event.observedAt) return null;
+  if (!evidence || !evidence.eligibleToken || evidence.valueUsd < WHALE_HOLDING_MIN_USD) return null;
   return { label: `${evidence.tokenSymbol} Whale`, ...evidence };
 }
 

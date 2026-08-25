@@ -9,13 +9,11 @@ const HOST_CONFIGURATION = `    ).apply {
       }
     }`;
 
-module.exports = function withAndroidDevMenuSafety(config) {
-  return withMainApplication(config, (next) => {
-    if (next.modResults.language !== 'kt') {
-      throw new Error('Terminal DEX Android MainApplication must use Kotlin.');
-    }
+function configureAndroidDevMenu(contents, language) {
+  if (language !== 'kt') {
+    throw new Error('Terminal DEX Android MainApplication must use Kotlin.');
+  }
 
-    let contents = next.modResults.contents;
     if (!contents.includes(IMPORT_MARKER)) {
       contents = contents.replace(
         'import com.facebook.react.common.ReleaseLevel',
@@ -31,7 +29,18 @@ module.exports = function withAndroidDevMenuSafety(config) {
       contents = contents.replace(hostEnd, `${HOST_CONFIGURATION}\n  }`);
     }
 
-    next.modResults.contents = contents;
+  return contents;
+}
+
+module.exports = function withAndroidDevMenuSafety(config) {
+  return withMainApplication(config, (next) => {
+    next.modResults.contents = configureAndroidDevMenu(
+      next.modResults.contents,
+      next.modResults.language,
+    );
+
     return next;
   });
 };
+
+module.exports.configureAndroidDevMenu = configureAndroidDevMenu;

@@ -1306,3 +1306,10 @@
 - Added component coverage for healthy evidence, canonical/non-canonical quality, unavailable configuration without zero inference, accessibility summary, non-execution copy, and busy-safe retry. TypeScript and local ESLint pass; focused and full Jest evidence is recorded in the DEV handoff.
 - Concurrent transaction-row/logo and MOBILE→WEB handoff work remains preserved and excluded. `MOBILE-QA-002` remains device-environment blocked; `MOBILE-QA-003` can close only after the concurrent slice is committed or isolated.
 - 20/20 result: 20 evidence-backed gaps reconciled; 20 independently testable material outcomes completed; shortfall 0. NEXT_QA_ACTION: verify the immutable commit and the 20-item acceptance matrix without mixing concurrent files.
+
+## 2026-08-25 — MOBILE-151: Android development startup safety
+
+- Reconciled the open Android-runtime QA blocker against fresh API 37 ANR evidence. The main thread stalled while React Native debug support synchronously registered the emulator accelerometer; ART also spent 12 seconds JIT-compiling during the failing startup.
+- Added a regeneration-safe Expo plugin that disables only the debug shake gesture. Native regeneration, JDK 17 x86_64 assembly, APK replacement, Metro bundling, and a 2.4-second cold launch passed; the process remained alive and the Whales screen appeared in the accessibility tree.
+- Added six focused regression contracts covering debug-only gating, retained keyboard/ADB access, required import, idempotency, Kotlin enforcement, and fail-closed template drift.
+- MOBILE throughput: 20 findings reconciled; 6 independently testable outcomes completed in this follow-up increment; shortfall 14. Remaining findings require physical QA, WEB-QC approval, or overlap the active concurrent Whales/logo slice.

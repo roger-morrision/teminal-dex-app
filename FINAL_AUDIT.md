@@ -120,3 +120,9 @@ No in-scope automated regression was found. Generated export directories were re
 - Exact quote TTL is now checked in both asynchronous mutation functions, not only during render. A quote expiring during network work cannot proceed to preparation or explicit confirmation.
 - Confirmation exposes matching native, visual, and assistive disabled state after expiry. Readiness refresh joins the atomic lock so evidence cannot change underneath the quote chain.
 - Twenty-two distinct boundaries are verified by pure TTL and source-level safety tests. Execution remains locked; Android runtime certification remains external.
+
+## MOBILE-151 Android startup evidence
+
+- Verified generated native configuration disables only debug shake sensing and survives repeated prebuild transformation.
+- Verified API 37 development APK build/install, 2.4-second cold startup, React Native `main` mount, live process/focused activity, and rendered Whales accessibility hierarchy without ANR, fatal exception, or unresolved module.
+- Physical-device TalkBack, quote-flow interaction, and production release certification remain separate QA evidence; no transaction authority changed.

@@ -1152,3 +1152,9 @@
 - Phase review confirmed backend data availability remains externally blocked and identified raw read-query errors on Discover, Trenches, Portfolio analytics, and Monitor as the next dependency-ready privacy/recovery gap.
 - Replaced raw transport/provider messages on those primary read surfaces with localized English/Vietnamese connection-and-retry guidance; existing busy-safe Retry behavior remains unchanged.
 - Kept Monitor mutation feedback separate because user-initiated validation failures require bounded field-level context; static regression coverage now prevents raw read errors from returning to primary tabs.
+
+## 2026-08-25 — Slice 130: observed smart-money USD trade amounts
+
+- Traced missing `$` buy/sell amounts to the notification API mapping `profitEstimate` as transaction size even though indexed smart-money evidence persists the actual `amountUsd`.
+- Backend now extracts only a positive finite observed USD notional from the signal evidence, falls back to a valid legacy amount, keeps profit estimate separate, and otherwise fails closed to `—`.
+- The existing transaction-first mobile row automatically renders the corrected amount through its bounded USD formatter; backend TypeScript, focused ESLint, and the new extraction contract pass.

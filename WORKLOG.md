@@ -1120,3 +1120,9 @@
 - Added a runtime font-scale breakpoint so held-token → action evidence → traded-token rows wrap instead of compressing or clipping when device text reaches 150%.
 - Retained scalable text, exact-token navigation, both artwork roles, and the compact default layout at normal text sizes.
 - Recorded static regression coverage for the font-scale breakpoint and recoverable row layout.
+
+## 2026-08-25 — Slice 125: accessible whale relationship semantics
+
+- Phase review: runtime eligible-token/provider population remains the primary data prerequisite; navigation and core page flows are complete; token-detail execution remains intentionally locked; visual priority remains transaction-first; recovery states are verified; device accessibility is the highest dependency-ready gap; native device evidence remains external; regression coverage remains locally runnable.
+- Added localized English/Vietnamese row semantics that explicitly announce qualifying held token, whale identity, buy/sell action and amount, and traded token.
+- Kept the visual held-token-left/traded-token-right hierarchy while ensuring artwork position and color are not the only carriers of meaning.

@@ -34,5 +34,6 @@ describe('audited-screen accessibility contract', () => {
     expect(source).toContain('useWindowDimensions');
     expect(source).toContain('fontScale >= 1.5');
     expect(source).toContain('largeText && { flexWrap: "wrap"');
+    expect(source).toContain('t("openWhaleRelationship"');
   });
 });

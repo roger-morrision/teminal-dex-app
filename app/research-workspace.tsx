@@ -513,7 +513,13 @@ function ChartPanel({
       {chart.isLoading ? (
         <State loading text={t("loadingValidatedCandles")} />
       ) : chart.error ? (
-        <State error text={chart.error.message} />
+        <State
+          error
+          text={chart.error.message}
+          action={t("retry")}
+          actionBusy={chart.isFetching}
+          onAction={() => chart.refetch()}
+        />
       ) : chart.data ? (
         <PriceChart data={chart.data} compact />
       ) : null}
@@ -577,10 +583,16 @@ export function State({
   loading,
   error,
   text,
+  action,
+  actionBusy = false,
+  onAction,
 }: {
   loading?: boolean;
   error?: boolean;
   text: string;
+  action?: string;
+  actionBusy?: boolean;
+  onAction?: () => void;
 }) {
   return (
     <View
@@ -596,6 +608,18 @@ export function State({
         <Ionicons name="information-circle" size={20} color={colors.muted} />
       )}
       <Text style={styles.stateText}>{text}</Text>
+      {action && onAction ? (
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={action}
+          accessibilityState={{ busy: actionBusy, disabled: actionBusy }}
+          disabled={actionBusy}
+          onPress={onAction}
+          style={[styles.stateAction, actionBusy && styles.disabled]}
+        >
+          <Text style={styles.stateActionText}>{action}</Text>
+        </Pressable>
+      ) : null}
     </View>
   );
 }
@@ -846,4 +870,13 @@ const styles = StyleSheet.create({
     padding: spacing.xl,
   },
   stateText: { color: colors.muted, textAlign: "center", lineHeight: 18 },
+  stateAction: {
+    minHeight: 44,
+    paddingHorizontal: spacing.lg,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 10,
+    backgroundColor: colors.accent,
+  },
+  stateActionText: { color: colors.background, fontWeight: "900" },
 });

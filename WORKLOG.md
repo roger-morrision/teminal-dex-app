@@ -1072,6 +1072,13 @@
 - Advisory qualification, paper-only semantics, owner gates, GMGN mint verification, operational/governance integrity, kill switches, no-replay policy, and execution-disabled contracts are unchanged.
 - Strict TypeScript, focused ESLint and 5 AI/state/schema/accessibility suites with 87 tests passed.
 
+## 2026-08-25 — Slice 119: recover Multicharts candle evidence
+
+- Continued the recovery-state audit in Research Workspace and found that an individual failed OHLCV query displayed an alert but offered no chart-local recovery.
+- Added a localized retry bound only to the failed candle query; it is disabled and announced busy during refetch, and the shared state omits action labels without handlers.
+- Exact-mint identity, four-chart and timeframe bounds, real-data-only rendering, combined intentional refresh, local persistence, provenance, and no-execution boundaries are unchanged.
+- Strict TypeScript, focused ESLint and 4 research/state/store/accessibility suites with 50 tests passed.
+
 ## 2026-08-24 — Slice 100: truthful Whale wallet navigation
 
 - Audited the non-empty wallet-ranking flow and found that the aggregate “Open Wallet Intelligence” footer silently routed to the first ranked address, duplicating row-detail behavior.

@@ -1354,3 +1354,10 @@
 - The lane runs and fails closed with exact actionable patch drifts: Expo 57.0.15→~57.0.16, Constants 57.0.13→~57.0.14, Dev Client 57.0.14→~57.0.15, and Router 57.0.15→~57.0.16. Dependency installation remains a separate network/package-manager slice.
 - Focused command contracts pass 6/6; TypeScript, zero-warning lint, and primary full Jest 81/403 pass. Immutable QA expects 81/401 because the concurrent TokenRow slice contributes two uncommitted tests.
 - 20 findings reviewed; two outcomes completed (local diagnostic and fail-visible script contract); shortfall 18 remains four package updates, exact device/runtime evidence, WEB-QC fixtures, physical-device scenarios, and concurrent Whales/logo acceptance.
+
+## 2026-08-26 — MOBILE-159: SDK 57 patch compatibility
+
+- Updated exactly the four diagnostic failures: Expo `~57.0.16`, Constants `~57.0.14`, Dev Client `~57.0.15`, and Router `~57.0.16`, including the resolved transitive lockfile graph. No feature, transaction, wallet, or WEB contract changed.
+- `diagnostics:expo` now passes. TypeScript, zero-warning source ESLint, primary full Jest 81/403, public Expo config, and Android Hermes export (1 bundle / 46 assets) pass. Immutable QA expects 81/401 after excluding two concurrent TokenRow tests.
+- Android export retained the conditionally accepted Noble warning. Metro rejected one stale pre-upgrade cache, completed a full crawl, and exported successfully. Installation reported 11 moderate audit findings; no automatic or force audit fix was attempted, and security review remains a separate dependency lane.
+- 20 findings reviewed; four package compatibility outcomes completed; shortfall 16 remains exact device/runtime evidence, audit disposition, WEB-QC fixtures, physical-device scenarios, and concurrent Whales/logo acceptance.

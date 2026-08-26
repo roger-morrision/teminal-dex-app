@@ -101,4 +101,5 @@ Status legend: `[x]` verified, `[ ]` incomplete, `[~]` intentionally visible but
 - [x] Release evidence reports test totals from the immutable committed checkout and excludes concurrent uncommitted test inventory.
 - [x] SnipeCard interaction tests await initial token-evidence settlement before teardown, preventing post-test React updates and overlapping `act` warnings.
 - [x] The known Noble/Metro strict-exports fallback is version-pinned, requires both installed fallback files, rejects silent root cryptography overrides, and fails visibly when its audited compatibility assumptions drift.
-- [x] A repository-local `diagnostics:expo` command checks SDK package compatibility without global tools or implicit `npx`; its contract is regression-tested and currently fails closed on four explicit patch drifts.
+- [x] A repository-local `diagnostics:expo` command checks SDK package compatibility without global tools or implicit `npx`; its contract is regression-tested and fails closed whenever package versions drift.
+- [x] Expo, Constants, Dev Client, and Router match SDK 57's expected patch releases; local compatibility diagnostics, static gates, regressions, public config, and Android bundle export pass after the lockfile update.

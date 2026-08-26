@@ -157,3 +157,8 @@ No in-scope automated regression was found. Generated export directories were re
 
 - `diagnostics:expo` resolves through the repository-declared Expo executable and never uses implicit global or `npx` tooling. Its command contract is tested.
 - The current diagnostic correctly exits nonzero for four SDK patch mismatches. This is actionable readiness evidence, not a release pass; upgrades require an isolated dependency install and full platform revalidation.
+
+## MOBILE-159 SDK 57 patch alignment
+
+- Expo 57.0.16, Constants 57.0.14, Dev Client 57.0.15, and Router 57.0.16 now satisfy the repository-local compatibility diagnostic.
+- Static checks, full regressions, public configuration, and Android Hermes export pass. The Noble fallback remains conditionally accepted; exact-device evidence and the reported dependency audit findings remain release follow-ups.

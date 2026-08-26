@@ -1,5 +1,16 @@
 # MOBILE DEV → QA handoff
 
+## MOBILE-159 — SDK 57 patch compatibility
+
+- Base: `c6ea00c`; result: containing commit.
+- Changed files/behavior: `package.json` and `package-lock.json` align Expo `~57.0.16`, Constants `~57.0.14`, Dev Client `~57.0.15`, and Router `~57.0.16`. No product/API/transaction behavior changed.
+- Acceptance: `diagnostics:expo` PASS; TypeScript; zero-warning source ESLint; primary full Jest 81/403; public config PASS; Android export PASS (1 Hermes bundle / 46 assets). Immutable QA expects 81/401 excluding two concurrent TokenRow tests.
+- Known evidence: Noble warning remains under MOBILE-QA-004; stale pre-upgrade Metro cache fell back to a successful full crawl; npm reported 11 moderate audit findings and no automatic/force remediation was run.
+- NEXT_QA_ACTION: pin the result; independently run local diagnostics, immutable 81/401 tests, public config, and Android/iOS/web exports. Open exact security findings as stable IDs before any audit remediation. Continue device-owned MOBILE-QA-002 separately.
+- 20/20 reconciliation: 20 findings reviewed; four material compatibility outcomes completed; shortfall 16 carried forward without padding.
+
+---
+
 ## MOBILE-158 — repository-local Expo diagnostics
 
 - Base: `95541dd`; result: containing commit.

@@ -24,7 +24,7 @@ import {
 } from "@/api/schema";
 import { PriceChart } from "@/components/PriceChart";
 import { TokenAvatar } from "@/components/TokenAvatar";
-import { compactUsd, signedPercent, tokenPrice } from "@/lib/format";
+import { compactUsd, evidenceLabel, signedPercent, tokenPrice } from "@/lib/format";
 import { aggregateWhaleActivity, whaleActivityForToken } from "@/lib/whale-activity";
 import { colors, spacing } from "@/theme";
 import { isSolanaAddress, parseBoundedJson } from "@/security/input";
@@ -193,7 +193,7 @@ export default function TokenDetail() {
             <View style={styles.heroCopy}>
             <Text style={styles.symbol}>{token.symbol}</Text>
             <Text style={styles.name}>
-              {token.name} · {token.dex}
+              {token.name} · {evidenceLabel(token.dex, t("unknownDex"))}
             </Text>
             <Text style={styles.price}>{tokenPrice(token.price)}</Text>
             <Text

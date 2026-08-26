@@ -1,5 +1,17 @@
 # MOBILE DEV → QA handoff
 
+## MOBILE-168 — cross-surface provenance normalization
+
+- Base: `df8b438`; result: containing commit.
+- BA/PO: 20 current findings reconciled; 8 material outcomes completed (`MOBILE-DATA-301..308`); exact shortfall 12 (`MOBILE-QA-269..280`) with unchanged external owners.
+- Changed behavior: Token Detail, Quote Review, Operations, Discover, Monitor, Trenches, Market Intelligence, and Wallet Intelligence trim valid provider labels and localize blank/missing DEX or source evidence.
+- Changed files: eight production surfaces, shared formatter/test, and MOBILE evidence documents only.
+- Evidence: TypeScript/full source ESLint PASS; focused Jest 4 suites/9 tests PASS; full Jest 83 suites/422 tests PASS; public Expo config PASS.
+- Runtime scenario: provide whitespace-only DEX/source values to each named surface and verify a localized unavailable/unknown label appears, valid labels remain trimmed, and row/detail navigation is unchanged.
+- Known risks: immutable API 37 coverage, physical accessibility/resilience/performance, npm-enabled Doctor, Noble fallback, and provider-controlled Monitor scenarios remain externally owned.
+- NEXT_QA_ACTION: pin the result and independently classify `MOBILE-DATA-301..308` using malformed-evidence fixtures and the standard release gates.
+- NEXT_WEB_ACTION: none.
+
 ## MOBILE-167 — Monitor provider DEX normalization
 
 - Base: `6646131`; result: containing commit.

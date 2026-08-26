@@ -33,6 +33,7 @@ import type {
   UserAlert,
 } from "@/api/schema";
 import { TokenRow } from "@/components/TokenRow";
+import { evidenceLabel } from "@/lib/format";
 import { BusyIndicator } from "@/components/BusyIndicator";
 import { WhaleFlowBadge } from "@/components/WhaleFlowBadge";
 import { whaleFlowByToken } from "@/lib/whale-activity";
@@ -533,7 +534,7 @@ export function WatchlistEvidence({
     <View accessibilityRole="summary" style={styles.watchEvidence}>
       <Text style={styles.watchEvidenceText}>
         {t("watchlistMarketEvidence", {
-          source: token.source ?? t("sourceUnavailable"),
+          source: evidenceLabel(token.source, t("sourceUnavailable")),
           quality: token.dataQuality ?? t("qualityUnavailable"),
           freshness: token.sourceFetchedAt
             ? relativeAge(token.sourceFetchedAt, t)

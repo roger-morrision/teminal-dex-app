@@ -19,6 +19,7 @@ import { evaluateSwapEvidenceChain, evaluateSwapReadiness, isSwapQuoteExpired, S
 import { colors, spacing } from "@/theme";
 import { publicErrorMessage } from "@/lib/public-error";
 import { publicReasonKey } from "@/lib/public-evidence-reason";
+import { evidenceLabel } from "@/lib/format";
 import { isSolanaAddress, parseBoundedJson } from "@/security/input";
 import { useSettings } from "@/settings/SettingsProvider";
 
@@ -153,7 +154,7 @@ export default function TradeReviewScreen() {
             <View style={styles.headerText}>
               <Text style={styles.symbol}>{token.symbol}</Text>
               <Text style={styles.meta}>
-                {token.name} · {token.dex}
+                {token.name} · {evidenceLabel(token.dex, t("unknownDex"))}
               </Text>
             </View>
           </View>

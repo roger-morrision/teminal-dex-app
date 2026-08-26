@@ -20,7 +20,7 @@ import {
   fetchTopTraders,
 } from "@/api/client";
 import type { FeedConnectionsResponse, IndexerHealthResponse, MarketToken } from "@/api/schema";
-import { compactUsd, signedPercent, tokenPrice } from "@/lib/format";
+import { compactUsd, evidenceLabel, signedPercent, tokenPrice } from "@/lib/format";
 import {
   feedCounterSnapshot,
   type FeedCounterSnapshot,
@@ -806,7 +806,7 @@ function MarketRow({
           {t("liquidityVolume", {
             liquidity: compactUsd(token.liquidity),
             volume: compactUsd(token.volume1h),
-            dex: token.dex,
+            dex: evidenceLabel(token.dex, t("unknownDex")),
           })}
         </Text>
       </View>

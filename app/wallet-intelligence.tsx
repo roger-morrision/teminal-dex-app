@@ -19,7 +19,7 @@ import {
   fetchWalletPnl,
 } from "@/api/client";
 import type { TopTrader, WalletHoldingsResponse } from "@/api/schema";
-import { compactUsd } from "@/lib/format";
+import { compactUsd, evidenceLabel } from "@/lib/format";
 import { isSolanaAddress } from "@/security/input";
 import {
   addTrackedWallet,
@@ -160,7 +160,7 @@ function SmartMoney({
     <View>
       <Evidence
         text={t("rankingEvidence", {
-          source: response?.source ?? t("sourceUnavailable"),
+          source: evidenceLabel(response?.source, t("sourceUnavailable")),
           quality: response?.dataQuality ?? t("unavailable"),
           freshness: response?.freshness.isStale ? t("stale") : t("current"),
         })}

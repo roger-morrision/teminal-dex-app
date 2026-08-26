@@ -30,3 +30,7 @@ export function signedPercent(value: number): string {
   if (!Number.isFinite(value)) return '—';
   return `${value >= 0 ? '+' : ''}${value.toFixed(2)}%`;
 }
+
+export function evidenceLabel(value: unknown, fallback: string): string {
+  return typeof value === 'string' && value.trim() ? value.trim() : fallback;
+}

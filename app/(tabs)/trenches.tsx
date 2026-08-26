@@ -15,7 +15,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { fetchTrackFeed, fetchTrenches } from "@/api/client";
 import type { MarketToken } from "@/api/schema";
-import { compactUsd, signedPercent, tokenPrice } from "@/lib/format";
+import { compactUsd, evidenceLabel, signedPercent, tokenPrice } from "@/lib/format";
 import { WhaleFlowBadge } from "@/components/WhaleFlowBadge";
 import { whaleFlowByToken } from "@/lib/whale-activity";
 import {
@@ -452,7 +452,7 @@ export function TrenchCard({
           <Text style={styles.tradeText}>{t("reviewQuote")}</Text>
         </Pressable>
         <Text style={styles.quality}>
-          {token.source ?? t("unknown")} ·{" "}
+          {evidenceLabel(token.source, t("unknown"))} ·{" "}
           {token.dataQuality ?? t("unavailable")} ·{" "}
           {token.sourceFetchedAt
             ? ageLabel(token.sourceFetchedAt, t)

@@ -1543,3 +1543,37 @@ Selected order: `MOBILE-DATA-281..288`. Impact: prevents a provider-shape crash 
 - Monitor now excludes invalid/blank/reserved DEX evidence, deduplicates case variants, caps after normalization, compares missing data safely, fails stale selections soft to All, and localizes unavailable row provenance.
 - TypeScript/full source ESLint PASS; focused Jest PASS (1 suite/6 tests); full Jest PASS (83 suites/421 tests); public Expo config PASS. Doctor remains environment-blocked because its child `node` cannot spawn.
 - No WEB, provider, wallet, signing, submission, trading, production data, secret, or generated output changed.
+
+## MOBILE BA/PO review — 2026-08-26 11:22 trigger
+
+Fresh post-`df8b438` QA and source reconciliation identified 20 current findings. Eight local surfaces accept whitespace-only provider provenance as displayable evidence; twelve retain their existing external blocker IDs.
+
+1. **MOBILE-DATA-301 P1 READY** — Token Detail renders blank/whitespace DEX provenance; accept with localized unknown DEX fallback.
+2. **MOBILE-DATA-302 P1 READY** — Quote Review renders blank/whitespace DEX provenance; accept with localized unknown DEX fallback.
+3. **MOBILE-DATA-303 P1 READY** — Operations market rows interpolate blank DEX evidence; accept with localized unavailable evidence.
+4. **MOBILE-DATA-304 P1 READY** — Discover treats blank source evidence as present; accept with localized unavailable source.
+5. **MOBILE-DATA-305 P1 READY** — Monitor treats blank row source evidence as present; accept with localized unavailable source.
+6. **MOBILE-DATA-306 P1 READY** — Trenches treats blank source evidence as present; accept with localized unknown evidence.
+7. **MOBILE-DATA-307 P2 READY** — Market Intelligence treats blank signal source evidence as present; accept with localized unavailable source.
+8. **MOBILE-DATA-308 P2 READY** — Wallet Intelligence treats blank source evidence as present; accept with localized unavailable source.
+9. **MOBILE-QA-269 P2 BLOCKED/device** — physical Android TalkBack; owner QA/device provider.
+10. **MOBILE-QA-270 P2 BLOCKED/device** — physical iOS VoiceOver; owner QA/device provider.
+11. **MOBILE-QA-271 P2 BLOCKED/device** — Switch Access; owner QA/device provider.
+12. **MOBILE-QA-272 P2 BLOCKED/device** — 320dp layout matrix; owner QA/device provider.
+13. **MOBILE-QA-273 P2 BLOCKED/device** — offline/reconnect; owner QA/device provider.
+14. **MOBILE-QA-274 P2 BLOCKED/device** — background/restore; owner QA/device provider.
+15. **MOBILE-QA-275 P2 BLOCKED/device** — persistence fault injection; owner QA/device provider.
+16. **MOBILE-QA-276 P2 BLOCKED/environment** — Doctor child npm; owner toolchain.
+17. **MOBILE-QA-277 P2 CONDITIONAL/upstream** — Noble strict-exports fallback; owner upstream.
+18. **MOBILE-QA-278 P2 BLOCKED/provider** — Monitor active-reset device fixture; owner QA/provider fixture.
+19. **MOBILE-QA-279 P2 BLOCKED/provider** — Monitor cursor-failure device fixture; owner QA/provider fixture.
+20. **MOBILE-QA-280 P2 BLOCKED/device** — physical performance evidence; owner QA/device provider.
+
+Selected order: `MOBILE-DATA-301..308`. Each changes a distinct rendered user surface. Acceptance uses one bounded pure normalizer plus focused tests and existing component/full release gates. No WEB contract migration is required.
+
+### MOBILE-168 implementation result
+
+- Findings reconciled: 20. Material outcomes completed: 8 (`MOBILE-DATA-301..308`). Exact shortfall to 20: 12 (`MOBILE-QA-269..280`) with unchanged device, toolchain, upstream, and provider-fixture owners.
+- Token Detail, Quote Review, Operations, Discover, Monitor, Trenches, Market Intelligence, and Wallet Intelligence now trim valid provenance and replace blank/missing provider labels with localized truthful fallbacks.
+- TypeScript/full source ESLint PASS; focused Jest PASS (4 suites/9 tests); full Jest PASS (83 suites/422 tests); public Expo config PASS.
+- No WEB, API contract, provider state, wallet, transaction, production data, secret, or generated output changed.

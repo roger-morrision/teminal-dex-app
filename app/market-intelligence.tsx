@@ -28,7 +28,7 @@ import type {
   MarketSignal,
   SignalsResponse,
 } from "@/api/schema";
-import { compactUsd, signedPercent } from "@/lib/format";
+import { compactUsd, evidenceLabel, signedPercent } from "@/lib/format";
 import { isSolanaAddress } from "@/security/input";
 import { colors, spacing } from "@/theme";
 import { useSettings } from "@/settings/SettingsProvider";
@@ -349,7 +349,7 @@ export function SignalCard({
       </View>
       <View style={styles.cardFoot}>
         <Text style={styles.meta}>
-          {item.source ?? t("sourceUnavailable")} · {item.time}
+          {evidenceLabel(item.source, t("sourceUnavailable"))} · {item.time}
         </Text>
         <Text style={styles.signature}>
           {item.txHash

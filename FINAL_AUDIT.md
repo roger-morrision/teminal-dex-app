@@ -220,3 +220,12 @@ No in-scope automated regression was found. Generated export directories were re
 - **Partially verified:** restricted-shell Doctor cannot spawn child `node` (`ENOENT`); immutable API 37 runtime confirmation is assigned to QA.
 - **NEXT_QA_ACTION:** pin the result; inject undefined, blank, reserved, and duplicate-case Monitor DEX values; verify the filter, stale-selection recovery, provenance fallback, and row navigation.
 - **NEXT_WEB_ACTION:** none; MOBILE treats absent optional DEX evidence as unavailable.
+
+## MOBILE-168 cross-surface provenance normalization
+
+- **Implemented:** 8 material outcomes (`MOBILE-DATA-301..308`) prevent whitespace-only provider DEX/source values from rendering as valid evidence across eight user surfaces.
+- **Verified:** TypeScript/full ESLint PASS; focused Jest 4 suites/9 tests PASS; full Jest 83 suites/422 tests PASS; public Expo configuration PASS.
+- **Shortfall:** 12 to 20. Existing `MOBILE-QA-269..280` retain their physical-device, toolchain, upstream, and provider-fixture blockers without relabeling or padding.
+- **Safety:** display normalization only; no WEB/API/provider mutation, wallet action, signing, submission, or trading behavior changed.
+- **NEXT_QA_ACTION:** pin the result and inject whitespace-only DEX/source evidence into all eight named surfaces, verifying localized fallback text and unchanged navigation.
+- **NEXT_WEB_ACTION:** none.

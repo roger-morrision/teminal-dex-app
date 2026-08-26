@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import { fetchDiscovery, getDiscoveryNextPageParam } from "@/api/client";
 import type { MarketToken } from "@/api/schema";
-import { compactUsd, signedPercent, tokenPrice } from "@/lib/format";
+import { compactUsd, evidenceLabel, signedPercent, tokenPrice } from "@/lib/format";
 import { useSettings } from "@/settings/SettingsProvider";
 import {
   defaultMonitorTablePreferences,
@@ -418,9 +418,8 @@ function TableRow({ token, preset, compact, onPress, t }: { token: MarketToken; 
       <View style={styles.identity}>
         <Text numberOfLines={1} style={styles.symbol}>{token.symbol}</Text>
         <Text numberOfLines={1} style={styles.subtle}>
-          {typeof token.dex === "string" && token.dex.trim()
-            ? token.dex.trim()
-            : t("sourceUnavailable")} · {token.source ?? t("sourceUnavailable")}
+          {evidenceLabel(token.dex, t("sourceUnavailable"))} ·{" "}
+          {evidenceLabel(token.source, t("sourceUnavailable"))}
         </Text>
       </View>
       {columns[preset].map((column) => (

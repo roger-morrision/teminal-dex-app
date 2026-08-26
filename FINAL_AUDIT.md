@@ -211,3 +211,12 @@ No in-scope automated regression was found. Generated export directories were re
 - **Partially verified:** restricted-shell Doctor 17/21; immutable API 37 rerun of the corrected filter panel is assigned to QA.
 - **NEXT_QA_ACTION:** pin the result; open Trenches filters with undefined, blank, duplicate-case, and `All` DEX provider rows; verify no warning/undefined option, one stable option per DEX, touch targets retained, and stale selection recovers.
 - **NEXT_WEB_ACTION:** none; MOBILE treats absent optional DEX evidence as unavailable without manufacturing it.
+
+## MOBILE-167 Monitor provider DEX normalization
+
+- **Implemented:** 8 dependency-ready material outcomes (`MOBILE-DATA-281..288`) harden the Monitor table against malformed optional DEX evidence.
+- **Verified:** TypeScript/full ESLint PASS; focused Jest 1 suite/6 tests PASS; full Jest 83 suites/421 tests PASS; public Expo configuration PASS.
+- **Shortfall:** 12 to 20. Existing `MOBILE-QA-269..280` remain blocked by physical devices, unavailable child npm, upstream Noble ownership, or controllable provider fixtures; they were not relabeled or padded.
+- **Partially verified:** restricted-shell Doctor cannot spawn child `node` (`ENOENT`); immutable API 37 runtime confirmation is assigned to QA.
+- **NEXT_QA_ACTION:** pin the result; inject undefined, blank, reserved, and duplicate-case Monitor DEX values; verify the filter, stale-selection recovery, provenance fallback, and row navigation.
+- **NEXT_WEB_ACTION:** none; MOBILE treats absent optional DEX evidence as unavailable.

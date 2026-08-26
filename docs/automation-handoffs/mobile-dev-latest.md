@@ -1,5 +1,17 @@
 # MOBILE DEV → QA handoff
 
+## MOBILE-167 — Monitor provider DEX normalization
+
+- Base: `6646131`; result: containing commit.
+- BA/PO: 20 current findings reconciled. Completed 8 material ready outcomes (`MOBILE-DATA-281..288`); exact shortfall 12 (`MOBILE-QA-269..280`) with unchanged device/toolchain/upstream/provider-fixture owners recorded in `WORKLOG.md`.
+- Changed behavior: malformed/blank/reserved DEX values cannot crash or create blank controls; case variants deduplicate; limiting follows normalization; selected filters compare null-safely; stale selections fail soft to All; rows localize unavailable provenance.
+- Changed files: Monitor table/store, focused regression, and MOBILE evidence documents only.
+- Evidence: TypeScript/full source ESLint PASS; focused Jest PASS (1 suite/6 tests); full Jest PASS (83 suites/421 tests); public Expo config PASS. Restricted-shell Doctor is blocked because its child `node` is unavailable.
+- Runtime scenario: inject undefined/blank/`All`/case-duplicate DEX values into Monitor pages, open DEX filters, select a surviving option, refresh without it, and verify no crash, blank/duplicate choice, stranded empty table, or undefined provenance.
+- Known risks: immutable API 37 rerun and physical accessibility/performance checks remain QA-owned; provider reset/cursor-failure fixtures remain unavailable.
+- NEXT_QA_ACTION: pin the result and independently classify `MOBILE-DATA-281..288`, then run the Monitor runtime scenario and standard release gates.
+- NEXT_WEB_ACTION: none.
+
 ## MOBILE-166 — Trenches provider DEX normalization
 
 - Base: `51fd2e8`; result: containing commit.

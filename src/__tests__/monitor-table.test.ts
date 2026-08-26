@@ -6,6 +6,8 @@ import {
   filterAndSortMonitorTokens,
   loadMonitorTablePreferences,
   monitorTableActiveFilters,
+  monitorDexOptions,
+  normalizeMonitorDex,
   saveMonitorTablePreferences,
   sanitizeMonitorTablePreferences,
   toggleMonitorSort,
@@ -99,6 +101,37 @@ describe("Monitor token table preferences", () => {
     );
     expect(rows.map((item) => item.address)).toEqual([addressA]);
     expect(monitorTableActiveFilters(preferences)).toBe(6);
+  });
+
+  it("normalizes provider DEX evidence before deduplication and limiting", () => {
+    const tokens = [
+      token({ dex: " Raydium " }),
+      token({ address: addressB, dex: "raydium" }),
+      token({ address: "11111111111111111111111111111113", dex: "All" }),
+      token({ address: "11111111111111111111111111111114", dex: "  " }),
+      token({
+        address: "11111111111111111111111111111115",
+        dex: undefined as never,
+      }),
+      token({ address: "11111111111111111111111111111116", dex: "Orca" }),
+    ];
+    expect(monitorDexOptions(tokens)).toEqual(["Orca", "Raydium"]);
+    expect(monitorDexOptions(tokens, 1)).toEqual(["Orca"]);
+    expect(normalizeMonitorDex(undefined)).toBeNull();
+    expect(normalizeMonitorDex(" all ")).toBeNull();
+  });
+
+  it("filters malformed runtime DEX evidence without throwing", () => {
+    const malformed = token({ dex: undefined as never });
+    expect(
+      filterAndSortMonitorTokens([malformed], defaultMonitorTablePreferences),
+    ).toEqual([malformed]);
+    expect(
+      filterAndSortMonitorTokens([malformed], {
+        ...defaultMonitorTablePreferences,
+        dex: "raydium",
+      }),
+    ).toEqual([]);
   });
 
   it("applies stable two-level sorting and cycles desc, asc, then removal", () => {

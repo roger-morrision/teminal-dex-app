@@ -1509,3 +1509,37 @@ Selected order: MOBILE-DATA-261..268. Verification: focused Trenches unit/render
 - The QA-021 warning/root cause is closed in source: invalid/blank/reserved DEX labels are excluded, case variants deduplicate, valid options are capped after normalization, comparisons are null-safe, stale selections fail soft to All, and cards show localized unavailable provenance.
 - TypeScript and full source ESLint PASS; focused Jest PASS (3 suites/9 tests); full Jest PASS (83 suites/419 tests); public Expo config PASS. Restricted-shell Doctor remains 17/21 because child npm cannot spawn.
 - No WEB, wallet, signing, submission, trading, provider, production data, or generated output changed.
+
+## MOBILE BA/PO review — 2026-08-26 10:22 trigger
+
+Fresh post-`6646131` source and QA reconciliation identified 20 current findings. Eight are local Monitor provider-boundary defects; twelve retain their existing blocker IDs and owners.
+
+1. **MOBILE-DATA-281 P1 READY** — Monitor DEX option derivation calls `toLowerCase` on optional runtime evidence; accept with null-safe normalization; verify malformed-row unit coverage.
+2. **MOBILE-DATA-282 P1 READY** — whitespace DEX labels create blank options; accept by trimming/excluding blanks; verify option list.
+3. **MOBILE-DATA-283 P1 READY** — case variants create duplicate DEX choices; accept with case-insensitive dedupe preserving first label; verify option list.
+4. **MOBILE-DATA-284 P1 READY** — provider `All` collides with the local sentinel; accept with exactly one local All choice; verify option list.
+5. **MOBILE-DATA-285 P1 READY** — Monitor filtering dereferences missing DEX evidence; accept with fail-soft comparison; verify All and selected-filter paths.
+6. **MOBILE-REC-286 P1 READY** — a persisted DEX absent after refresh strands the table; accept by applying an effective All preference without mutating storage; verify derived behavior.
+7. **MOBILE-DATA-287 P2 READY** — Monitor rows can print blank/undefined provenance; accept with localized unavailable evidence; verify source inspection/component regression.
+8. **MOBILE-PERF-288 P2 READY** — invalid and duplicate values consume the ten-option cap; accept by normalizing/deduplicating before sorting and limiting; verify bounded helper output.
+9. **MOBILE-QA-269 P2 BLOCKED/device** — physical Android TalkBack traversal; owner QA/user.
+10. **MOBILE-QA-270 P2 BLOCKED/device** — physical iOS VoiceOver traversal; owner QA/user.
+11. **MOBILE-QA-271 P2 BLOCKED/device** — Android Switch Access flow; owner QA/user.
+12. **MOBILE-QA-272 P2 BLOCKED/device** — 320dp layout matrix; owner QA/device provider.
+13. **MOBILE-QA-273 P2 BLOCKED/device** — physical offline/reconnect recovery; owner QA/device provider.
+14. **MOBILE-QA-274 P2 BLOCKED/device** — background/restore recovery; owner QA/device provider.
+15. **MOBILE-QA-275 P2 BLOCKED/device** — persistence fault injection; owner QA/device provider.
+16. **MOBILE-QA-276 P2 BLOCKED/environment** — Doctor child npm unavailable; owner toolchain.
+17. **MOBILE-QA-277 P2 BLOCKED/upstream** — Noble strict-exports fallback; owner upstream.
+18. **MOBILE-QA-278 P2 BLOCKED/provider** — Monitor active-reset fixture; owner QA/provider fixture.
+19. **MOBILE-QA-279 P2 BLOCKED/provider** — Monitor cursor-failure fixture; owner QA/provider fixture.
+20. **MOBILE-QA-280 P2 BLOCKED/device** — physical startup/performance measurement; owner QA/device provider.
+
+Selected order: `MOBILE-DATA-281..288`. Impact: prevents a provider-shape crash and truthful-filter failures in Monitor. Dependencies: none beyond the existing read-only API. Verification: focused store/component tests, TypeScript, ESLint, full Jest, Expo diagnostics/config. NEXT_WEB_ACTION: none.
+
+### MOBILE-167 implementation result
+
+- Findings reconciled: 20. Material outcomes completed: 8 (`MOBILE-DATA-281..288`). Exact shortfall to 20: 12 (`MOBILE-QA-269..280`), retaining their existing device, toolchain, upstream, and provider-fixture owners.
+- Monitor now excludes invalid/blank/reserved DEX evidence, deduplicates case variants, caps after normalization, compares missing data safely, fails stale selections soft to All, and localizes unavailable row provenance.
+- TypeScript/full source ESLint PASS; focused Jest PASS (1 suite/6 tests); full Jest PASS (83 suites/421 tests); public Expo config PASS. Doctor remains environment-blocked because its child `node` cannot spawn.
+- No WEB, provider, wallet, signing, submission, trading, production data, secret, or generated output changed.

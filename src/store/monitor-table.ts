@@ -58,6 +58,27 @@ function boundedText(value: unknown, maxLength: number, fallback = "") {
   return typeof value === "string" ? value.slice(0, maxLength) : fallback;
 }
 
+export function normalizeMonitorDex(value: unknown) {
+  if (typeof value !== "string") return null;
+  const label = value.trim();
+  if (!label || label.toLowerCase() === "all") return null;
+  return label;
+}
+
+export function monitorDexOptions(tokens: MarketToken[], limit = 10) {
+  const labels = new Map<string, string>();
+  for (const token of tokens) {
+    const label = normalizeMonitorDex(token.dex);
+    if (label && !labels.has(label.toLowerCase()))
+      labels.set(label.toLowerCase(), label);
+  }
+  return [...labels.values()]
+    .sort((left, right) =>
+      left.localeCompare(right, undefined, { sensitivity: "base" }),
+    )
+    .slice(0, Math.max(0, limit));
+}
+
 function threshold(value: unknown) {
   if (typeof value !== "string" || !/^\d{1,12}(?:\.\d{0,2})?$/.test(value))
     return "0";
@@ -159,7 +180,7 @@ export function filterAndSortMonitorTokens(
       return (
         (!query || identity.includes(query)) &&
         (preferences.dex === "all" ||
-          token.dex.toLowerCase() === preferences.dex) &&
+          normalizeMonitorDex(token.dex)?.toLowerCase() === preferences.dex) &&
         (preferences.direction === "all" ||
           (preferences.direction === "positive"
             ? token.change1h >= 0

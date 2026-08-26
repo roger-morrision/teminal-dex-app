@@ -18,6 +18,7 @@ import {
   defaultMonitorTablePreferences,
   filterAndSortMonitorTokens,
   loadMonitorTablePreferences,
+  monitorDexOptions,
   monitorTableActiveFilters,
   saveMonitorTablePreferences,
   toggleMonitorSort,
@@ -78,19 +79,21 @@ export function MonitorTokenTable({ polling = true }: { polling?: boolean }) {
       (token) => !seen.has(token.address) && Boolean(seen.add(token.address)),
     );
   }, [query.data]);
-  const rows = useMemo(
-    () => filterAndSortMonitorTokens(tokens, preferences),
-    [preferences, tokens],
-  );
-  const dexes = useMemo(
+  const dexes = useMemo(() => monitorDexOptions(tokens), [tokens]);
+  const effectivePreferences = useMemo(
     () =>
-      [...new Set(tokens.map((token) => token.dex.toLowerCase()))]
-        .sort()
-        .slice(0, 10),
-    [tokens],
+      preferences.dex === "all" ||
+      dexes.some((dex) => dex.toLowerCase() === preferences.dex)
+        ? preferences
+        : { ...preferences, dex: "all" },
+    [dexes, preferences],
+  );
+  const rows = useMemo(
+    () => filterAndSortMonitorTokens(tokens, effectivePreferences),
+    [effectivePreferences, tokens],
   );
   const firstPage = query.data?.pages[0];
-  const activeFilters = monitorTableActiveFilters(preferences);
+  const activeFilters = monitorTableActiveFilters(effectivePreferences);
 
   const update = (change: Partial<MonitorTablePreferences>) => {
     const next = { ...preferences, ...change };
@@ -212,7 +215,7 @@ export function MonitorTokenTable({ polling = true }: { polling?: boolean }) {
           <View accessibilityRole="radiogroup" style={styles.choiceRow}>
             <Control
               label={t("allDexes")}
-              active={preferences.dex === "all"}
+              active={effectivePreferences.dex === "all"}
               role="radio"
               onPress={() => update({ dex: "all" })}
             />
@@ -220,7 +223,7 @@ export function MonitorTokenTable({ polling = true }: { polling?: boolean }) {
               <Control
                 key={dex}
                 label={dex}
-                active={preferences.dex === dex}
+                active={effectivePreferences.dex === dex.toLowerCase()}
                 role="radio"
                 onPress={() => update({ dex })}
               />
@@ -414,7 +417,11 @@ function TableRow({ token, preset, compact, onPress, t }: { token: MarketToken; 
     >
       <View style={styles.identity}>
         <Text numberOfLines={1} style={styles.symbol}>{token.symbol}</Text>
-        <Text numberOfLines={1} style={styles.subtle}>{token.dex} · {token.source ?? t("sourceUnavailable")}</Text>
+        <Text numberOfLines={1} style={styles.subtle}>
+          {typeof token.dex === "string" && token.dex.trim()
+            ? token.dex.trim()
+            : t("sourceUnavailable")} · {token.source ?? t("sourceUnavailable")}
+        </Text>
       </View>
       {columns[preset].map((column) => (
         <Text key={column} style={[styles.cell, column === "change1h" && (token.change1h >= 0 ? styles.positive : styles.negative)]}>

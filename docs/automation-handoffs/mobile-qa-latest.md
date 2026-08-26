@@ -1048,3 +1048,45 @@ The initial sandboxed diagnostic could not open Expo's user native-module cache 
 - Findings inspected/reconciled: 20. DEV material outcomes available/verified: 4/4 PASS. Exact shortfall to 20: 16 (`MOBILE-QA-269..280`, `MOBILE-QA-283..286`); no padding applied.
 - Carry-forward order: `MOBILE-QA-269`, `MOBILE-QA-270`, `MOBILE-QA-271`, `MOBILE-QA-272`, `MOBILE-QA-273`, `MOBILE-QA-274`, `MOBILE-QA-275`, `MOBILE-QA-276`, `MOBILE-QA-277`, `MOBILE-QA-278`, `MOBILE-QA-279`, `MOBILE-QA-280`, `MOBILE-QA-283`, `MOBILE-QA-284`, `MOBILE-QA-285`, `MOBILE-QA-286`.
 - **NEXT_DEV_ACTION:** provide an immutable dev-client route with controllable Discover 1h/6h/24h positive, negative, and unavailable token states so QA can complete EN/VI visual and assistive period-metric verification without changing provider contracts.
+
+---
+
+# MOBILE-QA validation handoff — MOBILE-178
+
+- Trigger: 2026-08-26T21:40:12.157Z. Inspected immutable result `c38255c6d4e58d676bd2045bb04d89499b8259d9` (`fix(mobile): localize whale market chronology`), base `b0663ac`.
+- Scope/coordination: PASS. Canonical safe-directory top-level normalized to `c:/tuan/devapps/teminal-dex-app`, Git prefix empty, result clean, and no DEV lock existed. Independent evidence used archive `%LOCALAPPDATA%\\Temp\\mobile-qa-178-c38255c-rerun` with linked dependencies. The first archive extraction was blocked by a temporary-path targeting error and was discarded; its non-result is not used. Only this report is written under the dedicated QA lock.
+- Environment/runtime: Windows; bundled Node 24.19.0; Expo 57 local CLI. No responsive exact Android/iOS device or deterministic Whale full/partial/invalid provider fixture settled in this trigger. Therefore no EN/VI visual chronology, assistive traversal, navigation, filter, loading, retry, offline, stale, partial-page, or transaction claim is inferred. No WEB/API/provider, wallet, signing, submission, trading, configuration, or application-data mutation occurred.
+
+## MOBILE-QA acceptance matrix
+
+| Criterion | Result | Independent evidence |
+| --- | --- | --- |
+| Type and changed-surface lint | PASS | Archive `tsc --noEmit` and ESLint of Whale flow, formatter, and formatter regression exit 0. |
+| Focused chronology/format regression | PASS | Archive `format.test.ts`: 1 suite / 5 tests pass, including seconds, milliseconds, Vietnamese locale, and invalid-time fallback. |
+| Full regression | PASS | Archive `jest --ci --runInBand --silent`: 83 suites / 453 tests pass in 54.853s. |
+| Expo/configuration | PASS with Doctor blocker | Public Expo configuration resolves. Expo Doctor emits `Error: spawn node ENOENT`; its wrapper exit code is not treated as a Doctor pass. |
+| Android / iOS / web bundles | CONDITIONAL PASS / PASS / PASS | Fresh archive exports produce Android 5.7 MB Hermes plus metadata, iOS 2.3 MB Hermes plus metadata, and web 1.1 MB static bundle. Android retains the known Noble strict-exports fallback. |
+| Exact Whale runtime flow | BLOCKED | No controlled full, partial, absent, seconds, milliseconds, or invalid observation fixture and no responsive exact device lane were available. |
+
+## MOBILE-QA reconciliation (20 current findings)
+
+| Stable ID | Result | Evidence / owner |
+| --- | --- | --- |
+| MOBILE-I18N-434 | PASS | `observedDateTime` selects EN/VI locale; focused regression verifies both seconds/milliseconds render a real 2023 date. |
+| MOBILE-DATA-435 | PASS | Non-finite/invalid observation evidence fails closed to caller-provided localized unavailable text; regression passes. |
+| MOBILE-I18N-436 | PASS | Whale market-cap chip uses catalog-backed `tokenMarketCapShort`, replacing hard-coded `MC`. |
+| MOBILE-DATA-437 | PASS | Partial market snapshot missing price uses localized `unavailable`, not an ambiguous dash; source/type/lint/full suite pass. |
+| MOBILE-DATA-438 | PASS | Partial missing market-cap/change use localized `unavailable`, while fully absent snapshot retains its truthful market-unavailable state. |
+| MOBILE-QA-269..275 | BLOCKED P2 | TalkBack, VoiceOver, Switch Access, 320dp/large text, offline/reconnect, lifecycle, and storage matrix; owner QA/device/network fixture. |
+| MOBILE-QA-276 | BLOCKED P2 | Expo Doctor child Node ENOENT; owner toolchain. |
+| MOBILE-QA-277 | CONDITIONAL PASS P2 | Android bundle completes with Noble strict-exports fallback; owner upstream. |
+| MOBILE-QA-278..280 | BLOCKED P2 | Monitor reset/cursor and physical-performance fixtures; owner provider/QA device. |
+| MOBILE-QA-283..285 | BLOCKED P2 | Android/iOS edge traversal and Android large-text whale-row matrix; owner QA/device. |
+
+## MOBILE-QA release and throughput
+
+- Evidence references: `%LOCALAPPDATA%\\Temp\\mobile-qa-178-full.out.log`, `mobile-qa-178-full.err.log`, `mobile-qa-178-android-export.out.log`, `mobile-qa-178-ios-export.out.log`, and `mobile-qa-178-web-export.out.log`. No screenshot, secret, credential, backend payload, or WEB evidence was retained. No MOBILE-to-WEB contract blocker exists.
+- **MOBILE-QA release recommendation: CONDITIONAL NO-GO.** All five available chronology/market-evidence outcomes pass independent source, focused, full-regression, configuration, and bundle checks; exact EN/VI device/runtime coverage and 15 external findings remain incomplete.
+- Findings inspected/reconciled: 20. DEV material outcomes available/verified: 5/5 PASS. Exact shortfall to 20: 15 (`MOBILE-QA-269..280`, `MOBILE-QA-283..285`); no padding applied.
+- Carry-forward order: `MOBILE-QA-269`, `MOBILE-QA-270`, `MOBILE-QA-271`, `MOBILE-QA-272`, `MOBILE-QA-273`, `MOBILE-QA-274`, `MOBILE-QA-275`, `MOBILE-QA-276`, `MOBILE-QA-277`, `MOBILE-QA-278`, `MOBILE-QA-279`, `MOBILE-QA-280`, `MOBILE-QA-283`, `MOBILE-QA-284`, `MOBILE-QA-285`.
+- **NEXT_DEV_ACTION:** provide a deterministic immutable Whale fixture with seconds, milliseconds, invalid observation time, and full/partial/absent market snapshots so QA can complete EN/VI visual and assistive chronology verification without changing provider contracts.

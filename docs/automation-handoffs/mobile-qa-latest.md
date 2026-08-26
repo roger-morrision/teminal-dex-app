@@ -842,3 +842,55 @@ The initial sandboxed diagnostic could not open Expo's user native-module cache 
 - Findings inspected/reconciled: 21 (15 ready outcomes, five declared external blockers, and `MOBILE-QA-282`). DEV outcomes available: 15; independently PASS: 15/15. Exact outcome shortfall to 20: 5 (`MOBILE-QA-269..273`); no padding applied.
 - Carry-forward order: `MOBILE-QA-282`, `MOBILE-QA-269`, `MOBILE-QA-270`, `MOBILE-QA-271`, `MOBILE-QA-272`, `MOBILE-QA-273`, `MOBILE-QA-276`, `MOBILE-QA-277`, `MOBILE-QA-278`, `MOBILE-QA-279`, `MOBILE-QA-280`.
 - **NEXT_DEV_ACTION:** make the exact `AsyncSurface` + `touch-targets` focused command deterministic without timeout or post-teardown renderer access, then supply a responsive exact-build device/network fixture for the five blocked physical/recovery scenarios.
+
+---
+
+# MOBILE-QA validation handoff — MOBILE-174
+
+- Trigger: 2026-08-26T17:42:08.148Z. Inspected immutable result `d68c56d0f7ea71ae59c291bcb0659f6e832c358f` (`fix(mobile): stabilize recovery and whale threshold`), base `056f997`.
+- Scope/coordination: PASS. Canonical safe-directory top-level normalized to `c:/tuan/devapps/teminal-dex-app`, prefix empty, clean result worktree, no DEV lock. QA source/automated evidence comes from clean archive `%LOCALAPPDATA%\\Temp\\mobile-qa-174-d68c56d` with existing dependencies linked. The canonical verified launcher reached `Waiting on http://localhost:8098`, but the bounded emulator deep-link did not settle or emit the expected build marker; no runtime conclusion is inferred. QA report lock used only during this handoff.
+- Environment: Windows, bundled Node 24.19.0, Expo 57 local CLI, API 37 emulator listed by ADB. No product, WEB, API/provider, wallet, signing, submission, trading, configuration, or application-data write occurred.
+
+## MOBILE-QA acceptance matrix
+
+| Criterion | Result | Independent evidence |
+| --- | --- | --- |
+| Type and changed-surface lint | PASS | Archive `tsc --noEmit` and ESLint of `whale-activity` and both changed test files exit 0. |
+| Required loaded recovery regression | PASS | Exact `AsyncSurface` + `touch-targets` pair passes three consecutive clean-archive runs, 2 suites / 35 tests each; first loaded pass completes in 11.394s with no timeout or post-teardown renderer error. |
+| Whale boundary regression | PASS | `whale-activity` passes 1 suite / 11 tests, including $10,000 rejection and $10,001 qualification. |
+| Full regression | PASS | Archive `jest --ci --runInBand --silent`: 83 suites / 450 tests pass in 71.648s. |
+| Expo/config/bundles | PASS with carried conditions | Public config passes; Android/iOS/web exports pass. Android retains the known Noble strict-exports fallback; Doctor child Node remains unavailable. |
+| Exact runtime / provider threshold | BLOCKED | Emulator was available, but the exact deep-link did not settle and no controlled $10,000/$10,001 provider-holding fixture exists. |
+
+## MOBILE-QA reconciliation (20 current findings)
+
+| Stable ID | Result | Evidence / owner |
+| --- | --- | --- |
+| MOBILE-QA-282 | RESOLVED | Three exact loaded pair passes plus full suite pass; explicit cleanup removes the previously reproduced timeout/teardown leak. |
+| MOBILE-DATA-416 | PASS | Whale identity now requires eligible famous-token holding strictly `> 10,000`; unit boundary tests pass. |
+| MOBILE-QA-269 | BLOCKED P2 | Android TalkBack; owner QA/device. |
+| MOBILE-QA-270 | BLOCKED P2 | iOS VoiceOver; owner QA/device. |
+| MOBILE-QA-271 | BLOCKED P2 | Switch Access; owner QA/device. |
+| MOBILE-QA-272 | BLOCKED P2 | 320dp/enlarged-text matrix; owner QA/device. |
+| MOBILE-QA-273 | BLOCKED P2 | Offline/reconnect recovery; owner QA/network fixture. |
+| MOBILE-QA-274 | BLOCKED P2 | Lifecycle interruption; owner QA/device. |
+| MOBILE-QA-275 | BLOCKED P2 | Storage-fault recovery; owner QA/device. |
+| MOBILE-QA-276 | BLOCKED P2 | Expo Doctor child-process Node; owner toolchain. |
+| MOBILE-QA-277 | CONDITIONAL PASS P2 | Android bundle completes but Noble strict-exports fallback persists; owner upstream. |
+| MOBILE-QA-278 | BLOCKED P2 | Monitor active-reset state; owner provider fixture. |
+| MOBILE-QA-279 | BLOCKED P2 | Monitor partial-page/cursor failure; owner provider fixture. |
+| MOBILE-QA-280 | BLOCKED P2 | Physical performance measurement; owner QA/device. |
+| MOBILE-QA-283 | BLOCKED P2 | Android edge-tap traversal; owner QA/device. |
+| MOBILE-QA-284 | BLOCKED P2 | iOS edge-tap traversal; owner QA/device. |
+| MOBILE-QA-285 | BLOCKED P2 | Android large-text whale-row truncation; owner QA/device. |
+| MOBILE-QA-286 | BLOCKED P2 | iOS dynamic-type whale-row truncation; owner QA/device. |
+| MOBILE-QA-287 | BLOCKED P2 | Stale-to-fresh whale recovery; owner network fixture. |
+| MOBILE-QA-288 | BLOCKED P2 | Missing whale-holding identity evidence; owner provider fixture. |
+
+## MOBILE-QA release and throughput
+
+- Evidence references: `%LOCALAPPDATA%\\Temp\\mobile-qa-174-full.err.log`, `mobile-qa-174-android-export.err.log`, `mobile-qa-174-runtime.out.log`. No screenshot, secret, credential, provider payload, or WEB evidence was retained; no MOBILE-to-WEB contract blocker exists.
+- **MOBILE-QA release recommendation: CONDITIONAL NO-GO.** Both available MOBILE-174 outcomes independently pass; 18 physical/network/provider/toolchain/upstream findings remain blocked or conditional.
+- Findings inspected/reconciled: 20. DEV material outcomes available/verified: 2/2 PASS. Exact shortfall to 20: 18, stable IDs `MOBILE-QA-269..280`, `MOBILE-QA-283..288`; no padding applied.
+- Carry-forward order: `MOBILE-QA-269`, `MOBILE-QA-270`, `MOBILE-QA-271`, `MOBILE-QA-272`, `MOBILE-QA-273`, `MOBILE-QA-274`, `MOBILE-QA-275`, `MOBILE-QA-276`, `MOBILE-QA-277`, `MOBILE-QA-278`, `MOBILE-QA-279`, `MOBILE-QA-280`, `MOBILE-QA-283`, `MOBILE-QA-284`, `MOBILE-QA-285`, `MOBILE-QA-286`, `MOBILE-QA-287`, `MOBILE-QA-288`.
+- **NEXT_DEV_ACTION:** provide deterministic provider and device routes that settle on the immutable build, including threshold holdings, Monitor reset/cursor states, stale recovery, and accessibility/large-text modes for the blocked matrix.

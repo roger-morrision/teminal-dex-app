@@ -1126,3 +1126,30 @@ The initial sandboxed diagnostic could not open Expo's user native-module cache 
 - Findings inspected/reconciled: 20. DEV outcomes available/verified: 6/6 PASS. Exact shortfall: 14 (`MOBILE-QA-269..280`, `MOBILE-QA-283..284`).
 - Carry-forward order: `MOBILE-QA-269`, `MOBILE-QA-270`, `MOBILE-QA-271`, `MOBILE-QA-272`, `MOBILE-QA-273`, `MOBILE-QA-274`, `MOBILE-QA-275`, `MOBILE-QA-276`, `MOBILE-QA-277`, `MOBILE-QA-278`, `MOBILE-QA-279`, `MOBILE-QA-280`, `MOBILE-QA-283`, `MOBILE-QA-284`.
 - **NEXT_DEV_ACTION:** provide an immutable Whale fixture for 30-second, 2-minute, 3-hour, 2-day, malformed, and future observations so QA can verify EN/VI live-age output and accessibility without changing provider contracts.
+
+---
+
+# MOBILE-QA validation handoff — MOBILE-180
+
+- Trigger: 2026-08-26T23:40:13.960Z. Inspected immutable result `d1475946f0487cdc6101d55fee12ac3d298a10de` (`fix(mobile): unify defensive relative ages`), base `cce8d4a`. Scope PASS: canonical top-level/prefix, clean result, and no DEV lock. Archive `%LOCALAPPDATA%\\Temp\\mobile-qa-180-d147594` supplied independent evidence; only this report uses the QA lock.
+- Environment/runtime: Windows, bundled Node 24.19.0, Expo 57. No controlled seconds/milliseconds/malformed/future fixture or exact device lane settled for Discover, Trenches, Operations, or Monitor; runtime/accessibility/navigation conclusions are BLOCKED, not inferred.
+
+## MOBILE-QA acceptance matrix
+
+| Criterion | Result | Independent evidence |
+| --- | --- | --- |
+| Type and changed-surface lint | PASS | Archive `tsc --noEmit` and ESLint of formatter plus all four migrated surfaces exit 0. |
+| Focused migrated-surface regression | PASS | Formatter, Trenches, Monitor, and Operations suites: 4 suites / 12 tests pass. |
+| Full regression | PASS | Archive Jest: 83 suites / 455 tests pass in 40.198s. |
+| Expo/configuration | PASS with Doctor blocker | Public configuration resolves; Doctor emits child-Node ENOENT. |
+| Android bundle | CONDITIONAL PASS | Fresh Android Hermes 5.7 MB bundle plus metadata exports; known Noble condition remains. iOS/web M179 compatible export evidence is carried, not reclassified as same-run result. |
+| Exact four-surface runtime | BLOCKED | Deterministic timestamp/provider and physical accessibility fixtures unavailable. |
+
+## MOBILE-QA reconciliation and release
+
+- `MOBILE-DATA-445..459`: PASS. Four surfaces delegate relative age to the shared seconds/milliseconds-normalizing formatter; localized days and future fallback are covered by focused regression, with type/lint/full/Android-bundle gates passing.
+- `MOBILE-QA-269..273`: BLOCKED P2 (TalkBack, VoiceOver, Switch Access, 320dp/large text, offline/reconnect); owner QA/device/network fixture.
+- Findings inspected/reconciled: 20. DEV outcomes available/verified: 15/15 PASS. Exact shortfall: 5 (`MOBILE-QA-269..273`); no padding. Evidence: `%LOCALAPPDATA%\\Temp\\mobile-qa-180-full.out.log`, `mobile-qa-180-android.out.log`. No secret, credential, provider payload, screenshot, or WEB evidence retained; no MOBILE-to-WEB blocker.
+- **MOBILE-QA release recommendation: CONDITIONAL NO-GO.** The available migration passes, but physical accessibility/layout/offline runtime remains incomplete.
+- Carry-forward order: `MOBILE-QA-269`, `MOBILE-QA-270`, `MOBILE-QA-271`, `MOBILE-QA-272`, `MOBILE-QA-273`.
+- **NEXT_DEV_ACTION:** provide immutable timestamp fixtures for Discover, Trenches, Operations, and Monitor across EN/VI and controlled device/network lanes for the five blocked physical scenarios.

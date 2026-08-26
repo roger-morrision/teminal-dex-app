@@ -676,3 +676,58 @@ The initial sandboxed diagnostic could not open Expo's user native-module cache 
 - Stable blocked/skipped IDs: `MOBILE-QA-269..276`, `MOBILE-QA-278..280`; conditional `MOBILE-QA-277`; intermittent fail `MOBILE-QA-281`.
 - Carry-forward order: `MOBILE-QA-281`, `MOBILE-QA-269`, `MOBILE-QA-270`, `MOBILE-QA-271`, `MOBILE-QA-272`, `MOBILE-QA-273`, `MOBILE-QA-274`, `MOBILE-QA-275`, `MOBILE-QA-276`, `MOBILE-QA-277`, `MOBILE-QA-278`, `MOBILE-QA-279`, `MOBILE-QA-280`.
 - **NEXT_DEV_ACTION:** isolate and eliminate the `MonitorTokenTable` cross-suite timeout/unmounted-renderer flake, then provide deterministic blank/duplicate live-feed fixtures with a development-client route that opens all six affected surfaces for exact runtime/a11y verification.
+
+---
+
+# MOBILE-QA validation handoff — MOBILE-171
+
+- Trigger: 2026-08-26T14:40:35.110Z. Inspected immutable result `4671198f6a18c9dc60ddef566d68ee0f32d6f4f6` (`fix(mobile): expand auxiliary touch targets`), base `bc21809`.
+- Scope/coordination: PASS. Explicit canonical workspace and safe-directory Git top-level normalize to `c:/tuan/devapps/teminal-dex-app`; Git prefix was empty; start/end result worktree was clean; no DEV lock was present. Independent source/tests used clean archive `%LOCALAPPDATA%\\Temp\\mobile-qa-171-4671198` with existing dependencies linked. QA acquired the report lock only while writing this handoff. No product, WEB, API/provider, wallet, signing, trading, data, or configuration write occurred.
+- Environment/device: Windows; bundled Node 24.19.0; Expo 57 local CLI; API 37 emulator available. The verifier started but the emulator’s deep-link/automation calls did not settle within the bounded window and no exact build marker reached the runtime log. No edge-tap, focus, selection, wrapping, large-text, retry, or navigation result is claimed.
+
+## MOBILE-QA acceptance matrix
+
+| Criterion | Result | Independent evidence |
+| --- | --- | --- |
+| Type and changed-surface lint | PASS | Archive `tsc --noEmit` and ESLint of ten changed routes plus both regression files exit 0. |
+| Required grouped Monitor focused regression | FAIL P1 | `jest --ci --runInBand --silent MonitorTokenTable touch-targets` fails: `keeps provider market rows explicitly monitor-only across presets` exceeds the 5s timeout; the same `MonitorTokenTable` file alone passes 3/3. This reproduces `MOBILE-QA-281`, so the DEV claimed grouped stability is not independently accepted. |
+| Touch-target regression | PASS | `touch-targets.test.ts` passes 15/15 in the failed grouped invocation; source establishes 44px minimum styles for all named changed families. |
+| Full regression | PASS | Archive `jest --ci --runInBand --silent`: 83 suites / 433 tests pass in 68.571s. Full-pass evidence does not erase the specific grouped-regression failure. |
+| Expo public config | PASS | Android/iOS/web configuration resolves, retaining deep-link, ATS, biometric, and no-secret boundaries. |
+| Platform bundles | CONDITIONAL PASS / PASS / PASS | Android (one 5.7 MB Hermes bundle plus metadata) succeeds with carried Noble strict-exports warning; iOS (one 2.3 MB Hermes bundle plus metadata) and web static export succeed. |
+| Expo Doctor and device traversal | BLOCKED | Local Doctor reports `spawn node ENOENT`. Bounded device deep-link/UI automation did not settle. |
+
+## MOBILE-QA reconciliation (20 distinct DEV outcomes)
+
+| Stable ID | Result | Evidence and risk |
+| --- | --- | --- |
+| MOBILE-QA-281 | FAIL P1 | Grouped Monitor + touch-target invocation deterministically times out in Monitor then unmounts the renderer; isolated/full tests pass but do not prove grouped stability. |
+| MOBILE-TOUCH-361 | PASS | AI back control has explicit 44px touch minimum; touch-target regression passes. |
+| MOBILE-TOUCH-362 | PASS | CopyTrade back control has explicit 44px minimum. |
+| MOBILE-TOUCH-363 | PASS | CopyTrade period selectors have explicit 44px minimum. |
+| MOBILE-TOUCH-364 | PASS | CopyTrade mode pills have explicit 44px minimum. |
+| MOBILE-TOUCH-365 | PASS | CopyTrade toggles have explicit 44px minimum. |
+| MOBILE-TOUCH-366 | PASS | CopyTrade pause controls have explicit 44px minimum. |
+| MOBILE-TOUCH-367 | PASS | Research back control has explicit 44px minimum. |
+| MOBILE-TOUCH-368 | PASS | Research remove control has explicit 44px minimum. |
+| MOBILE-TOUCH-369 | PASS | Research numeric input has explicit 44px minimum. |
+| MOBILE-TOUCH-370 | PASS | Research icon action has explicit 44px minimum. |
+| MOBILE-TOUCH-371 | PASS | Wallet Intelligence back control has explicit 44px minimum. |
+| MOBILE-TOUCH-372 | PASS | Wallet Intelligence remove control has explicit 44px minimum. |
+| MOBILE-TOUCH-373 | PASS | Operations back control has explicit 44px minimum. |
+| MOBILE-TOUCH-374 | PASS | Market Intelligence back control has explicit 44px minimum. |
+| MOBILE-TOUCH-375 | PASS | Trade back control has explicit 44px minimum. |
+| MOBILE-TOUCH-376 | PASS | Track filters have explicit 44px minimum. |
+| MOBILE-TOUCH-377 | PASS | Track retry has explicit 44px minimum. |
+| MOBILE-TOUCH-378 | PASS | Settings back control has explicit 44px minimum. |
+| MOBILE-TOUCH-379 | PASS | Token Detail back control has explicit 44px minimum. |
+
+## MOBILE-QA release, blockers, and throughput
+
+- `MOBILE-QA-269..275`, `MOBILE-QA-278..280`: BLOCKED P2, owner QA/device/provider fixture. Physical assistive-tech/small-screen/offline/lifecycle/storage/provider-cursor/performance scenarios remain unverified.
+- `MOBILE-QA-276`: BLOCKED P2, owner toolchain; Doctor cannot spawn its child Node executable. `MOBILE-QA-277`: CONDITIONAL PASS P2, owner upstream dependency; Android bundle retains the Noble fallback.
+- Runtime/log references: `%LOCALAPPDATA%\\Temp\\mobile-qa-171-full.err.log`, `mobile-qa-171-android-export.err.log`, and `mobile-qa-171-runtime.out.log`. No screenshot, credential, provider payload, or WEB evidence was retained; no MOBILE-to-WEB blocker exists.
+- **MOBILE-QA release recommendation: NO-GO.** `MOBILE-QA-281` is a current P1 required-regression failure; runtime motor/accessibility evidence and carried toolchain/device blockers also remain.
+- Findings inspected/reconciled: 20 material outcomes plus carried stable blockers. Material DEV outcomes available: 20; independently PASS: 19; FAIL: 1 (`MOBILE-QA-281`); exact shortfall to 20: 0.
+- Carry-forward order: `MOBILE-QA-281`, `MOBILE-QA-269`, `MOBILE-QA-270`, `MOBILE-QA-271`, `MOBILE-QA-272`, `MOBILE-QA-273`, `MOBILE-QA-274`, `MOBILE-QA-275`, `MOBILE-QA-276`, `MOBILE-QA-277`, `MOBILE-QA-278`, `MOBILE-QA-279`, `MOBILE-QA-280`.
+- **NEXT_DEV_ACTION:** make the grouped `MonitorTokenTable` and `touch-targets` command deterministically pass without timeout/unmounted-renderer, then supply an exact-build device route so QA can edge-tap all 19 controls at 1.0× and 1.3× font scale.

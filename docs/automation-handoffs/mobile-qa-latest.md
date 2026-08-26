@@ -489,3 +489,42 @@ The initial sandboxed diagnostic could not open Expo's user native-module cache 
 - DEV material outcomes available: 8; independently verified: 8/8 PASS.
 - Exact shortfall to 20 DEV outcomes: 12; `MOBILE-QA-269..280` are blocked by the listed device/toolchain/upstream/provider owners. No padding applied.
 - Carry-forward order: `MOBILE-QA-269`, `MOBILE-QA-270`, `MOBILE-QA-271`, `MOBILE-QA-272`, `MOBILE-QA-273`, `MOBILE-QA-274`, `MOBILE-QA-275`, `MOBILE-QA-276`, `MOBILE-QA-277`, `MOBILE-QA-278`, `MOBILE-QA-279`, `MOBILE-QA-280`.
+
+---
+
+# MOBILE-QA validation handoff — MOBILE-167
+
+- Trigger: 2026-08-26T10:40:30.804Z. Inspected exact result `321470605791148c5aa4faab3696c2a55c2f2434` (`fix(mobile): normalize monitor dex filters`), base `6646131`.
+- Scope: PASS. Explicit canonical directory and safe-directory Git top-level normalized to `c:/tuan/devapps/teminal-dex-app`; prefix empty; no DEV lock; clean worktree before/after. QA used a clean archive and made no product, WEB, API, wallet, data, or transaction mutation.
+- Environment: bundled Node 24.19.0, API 37 emulator. The verified local launch started at the exact SHA, but the dev launcher did not settle on the requested Monitor route before the bounded runtime window; no runtime claim is inferred.
+
+## MOBILE-QA acceptance
+
+| Criterion | Result | Evidence |
+| --- | --- | --- |
+| Type / changed-surface lint | PASS | Immutable `tsc --noEmit` and ESLint of Monitor table/store/focused test exit 0. |
+| Focused regression | PASS | `monitor-table.test.ts`: 1 suite / 6 tests, including invalid/blank/reserved/case-duplicate DEX, null-safe filter, and cap behavior. |
+| Full regression | PASS | Immutable Jest: 83 suites / 421 tests. |
+| Runtime Monitor route | BLOCKED | API 37 verified-launch attempt did not settle on Monitor controls in the bounded window; no malformed-control/crash conclusion fabricated. |
+| Expo Doctor / bundles | BLOCKED / SKIP | Doctor remains an inherited npm-child tooling blocker; no config/package change, and MOBILE-166 export evidence is unchanged. **NEXT_DEV_ACTION:** provide stable dev-client route plus npm-enabled Doctor lane. |
+
+## MOBILE-QA reconciliation (20)
+
+| IDs | Result | Evidence / owner / exact NEXT_DEV_ACTION |
+| --- | --- | --- |
+| MOBILE-DATA-281..285 | PASS | Focused regression proves normalize/reject invalid/blank/reserved DEX, case-safe option behavior, and null-safe selected filtering. **NEXT_DEV_ACTION:** retain tests. |
+| MOBILE-REC-286 | PASS | Derived effective selection fails soft to All without persistence mutation; source/test review passes. **NEXT_DEV_ACTION:** add controllable refresh device fixture. |
+| MOBILE-DATA-287 | PASS | Monitor source localizes unavailable DEX provenance instead of raw malformed evidence. **NEXT_DEV_ACTION:** add rendered fixture. |
+| MOBILE-PERF-288 | PASS | Normalization/dedupe precede limiting; focused bounded-helper test passes. **NEXT_DEV_ACTION:** retain cap regression. |
+| MOBILE-QA-269..275 | BLOCKED P2 | Physical TalkBack, VoiceOver, Switch Access, 320dp, offline/reconnect, background/restore, persistence-fault matrix unavailable; owner QA/device provider. **NEXT_DEV_ACTION:** run physical matrix. |
+| MOBILE-QA-276 | BLOCKED P2 | Doctor child executable unavailable; owner toolchain. **NEXT_DEV_ACTION:** provide npm-enabled exact run. |
+| MOBILE-QA-277 | CONDITIONAL PASS P2 | Carried Noble fallback warning; owner upstream. **NEXT_DEV_ACTION:** revalidate compatibility guard on dependency change. |
+| MOBILE-QA-278..279 | BLOCKED P2 | Active-reset and cursor-failure branches require controllable provider fixtures; owner QA/provider fixture. **NEXT_DEV_ACTION:** provide fixtures. |
+| MOBILE-QA-280 | BLOCKED P2 | Physical performance measurement unavailable; owner QA/device provider. **NEXT_DEV_ACTION:** capture hardware measurements. |
+
+## MOBILE-QA release and throughput
+
+- **Release: CONDITIONAL NO-GO.** The eight MOBILE-167 production outcomes pass static/automated verification; exact runtime route verification and existing external evidence remain unresolved.
+- Findings reconciled: 20. DEV outcomes available/verified: 8/8 PASS. Exact shortfall: 12 (`MOBILE-QA-269..280`); no padding.
+- No MOBILE-to-WEB blocker. QA lock released after this report.
+- **NEXT_DEV_ACTION:** provide a stable verified Monitor dev-client route and controlled/physical evidence for `MOBILE-QA-269..280`.

@@ -1361,3 +1361,9 @@
 - `diagnostics:expo` now passes. TypeScript, zero-warning source ESLint, primary full Jest 81/403, public Expo config, and Android Hermes export (1 bundle / 46 assets) pass. Immutable QA expects 81/401 after excluding two concurrent TokenRow tests.
 - Android export retained the conditionally accepted Noble warning. Metro rejected one stale pre-upgrade cache, completed a full crawl, and exported successfully. Installation reported 11 moderate audit findings; no automatic or force audit fix was attempted, and security review remains a separate dependency lane.
 - 20 findings reviewed; four package compatibility outcomes completed; shortfall 16 remains exact device/runtime evidence, audit disposition, WEB-QC fixtures, physical-device scenarios, and concurrent Whales/logo acceptance.
+
+## 2026-08-26 — MOBILE-160: rendered SnipeCard query settlement
+
+- QA reproduced an order-dependent `act` warning because request invocation did not prove React Query's rendered update had settled. The two success cases now await visible `Token unavailable`; recovery awaits removal of the Retry control after the second response.
+- Focused CI SnipeCard passes 3/3 and full primary CI Jest passes 81/403 with no React update warning. TypeScript and zero-warning focused ESLint pass. Immutable QA expects 81/401 excluding two concurrent TokenRow tests.
+- 20 findings reviewed; three material rendered-settlement outcomes completed; shortfall 17 remains exact device/runtime evidence, audit disposition, full Doctor parity, WEB-QC fixtures, physical-device scenarios, and concurrent Whales/logo acceptance.

@@ -162,3 +162,8 @@ No in-scope automated regression was found. Generated export directories were re
 
 - Expo 57.0.16, Constants 57.0.14, Dev Client 57.0.15, and Router 57.0.16 now satisfy the repository-local compatibility diagnostic.
 - Static checks, full regressions, public configuration, and Android Hermes export pass. The Noble fallback remains conditionally accepted; exact-device evidence and the reported dependency audit findings remain release follow-ups.
+
+## MOBILE-160 rendered query settlement
+
+- All three SnipeCard query paths await observable rendered settlement rather than request counts: initial research/removal, threshold editing, and failed-query recovery.
+- Focused and full CI regressions pass without the prior order-dependent React `act` warning. Product behavior, API contracts, and execution controls are unchanged.

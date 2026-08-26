@@ -1,5 +1,15 @@
 # MOBILE DEV → QA handoff
 
+## MOBILE-160 — rendered SnipeCard query settlement
+
+- Base: `55326ce`; result: containing commit.
+- Changed files/behavior: `SnipeCard.test.tsx` awaits visible success settlement in both initial-query cases and disappearance of Retry after recovered refetch. Product code is unchanged.
+- Acceptance: focused CI 3/3; TypeScript; zero-warning focused ESLint; primary full CI Jest 81/403 with no `act` warning. Immutable QA expects 81/401 after excluding two concurrent TokenRow tests.
+- NEXT_QA_ACTION: pin the result, run focused then full `--ci --runInBand`, scan stdout/stderr for `act`/overlapping-act warnings, and close MOBILE-QA-013 only when the immutable 81/401 run is warning-free.
+- 20/20 reconciliation: 20 findings reviewed; three material rendered-settlement outcomes completed; shortfall 17 carried forward without padding.
+
+---
+
 ## MOBILE-159 — SDK 57 patch compatibility
 
 - Base: `c6ea00c`; result: containing commit.

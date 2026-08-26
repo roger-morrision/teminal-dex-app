@@ -256,3 +256,41 @@ The initial sandboxed diagnostic could not open Expo's user native-module cache 
 - Material DEV outcomes available: 8; independently verified: 7 PASS, 1 BLOCKED (Doctor 21/21).
 - Remaining to 20 DEV outcomes: 12. No padding applied; remaining capacity requires npm-enabled Doctor/audit evidence, device ownership, upstream Noble/audit remediation, or the excluded concurrent slice.
 - Carry-forward order: `MOBILE-QA-008`, `MOBILE-QA-011`, `MOBILE-QA-002`, `MOBILE-QA-010`, `MOBILE-QA-004`.
+
+---
+
+# MOBILE-QA Android UI-flow supplement
+
+- Run: 2026-08-26T06:50:45.8888108Z.
+- Environment: connected API 37 emulator (`emulator-5554`, 1080×2400), installed `app.terminaldex.mobile` version 0.1.0, last updated 2026-08-26 12:59 local.
+- Provenance: BLOCKED. The installed app produced no `MOBILE_BUILD` marker in the retained log window, so these observations cannot certify an exact immutable Git commit. At completion, the repository had advanced to `37783c9` with additional uncommitted DEV changes; no source-level mixed-state testing was run.
+
+## MOBILE-QA observed end-to-end flows
+
+| Flow | Result | Evidence |
+| --- | --- | --- |
+| Whales → Live | PASS (runtime observation) | Rendered historical/unverified whale rows, flow/amount/sort controls, exact-token visual fallbacks, and accessible evidence-rich rows without fatal screen. |
+| Discover navigation | PASS | Bottom tab transitions to Discover. |
+| Discover loading → settlement | PASS | “Loading live markets…” transitions to populated Trending rows within six seconds; unavailable holder/age evidence is visibly labeled rather than invented. |
+| Trenches | PASS | New/Almost bonded/Migrated rails, fallback provenance, launch count, truthful row metrics, and quote-review entry points render. No quote was opened. |
+| Portfolio safety boundary | PASS | Wallet verification is separated from public watch-only address input; no wallet, signing, or transaction action was initiated. |
+| More catalog | PASS | Settings and read-only intelligence/research destinations are reachable. |
+| Market Intelligence → Signals | PASS | Live signature-backed rows and provider/freshness evidence render under an explicit no-actions boundary. |
+| Market Intelligence → Heatmap | PASS | Loading transitions to populated heatmap with included/excluded counts, warnings, incomplete metrics, and no execution control. |
+| Market Intelligence → Claims | PASS | Healthy RPC evidence and zero-result filtered-empty state render with an explicit observational-only/no-wallet-action boundary. |
+| Settings | PASS (non-mutating inspection) | Localization, accessibility, telemetry-default-off, HTTPS/deep-link/security disclosures, and privacy reset boundary render. No setting or data reset was changed. |
+| Crash/ANR safety | PASS (limited) | Launch and tested transitions show no visible fatal error or ANR. Log provenance was insufficient for exact-build crash certification. |
+
+## MOBILE-QA findings and recommendation
+
+- MOBILE-QA-002 remains BLOCKED P1: runtime evidence is not bound to an immutable commit. **NEXT_DEV_ACTION:** launch the exact committed development build through the verified launcher and retain `[MOBILE_BUILD] commit=<SHA>` before device certification.
+- MOBILE-QA-010 remains BLOCKED P2: TalkBack traversal, enlarged text, reduced-motion state change, offline/reconnect, background/restore, and performance were not run; this supplement does not fabricate them.
+- MOBILE-QA-006 is OPEN for the new `37783c9` delta: DEV committed a new slice while an additional dirty slice remains. **NEXT_DEV_ACTION:** publish the matching DEV handoff, then QA will pin and validate it from a clean archive.
+- Screenshots (safe local references): `%LOCALAPPDATA%\Temp\mobile-qa-emulator-home.png`, `mobile-qa-discover-settled.png`, `mobile-qa-trenches.png`, `mobile-qa-portfolio.png`, `mobile-qa-more.png`, `mobile-qa-signals.png`, `mobile-qa-heatmap-settled.png`, `mobile-qa-claims.png`, `mobile-qa-settings.png`.
+- **MOBILE-QA release recommendation: CONDITIONAL NO-GO.** Broader UI/data/empty-state flows are now observed on an actual emulator, but commit provenance and the remaining accessibility/resilience matrix are required before release sign-off.
+
+## Throughput disposition
+
+- Runtime findings inspected: 11 distinct UI-flow outcomes, all observed PASS within stated limits.
+- New DEV outcomes eligible for this run: 0, because `37783c9` has no matching DEV handoff and the worktree changed during observation.
+- Remaining to 20 DEV outcomes: 20; no padding or mixed-state testing applied.

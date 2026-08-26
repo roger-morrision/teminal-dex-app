@@ -394,6 +394,7 @@ export default function DiscoverScreen() {
                       accessibilityRole="radio"
                       accessibilityLabel={t("selectPeriod", { period: item })}
                       accessibilityState={{ checked: period === item }}
+                      style={styles.periodButton}
                       onPress={() => {
                         setPeriod(item);
                         if (mode === "watchlist")
@@ -830,7 +831,7 @@ const styles = StyleSheet.create({
     paddingTop: spacing.sm,
   },
   pill: {
-    minHeight: 36,
+    minHeight: 44,
     justifyContent: "center",
     paddingHorizontal: 11,
     paddingVertical: 6,
@@ -854,9 +855,16 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: colors.border,
   },
+  periodButton: {
+    minWidth: 44,
+    minHeight: 44,
+    alignItems: "center",
+    justifyContent: "center",
+  },
   period: { color: colors.muted, fontSize: 11, fontWeight: "800" },
   activePeriod: { color: colors.accent },
   filterButton: {
+    minHeight: 44,
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
@@ -897,6 +905,8 @@ const styles = StyleSheet.create({
   stateText: { color: colors.muted, textAlign: "center", lineHeight: 20 },
   errorTitle: { color: colors.text, fontSize: 17, fontWeight: "800" },
   retry: {
+    minHeight: 44,
+    justifyContent: "center",
     backgroundColor: colors.accent,
     paddingHorizontal: 18,
     paddingVertical: 10,
@@ -936,6 +946,8 @@ const styles = StyleSheet.create({
   },
   dexRow: { gap: spacing.sm },
   dex: {
+    minHeight: 44,
+    justifyContent: "center",
     backgroundColor: colors.surface,
     borderRadius: 10,
     paddingHorizontal: 12,
@@ -957,6 +969,7 @@ const styles = StyleSheet.create({
   },
   reset: {
     flex: 1,
+    minHeight: 44,
     alignItems: "center",
     padding: 13,
     borderWidth: 1,
@@ -966,6 +979,7 @@ const styles = StyleSheet.create({
   resetText: { color: colors.text, fontWeight: "800" },
   apply: {
     flex: 2,
+    minHeight: 44,
     alignItems: "center",
     padding: 13,
     backgroundColor: colors.accent,

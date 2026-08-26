@@ -195,3 +195,11 @@ No in-scope automated regression was found. Generated export directories were re
 - **Partially verified:** restricted-shell Doctor passes 17/21 and cannot run four dependency-tree checks because child `npm` is unavailable; MOBILE-162 retains normal-environment 21/21 evidence. Physical-device keyboard/paste behavior and screen-reader radio traversal require QA device confirmation. No WEB change is required.
 - **NEXT_QA_ACTION:** pin the result commit and independently test every stable ID, including long paste, malformed decimals, double taps, wallet-busy boundaries, TalkBack group navigation, and persistence failure recovery.
 - **NEXT_WEB_ACTION:** none.
+## MOBILE-165 touch-target and motor-accessibility pass
+
+- **Implemented:** 20/20 measured undersized control families (`MOBILE-TOUCH-241..260`) across Discover, Monitor, and Trenches now meet a 44px logical target floor.
+- **Verified:** TypeScript and full source ESLint PASS; focused accessibility/interaction Jest PASS (5 suites/81 tests); full Jest PASS (83 suites/417 tests); public Expo config PASS.
+- **Safety:** visual/touch geometry only; no API, data, wallet, transaction, storage, credential, or WEB behavior changed.
+- **Partially verified:** restricted-shell Doctor is 17/21 because child `npm` is unavailable; MOBILE-162 retains normal-environment 21/21 evidence. Physical-device Switch Access/TalkBack reachability and small-screen visual review remain QA device tasks.
+- **NEXT_QA_ACTION:** validate all 20 target families on the immutable result at 1.0× and 1.3× font scale, including edge taps, horizontal rails, screen-reader focus, and small-screen wrapping.
+- **NEXT_WEB_ACTION:** none.

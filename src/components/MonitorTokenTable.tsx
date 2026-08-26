@@ -271,7 +271,7 @@ export function MonitorTokenTable({ polling = true }: { polling?: boolean }) {
               }
             />
             {activeFilters ? (
-              <Pressable accessibilityRole="button" accessibilityLabel={t("resetFilters")} onPress={resetFilters}>
+              <Pressable accessibilityRole="button" accessibilityLabel={t("resetFilters")} onPress={resetFilters} style={styles.resetButton}>
                 <Text style={styles.reset}>{t("resetFilters")}</Text>
               </Pressable>
             ) : null}
@@ -450,11 +450,11 @@ const styles = StyleSheet.create({
   heading: { color: colors.text, fontSize: 14, fontWeight: "900" },
   evidence: { color: colors.muted, fontSize: 9, marginTop: 3 },
   boundary: { color: colors.warning, fontSize: 9, lineHeight: 14, paddingHorizontal: spacing.md, paddingBottom: spacing.sm },
-  iconButton: { width: 36, height: 36, alignItems: "center", justifyContent: "center", borderWidth: 1, borderColor: colors.border, borderRadius: 9 },
+  iconButton: { width: 44, height: 44, alignItems: "center", justifyContent: "center", borderWidth: 1, borderColor: colors.border, borderRadius: 9 },
   controls: { gap: 6, paddingHorizontal: spacing.md, paddingBottom: spacing.sm },
   controlGroup: { flexDirection: "row", gap: 6 },
   separator: { width: 1, backgroundColor: colors.border, marginHorizontal: 2 },
-  control: { minHeight: 34, justifyContent: "center", paddingHorizontal: 10, borderWidth: 1, borderColor: colors.border, borderRadius: 8 },
+  control: { minHeight: 44, justifyContent: "center", paddingHorizontal: 10, borderWidth: 1, borderColor: colors.border, borderRadius: 8 },
   controlActive: { borderColor: colors.accent, backgroundColor: colors.accentDim },
   controlText: { color: colors.muted, fontSize: 9, fontWeight: "800" },
   controlTextActive: { color: colors.accent },
@@ -470,6 +470,7 @@ const styles = StyleSheet.create({
   thresholdInput: { minHeight: 38, color: colors.text, borderWidth: 1, borderColor: colors.border, borderRadius: 8, paddingHorizontal: 8, fontSize: 9 },
   panelFoot: { flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
   reset: { color: colors.negative, fontSize: 9, fontWeight: "800", padding: spacing.sm },
+  resetButton: { minHeight: 44, justifyContent: "center" },
   error: { color: colors.negative, fontSize: 9, padding: spacing.md },
   table: { minWidth: 650 },
   tableRow: { flexDirection: "row", alignItems: "center", borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: colors.border, paddingHorizontal: spacing.md },
@@ -485,7 +486,7 @@ const styles = StyleSheet.create({
   positive: { color: colors.positive },
   negative: { color: colors.negative },
   state: { minHeight: 100, alignItems: "center", justifyContent: "center", padding: spacing.lg },
-  loadMore: { minHeight: 42, margin: spacing.md, marginTop: 0, alignItems: "center", justifyContent: "center", borderWidth: 1, borderColor: colors.accent, borderRadius: 9 },
+  loadMore: { minHeight: 44, margin: spacing.md, marginTop: 0, alignItems: "center", justifyContent: "center", borderWidth: 1, borderColor: colors.accent, borderRadius: 9 },
   disabled: { opacity: 0.55 },
   loadMoreText: { color: colors.accent, fontSize: 10, fontWeight: "900" },
   paginationError: { marginHorizontal: spacing.lg, alignItems: "center" },

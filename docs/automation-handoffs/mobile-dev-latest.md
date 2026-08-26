@@ -1,5 +1,17 @@
 # MOBILE DEV → QA handoff
 
+## MOBILE-165 — 20/20 touch-target and motor accessibility
+
+- Base: `fe31e0c`; result: containing commit.
+- Findings/outcomes: `MOBILE-TOUCH-241..260`; 20 measured production control families corrected, remaining to 20: 0. Acceptance evidence and ranking are in `WORKLOG.md`.
+- Changed behavior: Discover mode/period/filter/retry/DEX/reset/apply; Monitor refresh/window/preset/direction/DEX/sort/density/reset/pagination; and Trenches lane/filter/launchpad/reset controls now meet a 44px target floor.
+- Changed files: three production surfaces, focused touch-target regression, and MOBILE evidence documents only.
+- Evidence: TypeScript and full source ESLint PASS; focused Jest PASS (5 suites/81 tests); full Jest PASS (83 suites/417 tests); public Expo config PASS. Restricted-shell Doctor is 17/21 because child `npm` is unavailable; normal-environment 21/21 remains in MOBILE-162.
+- Runtime scenarios: edge-tap every named control at normal and 1.3× font scale; traverse horizontal rails with TalkBack/Switch Access; verify no overlap, clipping, or lost selection state.
+- Known risk: physical-device motor-accessibility and small-screen visual confirmation remain external QA evidence.
+- NEXT_QA_ACTION: pin the result and independently classify all 20 IDs, then run type/lint/full Jest/public config/device scenarios.
+- NEXT_WEB_ACTION: none.
+
 ## MOBILE-164 — 20/20 input integrity and async-control safety
 
 - Base: `31b683f`; result: containing commit.

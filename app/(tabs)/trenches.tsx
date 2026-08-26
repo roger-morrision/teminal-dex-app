@@ -550,7 +550,7 @@ const styles = StyleSheet.create({
   },
   lane: {
     flex: 1,
-    minHeight: 42,
+    minHeight: 44,
     alignItems: "center",
     justifyContent: "center",
     gap: 3,
@@ -575,7 +575,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   filterButton: {
-    minHeight: 40,
+    minHeight: 44,
     paddingHorizontal: 13,
     borderRadius: 10,
     borderWidth: 1,
@@ -611,7 +611,7 @@ const styles = StyleSheet.create({
   },
   launchpads: { flexDirection: "row", flexWrap: "wrap", gap: spacing.sm },
   launchpad: {
-    minHeight: 36,
+    minHeight: 44,
     justifyContent: "center",
     paddingHorizontal: 11,
     borderRadius: 9,
@@ -639,7 +639,7 @@ const styles = StyleSheet.create({
   },
   resetFilters: {
     alignSelf: "flex-end",
-    minHeight: 38,
+    minHeight: 44,
     justifyContent: "center",
     paddingHorizontal: 14,
   },

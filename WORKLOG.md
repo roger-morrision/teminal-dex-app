@@ -1444,3 +1444,35 @@ Execution order is the stable-ID order. All are independently testable and requi
 - Completed 20/20 material outcomes for `MOBILE-DATA-221..240`; remaining to 20: 0. Address/search fields now enforce native/state bounds, financial thresholds normalize one decimal point with bounded precision, exclusive choices expose group semantics, and wallet/storage operations cannot overlap.
 - Focused verification passes 5 suites/24 tests; TypeScript, focused/full source ESLint, and public Expo config pass. Full regression passes 82 suites/414 tests. Restricted-shell Doctor executes 21 checks with 17 passing; four remain environment-blocked because child `npm` is unavailable, consistent with MOBILE-162.
 - No WEB files, production mock data, secrets, signing, submission, trading, or CopyTrade activation changed.
+## MOBILE 20/20 review — 2026-08-26 touch-target and motor-accessibility pass
+
+Fresh measurement of production styles after `4a35418` found 20 independently actionable controls below the 44×44 logical-pixel mobile target. All are local, dependency-ready, preserve dense visual hierarchy, and are verified by static/interaction accessibility tests plus platform diagnostics.
+
+1. **MOBILE-TOUCH-241** Discover mode tabs are 36px high; accept at 44px minimum.
+2. **MOBILE-TOUCH-242** Discover period radios rely on text glyph bounds; accept with a 44px pressable wrapper.
+3. **MOBILE-TOUCH-243** Discover filter trigger is below 44px; accept with 44px minimum.
+4. **MOBILE-TOUCH-244** Discover retry action relies on padding; accept with explicit 44px minimum.
+5. **MOBILE-TOUCH-245** Discover DEX choices are below 44px; accept with 44px minimum.
+6. **MOBILE-TOUCH-246** Discover reset action has no explicit 44px minimum; accept at 44px.
+7. **MOBILE-TOUCH-247** Discover apply action has no explicit 44px minimum; accept at 44px.
+8. **MOBILE-TOUCH-248** Monitor refresh is 36×36; accept at 44×44 without changing icon size.
+9. **MOBILE-TOUCH-249** Monitor window radios are 34px high; accept at 44px.
+10. **MOBILE-TOUCH-250** Monitor preset radios are 34px high; accept at 44px.
+11. **MOBILE-TOUCH-251** Monitor direction radios are 34px high; accept at 44px.
+12. **MOBILE-TOUCH-252** Monitor DEX radios are 34px high; accept at 44px.
+13. **MOBILE-TOUCH-253** Monitor sort checkboxes are 34px high; accept at 44px.
+14. **MOBILE-TOUCH-254** Monitor density switch is 34px high; accept at 44px.
+15. **MOBILE-TOUCH-255** Monitor reset action has a text-sized wrapper; accept with an explicit 44px pressable container.
+16. **MOBILE-TOUCH-256** Monitor load/retry pagination is 42px; accept at 44px.
+17. **MOBILE-TOUCH-257** Trenches lane tabs are 42px; accept at 44px.
+18. **MOBILE-TOUCH-258** Trenches filter trigger is 40px; accept at 44px.
+19. **MOBILE-TOUCH-259** Trenches launchpad radios are 36px; accept at 44px.
+20. **MOBILE-TOUCH-260** Trenches reset is 38px; accept at 44px.
+
+Impact is reduced missed taps and improved switch-access reliability across Discover, Monitor, and Trenches. Verification checks each named control family independently; shared visual styling is not counted as a separate outcome. NEXT_WEB_ACTION: none.
+
+### MOBILE-165 implementation result
+
+- Completed 20/20 touch-target outcomes (`MOBILE-TOUCH-241..260`); remaining to 20: 0. All named control families now expose at least a 44×44 logical target or a 44px minimum height.
+- TypeScript and full source ESLint PASS; focused Jest PASS (5 suites/81 tests); full Jest PASS (83 suites/417 tests); public Expo config PASS. Restricted-shell Doctor remains 17/21 because child `npm` is unavailable; MOBILE-162 retains normal-environment 21/21 evidence.
+- No API, WEB, market-data, wallet, signing, submission, trading, or storage behavior changed.

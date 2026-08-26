@@ -433,3 +433,59 @@ The initial sandboxed diagnostic could not open Expo's user native-module cache 
 - Material DEV outcomes available: 20; independently verified: 20/20 PASS.
 - Remaining to 20: 0. No cosmetic or duplicate outcome counted.
 - Carry-forward order: `MOBILE-QA-021`, `MOBILE-QA-010`, `MOBILE-QA-008`, `MOBILE-QA-004`.
+
+---
+
+# MOBILE-QA validation handoff — MOBILE-166
+
+- Trigger: 2026-08-26T09:41:14.703Z. Inspected result commit `77f88c6bb22ff22aee46b9aada9da332020d2d67` (`fix(mobile): normalize trench dex filters`), base `51fd2e8`.
+- Scope/coordination: PASS. Explicit canonical workdir and safe-directory Git top-level normalized to `c:/tuan/devapps/teminal-dex-app`; Git prefix was empty; start/end worktree was clean; no DEV or QA lock was held before QA reporting. QA used a clean archive of the immutable result. No product, test, configuration, application-data, WEB, wallet, provider, or transaction write occurred.
+- Environment: Windows, bundled Node 24.19.0, Expo 57 local CLI, API 37 `emulator-5554` 1080x2400. Verified runtime marker: `[MOBILE_BUILD] commit=77f88c6bb22ff22aee46b9aada9da332020d2d67`.
+
+## MOBILE-QA acceptance matrix
+
+| Criterion | Result | Independent evidence |
+| --- | --- | --- |
+| Type and changed-surface lint | PASS | Clean archive `tsc --noEmit` exits 0; ESLint of changed Trenches screen/library/test exits 0. |
+| Focused and full regressions | PASS | Focused Trenches/TrenchCard/primary-a11y: 3 suites / 74 tests. Full Jest: 83 suites / 419 tests. |
+| Expo/config/bundles | PASS with existing conditions | Public config resolves expected secure platform configuration; compatibility reports dependencies up to date; Android/iOS/web exports complete. Android retains the known Noble fallback warning. Doctor is still 17/21 because four checks cannot spawn child `npm`. |
+| Exact API 37 QA-021 retest | PASS | Trenches → Open launch filters renders only `All`, `pumpfun`, `meteora`, `raydium`, `orca`, and `pumpswap`; `Select launchpad undefined` is absent. Cleared log window contains the exact build marker and no duplicate-key/TrenchFilterPanel warning, fatal exception, unresolved script, or ANR. |
+
+## MOBILE-QA reconciliation (20)
+
+| Stable ID | Result | Evidence / owner / exact NEXT_DEV_ACTION |
+| --- | --- | --- |
+| MOBILE-DATA-261 | PASS | Unit normalization rejects non-string DEX; runtime has no undefined launchpad. **NEXT_DEV_ACTION:** retain regression. |
+| MOBILE-DATA-262 | PASS | Unit normalization trims/rejects blank DEX. **NEXT_DEV_ACTION:** retain regression. |
+| MOBILE-DATA-263 | PASS | Case-insensitive map deduplicates with stable first casing; focused test passes. **NEXT_DEV_ACTION:** retain regression. |
+| MOBILE-DATA-264 | PASS | Reserved `All` is excluded from provider values and exactly one local All control rendered. **NEXT_DEV_ACTION:** retain regression. |
+| MOBILE-DATA-265 | PASS | Filter comparison normalizes optional DEX null-safely; missing-Dex test passes. **NEXT_DEV_ACTION:** retain regression. |
+| MOBILE-REC-266 | PASS | Effective selection falls back to All when a selected provider label disappears. Source and focused regression pass. **NEXT_DEV_ACTION:** add provider-refresh device fixture when available. |
+| MOBILE-DATA-267 | PASS | Trench card uses normalized DEX or localized unavailable value rather than raw undefined/blank evidence. **NEXT_DEV_ACTION:** add rendered unavailable-provenance fixture. |
+| MOBILE-PERF-268 | PASS | Launchpad cap follows normalize/dedupe and focused cap test passes; runtime panel contains six valid options. **NEXT_DEV_ACTION:** retain cap regression. |
+| MOBILE-QA-269 | BLOCKED P2 | Physical Android TalkBack traversal unavailable. Owner: QA/device provider. **NEXT_DEV_ACTION:** run on real Android hardware. |
+| MOBILE-QA-270 | BLOCKED P2 | Physical iOS VoiceOver unavailable. Owner: QA/device provider. **NEXT_DEV_ACTION:** run on iOS hardware. |
+| MOBILE-QA-271 | BLOCKED P2 | Switch Access motor flow unavailable. Owner: QA/device provider. **NEXT_DEV_ACTION:** run on physical Android. |
+| MOBILE-QA-272 | BLOCKED P2 | 320dp/small-screen layout matrix unavailable. Owner: QA/device provider. **NEXT_DEV_ACTION:** supply small-screen target. |
+| MOBILE-QA-273 | BLOCKED P2 | Offline → retry → reconnect unavailable without device/network fault control. Owner: QA/device provider. **NEXT_DEV_ACTION:** provide controlled network fixture. |
+| MOBILE-QA-274 | BLOCKED P2 | Background/restore recovery unavailable. Owner: QA/device provider. **NEXT_DEV_ACTION:** run device lifecycle matrix. |
+| MOBILE-QA-275 | BLOCKED P2 | Persistence failure/retry needs fault injection. Owner: QA/device provider. **NEXT_DEV_ACTION:** provide controllable storage fixture. |
+| MOBILE-QA-276 | BLOCKED P2 | Immutable Doctor is 17/21 because child `npm` cannot spawn. Owner: toolchain. **NEXT_DEV_ACTION:** provide bundled/repository-local npm or exact 21/21 run. |
+| MOBILE-QA-277 | CONDITIONAL PASS P2 | Android bundle completes but retains Noble strict-exports fallback. Owner: upstream dependency lane. **NEXT_DEV_ACTION:** revalidate guard before resolver/dependency change. |
+| MOBILE-QA-278 | BLOCKED P2 | Monitor active-reset branch needs controllable provider data. Owner: QA/provider fixture. **NEXT_DEV_ACTION:** provide active-filter fixture. |
+| MOBILE-QA-279 | BLOCKED P2 | Monitor partial-page retry needs controllable cursor failure. Owner: QA/provider fixture. **NEXT_DEV_ACTION:** provide partial-page fixture. |
+| MOBILE-QA-280 | BLOCKED P2 | Physical startup/performance measurements unavailable. Owner: QA/device provider. **NEXT_DEV_ACTION:** capture on physical hardware. |
+
+## MOBILE-QA finding status and release
+
+- MOBILE-QA-021: **RESOLVED.** Exact-device reproduction is clean; normalized runtime launchpads contain no undefined option and log has no duplicate-key warning.
+- Safe runtime evidence: `%LOCALAPPDATA%\Temp\mobile-qa-166-trenches-filter-final.xml` and cleared API 37 logcat window. No screenshots, secrets, or backend diagnostics retained.
+- No MOBILE-to-WEB contract blocker; WEB was not read or written.
+- **MOBILE-QA release recommendation: CONDITIONAL NO-GO.** MOBILE-166 fixes QA-021 and all eight ready outcomes pass, but physical accessibility/resilience, Doctor, and upstream Noble evidence remain unresolved.
+
+## MOBILE-QA throughput disposition
+
+- Findings inspected/reconciled: 20.
+- DEV material outcomes available: 8; independently verified: 8/8 PASS.
+- Exact shortfall to 20 DEV outcomes: 12; `MOBILE-QA-269..280` are blocked by the listed device/toolchain/upstream/provider owners. No padding applied.
+- Carry-forward order: `MOBILE-QA-269`, `MOBILE-QA-270`, `MOBILE-QA-271`, `MOBILE-QA-272`, `MOBILE-QA-273`, `MOBILE-QA-274`, `MOBILE-QA-275`, `MOBILE-QA-276`, `MOBILE-QA-277`, `MOBILE-QA-278`, `MOBILE-QA-279`, `MOBILE-QA-280`.

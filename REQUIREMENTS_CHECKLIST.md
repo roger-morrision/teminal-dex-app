@@ -100,3 +100,4 @@ Status legend: `[x]` verified, `[ ]` incomplete, `[~]` intentionally visible but
 - [x] Monitor and CopyTrade mutual-exclusion tests enforce reset-before-mutate ordering with formatting-independent semantic matchers for all four mutation paths.
 - [x] Release evidence reports test totals from the immutable committed checkout and excludes concurrent uncommitted test inventory.
 - [x] SnipeCard interaction tests await initial token-evidence settlement before teardown, preventing post-test React updates and overlapping `act` warnings.
+- [x] The known Noble/Metro strict-exports fallback is version-pinned, requires both installed fallback files, rejects silent root cryptography overrides, and fails visibly when its audited compatibility assumptions drift.

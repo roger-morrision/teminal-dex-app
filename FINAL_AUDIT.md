@@ -147,3 +147,8 @@ No in-scope automated regression was found. Generated export directories were re
 
 - SnipeCard research/removal and visual-threshold tests wait for initial token evidence to settle before teardown. Focused and full primary-worktree regressions pass without React `act` warnings.
 - No production component, API contract, transaction control, or WEB behavior changed. Immutable QA must continue excluding the concurrent TokenRow/logo slice.
+
+## MOBILE-157 Noble/Metro compatibility disposition
+
+- The existing non-fatal `./crypto.js` strict-exports fallback is conditionally accepted only for the audited nested Noble 1.9.7/1.8.0 pair while both installed fallback files exist and Android/iOS/web bundles complete.
+- Five automated guards force explicit review on version drift, missing fallback files, changed export behavior, or a root cryptography override. The warning remains visible; no unsafe resolver bypass was added.

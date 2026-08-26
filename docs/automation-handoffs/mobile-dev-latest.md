@@ -1,5 +1,15 @@
 # MOBILE DEV → QA handoff
 
+## MOBILE-157 — Noble fallback compatibility guard
+
+- Base: `8d8971d`; result: containing commit.
+- Changed files/behavior: `src/__tests__/noble-bundle-compatibility.test.ts` formalizes the bounded `MOBILE-QA-004` disposition. It pins nested Curves 1.9.7 / Hashes 1.8.0, records `./crypto` versus `./crypto.js`, requires CommonJS+ESM fallback files, and rejects silent root overrides. Product/runtime code is unchanged.
+- Acceptance: focused 5/5; TypeScript; zero-warning focused ESLint; primary full Jest 81/402. Immutable QA expects 81/400 because the concurrent TokenRow slice remains excluded.
+- NEXT_QA_ACTION: pin the result commit; run focused/full tests and all three exports. Mark `MOBILE-QA-004` conditionally accepted only if bundles complete with the known warning and all five guards pass.
+- 20/20 reconciliation: 20 findings reviewed; five material compatibility outcomes completed; shortfall 15 carried forward without padding.
+
+---
+
 ## MOBILE-156 — warning-free SnipeCard settlement
 
 - Base: `a0ae4da`; result: containing commit.

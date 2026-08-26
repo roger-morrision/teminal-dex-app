@@ -1340,3 +1340,10 @@
 - The first two SnipeCard tests now await their initial token-evidence query before teardown, preventing asynchronous React updates from leaking into later tests while preserving research, removal, and visual-threshold behavior.
 - Focused SnipeCard passes 3/3; TypeScript and zero-warning focused ESLint pass. The primary worktree full suite passes 80/397 without the prior `act` console warning; immutable QA should report 80/395 until the separate TokenRow slice is committed.
 - 20 findings reviewed; two independently testable settlement outcomes completed; shortfall 18 remains device/runtime evidence, upstream dependency warning, Doctor availability, WEB-QC fixtures, physical-device scenarios, and concurrent Whales/logo acceptance.
+
+## 2026-08-26 — MOBILE-157: Noble fallback compatibility guard
+
+- Investigated the non-fatal Android export warning. The nested audited pair is `@noble/curves` 1.9.7 with exact `@noble/hashes` 1.8.0; Hashes exports `./crypto` rather than `./crypto.js`, while both CommonJS and ESM fallback files are installed.
+- Added five fail-visible compatibility checks for the exact pair, strict-export mismatch, both fallback files, and absence of an unreviewed root cryptography override. No dependency, Metro resolver, wallet, or transaction behavior changed.
+- Focused 5/5, TypeScript, zero-warning lint, and primary full Jest 81/402 pass. Immutable QA should expect 81/400 because the separate uncommitted TokenRow slice adds two tests.
+- 20 findings reviewed; five compatibility outcomes completed; shortfall 15 remains device/runtime evidence, Expo Doctor availability, WEB-QC fixtures, physical-device scenarios, and concurrent Whales/logo acceptance.

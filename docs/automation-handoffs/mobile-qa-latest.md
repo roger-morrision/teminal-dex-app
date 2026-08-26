@@ -785,3 +785,60 @@ The initial sandboxed diagnostic could not open Expo's user native-module cache 
 - Findings inspected/reconciled: 20. DEV outcomes available/verified: 20/20 PASS; exact shortfall to 20: 0.
 - Carry-forward order: `MOBILE-QA-269`, `MOBILE-QA-270`, `MOBILE-QA-271`, `MOBILE-QA-272`, `MOBILE-QA-273`, `MOBILE-QA-274`, `MOBILE-QA-275`, `MOBILE-QA-276`, `MOBILE-QA-277`, `MOBILE-QA-278`, `MOBILE-QA-279`, `MOBILE-QA-280`.
 - **NEXT_DEV_ACTION:** provide a responsive exact-build Android/iOS device lane and deterministic states so QA can complete 1.0×/1.3× edge-tap, focus, selection, offline/retry, and recovery verification for all resolved control families.
+
+---
+
+# MOBILE-QA validation handoff — MOBILE-173
+
+- Trigger: 2026-08-26T16:40:37.131Z. Inspected immutable result `e54ea6a5be78a99bd391d46c763f083ffbbf17c9` (`fix(mobile): bound compact controls and quote input`), base `2440b95`.
+- Scope/coordination: PASS. Canonical explicit workspace and safe-directory Git top-level normalize to `c:/tuan/devapps/teminal-dex-app`; prefix empty; result remained clean; no DEV lock existed. QA used clean archive `%LOCALAPPDATA%\\Temp\\mobile-qa-173-e54ea6a` with installed dependencies linked, and used the dedicated report lock only while writing. No product, configuration, WEB, provider/API, wallet, signing, submission, trading, or data write occurred.
+- Environment/device: Windows; bundled Node 24.19.0; Expo 57 local CLI. Fresh bounded `adb devices` did not return, so no edge-tap, quote-entry visual, TalkBack/VoiceOver/Switch Access, 320dp/enlarged-text, offline/retry, or navigation result is inferred.
+
+## MOBILE-QA acceptance matrix
+
+| Criterion | Result | Independent evidence |
+| --- | --- | --- |
+| Type and changed-surface lint | PASS | Archive `tsc --noEmit` and ESLint of all nine changed production surfaces plus both changed tests exit 0. |
+| Required focused touch/async regression | FAIL P1 | Exact two-suite command `jest --ci --runInBand --silent AsyncSurface touch-targets` fails: `AsyncSurface` local-reset recovery times out at 5s, then attempts renderer access after Jest teardown. The same `AsyncSurface` suite alone passes 6/6; touch-targets passes 34/34. |
+| Full regression | PASS | Archive `jest --ci --runInBand --silent`: 83 suites / 450 tests pass in 67.353s. This does not negate the exact focused ordering failure. |
+| Expo/configuration | PASS with Doctor blocker | Public Android/iOS/web configuration resolves with retained deep-link, ATS, biometric, and no-secret boundaries. Doctor cannot spawn child Node (`ENOENT`). |
+| Android / iOS / web bundles | CONDITIONAL PASS / PASS / PASS | Android exports one 5.7 MB Hermes bundle plus metadata with carried Noble fallback; iOS one 2.3 MB Hermes bundle plus metadata; web static export succeeds. |
+| Runtime/device scenario | BLOCKED | Fresh ADB discovery did not settle, and no deterministic quote/provider or network fixture is available. |
+
+## MOBILE-QA reconciliation (20 available/blocked outcomes)
+
+| Stable ID | Result | Evidence and risk |
+| --- | --- | --- |
+| MOBILE-TOUCH-401 | PASS | AI governance action has explicit 44px-equivalent geometry in changed source/touch regression. |
+| MOBILE-TOUCH-402 | PASS | Market Intelligence load-more has explicit 44px-equivalent geometry. |
+| MOBILE-TOUCH-403 | PASS | Portfolio periods have explicit 44px-equivalent geometry. |
+| MOBILE-TOUCH-404 | PASS | Settings language segments have explicit 44px-equivalent geometry. |
+| MOBILE-TOUCH-405 | PASS | Settings destructive reset has explicit 44px-equivalent geometry. |
+| MOBILE-TOUCH-406 | PASS | Token recovery has explicit 44px-equivalent geometry. |
+| MOBILE-TOUCH-407 | PASS | Trenches filter input has explicit 44px-equivalent geometry. |
+| MOBILE-TOUCH-408 | PASS | Discover clear-search action has explicit 44px-equivalent geometry. |
+| MOBILE-TOUCH-409 | PASS | Whale search input has explicit 44px-equivalent geometry. |
+| MOBILE-TOUCH-410 | PASS | Whale clear-search action has explicit 44px-equivalent geometry. |
+| MOBILE-TOUCH-411 | PASS | Whale mode tabs have explicit 44px-equivalent geometry. |
+| MOBILE-TOUCH-412 | PASS | Whale direction/amount/sort controls have explicit 44px-equivalent geometry. |
+| MOBILE-TOUCH-413 | PASS | Whale filtered-empty reset has explicit 44px-equivalent geometry. |
+| MOBILE-TOUCH-414 | PASS | Whale retry has explicit 44px-equivalent geometry. |
+| MOBILE-DATA-415 | PASS | Quote amount pre-request boundary strips non-decimal syntax, collapses duplicate decimals, caps 12/6 whole/fraction precision, and adds native `maxLength=19`; static/regression/full suite pass. |
+| MOBILE-QA-269 | BLOCKED P2 | Physical Android TalkBack unavailable; owner QA/device. |
+| MOBILE-QA-270 | BLOCKED P2 | Physical iOS VoiceOver unavailable; owner QA/device. |
+| MOBILE-QA-271 | BLOCKED P2 | Switch Access unavailable; owner QA/device. |
+| MOBILE-QA-272 | BLOCKED P2 | 320dp/enlarged-text matrix unavailable; owner QA/device. |
+| MOBILE-QA-273 | BLOCKED P2 | Controlled offline/reconnect fixture unavailable; owner QA/network fixture. |
+
+## MOBILE-QA finding and release
+
+| ID | Severity / owner | Result | Reproduction and risk |
+| --- | --- | --- | --- |
+| MOBILE-QA-282 | P1 / DEV test-maintenance | FAIL | In clean archive, run the exact DEV focused pair. `AsyncSurface › recovers visibly when local reset fails` exceeds 5s and then throws `You are trying to import a file after the Jest environment has been torn down` at the post-timeout accessibility lookup. Isolated `AsyncSurface` 6/6 and full 83/450 pass, establishing order/load sensitivity rather than proof of repair. |
+
+- `MOBILE-QA-276`: BLOCKED P2 (toolchain, Doctor child Node ENOENT). `MOBILE-QA-277`: CONDITIONAL PASS P2 (upstream, Android Noble strict-exports fallback). `MOBILE-QA-278..280`: BLOCKED P2 (provider/device fixtures).
+- Evidence references: `%LOCALAPPDATA%\\Temp\\mobile-qa-173-full.err.log`, `mobile-qa-173-android-export.err.log`; no screenshot, credential, backend payload, or WEB evidence retained. No MOBILE-to-WEB contract blocker exists.
+- **MOBILE-QA release recommendation: NO-GO.** Fifteen safe outcomes pass and the planned five-item shortfall is correctly blocked, but `MOBILE-QA-282` is a current P1 required-focused-regression failure.
+- Findings inspected/reconciled: 21 (15 ready outcomes, five declared external blockers, and `MOBILE-QA-282`). DEV outcomes available: 15; independently PASS: 15/15. Exact outcome shortfall to 20: 5 (`MOBILE-QA-269..273`); no padding applied.
+- Carry-forward order: `MOBILE-QA-282`, `MOBILE-QA-269`, `MOBILE-QA-270`, `MOBILE-QA-271`, `MOBILE-QA-272`, `MOBILE-QA-273`, `MOBILE-QA-276`, `MOBILE-QA-277`, `MOBILE-QA-278`, `MOBILE-QA-279`, `MOBILE-QA-280`.
+- **NEXT_DEV_ACTION:** make the exact `AsyncSurface` + `touch-targets` focused command deterministic without timeout or post-teardown renderer access, then supply a responsive exact-build device/network fixture for the five blocked physical/recovery scenarios.

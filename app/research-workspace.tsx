@@ -19,6 +19,7 @@ import { isSolanaAddress } from "@/security/input";
 import { useSettings } from "@/settings/SettingsProvider";
 import {
   addSnipeEntry,
+  boundedResearchNumber,
   loadResearchWorkspace,
   removeSnipeEntry,
   saveResearchWorkspace,
@@ -161,7 +162,8 @@ function SnipeList({
         <TextInput
           accessibilityLabel={t("snipeAddress")}
           value={draft}
-          onChangeText={setDraft}
+          onChangeText={(value) => setDraft(value.slice(0, 44))}
+          maxLength={44}
           autoCapitalize="none"
           autoCorrect={false}
           placeholder={t("exactTokenMint")}
@@ -307,7 +309,8 @@ export function SnipeCard({
           <TextInput
             accessibilityLabel={t("visualAboveLabel")}
             value={above}
-            onChangeText={setAbove}
+            onChangeText={(value) => setAbove(boundedResearchNumber(value))}
+            maxLength={19}
             onEndEditing={() => saveThreshold("above", above)}
             keyboardType="decimal-pad"
             placeholder={t("none")}
@@ -320,7 +323,8 @@ export function SnipeCard({
           <TextInput
             accessibilityLabel={t("visualBelowLabel")}
             value={below}
-            onChangeText={setBelow}
+            onChangeText={(value) => setBelow(boundedResearchNumber(value))}
+            maxLength={19}
             onEndEditing={() => saveThreshold("below", below)}
             keyboardType="decimal-pad"
             placeholder={t("none")}
@@ -386,6 +390,7 @@ function Multicharts({
         <Ionicons name="grid" size={20} color={colors.accent} />
       </View>
       <ScrollView
+        accessibilityRole="radiogroup"
         horizontal
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.timeframes}
@@ -418,7 +423,8 @@ function Multicharts({
           <TextInput
             accessibilityLabel={t("multichartAddress")}
             value={draft}
-            onChangeText={setDraft}
+            onChangeText={(value) => setDraft(value.slice(0, 44))}
+            maxLength={44}
             autoCapitalize="none"
             autoCorrect={false}
             placeholder={t("addExactMint")}

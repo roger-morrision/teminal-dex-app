@@ -1064,6 +1064,7 @@ function Input({
         accessibilityState={{ disabled }}
         value={value}
         onChangeText={(value) => onChange(boundedCopyNumber(value))}
+        maxLength={19}
         editable={!disabled}
         keyboardType="decimal-pad"
         style={styles.input}

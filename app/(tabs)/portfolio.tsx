@@ -106,7 +106,10 @@ export default function PortfolioScreen() {
           <Pressable
             accessibilityRole="button"
             accessibilityLabel={t("revokeSession")}
+            accessibilityState={{ disabled: wallet.busy, busy: wallet.busy }}
+            disabled={wallet.busy}
             onPress={wallet.disconnect}
+            style={wallet.busy && styles.disabled}
           >
             <Text style={styles.link}>{t("revokeSession")}</Text>
           </Pressable>
@@ -171,7 +174,8 @@ export default function PortfolioScreen() {
               <TextInput
                 accessibilityLabel={t("watchAddress")}
                 value={draft}
-                onChangeText={setDraft}
+                onChangeText={(value) => setDraft(value.slice(0, 44))}
+                maxLength={44}
                 placeholder={t("walletPlaceholder")}
                 placeholderTextColor={colors.muted}
                 autoCapitalize="none"
@@ -182,13 +186,14 @@ export default function PortfolioScreen() {
                 accessibilityRole="button"
                 accessibilityLabel={t("loadWatchWallet")}
                 accessibilityState={{
-                  disabled: !isSolanaAddress(draft.trim()),
+                  disabled: !isSolanaAddress(draft.trim()) || wallet.busy,
+                  busy: wallet.busy,
                 }}
                 onPress={saveWatchOnly}
-                disabled={!isSolanaAddress(draft.trim())}
+                disabled={!isSolanaAddress(draft.trim()) || wallet.busy}
                 style={[
                   styles.load,
-                  !isSolanaAddress(draft.trim()) && styles.disabled,
+                  (!isSolanaAddress(draft.trim()) || wallet.busy) && styles.disabled,
                 ]}
               >
                 <Text style={styles.loadText}>{t("load")}</Text>
@@ -205,7 +210,10 @@ export default function PortfolioScreen() {
             <Pressable
               accessibilityRole="button"
               accessibilityLabel={t("disconnectRevoke")}
+              accessibilityState={{ disabled: wallet.busy, busy: wallet.busy }}
+              disabled={wallet.busy}
               onPress={wallet.disconnect}
+              style={wallet.busy && styles.disabled}
             >
               <Text style={styles.disconnect}>{t("disconnectRevoke")}</Text>
             </Pressable>

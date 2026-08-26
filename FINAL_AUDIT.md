@@ -187,3 +187,11 @@ No in-scope automated regression was found. Generated export directories were re
 - **Partially verified / external:** physical-device screen-reader traversal and an immutable-commit Android reinstall remain QA device tasks. Native Gradle rebuild remains externally blocked by the host loopback IOException; existing compatible APK + current Metro bundle rendered without fatal/module-resolution errors. This restricted shell ran 17/21 Doctor checks (child `npm` unavailable) and Expo compatibility was blocked from the external user cache by `EPERM`; MOBILE-162 retains normal-environment 21/21 evidence.
 - **NEXT_QA_ACTION:** verify all 20 stable IDs on the committed checkout, including TalkBack group traversal, malformed filter entry, pagination retry state, and Discover/Monitor/Trenches navigation on API 37.
 - **NEXT_WEB_ACTION:** none.
+## MOBILE-164 input integrity and async-control safety
+
+- **Implemented:** 20/20 current stable findings (`MOBILE-DATA-221..240`) across Portfolio, Wallet Intelligence, Research Workspace, Whales, Monitor alerts, and CopyTrade.
+- **Verified:** TypeScript PASS; focused and full source ESLint PASS; focused Jest PASS (5 suites/24 tests); full Jest PASS (82 suites/414 tests); public Expo config PASS for Android/iOS/web.
+- **Security/privacy:** native/state input bounds reduce oversized/malformed local and API-bound values; wallet disconnect/revoke/watch and tracked-wallet persistence now fail closed while busy. Transaction signing/submission and CopyTrade activation remain disabled.
+- **Partially verified:** restricted-shell Doctor passes 17/21 and cannot run four dependency-tree checks because child `npm` is unavailable; MOBILE-162 retains normal-environment 21/21 evidence. Physical-device keyboard/paste behavior and screen-reader radio traversal require QA device confirmation. No WEB change is required.
+- **NEXT_QA_ACTION:** pin the result commit and independently test every stable ID, including long paste, malformed decimals, double taps, wallet-busy boundaries, TalkBack group navigation, and persistence failure recovery.
+- **NEXT_WEB_ACTION:** none.

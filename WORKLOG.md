@@ -1412,3 +1412,35 @@ All 20 are MOBILE-owned, safe, real-data compatible, and independent of the dirt
 - TypeScript and focused ESLint pass. Focused regression passes 3 suites/12 tests; the full regression passes 82 suites/411 tests.
 - Repository-local Expo Doctor executed 21 checks but this restricted QA shell can resolve only 17 because child `npm` is unavailable. Expo compatibility also reached the external user cache and was blocked by sandbox `EPERM`; neither is an app regression, and MOBILE-162 already records 21/21 from the normal DEV environment.
 - No WEB change, mock production data, secrets, wallet mutation, transaction execution, or generated output was introduced.
+## MOBILE 20/20 review — 2026-08-26 input integrity and async-control safety
+
+Fresh source review after `31b683f` identified these dependency-ready MOBILE findings before implementation. Each has direct JSX/store evidence, distinct user impact, local ownership, and focused plus regression verification.
+
+1. **MOBILE-DATA-221**: Portfolio watch-only address lacks a native 44-character Solana address bound; accept with native/state agreement.
+2. **MOBILE-SAFE-222**: Locked-portfolio session revocation remains actionable during another wallet operation; accept when busy state disables it.
+3. **MOBILE-SAFE-223**: Connected-portfolio disconnect remains actionable during another wallet operation; accept when busy state disables it.
+4. **MOBILE-SAFE-224**: Watch-only load can be activated during a wallet operation; accept when wallet busy participates in its disabled boundary.
+5. **MOBILE-DATA-225**: Tracked-wallet address lacks the 44-character native bound; accept when paste/input is bounded.
+6. **MOBILE-REC-226**: Tracked-wallet save permits overlapping asynchronous writes; accept with pending native/visual/accessibility disablement.
+7. **MOBILE-REC-227**: Tracked-wallet removal permits overlapping writes; accept with the same pending boundary.
+8. **MOBILE-DATA-228**: Research snipe mint lacks the 44-character native bound; accept when exact-address input is bounded.
+9. **MOBILE-DATA-229**: Research multichart mint lacks the 44-character native bound; accept when exact-address input is bounded.
+10. **MOBILE-DATA-230**: Research above-price input accepts malformed multi-decimal text; accept with shared bounded decimal normalization.
+11. **MOBILE-DATA-231**: Research below-price input accepts malformed multi-decimal text; accept with shared bounded decimal normalization.
+12. **MOBILE-DATA-232**: Research price thresholds lack native length bounds; accept at 19 characters, consistent with the 1e12 persistence ceiling.
+13. **MOBILE-A11Y-233**: Research timeframe radios lack a containing radio group; accept with exclusive-set semantics.
+14. **MOBILE-DATA-234**: Whale search input is unbounded; accept with an 80-character native/state limit.
+15. **MOBILE-DATA-235**: Alert token address lacks a 44-character native bound; accept when exact mint input is bounded.
+16. **MOBILE-DATA-236**: Alert threshold accepts malformed decimal text; accept with bounded numeric normalization.
+17. **MOBILE-DATA-237**: Alert threshold lacks native length bounds; accept with a 19-character cap.
+18. **MOBILE-A11Y-238**: Alert signal choices lack a radio-group container; accept with exclusive-set semantics.
+19. **MOBILE-A11Y-239**: Alert condition choices lack a radio-group container; accept with exclusive-set semantics.
+20. **MOBILE-DATA-240**: CopyTrade numeric inputs sanitize state but omit the matching native length cap; accept when every sizing/risk field enforces 19 characters.
+
+Execution order is the stable-ID order. All are independently testable and require no WEB capability. Verification: focused input/store/component tests, TypeScript, source ESLint, full Jest, Expo diagnostics, and device checks when available. NEXT_WEB_ACTION: none.
+
+### MOBILE-164 implementation result
+
+- Completed 20/20 material outcomes for `MOBILE-DATA-221..240`; remaining to 20: 0. Address/search fields now enforce native/state bounds, financial thresholds normalize one decimal point with bounded precision, exclusive choices expose group semantics, and wallet/storage operations cannot overlap.
+- Focused verification passes 5 suites/24 tests; TypeScript, focused/full source ESLint, and public Expo config pass. Full regression passes 82 suites/414 tests. Restricted-shell Doctor executes 21 checks with 17 passing; four remain environment-blocked because child `npm` is unavailable, consistent with MOBILE-162.
+- No WEB files, production mock data, secrets, signing, submission, trading, or CopyTrade activation changed.

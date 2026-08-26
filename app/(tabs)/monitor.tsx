@@ -34,6 +34,11 @@ import { publicReasonKey } from "@/lib/public-evidence-reason";
 
 type ViewMode = "live" | "rules" | "delivery";
 type AlertType = CreateAlertInput["type"];
+export function boundedAlertNumber(value: string) {
+  const cleaned = value.replace(/[^0-9.]/g, "");
+  const [whole = "", ...fractions] = cleaned.split(".");
+  return `${whole.slice(0, 12)}${fractions.length ? `.${fractions.join("").slice(0, 6)}` : ""}`;
+}
 const modes: { id: ViewMode; key: "live" | "rules" | "delivery" }[] = [
   { id: "live", key: "live" },
   { id: "rules", key: "rules" },
@@ -338,7 +343,8 @@ export function AlertComposer({ onCreated }: { onCreated: () => void }) {
         accessibilityLabel={t("alertTokenAddress")}
         accessibilityState={{ disabled: mutation.isPending }}
         value={address}
-        onChangeText={setAddress}
+        onChangeText={(value) => setAddress(value.slice(0, 44))}
+        maxLength={44}
         editable={!mutation.isPending}
         autoCapitalize="none"
         autoCorrect={false}
@@ -347,7 +353,7 @@ export function AlertComposer({ onCreated }: { onCreated: () => void }) {
         style={styles.input}
       />
       <Text style={styles.label}>{t("signal")}</Text>
-      <View style={styles.choiceRow}>
+      <View accessibilityRole="radiogroup" style={styles.choiceRow}>
         {(["price", "percentageChange", "volumeSpike"] as AlertType[]).map(
           (item) => (
             <Choice
@@ -367,7 +373,7 @@ export function AlertComposer({ onCreated }: { onCreated: () => void }) {
         )}
       </View>
       {type !== "volumeSpike" ? (
-        <View style={styles.choiceRow}>
+        <View accessibilityRole="radiogroup" style={styles.choiceRow}>
           <Choice
             label={t("aboveChoice")}
             active={condition === "above"}
@@ -393,7 +399,8 @@ export function AlertComposer({ onCreated }: { onCreated: () => void }) {
         accessibilityLabel={t("alertThreshold")}
         accessibilityState={{ disabled: mutation.isPending }}
         value={value}
-        onChangeText={setValue}
+        onChangeText={(next) => setValue(boundedAlertNumber(next))}
+        maxLength={19}
         editable={!mutation.isPending}
         keyboardType="decimal-pad"
         placeholder={t("positiveValue")}
@@ -650,6 +657,7 @@ function Choice({
   return (
     <Pressable
       accessibilityRole="radio"
+      accessibilityLabel={label}
       accessibilityState={{ checked: active, disabled }}
       disabled={disabled}
       onPress={onPress}

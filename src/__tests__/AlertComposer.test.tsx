@@ -1,11 +1,15 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { fireEvent, render } from '@testing-library/react-native';
-import { AlertComposer } from '../../app/(tabs)/monitor';
+import { AlertComposer, boundedAlertNumber } from '../../app/(tabs)/monitor';
 import { SettingsProvider } from '@/settings/SettingsProvider';
 jest.mock('@/security/WalletSessionProvider', () => ({ useWalletSession: jest.fn() }));
 jest.mock('@react-native-async-storage/async-storage', () => ({ __esModule: true, default: { getItem: jest.fn().mockResolvedValue(null), setItem: jest.fn().mockResolvedValue(undefined), removeItem: jest.fn().mockResolvedValue(undefined) } }));
 
 describe('AlertComposer', () => {
+  it('normalizes alert thresholds before validation and submission', () => {
+    expect(boundedAlertNumber('12.3x4.567890.1')).toBe('12.345678');
+    expect(boundedAlertNumber('123456789012345')).toBe('123456789012');
+  });
   it('keeps persistence disabled until all financial inputs are valid', async () => {
     const client = new QueryClient({ defaultOptions: { queries: { retry: false }, mutations: { retry: false } } });
     const screen = await render(<SettingsProvider><QueryClientProvider client={client}><AlertComposer onCreated={jest.fn()} /></QueryClientProvider></SettingsProvider>);

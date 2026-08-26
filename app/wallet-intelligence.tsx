@@ -268,6 +268,7 @@ function WalletTracker({
   const [address, setAddress] = useState("");
   const [label, setLabel] = useState("");
   const [error, setError] = useState("");
+  const [saving, setSaving] = useState(false);
   useEffect(() => {
     void loadTrackedWallets().then((items) => {
       setWallets(items);
@@ -277,6 +278,8 @@ function WalletTracker({
   }, [onSelect]);
   const valid = isSolanaAddress(address.trim());
   const add = async () => {
+    if (saving) return;
+    setSaving(true);
     try {
       const next = await addTrackedWallet(wallets, address, label);
       setWallets(next);
@@ -288,12 +291,23 @@ function WalletTracker({
       setError(
         cause instanceof Error ? cause.message : t("couldNotSaveWallet"),
       );
+    } finally {
+      setSaving(false);
     }
   };
   const remove = async (value: string) => {
-    const next = await removeTrackedWallet(wallets, value);
-    setWallets(next);
-    if (selected === value) onSelect(next[0]?.address ?? "");
+    if (saving) return;
+    setSaving(true);
+    try {
+      const next = await removeTrackedWallet(wallets, value);
+      setWallets(next);
+      if (selected === value) onSelect(next[0]?.address ?? "");
+      setError("");
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : t("couldNotSaveWallet"));
+    } finally {
+      setSaving(false);
+    }
   };
   if (!ready) return <State loading text={t("loadingTrackedWallets")} />;
   return (
@@ -306,7 +320,9 @@ function WalletTracker({
         <TextInput
           accessibilityLabel={t("trackedWalletAddress")}
           value={address}
-          onChangeText={setAddress}
+          onChangeText={(value) => setAddress(value.slice(0, 44))}
+          maxLength={44}
+          editable={!saving}
           autoCapitalize="none"
           autoCorrect={false}
           placeholder={t("solanaPublicAddress")}
@@ -325,10 +341,10 @@ function WalletTracker({
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={t("saveTrackedWallet")}
-          accessibilityState={{ disabled: !valid }}
-          disabled={!valid}
+          accessibilityState={{ disabled: !valid || saving, busy: saving }}
+          disabled={!valid || saving}
           onPress={add}
-          style={[styles.action, !valid && styles.disabled]}
+          style={[styles.action, (!valid || saving) && styles.disabled]}
         >
           <Text style={styles.actionText}>{t("saveWatchOnlyWallet")}</Text>
         </Pressable>
@@ -350,6 +366,7 @@ function WalletTracker({
           active={selected === item.address}
           onOpen={() => onSelect(item.address)}
           onRemove={() => void remove(item.address)}
+          disabled={saving}
         />
       ))}
       {!wallets.length ? <State text={t("noTrackedWallets")} /> : null}
@@ -362,11 +379,13 @@ export function TrackedWalletRow({
   active,
   onOpen,
   onRemove,
+  disabled = false,
 }: {
   item: TrackedWallet;
   active: boolean;
   onOpen: () => void;
   onRemove: () => void;
+  disabled?: boolean;
 }) {
   const { t } = useSettings();
   return (
@@ -391,8 +410,10 @@ export function TrackedWalletRow({
       <Pressable
         accessibilityRole="button"
         accessibilityLabel={t("removeTrackedWallet", { label: item.label })}
+        accessibilityState={{ disabled, busy: disabled }}
+        disabled={disabled}
         onPress={onRemove}
-        style={styles.remove}
+        style={[styles.remove, disabled && styles.disabled]}
       >
         <Ionicons name="trash" size={14} color={colors.negative} />
       </Pressable>

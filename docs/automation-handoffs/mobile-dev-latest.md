@@ -1,5 +1,17 @@
 # MOBILE DEV → QA handoff
 
+## MOBILE-164 — 20/20 input integrity and async-control safety
+
+- Base: `31b683f`; result: containing commit.
+- Findings/outcomes: `MOBILE-DATA-221..240`; 20 distinct material production behaviors completed, remaining to 20: 0. Acceptance criteria and source evidence are in `WORKLOG.md`.
+- Changed behavior: exact-address/search inputs are natively bounded; Research and alert decimals normalize before state/API validation; radio sets expose group semantics; CopyTrade sizing fields align native and sanitizer bounds; Portfolio and tracked-wallet mutations cannot overlap.
+- Changed files: Portfolio, Wallet Intelligence, Research Workspace/store, Whales, Monitor, CopyTrade, focused tests, and MOBILE evidence documents only.
+- Evidence: TypeScript PASS; focused/full source ESLint PASS; focused Jest PASS (5 suites/24 tests); full Jest PASS (82 suites/414 tests); public Expo config PASS. Restricted-shell Doctor is 17/21 because child `npm` is unavailable; normal-environment 21/21 remains in MOBILE-162.
+- Runtime scenarios: paste overlong address/search/decimal values; enter multiple decimal points; toggle grouped choices with TalkBack; rapidly press wallet disconnect/revoke/load/save/remove; force local persistence failure and retry.
+- Known risk: physical-device keyboard, paste, and accessibility traversal remain QA device work.
+- NEXT_QA_ACTION: validate all 20 IDs on the immutable result, rerun type/lint/full Jest/Expo diagnostics, and perform API 37 plus physical-device scenarios when available.
+- NEXT_WEB_ACTION: none.
+
 ## MOBILE-163 — 20/20 filter integrity and accessibility batch
 
 - Base: `2830415`; result: containing commit.

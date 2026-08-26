@@ -6,7 +6,7 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { fetchAlertDeliveries, fetchFeedHistory, fetchSocialRadar, fetchTrackFeed } from "@/api/client";
 import type { FeedHistoryCursor, FeedHistoryEvent, SocialRadarTrend, TrackNotification } from "@/api/schema";
-import { compactUsd } from "@/lib/format";
+import { compactUsd, evidenceLabel } from "@/lib/format";
 import { useWalletSession } from "@/security/WalletSessionProvider";
 import { useSettings } from "@/settings/SettingsProvider";
 import {
@@ -141,7 +141,7 @@ export default function TrackScreen() {
                 label={t("smartMoney")}
                 count={feed.data.coverage?.smartMoney.recordCount ?? 0}
                 quality={
-                  feed.data.coverage?.smartMoney.dataQuality ?? t("unavailable")
+                  evidenceLabel(feed.data.coverage?.smartMoney.dataQuality, t("unavailable"))
                 }
               />
               <Source
@@ -281,7 +281,7 @@ export function SocialTrendCard({ item, onOpen }: { item: SocialRadarTrend; onOp
       </Text>
       {item.evidence.map((evidence, index) => evidence.text ? (
         <Text key={`${evidence.provider ?? "social"}:${evidence.externalId ?? index}`} numberOfLines={3} style={styles.socialEvidence}>
-          {evidence.provider ?? t("unavailable")} · {evidence.text}
+          {evidenceLabel(evidence.provider, t("unavailable"))} · {evidence.text}
         </Text>
       ) : null)}
       {item.trend.warnings.length ? <Text style={styles.reason}>{t(publicReasonKey(item.trend.warnings[0]))}</Text> : null}

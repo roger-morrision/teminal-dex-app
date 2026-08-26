@@ -535,7 +535,7 @@ export function WatchlistEvidence({
       <Text style={styles.watchEvidenceText}>
         {t("watchlistMarketEvidence", {
           source: evidenceLabel(token.source, t("sourceUnavailable")),
-          quality: token.dataQuality ?? t("qualityUnavailable"),
+          quality: evidenceLabel(token.dataQuality, t("qualityUnavailable")),
           freshness: token.sourceFetchedAt
             ? relativeAge(token.sourceFetchedAt, t)
             : t("freshnessUnavailable"),

@@ -229,3 +229,12 @@ No in-scope automated regression was found. Generated export directories were re
 - **Safety:** display normalization only; no WEB/API/provider mutation, wallet action, signing, submission, or trading behavior changed.
 - **NEXT_QA_ACTION:** pin the result and inject whitespace-only DEX/source evidence into all eight named surfaces, verifying localized fallback text and unchanged navigation.
 - **NEXT_WEB_ACTION:** none.
+
+## MOBILE-169 20/20 evidence-label integrity
+
+- **Implemented:** 20/20 material outcomes (`MOBILE-DATA-321..325`, `MOBILE-A11Y-326`, `MOBILE-DATA-327..340`) across eight product areas; remaining to 20: 0.
+- **Verified:** TypeScript/full ESLint PASS; focused Jest 7 suites/15 tests PASS; full Jest 83 suites/422 tests PASS; public Expo configuration PASS.
+- **Truthfulness/accessibility:** valid provider labels are trimmed; blank or missing quality, source, provider, method, DEX, and token labels use localized truthful fallbacks, including Whale screen-reader relationship copy.
+- **Safety:** no WEB/API/provider mutation, wallet action, signing, submission, or trading behavior changed.
+- **NEXT_QA_ACTION:** pin the result; inject whitespace-only values for all 20 stable IDs, verify localized fallbacks and unchanged navigation, then run exact API 37 and release gates.
+- **NEXT_WEB_ACTION:** none.

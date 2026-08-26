@@ -453,7 +453,7 @@ export function TrenchCard({
         </Pressable>
         <Text style={styles.quality}>
           {evidenceLabel(token.source, t("unknown"))} ·{" "}
-          {token.dataQuality ?? t("unavailable")} ·{" "}
+          {evidenceLabel(token.dataQuality, t("unavailable"))} ·{" "}
           {token.sourceFetchedAt
             ? ageLabel(token.sourceFetchedAt, t)
             : t("timeUnavailable")}

@@ -123,8 +123,8 @@ export function MonitorTokenTable({ polling = true }: { polling?: boolean }) {
           </Text>
           <Text style={styles.evidence}>
             {t("monitorTableEvidence", {
-              source: firstPage?.source ?? t("sourceUnavailable"),
-              quality: firstPage?.dataQuality ?? t("qualityUnavailable"),
+              source: evidenceLabel(firstPage?.source, t("sourceUnavailable")),
+              quality: evidenceLabel(firstPage?.dataQuality, t("qualityUnavailable")),
               shown: rows.length,
               total: firstPage?.recordCount ?? firstPage?.totalCount ?? tokens.length,
               freshness: firstPage?.freshness?.isStale

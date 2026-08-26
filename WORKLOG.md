@@ -1577,3 +1577,37 @@ Selected order: `MOBILE-DATA-301..308`. Each changes a distinct rendered user su
 - Token Detail, Quote Review, Operations, Discover, Monitor, Trenches, Market Intelligence, and Wallet Intelligence now trim valid provenance and replace blank/missing provider labels with localized truthful fallbacks.
 - TypeScript/full source ESLint PASS; focused Jest PASS (4 suites/9 tests); full Jest PASS (83 suites/422 tests); public Expo config PASS.
 - No WEB, API contract, provider state, wallet, transaction, production data, secret, or generated output changed.
+
+## MOBILE BA/PO review — 2026-08-26 12:21 trigger
+
+Fresh post-`6d53b9e` QA and source audit found 20 dependency-ready rendered-evidence gaps. Each accepts whitespace-only provider text as valid evidence and affects a distinct user-visible or assistive output.
+
+1. **MOBILE-DATA-321 P1 READY** Operations market source fallback.
+2. **MOBILE-DATA-322 P1 READY** Operations market quality fallback.
+3. **MOBILE-DATA-323 P1 READY** Operations trader source fallback.
+4. **MOBILE-DATA-324 P1 READY** Operations ingestion source fallback.
+5. **MOBILE-DATA-325 P1 READY** Operations ingestion commitment fallback.
+6. **MOBILE-A11Y-326 P1 READY** Whale relationship accessibility DEX fallback.
+7. **MOBILE-DATA-327 P1 READY** Wallet ranking quality fallback.
+8. **MOBILE-DATA-328 P1 READY** Wallet PnL provenance method fallback.
+9. **MOBILE-DATA-329 P1 READY** Track smart-money quality fallback.
+10. **MOBILE-DATA-330 P1 READY** Track evidence-provider fallback.
+11. **MOBILE-DATA-331 P1 READY** Token bubble source fallback.
+12. **MOBILE-DATA-332 P1 READY** Token quality freshness fallback.
+13. **MOBILE-DATA-333 P1 READY** Token pair source fallback.
+14. **MOBILE-DATA-334 P1 READY** Token provenance source fallback.
+15. **MOBILE-DATA-335 P1 READY** Token provenance quality fallback.
+16. **MOBILE-DATA-336 P1 READY** Discover quality fallback.
+17. **MOBILE-DATA-337 P1 READY** Monitor header source fallback.
+18. **MOBILE-DATA-338 P1 READY** Monitor header quality fallback.
+19. **MOBILE-DATA-339 P1 READY** Trenches quality fallback.
+20. **MOBILE-DATA-340 P1 READY** Whale best-token whitespace fallback.
+
+Impact: blank evidence can imply a present value while conveying nothing, including in screen-reader relationships. Dependency: none; existing API fields remain unchanged. Acceptance: trim valid text and localize blank/missing evidence through the shared bounded helper. Verification: formatter regression, affected component suites, TypeScript, ESLint, full Jest, Expo config. Execution order is stable-ID order. NEXT_WEB_ACTION: none.
+
+### MOBILE-169 implementation result
+
+- Completed 20/20 material outcomes (`MOBILE-DATA-321..325`, `MOBILE-A11Y-326`, `MOBILE-DATA-327..340`); remaining to 20: 0.
+- Operations, Whales, Wallet Intelligence, Track, Token Detail, Discover, Monitor, and Trenches now trim valid quality/source/provider/method/DEX/token labels and localize blank/missing values.
+- TypeScript/full source ESLint PASS; focused Jest PASS (7 suites/15 tests); full Jest PASS (83 suites/422 tests); public Expo config PASS.
+- No WEB/API/provider mutation, wallet action, transaction behavior, production data, secret, or generated output changed.

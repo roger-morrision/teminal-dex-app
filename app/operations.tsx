@@ -237,8 +237,8 @@ function AnalyticsPanel({
           Boolean(market.data?.error)
         }
         text={t("operationsEvidence", {
-          source: market.data?.source ?? t("sourceUnavailable"),
-          quality: market.data?.dataQuality ?? t("qualityUnavailable"),
+          source: evidenceLabel(market.data?.source, t("sourceUnavailable")),
+          quality: evidenceLabel(market.data?.dataQuality, t("qualityUnavailable")),
           included: usable.length,
           excluded,
         })}
@@ -293,7 +293,7 @@ function AnalyticsPanel({
       <SectionTitle
         title={t("historicalTraderActivity")}
         detail={t("thirtyDayObservation", {
-          source: traders.data?.source ?? t("sourceUnavailable"),
+          source: evidenceLabel(traders.data?.source, t("sourceUnavailable")),
         })}
       />
       {traders.error ? (
@@ -565,8 +565,8 @@ export function IndexerHealthCard({
         lag: evidence.ingestion.exportLagSlots == null ? t("unavailable") : evidence.ingestion.exportLagSlots,
       })}</Text>
       <Text style={styles.meta}>{t("indexerIngestionSummary", {
-        source: evidence.ingestion.source ?? t("sourceUnavailable"),
-        commitment: evidence.ingestion.commitment ?? t("unavailable"),
+        source: evidenceLabel(evidence.ingestion.source, t("sourceUnavailable")),
+        commitment: evidenceLabel(evidence.ingestion.commitment, t("unavailable")),
       })}</Text>
       {quality.length ? <View style={styles.indexerQuality}>{quality.map(([key, item]) => (
         <Text key={key} style={[styles.freshness, item.canonical !== true && styles.warn]}>

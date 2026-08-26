@@ -1,5 +1,17 @@
 # MOBILE DEV → QA handoff
 
+## MOBILE-169 — 20/20 evidence-label integrity
+
+- Base: `6d53b9e`; result: containing commit.
+- BA/PO and DEV: 20 current findings reconciled and 20 material outcomes completed (`MOBILE-DATA-321..325`, `MOBILE-A11Y-326`, `MOBILE-DATA-327..340`); exact shortfall 0.
+- Changed behavior: twenty distinct quality/source/provider/method/DEX/token outputs across Operations, Whales, Wallet Intelligence, Track, Token Detail, Discover, Monitor, and Trenches trim valid values and localize blank/missing evidence.
+- Changed files: eight production areas plus shared formatter/test and MOBILE evidence documents.
+- Evidence: TypeScript/full source ESLint PASS; focused Jest 7 suites/15 tests PASS; full Jest 83 suites/422 tests PASS; public Expo config PASS.
+- Runtime scenario: inject whitespace-only values for each stable ID, verify localized fallback labels in visual and accessibility output, and confirm navigation/retry behavior remains unchanged.
+- Known risks: exact API 37 provenance traversal, physical accessibility/resilience/performance, npm-enabled Doctor, Noble fallback, and provider-controlled Monitor scenarios remain separately QA-owned.
+- NEXT_QA_ACTION: pin the result, independently classify all 20 IDs, run malformed-evidence UI traversal and standard release gates.
+- NEXT_WEB_ACTION: none.
+
 ## MOBILE-168 — cross-surface provenance normalization
 
 - Base: `df8b438`; result: containing commit.

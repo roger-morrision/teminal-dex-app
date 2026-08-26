@@ -263,7 +263,7 @@ export default function TokenDetail() {
                 <>
                   <EvidenceLine
                     label={t("holderSource")}
-                    value={data.source ?? t("unavailable")}
+                    value={evidenceLabel(data.source, t("unavailable"))}
                   />
                   <Text style={styles.sectionTitle}>{t("largestHolders")}</Text>
                   {data.holders.slice(0, 30).map((holder) => (
@@ -340,7 +340,7 @@ export default function TokenDetail() {
                   />
                   <EvidenceLine
                     label={t("freshness")}
-                    value={data.quality?.freshness ?? t("unavailable")}
+                    value={evidenceLabel(data.quality?.freshness, t("unavailable"))}
                   />
                   <Text style={styles.sectionTitle}>
                     {t("observedTransactions")}
@@ -473,7 +473,7 @@ export default function TokenDetail() {
                 {data.pairs.map((pair) => (
                   <DataRow
                     key={pair.pairAddress}
-                    title={`${pair.source} · ${pair.quoteSymbol ?? t("unknown")}`}
+                    title={`${evidenceLabel(pair.source, t("unavailable"))} · ${evidenceLabel(pair.quoteSymbol, t("unknown"))}`}
                     value={compactUsd(pair.liquidityUsd)}
                     detail={`${compactUsd(pair.volume24hUsd)} ${t("volume").toLowerCase()} · ${pair.freshness}`}
                   />
@@ -652,11 +652,11 @@ function Overview({
         <Text style={styles.sectionTitle}>{t("dataEvidence")}</Text>
         <EvidenceLine
           label={t("source")}
-          value={token.source ?? t("unavailable")}
+          value={evidenceLabel(token.source, t("unavailable"))}
         />
         <EvidenceLine
           label={t("quality")}
-          value={token.dataQuality ?? t("unavailable")}
+          value={evidenceLabel(token.dataQuality, t("unavailable"))}
         />
         <EvidenceLine
           label={t("priceAutomation")}

@@ -161,7 +161,7 @@ function SmartMoney({
       <Evidence
         text={t("rankingEvidence", {
           source: evidenceLabel(response?.source, t("sourceUnavailable")),
-          quality: response?.dataQuality ?? t("unavailable"),
+          quality: evidenceLabel(response?.dataQuality, t("unavailable")),
           freshness: response?.freshness.isStale ? t("stale") : t("current"),
         })}
         warning={Boolean(response?.freshness.isStale)}
@@ -463,7 +463,7 @@ function WalletEvidence({ address }: { address: string }) {
       </View>
       <Text style={styles.limitation}>
         {t("walletEvidenceLimitation", {
-          method: pnl.data?.pnl?.provenance.method ?? t("unavailable"),
+          method: evidenceLabel(pnl.data?.pnl?.provenance.method, t("unavailable")),
         })}
       </Text>
       {wallet?.tokens.slice(0, 10).map((item) => (

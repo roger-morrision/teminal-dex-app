@@ -365,3 +365,71 @@ The initial sandboxed diagnostic could not open Expo's user native-module cache 
 - Material DEV outcomes available: 20; independently verified: 20/20 PASS.
 - Remaining to 20: 0. No duplicated or cosmetic findings counted.
 - Carry-forward order: `MOBILE-QA-010`, `MOBILE-QA-008`, `MOBILE-QA-004`.
+
+---
+
+# MOBILE-QA validation handoff — MOBILE-165
+
+- Run: 2026-08-26T09:15:00+07:00.
+- Inspected DEV commit: `54b6cdff112cdc09e8937a3a586f07a8feb25321` (`fix(mobile): raise primary market touch targets`); base `fe31e0c`.
+- Scope: PASS. Current directory and Git top-level resolved to `C:\Tuan\devApps\teminal-dex-app`; start/end working tree was clean. QA tested a clean temporary archive of the exact commit. No product code, tests, configuration, WEB workspace, wallet, transaction, or external API state was modified.
+- Environment/device: Windows, bundled Node 24.19.0, Expo 57 local CLI; API 37 emulator `emulator-5554` at 1080x2400. A verified bundle emitted `[MOBILE_BUILD] commit=54b6cdff112cdc09e8937a3a586f07a8feb25321`. Font scale was changed from 1.0 to 1.3 only for QA and restored to 1.0 before completion.
+
+## MOBILE-QA acceptance results
+
+| Criterion | Result | Independent evidence |
+| --- | --- | --- |
+| Immutable compilation | PASS | Clean-archive `tsc --noEmit` exits 0. |
+| Lint | PASS | Focused ESLint of all three changed production surfaces and the new touch-target test exits 0; full-source lint was also invoked with no emitted diagnostics. |
+| Focused touch/accessibility regression | PASS | `touch-targets`, Monitor table/state, and Trenches filter suites pass 5/19; the focused primary-a11y plus touch-target pair passes 2/71. |
+| Full regression | PASS | Immutable Jest `--ci --runInBand`: 83 suites / 417 tests. |
+| Expo checks/configuration | PASS with tooling constraint | Public config resolves expected Android/iOS/web security configuration; `expo install --check` reports dependencies up to date. Doctor starts 21 checks but is 17/21 because four checks cannot spawn `npm` in this QA runtime. |
+| Platform exports | CONDITIONAL PASS | Android (1 Hermes bundle/46 assets), iOS (1 Hermes bundle/23 assets), and web (1 static bundle) complete. Android retains known Noble `./crypto.js` strict-exports fallback. |
+| API 37 1.0x/1.3x touch-target flow | PASS with defect below | Exact build rendered Discover, Monitor, and Trenches. Named reachable controls were 115–124 physical pixels high (about 46–50 logical dp on this 2.5-density emulator), including horizontal rails, filters, retry, DEX choices, reset/apply, monitor radios/checkboxes/switch, and Trenches filters/launchpads/reset. At 1.3x, Discover tabs, periods, and filter remained 115–116 pixels high with no observed overlap/clipping. |
+
+## MOBILE-QA reconciled MOBILE-165 outcomes (20)
+
+| Stable ID | Result | Evidence and exact NEXT_DEV_ACTION |
+| --- | --- | --- |
+| MOBILE-TOUCH-241 | PASS | Discover mode tabs: source `minHeight:44`; API 37 bounds 115px. **NEXT_DEV_ACTION:** retain. |
+| MOBILE-TOUCH-242 | PASS | Discover periods: source wrapper 44x44; API 37 radio bounds 115x116px at 1.0x and 1.3x. **NEXT_DEV_ACTION:** retain. |
+| MOBILE-TOUCH-243 | PASS | Discover filter trigger: source 44px; API 37 bounds 158x116px / 177x116px at 1.3x. **NEXT_DEV_ACTION:** retain. |
+| MOBILE-TOUCH-244 | PASS | Discover retry: source 44px; live error state exposed an API 37 Retry button 186x116px. **NEXT_DEV_ACTION:** retain. |
+| MOBILE-TOUCH-245 | PASS | Discover DEX radios: source 44px; API 37 bounds 99–208x116px. Raydium selection changed checked state through touch. **NEXT_DEV_ACTION:** retain. |
+| MOBILE-TOUCH-246 | PASS | Discover Reset: source 44px; API 37 bounds 346x124px and reversible reset touch closed the panel. **NEXT_DEV_ACTION:** retain. |
+| MOBILE-TOUCH-247 | PASS | Discover Apply: source 44px; API 37 bounds 613x124px. **NEXT_DEV_ACTION:** retain. |
+| MOBILE-TOUCH-248 | PASS | Monitor refresh: source 44x44; API 37 bounds 116x115px. **NEXT_DEV_ACTION:** retain. |
+| MOBILE-TOUCH-249 | PASS | Monitor window radios: source control 44px; API 37 bounds 85–100x115px. **NEXT_DEV_ACTION:** retain. |
+| MOBILE-TOUCH-250 | PASS | Monitor preset radios: source control 44px; API 37 bounds 108–152x115px. **NEXT_DEV_ACTION:** retain. |
+| MOBILE-TOUCH-251 | PASS | Monitor direction radios: source control 44px; API 37 bounds 88–141x116px. **NEXT_DEV_ACTION:** retain. |
+| MOBILE-TOUCH-252 | PASS | Monitor DEX radios: source control 44px; API 37 All DEX control is 150x115px. **NEXT_DEV_ACTION:** retain. |
+| MOBILE-TOUCH-253 | PASS | Monitor sort checkboxes: source control 44px; API 37 bounds 152–210x115px. **NEXT_DEV_ACTION:** retain. |
+| MOBILE-TOUCH-254 | PASS | Monitor density switch: source control 44px; API 37 Compact rows is 213x116px. **NEXT_DEV_ACTION:** retain. |
+| MOBILE-TOUCH-255 | PASS | Monitor reset receives explicit 44px style and is protected by new regression test; inactive-state runtime did not render Reset. **NEXT_DEV_ACTION:** add an active-filter device assertion in the physical matrix. |
+| MOBILE-TOUCH-256 | PASS | Monitor Load/retry pagination receives explicit 44px style and is protected by regression test; data set did not expose a pagination branch during this run. **NEXT_DEV_ACTION:** add a controlled partial-page/retry device fixture. |
+| MOBILE-TOUCH-257 | PASS | Trenches lane tabs: source 44px; API 37 New/Almost bonded/Migrated bounds are 318x117px. **NEXT_DEV_ACTION:** retain. |
+| MOBILE-TOUCH-258 | PASS | Trenches filter trigger: source 44px; API 37 Open launch filters is 190x116px. **NEXT_DEV_ACTION:** retain. |
+| MOBILE-TOUCH-259 | PASS | Trenches launchpad radios: source 44px; API 37 bounds 63–199x115–116px. **NEXT_DEV_ACTION:** retain after QA-021 fix. |
+| MOBILE-TOUCH-260 | PASS | Trenches Reset: source 44px; API 37 bounds 145x116px. **NEXT_DEV_ACTION:** retain after QA-021 fix. |
+
+## MOBILE-QA finding — runtime defect
+
+| ID | Severity / priority | Result | Reproduction, affected files, risk, and exact NEXT_DEV_ACTION |
+| --- | --- | --- | --- |
+| MOBILE-QA-021 | P2 | FAIL | On the exact API 37 build, open `Trenches` → `Open launch filters`. React Native logs `Each child in a list should have a unique key prop` from `TrenchFilterPanel`; the accessibility tree also exposes `Select launchpad undefined`. `app/(tabs)/trenches.tsx:68-77` admits undefined `token.dex` values and `:282-284` uses the value as a key. Risk: developer warning overlay and malformed launchpad filter option interrupt a primary market flow. **NEXT_DEV_ACTION:** exclude invalid/non-string DEX values (and de-duplicate normalized labels) before rendering; add a regression test for undefined/duplicate provider DEX values and rerun Trenches device flow. |
+
+## MOBILE-QA command/runtime evidence and release recommendation
+
+- PASS: immutable TypeScript; focused changed-surface lint; focused regressions; full Jest 83/417; public Expo config; dependency compatibility; all three platform exports.
+- PARTIAL/BLOCKED: Doctor 17/21 due unavailable child `npm`; physical-device TalkBack/Switch Access and smaller-device motor matrix; Monitor active-reset and partial-page retry scenarios require controllable data state.
+- CONDITIONAL PASS: Android bundle warning remains `@solana/wallet-standard-util` → Noble strict-exports fallback; no unresolved bundle module.
+- Safe evidence references: `%LOCALAPPDATA%\Temp\mobile-qa-165-discover.xml`, `mobile-qa-165-discover-filter.xml`, `mobile-qa-165-monitor-filter.xml`, `mobile-qa-165-trenches-filter.xml`, and `mobile-qa-165-discover-font130.xml`; verified runtime log includes the exact commit marker and QA-021 warning.
+- No MOBILE-to-WEB blocker: WEB APIs were neither read nor changed.
+- **MOBILE-QA release recommendation: CONDITIONAL NO-GO.** The 20 target-floor outcomes independently pass, but QA-021 must be corrected and rerun; Doctor, Noble, and physical accessibility/resilience evidence remain release follow-ups.
+
+## MOBILE-QA 20/20 reconciliation
+
+- Findings inspected/reconciled: 21 distinct evidence-backed findings (20 DEV outcomes plus QA-021).
+- Material DEV outcomes available: 20; independently verified: 20/20 PASS.
+- Remaining to 20: 0. No cosmetic or duplicate outcome counted.
+- Carry-forward order: `MOBILE-QA-021`, `MOBILE-QA-010`, `MOBILE-QA-008`, `MOBILE-QA-004`.

@@ -138,3 +138,62 @@ The initial sandboxed diagnostic could not open Expo's user native-module cache 
 - Material DEV outcomes available: 3; independently verified: 3/3 PASS.
 - Remaining to 20 DEV outcomes: 17. No padding applied; the remaining slots require device ownership, Expo Doctor availability, audit-advisory enumeration, Noble ownership, or the excluded concurrent Whales/token-logo slice.
 - Carry-forward order: `MOBILE-QA-002`, `MOBILE-QA-010`, `MOBILE-QA-008`, `MOBILE-QA-011`, `MOBILE-QA-004`.
+
+---
+
+# MOBILE-QA validation handoff — MOBILE-161
+
+- Run: 2026-08-26T04:44:33.3723738Z.
+- Inspected DEV commit: `1372483f6fd9fc6523706cdc648e67df449c9ad2` (`test(security): guard audit runtime boundary`); base `b73b47a`.
+- Scope: PASS. Current directory and Git top-level resolve to the canonical mobile workspace. The primary worktree retains an unrelated uncommitted Whales/token-logo/MOBILE-to-WEB slice, so executable evidence used a clean temporary archive of exactly `1372483` with the existing dependencies attached as a junction. No product code, tests, or configuration were edited.
+- Environment: Windows, bundled Node 24.19.0, Expo 57 local CLI, `%LOCALAPPDATA%\Temp\mobile-qa-161-1372483`. No responsive Android target was available; no runtime result was inferred.
+
+## Current DEV acceptance results
+
+| MOBILE-QA criterion | Result | Independent evidence |
+| --- | --- | --- |
+| `uuid` excluded from direct app dependencies | PASS | Focused boundary test passes. |
+| `xcode` excluded from direct app dependencies | PASS | Focused boundary test passes. |
+| Expo config plugins excluded from direct app dependencies | PASS | Focused boundary test passes. |
+| `xcode` remains behind Expo configuration tooling | PASS | Focused boundary test passes. |
+| Audited transitive package versions are pinned | PASS | Focused boundary test passes. |
+| Audited packages have no `app`/`src` runtime imports | PASS | Focused boundary test passes. |
+| Regression, config, and bundles | PASS with condition | Immutable Jest 82/407, TypeScript, ESLint, and local compatibility diagnostic pass; Android exports with carried Noble warning, iOS/web export cleanly. |
+
+## MOBILE-QA reconciled finding inventory (20)
+
+| ID | Result | Evidence, regression risk, and exact NEXT_DEV_ACTION |
+| --- | --- | --- |
+| MOBILE-QA-001 | PASS | MOBILE-161 is a test-only security boundary; no product/API/wallet/transaction path changed. |
+| MOBILE-QA-002 | BLOCKED P1 | Exact-build Android emulator/device evidence unavailable. **NEXT_DEV_ACTION:** provide a responsive target and immutable build marker. |
+| MOBILE-QA-003 | PASS | Archive pinned to `1372483`; unrelated dirty paths excluded. |
+| MOBILE-QA-004 | CONDITIONAL PASS P2 | Android bundle completes but retains Noble `./crypto.js` strict-exports fallback. **NEXT_DEV_ACTION:** maintain audited guard; revalidate all platforms before dependency/resolver changes. |
+| MOBILE-QA-005 | PASS | Immutable full Jest passes 82 suites / 407 tests. |
+| MOBILE-QA-006 | RESOLVED | No mixed-state test evidence; primary worktree remained untouched. |
+| MOBILE-QA-007 | PASS | Semantic accessibility ordering tests remain green in full regression. |
+| MOBILE-QA-008 | BLOCKED P2 | Local CLI rejects `expo doctor`; no standalone executable exists. **NEXT_DEV_ACTION:** add an isolated repository-local Doctor evidence lane. |
+| MOBILE-QA-009 | PASS | Exact archive establishes current committed baseline at 82 suites / 407 tests. |
+| MOBILE-QA-010 | BLOCKED P2 | Device TalkBack/VoiceOver, enlarged text, offline/reconnect, background/restore, and performance evidence remain unavailable. **NEXT_DEV_ACTION:** execute device matrix after QA-002. |
+| MOBILE-QA-011 | PARTIALLY VERIFIED P2 | Six regression checks bound the reported 11 moderate, zero high/critical audit exposure to `uuid` 7.0.3 via `xcode`/Expo tooling, but raw production audit cannot be regenerated because no npm executable exists. **NEXT_DEV_ACTION:** run `npm audit --package-lock-only --omit=dev --json` in isolated dependency maintenance and re-evaluate compatible Expo/xcode updates; do not force downgrade/remediation. |
+| MOBILE-QA-012 | PASS | `expo install --check` reports dependencies up to date. |
+| MOBILE-QA-013 | RESOLVED | SnipeCard settlement remains warning-free in the complete immutable suite. |
+| MOBILE-QA-014 | PASS | Exact archive TypeScript compilation passes. |
+| MOBILE-QA-015 | PASS | Exact archive source ESLint passes. |
+| MOBILE-QA-016 | PASS | Public config retains HTTPS/ATS, deep-link, biometric, and no-secret boundaries. |
+| MOBILE-QA-017 | CONDITIONAL PASS | Android export: one Hermes bundle/46 assets, no unresolved-module failure; see QA-004. |
+| MOBILE-QA-018 | PASS | iOS export: one Hermes bundle/23 assets. |
+| MOBILE-QA-019 | PASS | Web static export: one bundle, completed without bundle failure. |
+| MOBILE-QA-020 | PASS | Expo patch compatibility remains aligned according to the local diagnostic. |
+
+## Safe evidence, scope change, and release
+
+- `qa_scope_changed` applies to the primary worktree only. Excluded at start/end: `.gitignore`, `app/(tabs)/whales.tsx`, `expo-env.d.ts`, `src/__tests__/TokenRow.test.tsx`, `src/components/TokenAvatar.tsx`, `src/components/TokenRow.tsx`, `src/components/DexLogo.tsx`, and three untracked MOBILE-to-WEB handoffs.
+- Commands/results: dependency-audit boundary Jest 6/6 PASS; full Jest 82/407 PASS; TypeScript PASS; ESLint PASS; local compatibility diagnostic PASS; config PASS; Android export CONDITIONAL PASS (Noble warning); iOS/web PASS. Production audit raw rerun and device runtime were BLOCKED; no screenshots/logs/secrets/backend origins captured.
+- **MOBILE-QA release recommendation: CONDITIONAL NO-GO.** The guard reduces regression risk but does not resolve the upstream advisory. `MOBILE-QA-002`, `010`, `008`, `011`, and `004` remain release follow-ups.
+
+## 20/20 reconciliation
+
+- Findings inspected/reconciled: 20.
+- Material DEV outcomes available: 6; independently verified: 6/6 PASS.
+- Remaining to 20 DEV outcomes: 14. No padding applied; remaining capacity depends on upstream audit remediation, exact device ownership, Doctor availability, Noble ownership, or the excluded concurrent slice.
+- Carry-forward order: `MOBILE-QA-011`, `MOBILE-QA-002`, `MOBILE-QA-010`, `MOBILE-QA-008`, `MOBILE-QA-004`.

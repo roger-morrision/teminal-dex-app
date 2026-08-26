@@ -1090,3 +1090,39 @@ The initial sandboxed diagnostic could not open Expo's user native-module cache 
 - Findings inspected/reconciled: 20. DEV material outcomes available/verified: 5/5 PASS. Exact shortfall to 20: 15 (`MOBILE-QA-269..280`, `MOBILE-QA-283..285`); no padding applied.
 - Carry-forward order: `MOBILE-QA-269`, `MOBILE-QA-270`, `MOBILE-QA-271`, `MOBILE-QA-272`, `MOBILE-QA-273`, `MOBILE-QA-274`, `MOBILE-QA-275`, `MOBILE-QA-276`, `MOBILE-QA-277`, `MOBILE-QA-278`, `MOBILE-QA-279`, `MOBILE-QA-280`, `MOBILE-QA-283`, `MOBILE-QA-284`, `MOBILE-QA-285`.
 - **NEXT_DEV_ACTION:** provide a deterministic immutable Whale fixture with seconds, milliseconds, invalid observation time, and full/partial/absent market snapshots so QA can complete EN/VI visual and assistive chronology verification without changing provider contracts.
+
+---
+
+# MOBILE-QA validation handoff — MOBILE-179
+
+- Trigger: 2026-08-26T22:41:43.060Z. Inspected immutable result `828c9855c48540480707d316c76509e41c8a9bcc` (`fix(mobile): localize live whale ages`), base `502424a`. Scope PASS: canonical top-level/prefix verified, clean result, and no DEV lock. Archive `%LOCALAPPDATA%\\Temp\\mobile-qa-179-828c985` supplied independent source evidence; only this report uses the QA lock.
+- Environment/runtime: Windows, bundled Node 24.19.0, Expo 57. Exact Android/iOS device and deterministic 30s/2m/3h/2d/malformed/future Whale fixture unavailable; no runtime, assistive, navigation, provider, wallet, transaction, or WEB claim is inferred.
+
+## MOBILE-QA acceptance matrix
+
+| Criterion | Result | Independent evidence |
+| --- | --- | --- |
+| Type and changed-surface lint | PASS | Archive `tsc --noEmit` and changed Whale/format/test ESLint exit 0. |
+| Focused age regression | PASS | `format.test.ts` and `whale-activity.test.ts`: 2 suites / 17 tests pass. |
+| Full regression | PASS | Archive Jest: 83 suites / 454 tests pass in 72.941s. |
+| Expo/configuration | PASS with Doctor blocker | Public configuration resolves; Doctor emits child-Node ENOENT. |
+| Android/iOS/web bundles | CONDITIONAL PASS / PASS / PASS | Fresh archive exports: Android 5.7 MB Hermes + metadata (Noble condition), iOS 2.3 MB + metadata, web 1.1 MB static bundle. |
+| Exact live-Whale runtime | BLOCKED | Required time-state and device fixture unavailable. |
+
+## MOBILE-QA reconciliation
+
+| Stable ID | Result | Evidence / owner |
+| --- | --- | --- |
+| MOBILE-I18N-439..442 | PASS | Shared relative-age classifier selects bounded seconds/minutes/hours/days translation keys; fixed-time regression covers 30s, 2m, 3h, 2d. |
+| MOBILE-DATA-443 | PASS | Non-finite/nonpositive and future observations return null, allowing truthful localized unavailable fallback. |
+| MOBILE-DATA-444 | PASS | Seconds and milliseconds normalize before age calculation; fixed-time focused coverage passes. |
+| MOBILE-QA-269..280 | BLOCKED/CONDITIONAL P2 | Physical accessibility/recovery/performance, Doctor, Noble, and Monitor fixture matrix; owner QA/device/toolchain/upstream/provider. |
+| MOBILE-QA-283..284 | BLOCKED P2 | Android/iOS physical edge traversal; owner QA/device. |
+
+## MOBILE-QA release and throughput
+
+- Evidence: `%LOCALAPPDATA%\\Temp\\mobile-qa-179-full.out.log`, `mobile-qa-179-android.out.log`, `mobile-qa-179-ios.out.log`, `mobile-qa-179-web.out.log`. No secret, credential, backend payload, screenshot, or WEB evidence retained; no MOBILE-to-WEB blocker.
+- **MOBILE-QA release recommendation: CONDITIONAL NO-GO.** Six available outcomes pass; 14 external findings and exact EN/VI runtime remain incomplete.
+- Findings inspected/reconciled: 20. DEV outcomes available/verified: 6/6 PASS. Exact shortfall: 14 (`MOBILE-QA-269..280`, `MOBILE-QA-283..284`).
+- Carry-forward order: `MOBILE-QA-269`, `MOBILE-QA-270`, `MOBILE-QA-271`, `MOBILE-QA-272`, `MOBILE-QA-273`, `MOBILE-QA-274`, `MOBILE-QA-275`, `MOBILE-QA-276`, `MOBILE-QA-277`, `MOBILE-QA-278`, `MOBILE-QA-279`, `MOBILE-QA-280`, `MOBILE-QA-283`, `MOBILE-QA-284`.
+- **NEXT_DEV_ACTION:** provide an immutable Whale fixture for 30-second, 2-minute, 3-hour, 2-day, malformed, and future observations so QA can verify EN/VI live-age output and accessibility without changing provider contracts.

@@ -1,64 +1,77 @@
-# MOBILE-QA — MOBILE-158 repository-local Expo diagnostics
+# MOBILE-QA validation handoff — MOBILE-159
 
-- Run (UTC): `2026-08-26T01:49:21Z`.
-- Scope/provenance: CWD and Git top-level both resolved to canonical `C:\Tuan\devApps\teminal-dex-app`; `AGENTS.md`, DEV handoff, requirements checklist, worklog, final audit, prior QA report, current status/history, package scripts, public Expo config, and runtime/build lanes were inspected. No WEB workspace, product code, test, configuration, secret, production state, signing, submission, trade, or CopyTrade activation was touched.
-- Inspected immutable DEV result: `eb7e96a6b7adaa9ea22117ddadb030670c3ad0d1` (`chore(expo): add local compatibility diagnostics`), MOBILE-158; base `95541dd`. It adds `diagnostics:expo: expo install --check` and one package-script contract case, plus documentation.
-- Scope stability: primary worktree has the separate uncommitted Whales/token-logo/MOBILE-to-WEB slice. It was preserved and excluded. A detached clean worktree pinned exactly `eb7e96a`; it linked the already-installed dependencies only. Its generated exports remained in that temporary worktree.
-- Environment/device: Windows `10.0.26100`, bundled Node `24.19.0`, Android Platform Tools `37.0.1-15733141`. `adb devices -l` completed but returned no target. No runtime UI, screenshot, device log, navigation, screen-reader, large-text, offline, retry, error, or partial-page evidence is claimed.
+- Run: 2026-08-26T02:54:08Z
+- Inspected DEV commit: `a1b057ca26cd79838e22dbfe512b83ac76dd962d` (`chore(expo): align SDK 57 patch versions`); base `c6ea00c`.
+- Scope: PASS. `cwd` and Git top-level resolve to `C:\Tuan\devApps\teminal-dex-app`. The primary worktree has an unrelated dirty Whales/token-logo/MOBILE-to-WEB slice, so validation used a clean detached checkout of the exact DEV commit with the repository's installed dependencies. No product code, test, or configuration was edited.
+- Environment: Windows; bundled Node; `%LOCALAPPDATA%\Temp\mobile-qa-159-a1b057c-2`; `adb devices -l` did not return within 90 seconds. No device outcome was inferred.
 
-## Acceptance result
+## Acceptance results
 
-| MOBILE-158 acceptance criterion | Result | Independent evidence |
+| DEV criterion | Result | Independent evidence |
 | --- | --- | --- |
-| Diagnostic uses declared local Expo executable | PASS | `package-scripts.test.ts` passes 6/6. It requires first command `expo`, declared `expo` dependency, and forbids `npx`; the new script is `expo install --check`. |
-| Diagnostic fails closed on incompatible dependencies | PASS (release blocker exposed) | Local `expo.cmd install --check` exited 1 and listed exactly: `expo 57.0.15→~57.0.16`, `expo-constants 57.0.13→~57.0.14`, `expo-dev-client 57.0.14→~57.0.15`, `expo-router 57.0.15→~57.0.16`. No dependency was changed. |
-| TypeScript/source lint/full regression | PASS | `tsc --noEmit`, `eslint app src`, and immutable Jest all exit 0; full Jest is 81 suites / 401 tests. |
-| Public configuration and platform bundles | PASS with known warning | Public Expo config resolves expected app IDs/scheme. Android export: 1 bundle/46 assets; iOS: 1/23; web: 1 JS bundle. Android completes with the carried Noble `./crypto.js` exports-map warning. |
-| Exact-build Android navigation/accessibility/recovery | BLOCKED | ADB lists no device. |
+| Expo 57 patch alignment | PASS | Declared `~57.0.16`, locked `57.0.16`; local `expo install --check` exited 0. |
+| Constants patch alignment | PASS | Declared `~57.0.14`, locked `57.0.14`; live diagnostic passed. |
+| Dev Client patch alignment | PASS | Declared `~57.0.15`, locked `57.0.15`; live diagnostic passed. |
+| Router patch alignment | PASS | Declared `~57.0.16`, locked `57.0.16`; live diagnostic passed. |
+| Local quality command contract | PASS | `package-scripts.test.ts` 6/6, including no implicit `npx`/global resolution. |
+| TypeScript and source ESLint | PASS | `tsc --noEmit` and `eslint app src` exited 0. |
+| Immutable regression suite | PASS with finding | 81 suites / 401 tests passed; one React `act()` warning is `MOBILE-QA-013`. |
+| Public Expo config | PASS | Android/iOS/web resolve; iOS ATS remains HTTPS-only and Android has biometric-only permissions. |
+| Android export | CONDITIONAL PASS | 1 Hermes bundle / 46 assets; known Noble warning remains `MOBILE-QA-004`. |
+| iOS export | PASS | 1 bundle / 23 assets. |
+| Web export | PASS | 1 static bundle / 20 output files. |
 
-## Findings and reconciliation
+## MOBILE-QA reconciled finding inventory (20)
 
-| MOBILE-QA finding | Status / priority | Evidence, affected area, risk, exact NEXT_DEV_ACTION |
+| ID | Result | Evidence and exact next action |
 | --- | --- | --- |
-| MOBILE-QA-158-01 local diagnostic resolution | PASS / P3 | `package.json`, `src/__tests__/package-scripts.test.ts`; focused 6/6. Risk: script may regress to global/npx resolution. NEXT_DEV_ACTION: retain the local-first contract. |
-| MOBILE-QA-158-02 Expo dependency compatibility | FAIL / P1 | `expo install --check` reports four exact SDK patch mismatches above. Affected: Expo dependency readiness/release gate. NEXT_DEV_ACTION: make a separately reviewed dependency-update increment, then rerun diagnostics, TypeScript, Jest, all exports, and device validation. |
-| MOBILE-QA-158-R01 schema validation regression | PASS / P3 | Immutable `schema.test.ts` passes. Risk: contract parsing. NEXT_DEV_ACTION: retain as regression coverage. |
-| MOBILE-QA-158-R02 API client regression | PASS / P3 | Immutable `client.test.ts` passes. Risk: configured/development-origin policy. NEXT_DEV_ACTION: retain coverage. |
-| MOBILE-QA-158-R03 accessibility/privacy semantics | PASS / P2 | Immutable `primary-a11y.test.ts` passes. Risk: control/error semantics. NEXT_DEV_ACTION: pair with device TalkBack evidence when available. |
-| MOBILE-QA-158-R04 swap client safety | PASS / P2 | Immutable `swap-safety-client.test.ts` passes. Risk: transaction safety boundary. NEXT_DEV_ACTION: retain execution lock. |
-| MOBILE-QA-158-R05 quote readiness atomicity | PASS / P2 | Immutable `swap-readiness.test.ts` passes. Risk: quote expiry/busy overlap. NEXT_DEV_ACTION: retain tests. |
-| MOBILE-QA-158-R06 public error boundary | PASS / P2 | Immutable `public-error.test.ts` passes. Risk: provider diagnostic disclosure. NEXT_DEV_ACTION: retain sanitization. |
-| MOBILE-QA-158-R07 connectivity/recovery | PASS / P3 | Immutable `connectivity.test.tsx` and `feed-recovery.test.ts` pass. Risk: offline/refetch behavior. NEXT_DEV_ACTION: device exercise remains queued. |
-| MOBILE-QA-158-R08 Monitor controls | PASS / P3 | Immutable `MonitorTokenTable.test.tsx` and `monitor-table.test.ts` pass. Risk: alert-state recovery. NEXT_DEV_ACTION: retain coverage. |
-| MOBILE-QA-158-R09 CopyTrade safety boundary | PASS / P2 | Immutable CopyTrade suites pass. Risk: accidental activation. NEXT_DEV_ACTION: preserve disabled execution policy. |
-| MOBILE-QA-158-R10 token evidence display | PASS / P3 | Immutable `TokenEvidence.test.tsx` and `TokenRow.test.tsx` pass. Risk: identity/image evidence. NEXT_DEV_ACTION: validate concurrent TokenRow slice separately after commit. |
-| MOBILE-QA-158-R11 whale contracts/activity | PASS / P3 | Immutable whale-contract/activity suites pass. Risk: provider projection. NEXT_DEV_ACTION: validate dirty Whales slice separately. |
-| MOBILE-QA-158-R12 operational evidence | PASS / P3 | Immutable operations/contract suites pass. Risk: observational contract degradation. NEXT_DEV_ACTION: retain bounded recovery. |
-| MOBILE-QA-158-R13 transaction manifest | PASS / P2 | Immutable `transaction-manifest.test.ts` passes. Risk: unsigned intent evidence. NEXT_DEV_ACTION: keep signing/submission disabled. |
-| MOBILE-QA-158-R14 execution policy | PASS / P1 | Immutable `execution-policy.test.ts` passes. Risk: unsafe execution enablement. NEXT_DEV_ACTION: preserve explicit lock. |
-| MOBILE-QA-158-R15 Android dev startup safety | PASS / P3 | Immutable `android-dev-menu-safety.test.ts` passes. Risk: debug startup regression. NEXT_DEV_ACTION: recheck on attached exact-build device. |
-| MOBILE-QA-158-R16 build provenance | PASS / P3 | Immutable `build-provenance.test.ts` passes. Risk: untraceable runtime evidence. NEXT_DEV_ACTION: use `dev:verified` when a device exists. |
-| MOBILE-QA-158-R17 Noble compatibility guard | PASS / P3 | Immutable Noble guard passes; exports complete. Risk: strict-export fallback drift. NEXT_DEV_ACTION: retain `MOBILE-QA-004` review. |
-| MOBILE-QA-158-R18 package quality-script suite | PASS / P3 | Immutable suite passes 6/6. Risk: local tooling contract drift. NEXT_DEV_ACTION: preserve test with future scripts. |
-| MOBILE-QA-002 exact-build device/accessibility | BLOCKED / P2 | `adb devices -l` shows only its header. NEXT_DEV_ACTION: attach/start API 37 or physical dev device, run exact `dev:verified` SHA, then exercise every tab/subtab and loading, stale, empty, filtered-empty, offline, error, retry, partial recovery, large text, and TalkBack. |
-| MOBILE-QA-004 Noble exports-map fallback | CONDITIONALLY ACCEPTED / P3 | Android warning remains visible; all exports pass. NEXT_DEV_ACTION: re-evaluate after Expo/Metro/wallet/Noble updates; do not suppress through a resolver override. |
-| MOBILE-QA-008 Doctor availability | REPLACED / P3 | Repo-local `diagnostics:expo` provides scoped compatibility evidence, but it is not a claim of full Doctor parity. NEXT_DEV_ACTION: retain the command and document any desired full-doctor scope separately. |
-| MOBILE-QA-010 verified-launcher runtime evidence | BLOCKED / P3 | Clean worktree is available, but no device target exists. NEXT_DEV_ACTION: start `dev:verified` from clean SHA and capture bounded marker on an attached device. |
+| MOBILE-QA-001 | PASS | DEV delta is package/lockfile/release-doc only; no API, UI, signing, submission, trading, or CopyTrade activation path changed. |
+| MOBILE-QA-002 | BLOCKED P1 | ADB discovery non-responsive at 90 seconds. **NEXT_DEV_ACTION:** provide a responsive Android target with exact `a1b057c` development build/marker. |
+| MOBILE-QA-003 | PASS | QA checkout was pinned before evidence; concurrent primary-worktree changes were excluded. |
+| MOBILE-QA-004 | CONDITIONAL PASS P2 | Android export succeeds but logs Noble `./crypto.js` strict-exports fallback; focused guard passes 5/5. **NEXT_DEV_ACTION:** retain audited disposition; remediate only with full platform revalidation. |
+| MOBILE-QA-005 | PASS | Full immutable Jest gate passed 81/401. |
+| MOBILE-QA-006 | RESOLVED | No mixed-state test evidence: pinned commit remained stable throughout the QA run. |
+| MOBILE-QA-007 | PASS | Semantic accessibility ordering gate remains green within full Jest. |
+| MOBILE-QA-008 | BLOCKED P2 | Local CLI rejects `expo doctor`; no standalone `expo-doctor` executable is installed. **NEXT_DEV_ACTION:** add/run an isolated repository-local Doctor evidence lane. |
+| MOBILE-QA-009 | PASS | Immutable count is 81 suites / 401 tests, matching MOBILE-159 handoff. |
+| MOBILE-QA-010 | BLOCKED P2 | No physical-device TalkBack/VoiceOver, dynamic-type, offline/reconnect, background/restore, or performance evidence. **NEXT_DEV_ACTION:** execute the device matrix after QA-002. |
+| MOBILE-QA-011 | BLOCKED P2 | DEV reports 11 moderate audit findings, but this runtime has no `npm`/local npm CLI to obtain exact advisory IDs. **NEXT_DEV_ACTION:** capture `npm audit --package-lock-only --json` in isolated dependency maintenance; do not auto-remediate. |
+| MOBILE-QA-012 | PASS | `diagnostics:expo` command contract passes 6/6 and live compatibility check reports dependencies up to date. |
+| MOBILE-QA-013 | FAIL P2 | Full Jest output has one `console.error`: “An update to SnipeCard inside a test was not wrapped in act(...)”. Focused SnipeCard is 3/3 and warning-free, indicating full-suite/order settlement risk. Affected: `src/__tests__/SnipeCard.test.tsx`. **NEXT_DEV_ACTION:** reproduce under full ordering, await/flush pending query update, then require warning-free full run. |
+| MOBILE-QA-014 | PASS | Exact-checkout TypeScript compilation succeeded. |
+| MOBILE-QA-015 | PASS | Exact-checkout source-owned ESLint succeeded with zero reported warnings/errors. |
+| MOBILE-QA-016 | PASS | Public config has no secret/endpoint leakage and preserves deep-link and native privacy boundaries. |
+| MOBILE-QA-017 | PASS | Android bundled without unresolved-module failure (1 Hermes/46 assets). |
+| MOBILE-QA-018 | PASS | iOS bundled successfully (1 bundle/23 assets). |
+| MOBILE-QA-019 | PASS | Static web export succeeded (1 bundle/20 files). |
+| MOBILE-QA-020 | PASS | All four SDK dependency declarations and lock entries agree with the live compatibility diagnostic. |
 
-## Commands and safe evidence
+## Commands/evidence
 
-- Focused package-script Jest — PASS, 1 suite / 6 tests.
-- `tsc --noEmit` — PASS; `eslint app src` — PASS, no findings.
-- Full immutable Jest — PASS, 81 suites / 401 tests, zero failures.
-- Local `expo install --check` — expected nonzero compatibility result; four mismatches, no changes made.
-- Public Expo config — PASS: `terminaldex`, Android/iOS `app.terminaldex.mobile`, scheme `terminaldex`.
-- Android/iOS/web temporary exports — PASS; Android 1 bundle/46 assets, iOS 1/23, web 1 bundle. Android retains carried Noble warning.
-- `adb devices -l` — command PASS / device verification BLOCKED (no listed target).
+```text
+expo install --check                              PASS: Dependencies are up to date
+tsc --noEmit                                      PASS
+eslint app src                                    PASS
+jest package-scripts                              PASS 6/6
+jest noble-bundle-compatibility                   PASS 5/5
+jest --ci --runInBand                             PASS 81 suites / 401 tests; one act() warning
+expo config --type public                         PASS
+expo export --platform android                    CONDITIONAL PASS: 1 bundle / 46 assets
+expo export --platform ios                        PASS: 1 bundle / 23 assets
+expo export --platform web                        PASS: 1 bundle / 20 files
+expo doctor                                       BLOCKED: unsupported by local CLI
+adb devices -l                                    BLOCKED: no response in 90 seconds
+```
 
-## Throughput and release recommendation
+The initial sandboxed diagnostic could not open Expo's user native-module cache (`EPERM`); a repeat in its normal cache context passed. This is environment permission evidence, not a package incompatibility. Full-suite log: `%LOCALAPPDATA%\Temp\mobile-qa-159-a1b057c-2\mobile-qa-full-jest.stderr.log`.
 
-- Distinct evidence-backed findings inspected/reconciled: **24** (2 new DEV acceptance outcomes, 18 independent immutable regression-lane dispositions, and 4 carried release statuses). The 18 regression entries are not counted as new DEV outcomes or cosmetic splits.
-- Current DEV outcomes available: **2**. Independently verified: **2** (1 PASS, 1 FAIL that correctly exposes the compatibility gate); BLOCKED/SKIP/NOT_APPLICABLE within the DEV acceptance: 0. Required-20 DEV-outcome shortfall: **18**. This command/test-only delta has two material outcomes; all relevant static, configuration, bundle, and available device-discovery lanes were exhausted without padding.
-- Carry-forward order: (1) MOBILE-QA-158-02 dependency update/revalidation, (2) MOBILE-QA-002 exact-build Android/physical-device certification, (3) immutable QA of the separate Whales/token-logo slice after its own DEV commit/handoff, (4) MOBILE-QA-004 upstream Noble resolution, (5) MOBILE-QA-010 verified-launcher runtime evidence.
+## Release recommendation
 
-**MOBILE-QA NO-GO for release:** diagnostics demonstrate four unresolved Expo SDK compatibility mismatches and no device is available for exact-build runtime/accessibility certification. The new local diagnostic contract itself is correctly implemented. No product code, test, configuration, WEB file, external state, transaction path, or secret was modified.
+**MOBILE-QA: NO-GO.** SDK patch alignment is accepted, but release is blocked by `MOBILE-QA-013` (full-suite test warning), `MOBILE-QA-002`/`010` (no exact-device evidence), `MOBILE-QA-008` (Doctor unavailable), and `MOBILE-QA-011` (untriaged audit findings). `MOBILE-QA-004` remains conditional, not resolved.
+
+## 20/20 reconciliation
+
+- Findings inspected/reconciled: 20.
+- Material DEV outcomes available: 4; independently verified: 4/4 PASS.
+- Remaining to 20 DEV outcomes: 16; no padding applied.
+- Carry-forward order: `MOBILE-QA-013`, `MOBILE-QA-002`, `MOBILE-QA-010`, `MOBILE-QA-008`, `MOBILE-QA-011`, `MOBILE-QA-004`.

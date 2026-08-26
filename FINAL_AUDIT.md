@@ -247,3 +247,12 @@ No in-scope automated regression was found. Generated export directories were re
 - **Safety:** display normalization only; no WEB/API/provider mutation, wallet action, signing, submission, or trading behavior changed.
 - **NEXT_QA_ACTION:** pin the result, inject whitespace and duplicate provider labels for all 20 IDs, then verify visual/accessibility output and exact API 37 navigation.
 - **NEXT_WEB_ACTION:** none.
+
+## MOBILE-171 20/20 auxiliary motor-accessibility and regression stability
+
+- **Implemented:** 20/20 outcomes (`MOBILE-QA-281`, `MOBILE-TOUCH-361..379`); exact shortfall 0.
+- **Behavior:** ten auxiliary routes now provide 44px minimum back, period, mode, toggle, pause, remove, numeric-input, filter, and retry targets; Monitor regression teardown is deterministic across grouped focused runs.
+- **Verified:** TypeScript/full source ESLint PASS; focused Jest PASS (2 suites/16 tests); full Jest PASS (83 suites/433 tests); public Expo config PASS.
+- **Safety:** UI geometry and test lifecycle only; no API, provider, wallet, transaction, credential, or WEB behavior changed.
+- **NEXT_QA_ACTION:** pin the result and edge-tap all 19 families at 1.0×/1.3× font scale, then repeat the grouped Monitor regression and standard release gates.
+- **NEXT_WEB_ACTION:** none.

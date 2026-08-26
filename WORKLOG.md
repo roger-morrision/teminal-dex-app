@@ -1626,3 +1626,16 @@ Impact: blank live-feed provenance can imply evidence exists while presenting no
 - CopyTrade, Market Intelligence, Monitor, Trenches, Whales, and Track now normalize the 20 audited live-feed quality/source/provider/RPC/channel/status labels; provider arrays remove blank duplicates before display.
 - TypeScript/full source ESLint PASS; focused Jest PASS (7 suites/24 tests); full Jest PASS (83 suites/423 tests); public Expo config PASS.
 - No WEB/API/provider mutation, wallet action, transaction behavior, production data, secret, or generated output changed.
+
+## MOBILE BA/PO review — 2026-08-26 14:20 trigger
+
+Fresh post-`bc21809` QA/source reconciliation found 20 dependency-ready release and motor-accessibility findings. Each item has direct source or QA evidence, high motor/release impact, no WEB dependency, acceptance by deterministic focused regression plus the standard release gates, and execution priority in stable-ID order.
+
+1. **MOBILE-QA-281** Monitor focused-suite teardown is intermittently order-sensitive. 2. **MOBILE-TOUCH-361** AI back control is 36px. 3. **MOBILE-TOUCH-362** CopyTrade back is 36px. 4. **MOBILE-TOUCH-363** CopyTrade period selectors are 36px. 5. **MOBILE-TOUCH-364** CopyTrade mode pills are 38px. 6. **MOBILE-TOUCH-365** CopyTrade toggles are 38px. 7. **MOBILE-TOUCH-366** CopyTrade pause controls are 40px. 8. **MOBILE-TOUCH-367** Research back is 36px. 9. **MOBILE-TOUCH-368** Research remove is 38px. 10. **MOBILE-TOUCH-369** Research numeric input is 40px. 11. **MOBILE-TOUCH-370** Research icon action is 36px. 12. **MOBILE-TOUCH-371** Wallet Intelligence back is 36px. 13. **MOBILE-TOUCH-372** Wallet Intelligence remove is 38px. 14. **MOBILE-TOUCH-373** Operations back is 36px. 15. **MOBILE-TOUCH-374** Market Intelligence back is 36px. 16. **MOBILE-TOUCH-375** Trade back is 40px. 17. **MOBILE-TOUCH-376** Track filters are 40px. 18. **MOBILE-TOUCH-377** Track retry is 38px. 19. **MOBILE-TOUCH-378** Settings back is 36px. 20. **MOBILE-TOUCH-379** Token Detail back is 40px.
+
+### MOBILE-171 implementation result
+
+- Completed 20/20 material outcomes (`MOBILE-QA-281`, `MOBILE-TOUCH-361..379`); exact shortfall 0.
+- Monitor's first regression case now performs interactions and teardown inside React `act`; ten auxiliary routes expose the 19 measured control families at a 44px logical minimum.
+- Focused Jest PASS (2 suites/16 tests); TypeScript/full source ESLint PASS; full Jest PASS (83 suites/433 tests); public Expo config PASS.
+- No WEB/API/provider mutation, wallet action, signing, submission, production data, secret, or generated output changed.

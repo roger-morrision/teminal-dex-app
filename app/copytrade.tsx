@@ -1136,8 +1136,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   back: {
-    width: 36,
-    height: 36,
+    width: 44,
+    height: 44,
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 1,
@@ -1233,7 +1233,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   period: {
-    minHeight: 36,
+    minHeight: 44,
     justifyContent: "center",
     paddingHorizontal: 7,
     paddingVertical: 6,
@@ -1345,7 +1345,7 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
   },
   modePill: {
-    minHeight: 38,
+    minHeight: 44,
     justifyContent: "center",
     paddingHorizontal: 12,
     borderRadius: 9,
@@ -1365,7 +1365,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.lg,
   },
   toggle: {
-    minHeight: 38,
+    minHeight: 44,
     justifyContent: "center",
     paddingHorizontal: 11,
     borderRadius: 9,
@@ -1453,7 +1453,7 @@ const styles = StyleSheet.create({
   },
   error: { color: colors.negative, fontSize: 9, marginTop: spacing.sm },
   pause: {
-    minHeight: 40,
+    minHeight: 44,
     justifyContent: "center",
     paddingHorizontal: 10,
     paddingVertical: 7,

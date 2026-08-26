@@ -427,7 +427,7 @@ const styles = StyleSheet.create({
     marginBottom: spacing.lg,
   },
   filter: {
-    minHeight: 40,
+    minHeight: 44,
     paddingHorizontal: 13,
     justifyContent: "center",
     borderRadius: 10,
@@ -519,7 +519,7 @@ const styles = StyleSheet.create({
   },
   retry: {
     marginTop: spacing.sm,
-    minHeight: 38,
+    minHeight: 44,
     borderWidth: 1,
     borderColor: colors.accent,
     borderRadius: 9,

@@ -515,8 +515,8 @@ const styles = StyleSheet.create({
   content: { padding: spacing.lg, paddingBottom: 60 },
   header: { flexDirection: "row", alignItems: "center", gap: spacing.md },
   back: {
-    width: 40,
-    height: 40,
+    width: 44,
+    height: 44,
     borderRadius: 12,
     alignItems: "center",
     justifyContent: "center",

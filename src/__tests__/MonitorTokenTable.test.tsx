@@ -61,11 +61,15 @@ describe("MonitorTokenTable", () => {
     await waitFor(() => expect(screen.getByText("Monitoring only")).toBeTruthy());
     expect(screen.getByText(/1\/1 records · provider · live/)).toBeTruthy();
     expect(screen.getByRole("summary").props.children).toContain("Market observations only");
-    await fireEvent.press(screen.getByText("Liquidity"));
+    await act(async () => {
+      fireEvent.press(screen.getByText("Liquidity"));
+    });
     expect(screen.getByText("Market cap")).toBeTruthy();
     expect(screen.getByLabelText("Horizontally scrollable Monitor token table")).toBeTruthy();
-    screen.unmount();
-    client.clear();
+    await act(async () => {
+      screen.unmount();
+      client.clear();
+    });
   });
 
   it("loads the next cursor page and includes later rows in filtering and sorting", async () => {

@@ -1,5 +1,17 @@
 # MOBILE DEV → QA handoff
 
+## MOBILE-171 — 20/20 auxiliary motor-accessibility and regression stability
+
+- Base: `bc21809`; result: containing commit.
+- BA/PO and DEV: 20 current findings reconciled and 20 material outcomes completed (`MOBILE-QA-281`, `MOBILE-TOUCH-361..379`); exact shortfall 0.
+- Changed behavior: Monitor grouped-test interaction/cleanup is act-safe; AI, CopyTrade, Research, Wallet Intelligence, Operations, Market Intelligence, Trade, Track, Settings, and Token Detail expose 19 measured interactive control families at a 44px minimum.
+- Changed files: ten production routes, two focused regressions, and MOBILE evidence documents only.
+- Evidence: TypeScript/full source ESLint PASS; focused Jest PASS (2 suites/16 tests); full Jest PASS (83 suites/433 tests); public Expo config PASS.
+- Runtime scenario: edge-tap every named control at 1.0× and 1.3× font scale; verify focus, labels, wrapping, selection state, and retry behavior; repeat grouped Monitor suites to check order stability.
+- Known risks: physical-device motor/accessibility evidence, exact API 37 traversal, restricted-shell Doctor, and Noble fallback remain QA-owned.
+- NEXT_QA_ACTION: pin the result, independently classify all 20 IDs, repeat grouped Monitor and release gates, then perform device edge-tap traversal.
+- NEXT_WEB_ACTION: none.
+
 ## MOBILE-170 — 20/20 live-feed evidence integrity
 
 - Base: `c28a7f6`; result: containing commit.

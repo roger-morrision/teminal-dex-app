@@ -646,8 +646,8 @@ const styles = StyleSheet.create({
     gap: spacing.md,
   },
   back: {
-    width: 36,
-    height: 36,
+    width: 44,
+    height: 44,
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 1,
@@ -766,8 +766,8 @@ const styles = StyleSheet.create({
   tokenIconText: { color: "#ff8b94", fontSize: 9, fontWeight: "900" },
   cardTitle: { color: colors.text, fontSize: 10, fontWeight: "900" },
   remove: {
-    width: 38,
-    height: 38,
+    width: 44,
+    height: 44,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -790,7 +790,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   smallInput: {
-    minHeight: 40,
+    minHeight: 44,
     paddingHorizontal: spacing.sm,
     borderWidth: 1,
     borderColor: colors.border,
@@ -866,8 +866,8 @@ const styles = StyleSheet.create({
     marginBottom: spacing.sm,
   },
   iconButton: {
-    width: 36,
-    height: 36,
+    width: 44,
+    height: 44,
     alignItems: "center",
     justifyContent: "center",
   },

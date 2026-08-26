@@ -12,6 +12,7 @@ import { useSettings } from "@/settings/SettingsProvider";
 import { defaultWhaleWatchPreferences, loadWhaleWatchPreferences, saveWhaleWatchPreferences, type WhaleWatchMode } from "@/store/whale-watch";
 import { colors, spacing } from "@/theme";
 import { TokenAvatar } from "@/components/TokenAvatar";
+import { DexLogo } from "@/components/DexLogo";
 
 type Mode = WhaleWatchMode;
 const modes: Mode[] = ["live", "accumulating", "distributing", "wallets", "alerts"];
@@ -108,9 +109,7 @@ function LiveEvents({ rows, largeText, onReset, onOpen }: { rows: TrackNotificat
 }
 
 function DexBadge({ dex }: { dex?: string | null }) {
-  const normalized = dex?.trim().toLowerCase() ?? "";
-  const label = normalized.includes("pump") ? "P" : normalized.includes("raydium") ? "R" : normalized.includes("meteora") ? "M" : normalized ? normalized.slice(0, 1).toUpperCase() : null;
-  return <View accessible={false} style={{ position: "absolute", right: -3, bottom: -3, width: 17, height: 17, borderRadius: 9, alignItems: "center", justifyContent: "center", borderWidth: 1, borderColor: colors.background, backgroundColor: colors.surfaceRaised }}>{label ? <Text style={{ color: colors.cyan, fontSize: 7, fontWeight: "900" }}>{label}</Text> : <Ionicons name="swap-horizontal" size={10} color={colors.cyan} />}</View>;
+  return <View style={{ position: "absolute", right: -4, bottom: -4 }}><DexLogo dex={dex} size={18} accessible={false} /></View>;
 }
 
 export function WhaleFeedUnavailable({ reason, onWallets }: { reason?: string; onWallets: () => void }) {

@@ -2,12 +2,12 @@ import { useState } from "react";
 import { Image, StyleSheet, Text, View } from "react-native";
 import { colors } from "@/theme";
 
-export function TokenAvatar({ symbol, identity, imageUrl, size = 38, accessible = true }: { symbol: string; identity: string; imageUrl?: string | null; size?: number; accessible?: boolean }) {
+export function TokenAvatar({ symbol, identity, imageUrl, size = 38, accessible = true, accessibilityLabel, fallbackAccessibilityLabel }: { symbol: string; identity: string; imageUrl?: string | null; size?: number; accessible?: boolean; accessibilityLabel?: string; fallbackAccessibilityLabel?: string }) {
   const [failedUrl, setFailedUrl] = useState<string | null>(null);
   const shape = { width: size, height: size, borderRadius: size / 2 } as const;
   const displayUrl = normalizeTokenImageUrl(imageUrl, size);
-  if (displayUrl && displayUrl !== failedUrl) return <Image accessible={accessible} accessibilityLabel={accessible ? `${symbol} token logo` : undefined} source={{ uri: displayUrl }} onError={() => setFailedUrl(displayUrl)} resizeMode="cover" style={[styles.image, shape]} />;
-  return <View accessible={accessible} accessibilityLabel={accessible ? `${symbol} token logo unavailable; showing initials` : undefined} style={[styles.fallback, shape, { backgroundColor: fallbackColor(identity) }]}><Text style={[styles.initials, { fontSize: Math.max(7, size * 0.25) }]}>{symbol.slice(0, 2).toUpperCase()}</Text></View>;
+  if (displayUrl && displayUrl !== failedUrl) return <Image accessible={accessible} accessibilityLabel={accessible ? accessibilityLabel ?? `${symbol} token logo` : undefined} source={{ uri: displayUrl }} onError={() => setFailedUrl(displayUrl)} resizeMode="cover" style={[styles.image, shape]} />;
+  return <View accessible={accessible} accessibilityLabel={accessible ? fallbackAccessibilityLabel ?? `${symbol} token logo unavailable; showing initials` : undefined} style={[styles.fallback, shape, { backgroundColor: fallbackColor(identity) }]}><Text style={[styles.initials, { fontSize: Math.max(7, size * 0.25) }]}>{symbol.slice(0, 2).toUpperCase()}</Text></View>;
 }
 
 export function normalizeTokenImageUrl(imageUrl: string | null | undefined, size: number) {

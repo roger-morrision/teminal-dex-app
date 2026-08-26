@@ -5,7 +5,7 @@ import type { MarketToken } from '@/api/schema';
 import { compactUsd, signedPercent, tokenPrice } from '@/lib/format';
 import { colors, spacing } from '@/theme';
 import { TokenAvatar } from '@/components/TokenAvatar';
-import { DexLogo } from '@/components/DexLogo';
+import { DexLogo, getDexBrand } from '@/components/DexLogo';
 import { useSettings } from '@/settings/SettingsProvider';
 
 type TokenRowPeriod = '1h' | '6h' | '24h';
@@ -16,10 +16,11 @@ export const TokenRow = memo(function TokenRow({ token, onPress, watched, onTogg
   const age = reliableAgeLabel(token) ?? t('tokenAgeUnavailable');
   const holderCount = reliableHolderLabel(token);
   const holders = holderCount == null ? t('tokenHoldersUnavailable') : t('tokenHolderCount', { count: holderCount });
+  const dex = getDexBrand(token.dex)?.name ?? token.dex?.trim();
   const change = selectedChange(token, period);
   const positive = change != null && change >= 0;
   return <Pressable accessibilityRole="button" accessibilityLabel={t('openTokenDetails', { symbol })} onPress={onPress} style={({ pressed }) => [styles.row, dense && styles.denseRow, pressed && styles.pressed]}>
-    <View style={styles.avatarWrap}><TokenAvatar symbol={symbol} identity={token.address} imageUrl={token.imageUrl} /><View style={styles.dexBadge}><DexLogo dex={token.dex} /></View></View>
+    <View style={styles.avatarWrap}><TokenAvatar symbol={symbol} identity={token.address} imageUrl={token.imageUrl} accessibilityLabel={t('tokenLogo', { symbol })} fallbackAccessibilityLabel={t('tokenLogoFallback', { symbol })} /><View style={styles.dexBadge}><DexLogo dex={token.dex} accessibilityLabel={dex ? t('dexLogo', { dex }) : t('unknownDexLogo')} /></View></View>
     <View style={styles.identity}><View style={styles.titleLine}><Text numberOfLines={1} style={styles.symbol}>{symbol}</Text><Text style={styles.age}>{age}</Text></View><View style={styles.metaLine}><Text numberOfLines={1} style={styles.meta}>{holders} · {t('tokenVolumeShort', { volume: compactUsd(token.volume24h) })}</Text><SocialEvidence token={token} label={(networks) => t('tokenSocialEvidence', { networks })} /></View></View>
     <View style={styles.metric}><Text style={styles.price}>{tokenPrice(token.price)}</Text><View style={styles.metricSecondLine}><Text style={styles.subMetric}>{compactUsd(token.marketCap)} MC</Text><View style={styles.inlineChange}>{change == null ? null : <Ionicons name={positive ? 'caret-up' : 'caret-down'} size={9} color={positive ? colors.positive : colors.negative} />}<Text style={[styles.inlineChangeText, { color: change == null ? colors.muted : positive ? colors.positive : colors.negative }]}>{change == null ? '—' : signedPercent(change)}</Text></View></View></View>
     {onToggleWatch ? <Pressable accessibilityRole="button" accessibilityLabel={t(watched ? 'removeTokenFromWatchlist' : 'addTokenToWatchlist', { symbol })} hitSlop={10} onPress={(event) => { event.stopPropagation(); onToggleWatch(); }}><Ionicons name={watched ? 'star' : 'star-outline'} size={18} color={watched ? colors.warning : colors.muted} /></Pressable> : null}

@@ -1692,3 +1692,16 @@ Fresh post-`25c939b` QA/source reconciliation records 20 distinct current findin
 - Discover token rows now localize open/watchlist actions, age/holder fallbacks, verified holder counts, volume abbreviation, and social-evidence semantics in English and Vietnamese.
 - TypeScript PASS; full source ESLint PASS; focused TokenRow Jest PASS (1 suite/11 tests); full Jest PASS (83 suites/451 tests); public Expo config PASS.
 - NEXT_QA_ACTION: switch EN/VI at runtime and verify visual plus screen-reader output for all eight IDs, then continue the physical/device matrix. NEXT_WEB_ACTION: none.
+
+## MOBILE BA/PO review — 2026-08-26 19:21 trigger
+
+Fresh post-`5a1c4f3` QA/source reconciliation records 20 current findings. Five MOBILE-ready logo semantics remain hard-coded outside the translation catalog; fifteen carried findings require physical devices, controlled network/provider fixtures, restricted toolchain, or upstream ownership. Ready acceptance is rendered EN/VI semantics without artwork, identity, or navigation changes plus standard gates.
+
+1. **MOBILE-I18N-425 READY** provider token-logo label. 2. **MOBILE-I18N-426 READY** failed/missing token-logo initials fallback. 3. **MOBILE-I18N-427 READY** recognized DEX badge label. 4. **MOBILE-I18N-428 READY** unknown DEX badge label. 5. **MOBILE-I18N-429 READY** Token Detail header artwork semantics. 6–17. **MOBILE-QA-269..280 BLOCKED/CONDITIONAL** carried device/network/toolchain/upstream/provider findings. 18–20. **MOBILE-QA-283..285 BLOCKED/device** Android/iOS edge traversal and Android large-text whale-row evidence.
+
+### MOBILE-176 implementation result
+
+- Completed all five safe outcomes (`MOBILE-I18N-425..429`); exact shortfall 15 after exhausting the ready queue.
+- Shared token artwork now accepts localized success/fallback semantics, DEX badges accept localized known/unknown semantics, and Discover plus Token Detail provide those labels in EN/VI.
+- TypeScript PASS; full source ESLint PASS; focused Jest PASS (2 suites/19 tests); full Jest PASS (83 suites/451 tests); public Expo config PASS.
+- NEXT_QA_ACTION: verify provider image success/failure and known/unknown DEX badges in EN/VI on Discover and Token Detail. NEXT_WEB_ACTION: none.

@@ -293,3 +293,12 @@ No in-scope automated regression was found. Generated export directories were re
 - **Safety:** presentation/localization only; API/provider evidence, wallet state, signing, submission, and WEB remain unchanged.
 - **NEXT_QA_ACTION:** independently verify all eight strings in both languages visually and with assistive technology.
 - **NEXT_WEB_ACTION:** none.
+
+## MOBILE-176 localized token and DEX artwork semantics
+
+- **Implemented:** all five safe outcomes (`MOBILE-I18N-425..429`); exact shortfall 15 with device/network/toolchain/upstream/provider owners.
+- **Behavior:** token artwork success/fallback and known/unknown DEX badge labels are localized on Discover; Token Detail also localizes its token artwork semantics.
+- **Verified:** TypeScript/full source ESLint PASS; focused Jest PASS (2 suites/19 tests); full Jest PASS (83 suites/451 tests); public Expo config PASS.
+- **Safety:** accessibility presentation only; provider URLs, images, API data, navigation, wallets, and transactions are unchanged.
+- **NEXT_QA_ACTION:** exercise image load/error and known/unknown DEX states in EN/VI across both surfaces.
+- **NEXT_WEB_ACTION:** none.

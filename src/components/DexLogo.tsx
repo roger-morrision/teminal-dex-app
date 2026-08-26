@@ -15,10 +15,10 @@ export function getDexBrand(dex?: string | null) {
   return brands.find((brand) => brand.matches.some((value) => normalized.includes(value))) ?? null;
 }
 
-export function DexLogo({ dex, size = 18, accessible = true }: { dex?: string | null; size?: number; accessible?: boolean }) {
+export function DexLogo({ dex, size = 18, accessible = true, accessibilityLabel }: { dex?: string | null; size?: number; accessible?: boolean; accessibilityLabel?: string }) {
   const brand = getDexBrand(dex);
   const label = brand?.name ?? (dex?.trim() || "Unknown DEX");
-  return <View accessible={accessible} accessibilityLabel={accessible ? `${label} DEX logo` : undefined} style={[styles.badge, { width: size, height: size, borderRadius: size / 2, backgroundColor: brand?.background ?? colors.surfaceRaised }]}>
+  return <View accessible={accessible} accessibilityLabel={accessible ? accessibilityLabel ?? `${label} DEX logo` : undefined} style={[styles.badge, { width: size, height: size, borderRadius: size / 2, backgroundColor: brand?.background ?? colors.surfaceRaised }]}>
     {brand ? <Text style={{ color: brand.foreground, fontSize: Math.max(7, size * 0.43), fontWeight: "900" }}>{brand.mark}</Text> : <Ionicons name="swap-horizontal" size={Math.max(8, size * 0.55)} color={colors.cyan} />}
   </View>;
 }

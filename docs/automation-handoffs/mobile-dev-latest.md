@@ -1,5 +1,16 @@
 # MOBILE DEV → QA handoff
 
+## MOBILE-176 — localized token and DEX artwork semantics
+
+- Base: `5a1c4f3`; result: containing commit.
+- Findings: 20 reconciled; completed all five safe outcomes (`MOBILE-I18N-425..429`); exact shortfall 15 (`MOBILE-QA-269..280`, `MOBILE-QA-283..285`) with external owners.
+- Changed behavior/files: shared `TokenAvatar` and `DexLogo` accept caller-localized semantics; Discover and Token Detail supply EN/VI labels; Settings catalog and TokenRow regression protect the behavior.
+- Acceptance evidence: TypeScript PASS; full source ESLint PASS; focused Jest PASS (2 suites/19 tests); full Jest PASS (83 suites/451 tests); public Expo config PASS.
+- Runtime scenario: switch EN/VI; load and fail provider artwork; render Raydium and missing DEX evidence on Discover; open Token Detail and repeat token artwork checks. Confirm identity/navigation remain unchanged.
+- Known risks: exact dev-client route plus physical accessibility/layout/recovery/performance, Doctor, Noble exports, and provider fixtures remain external.
+- NEXT_QA_ACTION: independently classify all five IDs through the runtime scenario, then continue the blocked matrix.
+- NEXT_WEB_ACTION: none.
+
 ## MOBILE-175 — Discover token-row localization integrity
 
 - Base: `25c939b`; result: containing commit.

@@ -83,5 +83,7 @@ describe('TokenRow', () => {
     expect(screen.getByText('không có tuổi token')).toBeTruthy();
     expect(screen.getByText('không có dữ liệu người nắm giữ · KL $4')).toBeTruthy();
     expect(screen.getByLabelText('Bằng chứng xã hội: Telegram')).toBeTruthy();
+    expect(screen.getByLabelText('Không có logo token DEX; đang hiển thị ký tự viết tắt')).toBeTruthy();
+    expect(screen.getByLabelText('Logo DEX Raydium')).toBeTruthy();
   });
 });

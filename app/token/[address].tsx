@@ -189,7 +189,7 @@ export default function TokenDetail() {
         </View>
         <View style={styles.hero}>
           <View style={styles.heroIdentity}>
-            <TokenAvatar symbol={token.symbol} identity={token.address} imageUrl={token.imageUrl} size={46} />
+            <TokenAvatar symbol={token.symbol} identity={token.address} imageUrl={token.imageUrl} size={46} accessibilityLabel={t("tokenLogo", { symbol: token.symbol })} fallbackAccessibilityLabel={t("tokenLogoFallback", { symbol: token.symbol })} />
             <View style={styles.heroCopy}>
             <Text style={styles.symbol}>{token.symbol}</Text>
             <Text style={styles.name}>

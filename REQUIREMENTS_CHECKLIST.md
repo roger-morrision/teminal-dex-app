@@ -119,3 +119,4 @@ Status legend: `[x]` verified, `[ ]` incomplete, `[~]` intentionally visible but
 - [x] MOBILE-TOUCH-401..414 / MOBILE-DATA-415: fifteen remaining compact action/search/filter/recovery families are reachable at 44px-equivalent geometry, and quote amount input is natively and semantically bounded before request state.
 - [x] MOBILE-QA-282 / MOBILE-DATA-416: the loaded AsyncSurface/touch regression pair is deterministic across three consecutive runs, and whale identity requires an eligible famous-token holding strictly above $10,000.
 - [x] MOBILE-I18N-417..424: Discover token rows localize token-detail/watchlist actions, truthful age/holder evidence, holder counts, volume shorthand, and social accessibility summaries in English and Vietnamese.
+- [x] MOBILE-I18N-425..429: Discover and Token Detail localize provider token-artwork success/fallback semantics plus known and unknown DEX badge accessibility labels.

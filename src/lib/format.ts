@@ -73,3 +73,13 @@ export function relativeObservedAge(
   if (seconds < 86400) return { key: 'hoursAgo', count: Math.floor(seconds / 3600) };
   return { key: 'daysAgo', count: Math.floor(seconds / 86400) };
 }
+
+export function localizedRelativeObservedAge(
+  value: number,
+  translate: (key: 'secondsAgo' | 'minutesAgo' | 'hoursAgo' | 'daysAgo', values: { count: number }) => string,
+  fallback: string,
+  now = Date.now(),
+): string {
+  const age = relativeObservedAge(value, now);
+  return age ? translate(age.key, { count: age.count }) : fallback;
+}

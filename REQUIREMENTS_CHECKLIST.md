@@ -123,3 +123,4 @@ Status legend: `[x]` verified, `[ ]` incomplete, `[~]` intentionally visible but
 - [x] MOBILE-I18N-430 / MOBILE-A11Y-431..433: Discover localizes market-cap shorthand and binds price, market cap, selected change period, and missing-change truthfulness into one accessible metric snapshot.
 - [x] MOBILE-I18N-434 / MOBILE-DATA-435..438: Whale flow chronology formats seconds/milliseconds in EN/VI and fails closed for invalid time; market chips localize market cap and partial missing evidence.
 - [x] MOBILE-I18N-439..442 / MOBILE-DATA-443..444: live Whale cards localize seconds/minutes/hours/days and reject malformed or future observation ages instead of showing misleading values.
+- [x] MOBILE-DATA-445..459: Discover, Trenches, Operations, and Monitor share localized defensive relative-age handling for provider seconds/milliseconds, malformed/future evidence, and day rollover where supported.

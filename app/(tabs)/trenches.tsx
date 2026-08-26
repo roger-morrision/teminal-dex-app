@@ -15,7 +15,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { fetchTrackFeed, fetchTrenches } from "@/api/client";
 import type { MarketToken } from "@/api/schema";
-import { compactUsd, evidenceLabel, evidenceList, signedPercent, tokenPrice } from "@/lib/format";
+import { compactUsd, evidenceLabel, evidenceList, localizedRelativeObservedAge, signedPercent, tokenPrice } from "@/lib/format";
 import { WhaleFlowBadge } from "@/components/WhaleFlowBadge";
 import { whaleFlowByToken } from "@/lib/whale-activity";
 import {
@@ -515,12 +515,7 @@ function short(value: string) {
 }
 
 function ageLabel(timestamp: number, t: ReturnType<typeof useSettings>["t"]) {
-  const seconds = Math.max(0, Math.floor((Date.now() - timestamp) / 1000));
-  return seconds < 60
-    ? t("secondsAgo", { count: seconds })
-    : seconds < 3600
-      ? t("minutesAgo", { count: Math.floor(seconds / 60) })
-      : t("hoursAgo", { count: Math.floor(seconds / 3600) });
+  return localizedRelativeObservedAge(timestamp, t, t("timeUnavailable"));
 }
 
 const styles = StyleSheet.create({

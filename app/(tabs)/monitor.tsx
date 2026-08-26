@@ -31,7 +31,7 @@ import { useSettings } from "@/settings/SettingsProvider";
 import { colors, spacing } from "@/theme";
 import { publicErrorMessage } from "@/lib/public-error";
 import { publicReasonKey } from "@/lib/public-evidence-reason";
-import { evidenceLabel } from "@/lib/format";
+import { evidenceLabel, localizedRelativeObservedAge } from "@/lib/format";
 
 type ViewMode = "live" | "rules" | "delivery";
 type AlertType = CreateAlertInput["type"];
@@ -718,14 +718,7 @@ function short(value: string) {
   return value.length > 12 ? `${value.slice(0, 5)}…${value.slice(-5)}` : value;
 }
 function relative(timestamp: number, t: ReturnType<typeof useSettings>["t"]) {
-  const seconds = Math.max(0, Math.floor((Date.now() - timestamp) / 1000));
-  return seconds < 60
-    ? t("secondsAgo", { count: seconds })
-    : seconds < 3600
-      ? t("minutesAgo", { count: Math.floor(seconds / 60) })
-      : seconds < 86400
-        ? t("hoursAgo", { count: Math.floor(seconds / 3600) })
-        : t("daysAgo", { count: Math.floor(seconds / 86400) });
+  return localizedRelativeObservedAge(timestamp, t, t("timeUnavailable"));
 }
 function conditionLabel(
   alert: UserAlert,

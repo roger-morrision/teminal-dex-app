@@ -1744,3 +1744,16 @@ Fresh post-`502424a` QA/source reconciliation records 20 current findings. Six l
 - Live Whale ages now accept seconds/milliseconds, use localized seconds/minutes/hours/days strings, and show localized unavailable for malformed or future evidence.
 - TypeScript PASS; full source ESLint PASS; focused Jest PASS (2 suites/17 tests); full Jest PASS (83 suites/454 tests); public Expo config PASS.
 - NEXT_QA_ACTION: verify EN/VI live cards at all four age boundaries plus malformed/future provider time. NEXT_WEB_ACTION: none.
+
+## MOBILE BA/PO review — 2026-08-26 23:22 trigger
+
+Fresh post-`cce8d4a` source/QA reconciliation records 20 current findings. Fifteen age-integrity outcomes are MOBILE-ready across Discover, Trenches, Operations, and Monitor; five require physical assistive-technology, compact-layout, or controlled connectivity fixtures. Ready acceptance requires one shared fail-closed formatter, seconds/milliseconds normalization, truthful future/malformed fallback, and day rollover wherever supported by product copy.
+
+1–4. **MOBILE-DATA-445..448 READY** Discover seconds/milliseconds, malformed, future, and day-age behavior. 5–8. **MOBILE-DATA-449..452 READY** Trenches equivalents. 9–12. **MOBILE-DATA-453..456 READY** Operations equivalents. 13–15. **MOBILE-DATA-457..459 READY** Monitor seconds/milliseconds, malformed, and future behavior. 16–20. **MOBILE-QA-269..273 BLOCKED/device-fixture** TalkBack, VoiceOver, Switch Access, 320dp/large text, and offline/reconnect evidence.
+
+### MOBILE-180 implementation result
+
+- Completed all 15 safe outcomes (`MOBILE-DATA-445..459`); exact shortfall 5 after exhausting the ready queue.
+- Discover, Trenches, Operations, and Monitor now share defensive localized relative-age behavior instead of four divergent calculations.
+- TypeScript PASS; full source ESLint PASS; focused Jest PASS (4 suites/32 tests); full Jest PASS (83 suites/455 tests); public Expo config PASS via the bundled Node runtime.
+- NEXT_QA_ACTION: exercise all four screens with seconds/milliseconds, older-than-24h, malformed, and future timestamps in EN/VI. NEXT_WEB_ACTION: none.

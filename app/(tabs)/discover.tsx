@@ -33,7 +33,7 @@ import type {
   UserAlert,
 } from "@/api/schema";
 import { TokenRow } from "@/components/TokenRow";
-import { evidenceLabel } from "@/lib/format";
+import { evidenceLabel, localizedRelativeObservedAge } from "@/lib/format";
 import { BusyIndicator } from "@/components/BusyIndicator";
 import { WhaleFlowBadge } from "@/components/WhaleFlowBadge";
 import { whaleFlowByToken } from "@/lib/whale-activity";
@@ -568,12 +568,7 @@ function relativeAge(
   timestamp: number,
   t: ReturnType<typeof useSettings>["t"],
 ) {
-  const seconds = Math.max(0, Math.floor((Date.now() - timestamp) / 1000));
-  return seconds < 60
-    ? t("secondsAgo", { count: seconds })
-    : seconds < 3600
-      ? t("minutesAgo", { count: Math.floor(seconds / 60) })
-      : t("hoursAgo", { count: Math.floor(seconds / 3600) });
+  return localizedRelativeObservedAge(timestamp, t, t("timeUnavailable"));
 }
 
 export function State({

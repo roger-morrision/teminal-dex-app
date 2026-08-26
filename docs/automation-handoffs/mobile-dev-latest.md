@@ -1,5 +1,16 @@
 # MOBILE DEV → QA handoff
 
+## MOBILE-180 — shared defensive relative ages
+
+- Base: `cce8d4a`; result: containing commit.
+- Findings: 20 reconciled; completed all 15 safe outcomes (`MOBILE-DATA-445..459`); exact shortfall 5 (`MOBILE-QA-269..273`) with physical-device/network-fixture owners.
+- Changed behavior/files: `src/lib/format.ts` centralizes localized relative age; Discover, Trenches, Operations, and Monitor delegate to it, accepting seconds/milliseconds and rejecting malformed/future evidence; the formatter regression protects localized days and future fallback.
+- Acceptance evidence: TypeScript PASS; full source ESLint PASS; focused Jest PASS (4 suites/32 tests); full Jest PASS (83 suites/455 tests); public Expo config PASS via the bundled Node runtime.
+- Runtime scenario: on all four surfaces feed seconds and milliseconds timestamps at minutes/hours/days, malformed, and future values; switch EN/VI and verify truthful age/fallback without changing row order.
+- Known risks: physical assistive-technology, 320dp/large-text, and controlled offline/reconnect validation remain external.
+- NEXT_QA_ACTION: independently classify all 15 IDs through the runtime scenario, then execute `MOBILE-QA-269..273` when devices/fixtures are available.
+- NEXT_WEB_ACTION: none.
+
 ## MOBILE-179 — localized live-Whale relative age
 
 - Base: `502424a`; result: containing commit.

@@ -20,7 +20,7 @@ import {
   fetchTopTraders,
 } from "@/api/client";
 import type { FeedConnectionsResponse, IndexerHealthResponse, MarketToken } from "@/api/schema";
-import { compactUsd, evidenceLabel, signedPercent, tokenPrice } from "@/lib/format";
+import { compactUsd, evidenceLabel, localizedRelativeObservedAge, signedPercent, tokenPrice } from "@/lib/format";
 import {
   feedCounterSnapshot,
   type FeedCounterSnapshot,
@@ -775,13 +775,7 @@ function summarize(tokens: MarketToken[]) {
   };
 }
 function ageLabel(timestamp: number, t: ReturnType<typeof useSettings>["t"]) {
-  if (!Number.isFinite(timestamp)) return t("timeUnavailable");
-  const seconds = Math.max(0, Math.floor((Date.now() - timestamp) / 1000));
-  return seconds < 60
-    ? t("secondsAgo", { count: seconds })
-    : seconds < 3600
-      ? t("minutesAgo", { count: Math.floor(seconds / 60) })
-      : t("hoursAgo", { count: Math.floor(seconds / 3600) });
+  return localizedRelativeObservedAge(timestamp, t, t("timeUnavailable"));
 }
 function MarketRow({
   token,

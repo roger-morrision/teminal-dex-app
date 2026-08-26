@@ -329,3 +329,12 @@ No in-scope automated regression was found. Generated export directories were re
 - **Safety:** presentation only; event ordering, polling, provider records, APIs, wallets, and transactions are unchanged.
 - **NEXT_QA_ACTION:** traverse all age boundaries and malformed/future cases in EN/VI.
 - **NEXT_WEB_ACTION:** none.
+
+## MOBILE-180 shared defensive relative ages
+
+- **Implemented:** all 15 safe outcomes (`MOBILE-DATA-445..459`); exact shortfall 5 (`MOBILE-QA-269..273`) with physical-device/network-fixture owners.
+- **Behavior:** Discover, Trenches, Operations, and Monitor normalize provider seconds/milliseconds, reject malformed/future timestamps, localize relative units, and expose day rollover where the catalog supports it.
+- **Verified:** TypeScript/full source ESLint PASS; focused Jest PASS (4 suites/32 tests); full Jest PASS (83 suites/455 tests); public Expo config PASS via the bundled Node runtime.
+- **Safety:** presentation/data-validation only; provider records, sorting, APIs, wallets, and transactions are unchanged.
+- **NEXT_QA_ACTION:** independently traverse the timestamp matrix on all four surfaces in EN/VI, then execute the five blocked device/network cases.
+- **NEXT_WEB_ACTION:** none.

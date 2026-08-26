@@ -1,4 +1,4 @@
-import { compactUsd, evidenceLabel, evidenceList, observedDateTime, relativeObservedAge, signedPercent, tokenPrice } from '@/lib/format';
+import { compactUsd, evidenceLabel, evidenceList, localizedRelativeObservedAge, observedDateTime, relativeObservedAge, signedPercent, tokenPrice } from '@/lib/format';
 describe('formatters', () => {
   it('formats market values defensively', () => {
     expect(compactUsd(null)).toBe('—');
@@ -39,5 +39,12 @@ describe('formatters', () => {
     expect(relativeObservedAge(now - 172_800_000, now)).toEqual({ key: 'daysAgo', count: 2 });
     expect(relativeObservedAge(Number.NaN, now)).toBeNull();
     expect(relativeObservedAge(now + 1, now)).toBeNull();
+  });
+
+  it('localizes shared relative age and fails closed through the caller fallback', () => {
+    const now = 1_700_000_000_000;
+    const translate = (key: string, values: { count: number }) => `${key}:${values.count}`;
+    expect(localizedRelativeObservedAge(now - 172_800_000, translate, 'Unavailable', now)).toBe('daysAgo:2');
+    expect(localizedRelativeObservedAge(now + 1, translate, 'Unavailable', now)).toBe('Unavailable');
   });
 });

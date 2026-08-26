@@ -1,5 +1,16 @@
 # MOBILE DEV → QA handoff
 
+## MOBILE-172 — 20/20 secondary controls and loaded regression stability
+
+- Base: `16ee90f`; result: containing commit.
+- Findings/outcomes: completed `MOBILE-QA-281` plus `MOBILE-TOUCH-380..398`; exact shortfall 0.
+- Changed behavior: the Monitor test keeps act-safe cleanup and uses a bounded 15s loaded-suite budget; 19 interactive families across AI, Market Intelligence, Operations, Research, Wallet Intelligence, Token Detail, Monitor, and Trade expose 44px geometry or compact-switch hit slop.
+- Evidence: exact QA grouped command passes three consecutive runs (2 suites/24 tests each); TypeScript/full source ESLint PASS; full Jest PASS (83 suites/442 tests); public Expo config PASS.
+- Runtime scenario: repeat the grouped command in a clean archive; edge-tap and screen-reader-focus each named control at 1.0×/1.3× font scale, checking selection, input, toggle, delete, and retry-safe behavior.
+- Known risks: immutable device traversal, Doctor child-Node failure, physical assistive technology, and Noble fallback remain QA/toolchain/upstream owned.
+- NEXT_QA_ACTION: pin the result, independently classify all 20 IDs, run archive-loaded grouping/full gates and physical edge-tap traversal.
+- NEXT_WEB_ACTION: none.
+
 ## MOBILE-171 — 20/20 auxiliary motor-accessibility and regression stability
 
 - Base: `bc21809`; result: containing commit.

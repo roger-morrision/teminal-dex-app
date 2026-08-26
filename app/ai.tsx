@@ -881,7 +881,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     backgroundColor: colors.surface,
   },
-  tab: { flex: 1, alignItems: "center", paddingVertical: 9, borderRadius: 9 },
+  tab: { flex: 1, minHeight: 44, justifyContent: "center", alignItems: "center", paddingVertical: 9, borderRadius: 9 },
   tabActive: { backgroundColor: "#24213e" },
   tabText: { color: colors.muted, fontSize: 10, fontWeight: "800" },
   tabTextActive: { color: "#aaa6ff" },

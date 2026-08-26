@@ -1639,3 +1639,16 @@ Fresh post-`bc21809` QA/source reconciliation found 20 dependency-ready release 
 - Monitor's first regression case now performs interactions and teardown inside React `act`; ten auxiliary routes expose the 19 measured control families at a 44px logical minimum.
 - Focused Jest PASS (2 suites/16 tests); TypeScript/full source ESLint PASS; full Jest PASS (83 suites/433 tests); public Expo config PASS.
 - No WEB/API/provider mutation, wallet action, signing, submission, production data, secret, or generated output changed.
+
+## MOBILE BA/PO review — 2026-08-26 15:21 trigger
+
+Fresh post-`16ee90f` QA/source reconciliation records 20 current dependency-ready findings. QA reproduced `MOBILE-QA-281` in its loaded immutable archive despite isolated/full passes; source measurement found 19 distinct remaining interactive families below a 44px target or without an equivalent bounded touch area. Impact is release-gate determinism and motor accessibility; dependencies are MOBILE-only; acceptance is three consecutive exact grouped passes, explicit 44px/hit-slop guards, type/lint/full Jest, and public Expo config.
+
+1. **MOBILE-QA-281 P1 READY** grouped Monitor/touch regression exceeds the default 5s budget under QA load. 2. **MOBILE-TOUCH-380** AI tabs. 3. **MOBILE-TOUCH-381** Market Intelligence tabs. 4. **MOBILE-TOUCH-382** market periods. 5. **MOBILE-TOUCH-383** market signal/filter chips. 6. **MOBILE-TOUCH-384** Operations tabs. 7. **MOBILE-TOUCH-385** Research tabs. 8. **MOBILE-TOUCH-386** Research timeframes. 9. **MOBILE-TOUCH-387** Wallet Intelligence tabs. 10. **MOBILE-TOUCH-388** Token Detail tabs. 11. **MOBILE-TOUCH-389** token chart timeframes. 12. **MOBILE-TOUCH-390** Monitor tabs. 13. **MOBILE-TOUCH-391** Monitor primary actions. 14. **MOBILE-TOUCH-392** Monitor alert inputs. 15. **MOBILE-TOUCH-393** Monitor alert choices. 16. **MOBILE-TOUCH-394** Monitor save. 17. **MOBILE-TOUCH-395** Monitor alert switch. 18. **MOBILE-TOUCH-396** Monitor delete. 19. **MOBILE-TOUCH-397** Trade buy/sell tabs. 20. **MOBILE-TOUCH-398** Trade slippage choices.
+
+### MOBILE-172 implementation result
+
+- Completed 20/20 (`MOBILE-QA-281`, `MOBILE-TOUCH-380..398`); exact shortfall 0.
+- The Monitor case retains act-safe cleanup and now declares a bounded 15s loaded-suite budget; the exact grouped QA command passes three consecutive runs. Nineteen independently named control families now have explicit 44px geometry or 11px compact-switch hit slop.
+- TypeScript/full source ESLint PASS; grouped regression PASS three times (2 suites/24 tests each); full Jest PASS (83 suites/442 tests); public Expo config PASS.
+- No WEB/API/provider mutation, transaction behavior, wallet action, production data, secret, or generated output changed.

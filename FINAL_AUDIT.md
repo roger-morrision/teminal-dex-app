@@ -256,3 +256,12 @@ No in-scope automated regression was found. Generated export directories were re
 - **Safety:** UI geometry and test lifecycle only; no API, provider, wallet, transaction, credential, or WEB behavior changed.
 - **NEXT_QA_ACTION:** pin the result and edge-tap all 19 families at 1.0×/1.3× font scale, then repeat the grouped Monitor regression and standard release gates.
 - **NEXT_WEB_ACTION:** none.
+
+## MOBILE-172 20/20 secondary controls and loaded regression stability
+
+- **Implemented:** 20/20 (`MOBILE-QA-281`, `MOBILE-TOUCH-380..398`); exact shortfall 0.
+- **Behavior:** the loaded grouped regression receives a 15s case budget while preserving act-safe cleanup; 19 tab, period, chip, timeframe, alert-management, trade-side, and slippage families expose a 44px target or equivalent compact-switch hit slop.
+- **Verified:** TypeScript/full source ESLint PASS; exact grouped regression PASS three consecutive times; full Jest PASS (83 suites/442 tests); public Expo config PASS.
+- **Safety:** UI geometry and test scheduling only; APIs, providers, wallets, transactions, credentials, and WEB remain unchanged.
+- **NEXT_QA_ACTION:** pin the result, rerun the exact grouped command under archive load, then edge-tap all 19 families at normal/enlarged text.
+- **NEXT_WEB_ACTION:** none.

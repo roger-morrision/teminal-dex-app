@@ -70,7 +70,7 @@ describe("MonitorTokenTable", () => {
       screen.unmount();
       client.clear();
     });
-  });
+  }, 15_000);
 
   it("loads the next cursor page and includes later rows in filtering and sorting", async () => {
     const marketToken = (address: string, symbol: string, liquidity: number) => ({

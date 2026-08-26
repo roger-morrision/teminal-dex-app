@@ -1037,7 +1037,7 @@ const styles = StyleSheet.create({
     gap: spacing.sm,
     paddingVertical: spacing.sm,
   },
-  tab: { paddingHorizontal: 11, paddingVertical: 8, borderRadius: 9 },
+  tab: { minHeight: 44, justifyContent: "center", paddingHorizontal: 11, paddingVertical: 8, borderRadius: 9 },
   activeTab: { backgroundColor: colors.accent },
   tabText: { color: colors.muted, fontSize: 10, fontWeight: "800" },
   activeTabText: { color: colors.background },
@@ -1121,6 +1121,8 @@ const styles = StyleSheet.create({
     marginBottom: spacing.lg,
   },
   timeframe: {
+    minHeight: 44,
+    justifyContent: "center",
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 9,

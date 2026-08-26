@@ -490,6 +490,7 @@ export function AlertCard({
           })}
           onPress={toggleAlert}
           disabled={mutationBusy}
+          hitSlop={11}
           style={[styles.switch, alert.active && styles.switchOn]}
         >
           <View style={[styles.knob, alert.active && styles.knobOn]} />
@@ -514,6 +515,7 @@ export function AlertCard({
           }}
           onPress={removeAlert}
           disabled={mutationBusy}
+          style={styles.deleteButton}
         >
           <Text style={styles.delete}>
             {remove.isPending ? t("deleting") : t("delete")}
@@ -787,7 +789,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     backgroundColor: colors.surface,
   },
-  tab: { flex: 1, paddingVertical: 9, alignItems: "center", borderRadius: 9 },
+  tab: { flex: 1, minHeight: 44, justifyContent: "center", paddingVertical: 9, alignItems: "center", borderRadius: 9 },
   tabActive: { backgroundColor: colors.accentDim },
   tabText: { color: colors.muted, fontSize: 11, fontWeight: "800" },
   tabTextActive: { color: colors.accent },
@@ -843,6 +845,8 @@ const styles = StyleSheet.create({
     maxWidth: 250,
   },
   primary: {
+    minHeight: 44,
+    justifyContent: "center",
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
@@ -870,6 +874,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   input: {
+    minHeight: 44,
     color: colors.text,
     backgroundColor: colors.background,
     borderWidth: 1,
@@ -881,6 +886,8 @@ const styles = StyleSheet.create({
   choiceRow: { flexDirection: "row", gap: 6, marginBottom: spacing.sm },
   choice: {
     flex: 1,
+    minHeight: 44,
+    justifyContent: "center",
     paddingVertical: 9,
     alignItems: "center",
     borderWidth: 1,
@@ -900,6 +907,8 @@ const styles = StyleSheet.create({
     marginTop: spacing.md,
   },
   save: {
+    minHeight: 44,
+    justifyContent: "center",
     alignItems: "center",
     padding: 12,
     marginTop: spacing.md,
@@ -955,6 +964,7 @@ const styles = StyleSheet.create({
   },
   knobOn: { marginLeft: 17, backgroundColor: colors.background },
   delete: { color: colors.negative, fontSize: 9, fontWeight: "800" },
+  deleteButton: { minHeight: 44, justifyContent: "center", paddingHorizontal: spacing.sm },
   delivery: {
     marginHorizontal: spacing.lg,
     marginBottom: spacing.sm,

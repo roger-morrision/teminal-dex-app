@@ -574,7 +574,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     marginTop: spacing.lg,
   },
-  segmentItem: { flex: 1, alignItems: "center", padding: 10, borderRadius: 9 },
+  segmentItem: { flex: 1, minHeight: 44, justifyContent: "center", alignItems: "center", padding: 10, borderRadius: 9 },
   segmentActive: { backgroundColor: colors.accent },
   segmentText: { color: colors.muted, fontWeight: "900", fontSize: 11 },
   segmentTextActive: { color: colors.background },
@@ -619,6 +619,8 @@ const styles = StyleSheet.create({
   slippageItem: {
     flexGrow: 1,
     minWidth: 64,
+    minHeight: 44,
+    justifyContent: "center",
     alignItems: "center",
     padding: 10,
     borderRadius: 9,

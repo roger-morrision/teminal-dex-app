@@ -689,7 +689,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     backgroundColor: colors.surface,
   },
-  tab: { flex: 1, alignItems: "center", paddingVertical: 10, borderRadius: 9 },
+  tab: { flex: 1, minHeight: 44, justifyContent: "center", alignItems: "center", paddingVertical: 10, borderRadius: 9 },
   tabActive: { backgroundColor: "#3b1b21" },
   tabText: { color: colors.muted, fontSize: 10, fontWeight: "800" },
   tabTextActive: { color: "#ff8b94" },
@@ -826,6 +826,8 @@ const styles = StyleSheet.create({
   },
   timeframes: { padding: spacing.lg, gap: 6 },
   timeframe: {
+    minHeight: 44,
+    justifyContent: "center",
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderWidth: 1,

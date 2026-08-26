@@ -44,4 +44,23 @@ describe("primary market touch targets", () => {
         new RegExp(`${style}: \\{[\\s\\S]*?(?:minHeight: 44|width: 44,[\\s\\S]*?height: 44)`),
       );
   });
+
+  it.each([
+    ["AI", "app/ai.tsx", ["tab"]],
+    ["Market intelligence", "app/market-intelligence.tsx", ["tab", "period", "chip"]],
+    ["Operations", "app/operations.tsx", ["tab"]],
+    ["Research", "app/research-workspace.tsx", ["tab", "timeframe"]],
+    ["Wallet intelligence", "app/wallet-intelligence.tsx", ["tab"]],
+    ["Token detail", "app/token/[address].tsx", ["tab", "timeframe"]],
+    ["Trade", "app/trade/[address].tsx", ["segmentItem", "slippageItem"]],
+    ["Monitor", "app/(tabs)/monitor.tsx", ["tab", "primary", "input", "choice", "save", "deleteButton"]],
+  ])("keeps %s secondary controls at a 44px minimum", (_name, path, styles) => {
+    const text = source(path as string);
+    for (const style of styles as string[])
+      expect(text).toMatch(new RegExp(`${style}: \\{[\\s\\S]*?minHeight: 44`));
+  });
+
+  it("extends the compact Monitor switch to a 44px touch area", () => {
+    expect(source("app/(tabs)/monitor.tsx")).toContain("hitSlop={11}");
+  });
 });

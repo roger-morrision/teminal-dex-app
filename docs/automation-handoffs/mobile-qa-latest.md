@@ -549,3 +549,65 @@ The initial sandboxed diagnostic could not open Expo's user native-module cache 
 - Full Jest/config/bundle/runtime were not re-run in this bounded trigger; the DEV handoff claims 83/422 and public config PASS, but QA does not treat that as independent evidence. **NEXT_DEV_ACTION:** rerun full regression, exports, and exact API 37 malformed-provenance flow.
 - **MOBILE-QA release: CONDITIONAL NO-GO.** 8/8 available outcomes pass proportional independent verification; 12 external blocker IDs remain. QA lock released after reporting.
 - Throughput: 20 reconciled; 8 available/verified PASS; exact shortfall 12 (`MOBILE-QA-269..280`), no padding.
+
+---
+
+# MOBILE-QA validation handoff — MOBILE-169
+
+- Trigger: 2026-08-26T12:42:03.038Z. Inspected exact result `82a287a14102aabd6b60750854f4cec3670bad0e` (`fix(mobile): harden evidence labels across surfaces`), base `6d53b9e`.
+- Scope/coordination: PASS. Explicit canonical workdir and safe-directory Git top-level normalized to `c:/tuan/devapps/teminal-dex-app`; Git prefix was empty; result stayed clean and immutable before reporting; no DEV/report lock was held before QA acquired its dedicated report lock. Source and automated gates ran from a clean archive of the exact result. The runtime build was served from the clean canonical result only after the archive launcher correctly failed without `.git`; it emitted `[MOBILE_BUILD] commit=82a287a14102aabd6b60750854f4cec3670bad0e`. No product, test, configuration, WEB, API, provider, wallet, transaction, or application-data write occurred.
+- Environment/device: Windows; bundled Node 24.19.0; Expo 57 local CLI; API 37 `emulator-5554` (1080x2400); clean archive `%LOCALAPPDATA%\\Temp\\mobile-qa-169-82a287a`. The emulator accepted the exact development-client deep link, but its accessibility hierarchy remained on the development-client `Tools` view, so no rendered label or navigation claim is inferred.
+
+## MOBILE-QA acceptance matrix
+
+| Criterion | Result | Independent evidence |
+| --- | --- | --- |
+| Immutable type and changed-surface lint | PASS | Archive `tsc --noEmit` exits 0; ESLint exits 0 for all eight changed production surfaces, shared formatter, and formatter regression. |
+| Focused malformed-evidence regressions | PASS | `format`, Token Evidence, MonitorTokenTable, TrenchCard, TrackEventCard, PrimaryDetailState, and whale-activity: 7 suites / 30 tests pass. |
+| Full regression | PASS | Archive `jest --ci --runInBand --silent`: 83 suites / 422 tests pass in 39.164s. |
+| Expo public configuration | PASS | Android/iOS/web resolve; `terminaldex` scheme, iOS HTTPS-only ATS, Android biometric permissions, and no public secret/endpoint are present. |
+| Android / iOS / web bundle | CONDITIONAL PASS / PASS / PASS | Android emits one 5.7 MB Hermes bundle and `metadata.json`, but retains the known Noble strict-exports fallback. iOS emits one 2.3 MB Hermes bundle and metadata. Web static export completes with one bundle and route output. |
+| Expo Doctor | BLOCKED | Local CLI explicitly returns `expo doctor is not supported in the local CLI`; no standalone npm-enabled Doctor lane is available. |
+| Exact Android runtime build | PASS with blocked scenario | API 37 device connected; port reverse and deep-link launch returned `Status: ok`, warm activity `app.terminaldex.mobile/.MainActivity`; Metro bundled 1,887 modules and logged exact commit marker. The client did not settle beyond its `Tools` accessibility view, and no deterministic whitespace-provider fixture exists; malformed-label, retry, navigation, large-text, offline/error, and partial-page visual traversal remains blocked. |
+
+## MOBILE-QA reconciliation (20 distinct DEV outcomes)
+
+| Stable ID | Result | Evidence, affected surface, and risk |
+| --- | --- | --- |
+| MOBILE-DATA-321 | PASS | Operations market source fallback is covered by the shared bounded formatter and focused evidence regression; blank evidence can no longer render as a deceptive present value. |
+| MOBILE-DATA-322 | PASS | Operations market quality fallback uses the same trim/localize path; focused formatter/render evidence passes. |
+| MOBILE-DATA-323 | PASS | Operations trader source fallback is bounded before user-visible output; no raw whitespace path remains in reviewed surface. |
+| MOBILE-DATA-324 | PASS | Operations ingestion source fallback is localized through the shared helper; TypeScript/lint/regressions pass. |
+| MOBILE-DATA-325 | PASS | Operations ingestion commitment fallback is localized rather than blank; regression risk is contained by full suite. |
+| MOBILE-A11Y-326 | PASS | Whale relationship accessibility DEX fallback is normalized in accessible output; focused whale-activity evidence passes. |
+| MOBILE-DATA-327 | PASS | Wallet ranking quality fallback trims valid values and localizes missing evidence; reviewed wallet-intelligence surface passes static and full gates. |
+| MOBILE-DATA-328 | PASS | Wallet PnL provenance method fallback uses bounded evidence output; no API contract mutation is present. |
+| MOBILE-DATA-329 | PASS | Track smart-money quality fallback is covered by `TrackEventCard` focused regression. |
+| MOBILE-DATA-330 | PASS | Track evidence-provider fallback is covered by `TrackEventCard` focused regression. |
+| MOBILE-DATA-331 | PASS | Token bubble source fallback is covered by Token Evidence / PrimaryDetailState focused render regressions. |
+| MOBILE-DATA-332 | PASS | Token quality freshness fallback is bounded by the shared formatter; valid labels still trim. |
+| MOBILE-DATA-333 | PASS | Token pair source fallback is localized under blank/missing values in focused detail evidence. |
+| MOBILE-DATA-334 | PASS | Token provenance source fallback is localized, with no schema/API contract change. |
+| MOBILE-DATA-335 | PASS | Token provenance quality fallback is localized and retained by full regression. |
+| MOBILE-DATA-336 | PASS | Discover quality fallback is bounded on the reviewed Discover surface; compile, lint, and full suite pass. |
+| MOBILE-DATA-337 | PASS | Monitor header source fallback is covered by `MonitorTokenTable` focused regression. |
+| MOBILE-DATA-338 | PASS | Monitor header quality fallback is covered by `MonitorTokenTable` focused regression. |
+| MOBILE-DATA-339 | PASS | Trenches quality fallback is covered by `TrenchCard` focused regression; prior DEX normalization remains protected. |
+| MOBILE-DATA-340 | PASS | Whale best-token whitespace fallback is covered by focused whale-activity/formatter evidence; blank valid-looking token evidence no longer survives. |
+
+## MOBILE-QA carry-forward blockers and release
+
+- `MOBILE-QA-269..275`, `MOBILE-QA-278..280`: BLOCKED P2, owner QA/device/provider fixture. Physical TalkBack/VoiceOver/Switch Access/small-screen, offline-retry-reconnect, lifecycle, persistence-fault, active-reset, cursor-failure, and performance scenarios have no controllable fixture or physical matrix evidence.
+- `MOBILE-QA-276`: BLOCKED P2, owner toolchain. Doctor cannot complete because the local Expo CLI rejects the command and child npm is unavailable.
+- `MOBILE-QA-277`: CONDITIONAL PASS P2, owner upstream dependency lane. Android export is successful but logs `@solana/wallet-standard-util` to Noble `./crypto.js` strict-exports fallback; no unresolved bundle module occurs.
+- Runtime artifacts/log references: `%LOCALAPPDATA%\\Temp\\mobile-qa-169-full.err.log`, `mobile-qa-169-android-export.err.log`, `mobile-qa-169-runtime-canonical.out.log`, and `mobile-qa-169-window.xml`. The UI dump proves only the development-client surface; it is not evidence of a product label result. No screenshot, secret, backend payload, or provider diagnostic was retained.
+- No MOBILE-to-WEB contract blocker: WEB was neither read nor written.
+- **MOBILE-QA release recommendation: CONDITIONAL NO-GO.** All 20 MOBILE-169 source/automated outcomes independently pass, but production release evidence is incomplete for rendered malformed-provider labels and the carried physical/toolchain/upstream lanes.
+
+## MOBILE-QA 20/20 throughput disposition
+
+- Findings inspected/reconciled: 20 distinct MOBILE-169 outcomes plus carried stable blockers.
+- Material DEV outcomes available: 20; independently verified: 20/20 PASS; exact shortfall to 20: 0.
+- Scenario status not counted as an additional DEV outcome: malformed-evidence UI traversal is BLOCKED by no deterministic provider fixture and the development-client route not settling.
+- Carry-forward order: `MOBILE-QA-269`, `MOBILE-QA-270`, `MOBILE-QA-271`, `MOBILE-QA-272`, `MOBILE-QA-273`, `MOBILE-QA-274`, `MOBILE-QA-275`, `MOBILE-QA-276`, `MOBILE-QA-277`, `MOBILE-QA-278`, `MOBILE-QA-279`, `MOBILE-QA-280`.
+- **NEXT_DEV_ACTION:** provide a deterministic whitespace/missing-evidence fixture and a verified dev-client route that opens each affected screen so QA can execute the rendered labels, retry, offline/error, navigation, and accessibility matrix on the immutable result.

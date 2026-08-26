@@ -104,3 +104,4 @@ Status legend: `[x]` verified, `[ ]` incomplete, `[~]` intentionally visible but
 - [x] A repository-local `diagnostics:expo` command checks SDK package compatibility without global tools or implicit `npx`; its contract is regression-tested and fails closed whenever package versions drift.
 - [x] Expo, Constants, Dev Client, and Router match SDK 57's expected patch releases; local compatibility diagnostics, static gates, regressions, public config, and Android bundle export pass after the lockfile update.
 - [x] Every SnipeCard query test awaits a rendered settled state (success or recovered error removal), keeping focused and full CI runs free of order-dependent React update warnings.
+- [x] The current npm advisory chain is explicitly bounded to Expo configuration tooling: `uuid` and `xcode` are not direct dependencies or runtime imports, exact transitive versions are guarded, and any boundary drift fails the security regression gate pending upstream remediation.

@@ -1,5 +1,17 @@
 # MOBILE DEV → QA handoff
 
+## MOBILE-161 — dependency-audit runtime boundary
+
+- Base: `b73b47a`; result: containing commit.
+- Evidence: `npm audit --package-lock-only --omit=dev --json` reports 11 moderate, 0 high, 0 critical. Root advisory `uuid` 7.0.3 (`GHSA-w5hq-g745-h8pq`) is reached through `@expo/config-plugins → xcode` in Expo configuration/build tooling. npm's suggested Expo 46 downgrade and forced remediation were not applied.
+- Changed files/behavior: `dependency-audit-boundary.test.ts` adds six fail-visible checks for direct-dependency exclusion, exact transitive path/versions, and absence of `uuid`/`xcode` runtime imports. Product, API, wallet, and transaction behavior are unchanged.
+- Acceptance: focused Jest 6/6, TypeScript, warning-free source ESLint, and full primary-worktree Jest pass.
+- Known risk: the upstream moderate advisory remains open and must be reevaluated with compatible Expo/xcode updates; the guard bounds exposure but is not a vulnerability fix.
+- NEXT_QA_ACTION: pin the result; rerun the production audit and focused/full gates; fail if high/critical findings appear, if the exact path changes without review, or if either package enters runtime source.
+- 20/20 reconciliation: 20 findings reviewed; six material security-boundary outcomes completed; shortfall 14 carried forward without padding.
+
+---
+
 ## MOBILE-160 — rendered SnipeCard query settlement
 
 - Base: `55326ce`; result: containing commit.

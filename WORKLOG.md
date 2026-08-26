@@ -1367,3 +1367,9 @@
 - QA reproduced an order-dependent `act` warning because request invocation did not prove React Query's rendered update had settled. The two success cases now await visible `Token unavailable`; recovery awaits removal of the Retry control after the second response.
 - Focused CI SnipeCard passes 3/3 and full primary CI Jest passes 81/403 with no React update warning. TypeScript and zero-warning focused ESLint pass. Immutable QA expects 81/401 excluding two concurrent TokenRow tests.
 - 20 findings reviewed; three material rendered-settlement outcomes completed; shortfall 17 remains exact device/runtime evidence, audit disposition, full Doctor parity, WEB-QC fixtures, physical-device scenarios, and concurrent Whales/logo acceptance.
+
+## 2026-08-26 — MOBILE-161: dependency-audit runtime boundary
+
+- Enumerated the production lockfile audit: 11 moderate, zero high, zero critical. The actionable root advisory is `uuid` 7.0.3 (`GHSA-w5hq-g745-h8pq`), propagated through `xcode` 3.0.1 and Expo configuration/build tooling; npm's proposed Expo 46 downgrade and forced fixes were rejected as unsafe.
+- Added six regression assertions proving `uuid`, `xcode`, and Expo config plugins are not direct app dependencies, pinning the audited transitive chain, and rejecting runtime imports from `app` or `src`. This does not claim the upstream advisory is resolved.
+- Focused security coverage passes 6/6. Twenty findings were reconciled; six material boundary outcomes completed; shortfall 14 remains upstream remediation, exact device/runtime evidence, Doctor parity, WEB-QC fixtures, physical-device scenarios, and concurrent Whales/logo acceptance.

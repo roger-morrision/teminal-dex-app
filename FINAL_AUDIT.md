@@ -167,3 +167,8 @@ No in-scope automated regression was found. Generated export directories were re
 
 - All three SnipeCard query paths await observable rendered settlement rather than request counts: initial research/removal, threshold editing, and failed-query recovery.
 - Focused and full CI regressions pass without the prior order-dependent React `act` warning. Product behavior, API contracts, and execution controls are unchanged.
+
+## MOBILE-161 dependency-audit runtime boundary
+
+- Production lockfile audit reports 11 moderate findings and no high/critical findings. The concrete advisory is `uuid` 7.0.3 (`GHSA-w5hq-g745-h8pq`) behind `xcode` 3.0.1 and Expo configuration tooling.
+- Six automated checks prevent those packages becoming direct or runtime dependencies and make version/path drift visible. The upstream advisory remains open; automatic/forced remediation and npm's incompatible Expo downgrade were not applied.

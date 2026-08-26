@@ -294,3 +294,74 @@ The initial sandboxed diagnostic could not open Expo's user native-module cache 
 - Runtime findings inspected: 11 distinct UI-flow outcomes, all observed PASS within stated limits.
 - New DEV outcomes eligible for this run: 0, because `37783c9` has no matching DEV handoff and the worktree changed during observation.
 - Remaining to 20 DEV outcomes: 20; no padding or mixed-state testing applied.
+
+---
+
+# MOBILE-QA validation handoff — MOBILE-164
+
+- Run: 2026-08-26T08:20:00+07:00.
+- Inspected DEV commit: `4a3541865bd236a659f4e5c9436e2ad4d80733ed` (`fix(mobile): bound inputs and async wallet controls`); base `31b683f`.
+- Scope: PASS. At start and before reporting, current directory and Git top-level resolved to `C:\Tuan\devApps\teminal-dex-app`; working tree was clean. No WEB workspace was read or written. QA used a clean archive of the exact commit with the repository dependency tree attached read-only by junction. Product code, tests, and configuration were not changed.
+- Environment: Windows, bundled Node 24.19.0, Expo 57 local CLI, API 37 Android emulator `emulator-5554` (1080x2400), temporary archive `%LOCALAPPDATA%\Temp\mobile-qa-164-4a35418`.
+- Provenance: PASS. A verified local bundle emitted `[MOBILE_BUILD] commit=4a3541865bd236a659f4e5c9436e2ad4d80733ed` in Android logcat before device evidence was attributed to this result.
+
+## MOBILE-QA acceptance and end-to-end results
+
+| Criterion | Result | Independent evidence |
+| --- | --- | --- |
+| Immutable type and source quality | PASS | `tsc --noEmit` and `eslint app src` both exit 0 from the clean archive. |
+| Focused input/control regression | PASS | AlertComposer, TrackedWalletRow, research store, StrategyComposer, and CopyTrade config: 5 suites / 14 tests. |
+| Full regression | PASS | Jest `--ci --runInBand`: 82 suites / 414 tests. |
+| Expo configuration and dependency alignment | PASS | Public config resolves secure platform configuration; `expo install --check` reports dependencies up to date. |
+| Expo Doctor | BLOCKED | Local Doctor starts 21 checks but returns 17/21 because its four package-tree/npm-version checks cannot spawn `npm` in this QA runtime. |
+| Android/iOS/web bundles | CONDITIONAL PASS | All exports complete; Android retains the known Noble `./crypto.js` strict-exports fallback without an unresolved module. |
+| Exact Android navigation and safety flow | PASS, bounded | Verified bundle launched API 37, rendered Whales, navigated to Portfolio, More, and Wallet Intelligence → Wallet Tracker. A 50-character invalid unsaved address was truncated to 44 in both Portfolio and Wallet Tracker; Wallet Tracker Save remained disabled. No wallet connection, watch-only load, save, removal, signing, submission, or trading action occurred. |
+| Full device resilience/accessibility matrix | BLOCKED | TalkBack/VoiceOver, enlarged text, offline/retry/reconnect, background/restore, persistence-failure retry, and physical-device coverage were not available. |
+
+## MOBILE-QA reconciled finding inventory (20)
+
+| Stable ID | Result | Evidence, affected area, regression risk, and exact NEXT_DEV_ACTION |
+| --- | --- | --- |
+| MOBILE-DATA-221 | PASS | Portfolio watch-only input has native `maxLength={44}` and state slicing; API 37 entered 50 invalid characters and exposed exactly 44. Affected `app/(tabs)/portfolio.tsx`. Risk: low. **NEXT_DEV_ACTION:** retain the native/state bound. |
+| MOBILE-DATA-222 | PASS | Source review confirms locked-session revoke gets `disabled` plus busy accessibility state from `wallet.busy`. Affected Portfolio. Risk: low; no authenticated wallet was used. **NEXT_DEV_ACTION:** add a rendered busy-session interaction test when the wallet test harness supports it. |
+| MOBILE-DATA-223 | PASS | Source review confirms connected-session disconnect/revoke is disabled and announced busy during `wallet.busy`. Affected Portfolio. Risk: low; no wallet connection was initiated. **NEXT_DEV_ACTION:** add a rendered busy-session interaction test. |
+| MOBILE-DATA-224 | PASS | Source review confirms watch-only Load is disabled while `wallet.busy`; device also showed Load disabled for the invalid non-submitted draft. Affected Portfolio. Risk: low. **NEXT_DEV_ACTION:** cover the busy branch in a component test. |
+| MOBILE-DATA-225 | PASS | Wallet Tracker uses native `maxLength={44}`, slices state, and blocks editing while saving; API 37 truncated 50 invalid characters to 44 and Save remained disabled. Affected `app/wallet-intelligence.tsx`. Risk: low. **NEXT_DEV_ACTION:** retain this dual bound. |
+| MOBILE-DATA-226 | PASS | Save has a `saving` re-entry guard, disables its control, and publishes busy state; full regression is green. Affected Wallet Tracker. Risk: low. **NEXT_DEV_ACTION:** add a delayed-persistence double-press test. |
+| MOBILE-DATA-227 | PASS | Remove has the same `saving` re-entry guard; TrackedWalletRow focused test proves destructive remove is disabled/busy and does not invoke its callback. Affected Wallet Tracker/TrackedWalletRow. Risk: low. **NEXT_DEV_ACTION:** retain focused busy-removal coverage. |
+| MOBILE-DATA-228 | PASS | Research Snipe mint input slices and natively caps at 44; research-store exact-address tests pass. Affected `app/research-workspace.tsx`. Risk: low. **NEXT_DEV_ACTION:** add Android paste coverage when physical-device matrix runs. |
+| MOBILE-DATA-229 | PASS | Research Multichart mint input slices and natively caps at 44. Affected Research Workspace. Risk: low. **NEXT_DEV_ACTION:** add rendered max-length assertion. |
+| MOBILE-DATA-230 | PASS | `boundedResearchNumber` strips non-decimal characters, collapses duplicate separators, and bounds whole/fractional precision before persistence; focused research-store test passes. Affected Research Workspace/store. Risk: low. **NEXT_DEV_ACTION:** retain normalizer as the only threshold path. |
+| MOBILE-DATA-231 | PASS | The same normalizer covers Research below threshold and focused test passes. Affected Research Workspace/store. Risk: low. **NEXT_DEV_ACTION:** include malformed paste in physical-device testing. |
+| MOBILE-DATA-232 | PASS | Research above/below inputs use the normalizer and native `maxLength={19}`. Affected Research Workspace. Risk: low. **NEXT_DEV_ACTION:** add a rendered native-prop assertion. |
+| MOBILE-A11Y-233 | PASS | Multichart timeframe rail now exposes `accessibilityRole="radiogroup"`; existing tab/radio regression remains green. Affected Research Workspace. Risk: low. **NEXT_DEV_ACTION:** confirm TalkBack grouping on physical Android. |
+| MOBILE-DATA-234 | PASS | Whale search slices state and natively caps at 80. Affected `app/(tabs)/whales.tsx`. Risk: low. **NEXT_DEV_ACTION:** add a rendered length-bound assertion. |
+| MOBILE-DATA-235 | PASS | Alert token input slices state and natively caps at 44. Affected `app/(tabs)/monitor.tsx`. Risk: low. **NEXT_DEV_ACTION:** add Android paste coverage. |
+| MOBILE-DATA-236 | PASS | `boundedAlertNumber` normalizes malformed decimal strings before validation/submission; focused AlertComposer test passes. Affected Monitor. Risk: low. **NEXT_DEV_ACTION:** retain normalizer coverage. |
+| MOBILE-DATA-237 | PASS | Alert threshold input uses the normalizer and native `maxLength={19}`. Affected Monitor. Risk: low. **NEXT_DEV_ACTION:** add rendered native-prop assertion. |
+| MOBILE-A11Y-238 | PASS | Alert signal options are contained by a radiogroup and individual radios carry clear labels/checked state. Affected Monitor. Risk: low. **NEXT_DEV_ACTION:** confirm TalkBack traversal on physical Android. |
+| MOBILE-A11Y-239 | PASS | Alert condition options are contained by a radiogroup with labeled radios/checked state. Affected Monitor. Risk: low. **NEXT_DEV_ACTION:** confirm TalkBack traversal on physical Android. |
+| MOBILE-DATA-240 | PASS | CopyTrade decimal Input retains the sanitizer and now natively caps at 19; focused config tests pass and full regression maintains execution-disabled boundaries. Affected `app/copytrade.tsx`. Risk: low. **NEXT_DEV_ACTION:** add rendered max-length coverage for each CopyTrade numeric field. |
+
+## MOBILE-QA command and runtime evidence
+
+- PASS: `tsc --noEmit`; `eslint app src`; focused Jest 5/14; full Jest 82/414; public Expo config; `expo install --check`; Android, iOS, and web exports.
+- CONDITIONAL PASS: Android export produced 1 Hermes bundle / 46 assets and only the carried `@solana/wallet-standard-util` → Noble `./crypto.js` strict-exports fallback. iOS produced 1 Hermes bundle / 23 assets; web produced 1 static bundle.
+- BLOCKED: direct local `expo-doctor` was 17/21; four checks could not spawn `npm`. This is a QA-runtime tooling limitation, not evidence of a product incompatibility.
+- PASS: verified API 37 launch through `exp+terminal-dex://expo-development-client/?url=http://localhost:8092` after `adb reverse`; exact commit marker recorded, no fatal exception, ANR, or unresolved-script error in the successful launch window. Safe local evidence references: `%LOCALAPPDATA%\Temp\mobile-qa-164-portfolio-bound.xml` and `mobile-qa-164-wallet-tracker-bound.xml`.
+- Attempted but not counted as product evidence: the `127.0.0.1` development-client URL showed a launcher transport error; retrying the registered localhost scheme loaded the verified bundle successfully. No product source/configuration change is indicated.
+
+## MOBILE-QA blockers and release recommendation
+
+- MOBILE-QA-004 remains CONDITIONAL PASS P2: Noble fallback warning. **NEXT_DEV_ACTION:** retain the compatibility guard and revalidate all exports before dependency/resolver change.
+- MOBILE-QA-008 remains PARTIALLY VERIFIED P2: immutable Doctor is 17/21 in this runtime. **NEXT_DEV_ACTION:** provide a repository-local/bundled npm lane or a reproducible exact-commit 21/21 Doctor run.
+- MOBILE-QA-010 remains BLOCKED P2: device accessibility/resilience matrix is incomplete. **NEXT_DEV_ACTION:** execute TalkBack, large text, offline/error/retry, background/restore, persistence-failure retry, and physical-device checks.
+- No MOBILE-to-WEB contract blocker; WEB APIs remained outside scope and untouched.
+- **MOBILE-QA release recommendation: CONDITIONAL NO-GO.** All 20 MOBILE-164 outcomes pass independent static/automated validation and two address-bound outcomes pass on an exact Android build, but release sign-off awaits the stated Doctor, Noble, and physical accessibility/resilience evidence.
+
+## MOBILE-QA 20/20 reconciliation
+
+- Findings inspected/reconciled: 20 distinct stable IDs.
+- Material DEV outcomes available: 20; independently verified: 20/20 PASS.
+- Remaining to 20: 0. No duplicated or cosmetic findings counted.
+- Carry-forward order: `MOBILE-QA-010`, `MOBILE-QA-008`, `MOBILE-QA-004`.

@@ -731,3 +731,57 @@ The initial sandboxed diagnostic could not open Expo's user native-module cache 
 - Findings inspected/reconciled: 20 material outcomes plus carried stable blockers. Material DEV outcomes available: 20; independently PASS: 19; FAIL: 1 (`MOBILE-QA-281`); exact shortfall to 20: 0.
 - Carry-forward order: `MOBILE-QA-281`, `MOBILE-QA-269`, `MOBILE-QA-270`, `MOBILE-QA-271`, `MOBILE-QA-272`, `MOBILE-QA-273`, `MOBILE-QA-274`, `MOBILE-QA-275`, `MOBILE-QA-276`, `MOBILE-QA-277`, `MOBILE-QA-278`, `MOBILE-QA-279`, `MOBILE-QA-280`.
 - **NEXT_DEV_ACTION:** make the grouped `MonitorTokenTable` and `touch-targets` command deterministically pass without timeout/unmounted-renderer, then supply an exact-build device route so QA can edge-tap all 19 controls at 1.0× and 1.3× font scale.
+
+---
+
+# MOBILE-QA validation handoff — MOBILE-172
+
+- Trigger: 2026-08-26T15:42:06.293Z. Inspected immutable result `b0627bbf59ec58381e422e53b5f12400edaabe04` (`fix(mobile): harden secondary touch controls`), base `16ee90f`.
+- Scope/coordination: PASS. Explicit canonical workdir and safe-directory Git top-level normalized to `c:/tuan/devapps/teminal-dex-app`; prefix empty; result worktree clean before/after validation; no DEV lock existed. QA used clean archive `%LOCALAPPDATA%\\Temp\\mobile-qa-172-b0627bb` with the existing dependency tree linked, and used the dedicated report lock only for this handoff. No product, test, configuration, WEB, API/provider, wallet, transaction, or data write occurred.
+- Environment/device: Windows; bundled Node 24.19.0; Expo 57 local CLI. Fresh ADB discovery did not return inside the bounded attempt, so there is no device, edge-tap, TalkBack, large-text, focus, selection, retry, navigation, or visual geometry claim.
+
+## MOBILE-QA acceptance matrix
+
+| Criterion | Result | Independent evidence |
+| --- | --- | --- |
+| Type and changed-surface lint | PASS | Archive `tsc --noEmit` exits 0; ESLint of eight changed routes and both focused test files exits 0. |
+| Required grouped Monitor regression | PASS | Exact archive command `jest --ci --runInBand --silent MonitorTokenTable touch-targets` passes three consecutive runs: 2 suites / 25 tests each. The cold run needs 16.457s overall but the formerly failing Monitor case completes under its explicit 15s budget. |
+| Full regression | PASS | Archive `jest --ci --runInBand --silent`: 83 suites / 442 tests pass in 64.022s. |
+| Expo/configuration | PASS with Doctor blocker | Public Android/iOS/web config passes and retains existing security/privacy boundaries. Local Doctor fails to spawn child Node (`ENOENT`). |
+| Android / iOS / web bundles | CONDITIONAL PASS / PASS / PASS | Android exports one 5.7 MB Hermes bundle plus metadata, retaining the Noble strict-exports fallback; iOS exports one 2.3 MB Hermes bundle plus metadata; web static export succeeds. |
+| Physical runtime accessibility/motor flow | BLOCKED | Fresh ADB discovery did not settle, preventing exact-build 1.0×/1.3× edge-tap and assistive-technology evidence. |
+
+## MOBILE-QA reconciliation (20 distinct DEV outcomes)
+
+| Stable ID | Result | Evidence and regression risk |
+| --- | --- | --- |
+| MOBILE-QA-281 | RESOLVED | Three consecutive exact grouped archive runs pass 25/25 without the prior timeout or unmounted renderer; the current full suite also passes. |
+| MOBILE-TOUCH-380 | PASS | AI tabs have an explicit 44px minimum geometry guard in changed source/touch regression. |
+| MOBILE-TOUCH-381 | PASS | Market Intelligence tabs have an explicit 44px minimum geometry guard. |
+| MOBILE-TOUCH-382 | PASS | Market periods have an explicit 44px minimum geometry guard. |
+| MOBILE-TOUCH-383 | PASS | Market signal/filter chips have an explicit 44px minimum geometry guard. |
+| MOBILE-TOUCH-384 | PASS | Operations tabs have an explicit 44px minimum geometry guard. |
+| MOBILE-TOUCH-385 | PASS | Research tabs have an explicit 44px minimum geometry guard. |
+| MOBILE-TOUCH-386 | PASS | Research timeframes have an explicit 44px minimum geometry guard. |
+| MOBILE-TOUCH-387 | PASS | Wallet Intelligence tabs have an explicit 44px minimum geometry guard. |
+| MOBILE-TOUCH-388 | PASS | Token Detail tabs have an explicit 44px minimum geometry guard. |
+| MOBILE-TOUCH-389 | PASS | Token chart timeframes have an explicit 44px minimum geometry guard. |
+| MOBILE-TOUCH-390 | PASS | Monitor tabs have an explicit 44px minimum geometry guard. |
+| MOBILE-TOUCH-391 | PASS | Monitor primary actions have an explicit 44px minimum geometry guard. |
+| MOBILE-TOUCH-392 | PASS | Monitor alert inputs have an explicit 44px minimum geometry guard. |
+| MOBILE-TOUCH-393 | PASS | Monitor alert choices have an explicit 44px minimum geometry guard. |
+| MOBILE-TOUCH-394 | PASS | Monitor save action has an explicit 44px minimum geometry guard. |
+| MOBILE-TOUCH-395 | PASS | Monitor alert switch has equivalent compact-switch hit slop guard. |
+| MOBILE-TOUCH-396 | PASS | Monitor delete action has an explicit 44px minimum geometry guard. |
+| MOBILE-TOUCH-397 | PASS | Trade buy/sell tabs have an explicit 44px minimum geometry guard. |
+| MOBILE-TOUCH-398 | PASS | Trade slippage choices have an explicit 44px minimum geometry guard. |
+
+## MOBILE-QA release, blockers, and throughput
+
+- `MOBILE-QA-269..275`, `MOBILE-QA-278..280`: BLOCKED P2, owner QA/device/provider fixture. Physical TalkBack/VoiceOver/Switch Access/small-screen/offline/lifecycle/storage/cursor/performance scenarios remain unavailable.
+- `MOBILE-QA-276`: BLOCKED P2, owner toolchain; Expo Doctor cannot spawn child Node. `MOBILE-QA-277`: CONDITIONAL PASS P2, owner upstream dependency; the Android Noble fallback remains.
+- Evidence references: `%LOCALAPPDATA%\\Temp\\mobile-qa-172-full.err.log`, `mobile-qa-172-android-export.err.log`; no screenshot, credentials, backend payload, or WEB evidence retained. No MOBILE-to-WEB contract blocker exists.
+- **MOBILE-QA release recommendation: CONDITIONAL NO-GO.** `MOBILE-QA-281` is resolved and all 20 current outcomes pass, but physical runtime/accessibility, Doctor, and Noble evidence remain incomplete.
+- Findings inspected/reconciled: 20. DEV outcomes available/verified: 20/20 PASS; exact shortfall to 20: 0.
+- Carry-forward order: `MOBILE-QA-269`, `MOBILE-QA-270`, `MOBILE-QA-271`, `MOBILE-QA-272`, `MOBILE-QA-273`, `MOBILE-QA-274`, `MOBILE-QA-275`, `MOBILE-QA-276`, `MOBILE-QA-277`, `MOBILE-QA-278`, `MOBILE-QA-279`, `MOBILE-QA-280`.
+- **NEXT_DEV_ACTION:** provide a responsive exact-build Android/iOS device lane and deterministic states so QA can complete 1.0×/1.3× edge-tap, focus, selection, offline/retry, and recovery verification for all resolved control families.

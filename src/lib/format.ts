@@ -60,3 +60,16 @@ export function observedDateTime(
   if (!Number.isFinite(date.getTime())) return fallback;
   return date.toLocaleString(language === 'vi' ? 'vi-VN' : 'en-US');
 }
+
+export function relativeObservedAge(
+  value: number,
+  now = Date.now(),
+): { key: 'secondsAgo' | 'minutesAgo' | 'hoursAgo' | 'daysAgo'; count: number } | null {
+  const milliseconds = value < 1_000_000_000_000 ? value * 1000 : value;
+  if (!Number.isFinite(milliseconds) || milliseconds <= 0 || milliseconds > now) return null;
+  const seconds = Math.floor((now - milliseconds) / 1000);
+  if (seconds < 60) return { key: 'secondsAgo', count: seconds };
+  if (seconds < 3600) return { key: 'minutesAgo', count: Math.floor(seconds / 60) };
+  if (seconds < 86400) return { key: 'hoursAgo', count: Math.floor(seconds / 3600) };
+  return { key: 'daysAgo', count: Math.floor(seconds / 86400) };
+}

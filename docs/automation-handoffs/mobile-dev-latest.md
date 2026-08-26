@@ -1,5 +1,16 @@
 # MOBILE DEV → QA handoff
 
+## MOBILE-179 — localized live-Whale relative age
+
+- Base: `502424a`; result: containing commit.
+- Findings: 20 reconciled; completed all six safe outcomes (`MOBILE-I18N-439..442`, `MOBILE-DATA-443..444`); exact shortfall 14 (`MOBILE-QA-269..280`, `MOBILE-QA-283..284`) with external owners.
+- Changed behavior/files: shared `relativeObservedAge` normalizes seconds/milliseconds into four bounded age units and rejects malformed/nonpositive/future time; live Whale cards translate the resulting unit through EN/VI settings.
+- Acceptance evidence: TypeScript PASS; full source ESLint PASS; focused Jest PASS (2 suites/17 tests); full Jest PASS (83 suites/454 tests); public Expo config PASS.
+- Runtime scenario: feed live Whale observations at 30 seconds, 2 minutes, 3 hours, 2 days, malformed, and future time; switch EN/VI and verify exact age/fallback without changing order.
+- Known risks: physical accessibility/layout/recovery/performance, Doctor, Noble exports, and controlled provider fixtures remain external.
+- NEXT_QA_ACTION: independently classify all six IDs through the runtime scenario, then continue the blocked matrix.
+- NEXT_WEB_ACTION: none.
+
 ## MOBILE-178 — truthful localized Whale chronology
 
 - Base: `b0663ac`; result: containing commit.

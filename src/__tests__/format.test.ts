@@ -1,4 +1,4 @@
-import { compactUsd, evidenceLabel, evidenceList, observedDateTime, signedPercent, tokenPrice } from '@/lib/format';
+import { compactUsd, evidenceLabel, evidenceList, observedDateTime, relativeObservedAge, signedPercent, tokenPrice } from '@/lib/format';
 describe('formatters', () => {
   it('formats market values defensively', () => {
     expect(compactUsd(null)).toBe('—');
@@ -29,5 +29,15 @@ describe('formatters', () => {
     expect(observedDateTime(1_700_000_000, 'en', 'Unavailable')).toContain('2023');
     expect(observedDateTime(1_700_000_000_000, 'vi', 'Không có')).toContain('2023');
     expect(observedDateTime(Number.NaN, 'en', 'Unavailable')).toBe('Unavailable');
+  });
+
+  it('classifies relative observation age and rejects invalid or future timestamps', () => {
+    const now = 1_700_000_000_000;
+    expect(relativeObservedAge((now - 30_000) / 1000, now)).toEqual({ key: 'secondsAgo', count: 30 });
+    expect(relativeObservedAge(now - 120_000, now)).toEqual({ key: 'minutesAgo', count: 2 });
+    expect(relativeObservedAge(now - 10_800_000, now)).toEqual({ key: 'hoursAgo', count: 3 });
+    expect(relativeObservedAge(now - 172_800_000, now)).toEqual({ key: 'daysAgo', count: 2 });
+    expect(relativeObservedAge(Number.NaN, now)).toBeNull();
+    expect(relativeObservedAge(now + 1, now)).toBeNull();
   });
 });

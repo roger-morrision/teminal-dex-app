@@ -1731,3 +1731,16 @@ Fresh post-`b0663ac` QA/source reconciliation records 20 current findings. Five 
 - Whale flow timestamps now accept seconds/milliseconds, follow EN/VI locale, and fail closed; Whale market chips localize market cap and missing partial evidence.
 - TypeScript PASS; full source ESLint PASS; focused Jest PASS (3 suites/17 tests); full Jest PASS (83 suites/453 tests); public Expo config PASS.
 - NEXT_QA_ACTION: verify EN/VI flow timestamps and full/partial/unavailable market chips against controlled evidence. NEXT_WEB_ACTION: none.
+
+## MOBILE BA/PO review — 2026-08-26 22:21 trigger
+
+Fresh post-`502424a` QA/source reconciliation records 20 current findings. Six live-Whale age defects are MOBILE-ready with direct source evidence; fourteen carried findings retain external ownership. Ready acceptance requires seconds/milliseconds input, localized seconds/minutes/hours/days, and fail-closed malformed/future evidence.
+
+1. **MOBILE-I18N-439 READY** live seconds age is hard-coded. 2. **MOBILE-I18N-440 READY** live minutes age is hard-coded. 3. **MOBILE-I18N-441 READY** live hours age is hard-coded. 4. **MOBILE-I18N-442 READY** live days age is hard-coded. 5. **MOBILE-DATA-443 READY** malformed age can render `NaN`. 6. **MOBILE-DATA-444 READY** future observation is misleadingly clamped to now. 7–18. **MOBILE-QA-269..280 BLOCKED/CONDITIONAL** carried external matrix. 19–20. **MOBILE-QA-283..284 BLOCKED/device** Android/iOS edge traversal.
+
+### MOBILE-179 implementation result
+
+- Completed all six safe outcomes (`MOBILE-I18N-439..442`, `MOBILE-DATA-443..444`); exact shortfall 14 after exhausting the ready queue.
+- Live Whale ages now accept seconds/milliseconds, use localized seconds/minutes/hours/days strings, and show localized unavailable for malformed or future evidence.
+- TypeScript PASS; full source ESLint PASS; focused Jest PASS (2 suites/17 tests); full Jest PASS (83 suites/454 tests); public Expo config PASS.
+- NEXT_QA_ACTION: verify EN/VI live cards at all four age boundaries plus malformed/future provider time. NEXT_WEB_ACTION: none.

@@ -320,3 +320,12 @@ No in-scope automated regression was found. Generated export directories were re
 - **Safety:** formatting/presentation only; event ordering, provider values, aggregation, APIs, wallets, and transactions are unchanged.
 - **NEXT_QA_ACTION:** verify localized chronology and partial/full/unavailable market evidence using controlled fixtures.
 - **NEXT_WEB_ACTION:** none.
+
+## MOBILE-179 localized live-Whale relative age
+
+- **Implemented:** all six safe outcomes (`MOBILE-I18N-439..442`, `MOBILE-DATA-443..444`); exact shortfall 14 with external owners.
+- **Behavior:** live Whale age supports provider seconds/milliseconds, localized seconds/minutes/hours/days, and fail-closed malformed/future evidence.
+- **Verified:** TypeScript/full source ESLint PASS; focused Jest PASS (2 suites/17 tests); full Jest PASS (83 suites/454 tests); public Expo config PASS.
+- **Safety:** presentation only; event ordering, polling, provider records, APIs, wallets, and transactions are unchanged.
+- **NEXT_QA_ACTION:** traverse all age boundaries and malformed/future cases in EN/VI.
+- **NEXT_WEB_ACTION:** none.

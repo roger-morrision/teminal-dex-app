@@ -48,3 +48,15 @@ export function evidenceList(
     .filter((value, index, all) => all.indexOf(value) === index);
   return normalized.length ? normalized.join(separator) : fallback;
 }
+
+export function observedDateTime(
+  value: number,
+  language: 'en' | 'vi',
+  fallback: string,
+): string {
+  const milliseconds = value < 1_000_000_000_000 ? value * 1000 : value;
+  if (!Number.isFinite(milliseconds)) return fallback;
+  const date = new Date(milliseconds);
+  if (!Number.isFinite(date.getTime())) return fallback;
+  return date.toLocaleString(language === 'vi' ? 'vi-VN' : 'en-US');
+}

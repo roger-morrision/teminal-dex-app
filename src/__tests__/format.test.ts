@@ -1,4 +1,4 @@
-import { compactUsd, evidenceLabel, evidenceList, signedPercent, tokenPrice } from '@/lib/format';
+import { compactUsd, evidenceLabel, evidenceList, observedDateTime, signedPercent, tokenPrice } from '@/lib/format';
 describe('formatters', () => {
   it('formats market values defensively', () => {
     expect(compactUsd(null)).toBe('—');
@@ -23,5 +23,11 @@ describe('formatters', () => {
   it('normalizes provider lists and removes blank duplicate evidence', () => {
     expect(evidenceList([' raydium ', '', 'raydium', 'orca'], ' + ', 'none')).toBe('raydium + orca');
     expect(evidenceList([' ', null], ', ', 'none')).toBe('none');
+  });
+
+  it('formats observed seconds or milliseconds with the selected locale and rejects invalid evidence', () => {
+    expect(observedDateTime(1_700_000_000, 'en', 'Unavailable')).toContain('2023');
+    expect(observedDateTime(1_700_000_000_000, 'vi', 'Không có')).toContain('2023');
+    expect(observedDateTime(Number.NaN, 'en', 'Unavailable')).toBe('Unavailable');
   });
 });

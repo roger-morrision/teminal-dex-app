@@ -1718,3 +1718,16 @@ Fresh post-`03b342a` QA/source reconciliation records 20 current findings. Four 
 - Discover market-cap shorthand is localized; its metric group announces price, market cap, selected period, and a truthful percentage or unavailable value while retaining the compact second-row UI.
 - TypeScript PASS; full source ESLint PASS; focused TokenRow Jest PASS (1 suite/12 tests); full Jest PASS (83 suites/452 tests); public Expo config PASS.
 - NEXT_QA_ACTION: traverse 1h/6h/24h with positive, negative, and absent change in EN/VI using visual and screen-reader checks. NEXT_WEB_ACTION: none.
+
+## MOBILE BA/PO review — 2026-08-26 21:20 trigger
+
+Fresh post-`b0663ac` QA/source reconciliation records 20 current findings. Five Whale-flow evidence defects are MOBILE-ready; fifteen carried findings require device/network/toolchain/upstream/provider ownership. Ready acceptance requires locale-aware seconds/milliseconds timestamps, fail-closed invalid time, localized market-cap text, and localized partial market gaps without changing provider values.
+
+1. **MOBILE-I18N-434 READY** whale-flow observation timestamp ignores selected language. 2. **MOBILE-DATA-435 READY** malformed timestamp can render `Invalid Date`. 3. **MOBILE-I18N-436 READY** Whale market-cap chip uses hard-coded `MC`. 4. **MOBILE-DATA-437 READY** missing price in a partial market snapshot uses an ambiguous dash. 5. **MOBILE-DATA-438 READY** missing market-cap/change in a partial snapshot use ambiguous dashes. 6–17. **MOBILE-QA-269..280 BLOCKED/CONDITIONAL** carried external matrix. 18–20. **MOBILE-QA-283..285 BLOCKED/device** edge traversal and Android large-text whale rows.
+
+### MOBILE-178 implementation result
+
+- Completed all five safe outcomes (`MOBILE-I18N-434`, `MOBILE-DATA-435..438`); exact shortfall 15 after exhausting the ready queue.
+- Whale flow timestamps now accept seconds/milliseconds, follow EN/VI locale, and fail closed; Whale market chips localize market cap and missing partial evidence.
+- TypeScript PASS; full source ESLint PASS; focused Jest PASS (3 suites/17 tests); full Jest PASS (83 suites/453 tests); public Expo config PASS.
+- NEXT_QA_ACTION: verify EN/VI flow timestamps and full/partial/unavailable market chips against controlled evidence. NEXT_WEB_ACTION: none.

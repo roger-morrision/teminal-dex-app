@@ -311,3 +311,12 @@ No in-scope automated regression was found. Generated export directories were re
 - **Safety:** display/accessibility only; provider values, calculations, APIs, wallets, navigation, and transactions are unchanged.
 - **NEXT_QA_ACTION:** verify all three periods and positive/negative/missing values visually and with assistive technology in EN/VI.
 - **NEXT_WEB_ACTION:** none.
+
+## MOBILE-178 truthful localized Whale chronology
+
+- **Implemented:** all five safe outcomes (`MOBILE-I18N-434`, `MOBILE-DATA-435..438`); exact shortfall 15 with external owners.
+- **Behavior:** Whale flow observations format seconds/milliseconds with EN/VI locale and invalid-time fallback; market chips localize market cap and partial unavailable values.
+- **Verified:** TypeScript/full source ESLint PASS; focused Jest PASS (3 suites/17 tests); full Jest PASS (83 suites/453 tests); public Expo config PASS.
+- **Safety:** formatting/presentation only; event ordering, provider values, aggregation, APIs, wallets, and transactions are unchanged.
+- **NEXT_QA_ACTION:** verify localized chronology and partial/full/unavailable market evidence using controlled fixtures.
+- **NEXT_WEB_ACTION:** none.

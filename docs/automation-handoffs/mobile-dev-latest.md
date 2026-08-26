@@ -1,5 +1,16 @@
 # MOBILE DEV → QA handoff
 
+## MOBILE-178 — truthful localized Whale chronology
+
+- Base: `b0663ac`; result: containing commit.
+- Findings: 20 reconciled; completed all five safe outcomes (`MOBILE-I18N-434`, `MOBILE-DATA-435..438`); exact shortfall 15 (`MOBILE-QA-269..280`, `MOBILE-QA-283..285`) with external owners.
+- Changed behavior/files: shared `observedDateTime` handles provider seconds/milliseconds, EN/VI locale, and invalid fallback; Whale flow uses it; Whale market snapshots localize market-cap shorthand and missing partial values.
+- Acceptance evidence: TypeScript PASS; full source ESLint PASS; focused Jest PASS (3 suites/17 tests); full Jest PASS (83 suites/453 tests); public Expo config PASS.
+- Runtime scenario: switch EN/VI on accumulating/distributing Whale views; inspect valid seconds/milliseconds and malformed observation times; exercise full, partial, and absent market snapshots.
+- Known risks: physical accessibility/layout/recovery/performance, Doctor, Noble exports, and controlled provider fixtures remain external.
+- NEXT_QA_ACTION: independently classify all five IDs using the runtime scenario, then continue the blocked matrix.
+- NEXT_WEB_ACTION: none.
+
 ## MOBILE-177 — localized Discover market metrics
 
 - Base: `03b342a`; result: containing commit.

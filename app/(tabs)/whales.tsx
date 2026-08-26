@@ -6,7 +6,7 @@ import { Pressable, RefreshControl, ScrollView, StyleSheet, Text, TextInput, Vie
 import { SafeAreaView } from "react-native-safe-area-context";
 import { fetchTopTraders, fetchTrackFeed } from "@/api/client";
 import type { TopTrader, TrackNotification } from "@/api/schema";
-import { compactUsd, evidenceLabel, signedPercent, tokenPrice } from "@/lib/format";
+import { compactUsd, evidenceLabel, observedDateTime, signedPercent, tokenPrice } from "@/lib/format";
 import { aggregateWhaleActivity, filterWhaleEvents, filterWhaleFlows, filterWhaleWalletRankings, isWhaleActivity, whaleAmountContext, whaleHoldingIdentity, type WhaleEventDirection, type WhaleEventSort, type WhaleFlow } from "@/lib/whale-activity";
 import { useSettings } from "@/settings/SettingsProvider";
 import { defaultWhaleWatchPreferences, loadWhaleWatchPreferences, saveWhaleWatchPreferences, type WhaleWatchMode } from "@/store/whale-watch";
@@ -120,19 +120,19 @@ export function WhaleFeedUnavailable({ reason, onWallets }: { reason?: string; o
 
 function MarketSnapshot({ item, compact = false }: { item: TrackNotification; compact?: boolean }) {
   const { t } = useSettings();
-  const price = item.market.priceUsd == null ? "—" : tokenPrice(item.market.priceUsd);
-  const marketCap = compactUsd(item.market.marketCap);
-  const change = item.market.change1h == null ? "—" : signedPercent(item.market.change1h);
+  const price = item.market.priceUsd == null ? t("unavailable") : tokenPrice(item.market.priceUsd);
+  const marketCap = item.market.marketCap == null ? t("unavailable") : compactUsd(item.market.marketCap);
+  const change = item.market.change1h == null ? t("unavailable") : signedPercent(item.market.change1h);
   const positive = (item.market.change1h ?? 0) >= 0;
   const chip = { paddingHorizontal: compact ? 5 : 7, paddingVertical: 3, borderRadius: 6 } as const;
   const unavailable = item.market.priceUsd == null && item.market.marketCap == null && item.market.change1h == null;
-  return <View accessible accessibilityLabel={t("whaleMarketSnapshot", { price, marketCap, change })} style={{ flexDirection: "row", flexWrap: "wrap", alignItems: "center", gap: compact ? 4 : 6, marginTop: compact ? 5 : 7 }}>{unavailable ? <Text style={[chip, { color: colors.muted, backgroundColor: colors.surfaceRaised, fontSize: 7, fontWeight: "800" }]}>{t("marketUnavailable")}</Text> : <><Text style={[chip, { color: colors.cyan, backgroundColor: colors.cyanDim, fontSize: 7, fontWeight: "800" }]}>{t("tokenPriceShort")} {price}</Text><Text style={[chip, { color: colors.violet, backgroundColor: colors.violetDim, fontSize: 7, fontWeight: "800" }]}>MC {marketCap}</Text><Text style={[chip, { color: positive ? colors.positive : colors.negative, backgroundColor: positive ? colors.accentDim : "#3a1820", fontSize: 7, fontWeight: "900" }]}>1h {change}</Text></>}</View>;
+  return <View accessible accessibilityLabel={t("whaleMarketSnapshot", { price, marketCap, change })} style={{ flexDirection: "row", flexWrap: "wrap", alignItems: "center", gap: compact ? 4 : 6, marginTop: compact ? 5 : 7 }}>{unavailable ? <Text style={[chip, { color: colors.muted, backgroundColor: colors.surfaceRaised, fontSize: 7, fontWeight: "800" }]}>{t("marketUnavailable")}</Text> : <><Text style={[chip, { color: colors.cyan, backgroundColor: colors.cyanDim, fontSize: 7, fontWeight: "800" }]}>{t("tokenPriceShort")} {price}</Text><Text style={[chip, { color: colors.violet, backgroundColor: colors.violetDim, fontSize: 7, fontWeight: "800" }]}>{t("tokenMarketCapShort", { marketCap })}</Text><Text style={[chip, { color: positive ? colors.positive : colors.negative, backgroundColor: positive ? colors.accentDim : "#3a1820", fontSize: 7, fontWeight: "900" }]}>1h {change}</Text></>}</View>;
 }
 
 function FlowList({ rows, onOpen }: { rows: WhaleFlow[]; onOpen: (address: string) => void }) {
-  const { t } = useSettings();
+  const { t, language } = useSettings();
   if (!rows.length) return <State text={t("noWhaleFlow")} />;
-  return <View>{rows.map((item, index) => <Pressable key={item.tokenAddress} accessibilityRole="button" accessibilityLabel={t("openWhaleFlow", { symbol: item.tokenSymbol })} onPress={() => onOpen(item.tokenAddress)} style={styles.flowCard}><View style={styles.row}><View style={styles.rankMini}><Text style={styles.rankMiniText}>{index + 1}</Text></View><View style={styles.flex}><Text style={styles.cardTitle}>{item.tokenSymbol}</Text><Text style={styles.meta}>{t("whaleRank", { rank: index + 1 })}</Text></View><Text style={[styles.amount, { color: item.netUsd >= 0 ? colors.positive : colors.negative }]}>{item.netUsd >= 0 ? "+" : ""}{compactUsd(item.netUsd)}</Text></View><View style={styles.metrics}><Metric label={t("whaleBuys")} value={`${item.buys} · ${compactUsd(item.buyUsd)}`} /><Metric label={t("whaleSells")} value={`${item.sells} · ${compactUsd(item.sellUsd)}`} /><Metric label={t("uniqueWallets")} value={String(item.uniqueWallets)} /></View><Text style={styles.evidence}>{t("lastObserved")}: {new Date(item.latestObservedAt).toLocaleString()}</Text></Pressable>)}</View>;
+  return <View>{rows.map((item, index) => <Pressable key={item.tokenAddress} accessibilityRole="button" accessibilityLabel={t("openWhaleFlow", { symbol: item.tokenSymbol })} onPress={() => onOpen(item.tokenAddress)} style={styles.flowCard}><View style={styles.row}><View style={styles.rankMini}><Text style={styles.rankMiniText}>{index + 1}</Text></View><View style={styles.flex}><Text style={styles.cardTitle}>{item.tokenSymbol}</Text><Text style={styles.meta}>{t("whaleRank", { rank: index + 1 })}</Text></View><Text style={[styles.amount, { color: item.netUsd >= 0 ? colors.positive : colors.negative }]}>{item.netUsd >= 0 ? "+" : ""}{compactUsd(item.netUsd)}</Text></View><View style={styles.metrics}><Metric label={t("whaleBuys")} value={`${item.buys} · ${compactUsd(item.buyUsd)}`} /><Metric label={t("whaleSells")} value={`${item.sells} · ${compactUsd(item.sellUsd)}`} /><Metric label={t("uniqueWallets")} value={String(item.uniqueWallets)} /></View><Text style={styles.evidence}>{t("lastObserved")}: {observedDateTime(item.latestObservedAt, language, t("unavailable"))}</Text></Pressable>)}</View>;
 }
 
 function WalletRankings({ rows, hasEvidence, loading, refreshing, error, onRetry, onOpenAll, onOpen }: { rows: TopTrader[]; hasEvidence: boolean; loading: boolean; refreshing: boolean; error: boolean; onRetry: () => void; onOpenAll: () => void; onOpen: (address: string) => void }) {

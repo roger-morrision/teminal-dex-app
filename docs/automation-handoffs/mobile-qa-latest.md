@@ -1,60 +1,57 @@
-# MOBILE-QA — MOBILE-156 warning-free SnipeCard settlement
+# MOBILE-QA — MOBILE-157 Noble/Metro compatibility guard
 
-- Run (UTC): `2026-08-25T23:54:37Z`.
-- Scope: canonical `C:\Tuan\devApps\teminal-dex-app` only. CWD and Git top-level resolve to that workspace. `AGENTS.md`, the DEV handoff, requirements checklist, worklog, final audit, prior QA handoff, package scripts, public Expo config, Git history, and status were inspected. No WEB workspace, backend, signing, submission, trading, CopyTrade activation, secrets, or production state was accessed or changed.
-- Inspected immutable DEV result: `4721a17737a1ff1aa182119b3b063cced1911fe0` (`test(research): await SnipeCard evidence settlement`), MOBILE-156; base `a0ae4da`. The result changes two asynchronous test teardowns plus evidence documents; product and configuration code are unchanged. The primary worktree has a separate uncommitted Whales/token-logo slice (six tracked paths and four untracked handoff/component paths); it was preserved and excluded from immutable certification.
-- Isolation/environment: clean archive of the pinned SHA at `%LOCALAPPDATA%\Temp\mobile-qa-ab155e31-1527-449f-8728-0e138393561c`, Windows 10.0.26100, bundled Node 24.19.0, and root-local package executables. The isolated source was linked read-only to the existing dependency directory. All exports wrote only under that temporary location.
+- Run (UTC): `2026-08-26T00:49:04Z`.
+- Scope and provenance: canonical `C:\Tuan\devApps\teminal-dex-app` only. CWD and Git top-level were both resolved to that canonical MOBILE workspace before inspection. `AGENTS.md`, the DEV handoff, requirements, worklog, final audit, prior QA report, package scripts, Git history/status, current public Expo config, and the runtime/build lanes were inspected. No WEB workspace, backend, signing, submission, trading, CopyTrade activation, secrets, production data, or external production state was accessed or changed.
+- Inspected immutable DEV result: `4ae320373c09f7740e9969095e211d3bec1c517b` (`test(build): guard Noble Metro fallback`), MOBILE-157; base `8d8971d`. It adds five compatibility regressions in `src/__tests__/noble-bundle-compatibility.test.ts` and evidence documentation only. Product/runtime/configuration code is unchanged.
+- Scope stability: the primary worktree still has the separate uncommitted Whales/token-logo slice (`.gitignore`, Whale/TokenRow/TokenAvatar sources and four handoffs/component files). It was preserved and excluded. A detached clean worktree at `%LOCALAPPDATA%\Temp\mobile-qa-157-stable` pinned exactly `4ae3203`; it linked only the already-installed dependency tree. HEAD and the primary dirty-path inventory were unchanged immediately before this report was written.
+- Environment/device: Windows `10.0.26100`; bundled Node `24.19.0`; local Android Platform Tools `37.0.1-15733141`. `adb devices -l` completed successfully but reported no attached/emulated device. No screenshot/log artifact was retained because no exact-build UI session was available.
 
 ## Acceptance result
 
-| MOBILE-156 acceptance criterion | Result | Independent evidence |
+| MOBILE-157 acceptance criterion | Result | Independent evidence |
 | --- | --- | --- |
-| Initial SnipeCard research/removal query settles before teardown | PASS | Focused `SnipeCard.test.tsx` exits 0; the research/open and remove boundary passes after the new `waitFor(fetchTokenDetail)` settlement. |
-| Initial SnipeCard visual-threshold query settles before teardown | PASS | Focused test exits 0; positive threshold persistence passes after the new settlement wait. |
-| Focused suite is warning-free | PASS | Focused result is 1 suite / 3 tests; final immutable full-result stdout/stderr contains no `act(`, overlapping-act, or warning match. |
-| Immutable full regression remains 80 suites / 395 tests | PASS | JSON result reports 80/80 suites and 395/395 tests, zero failed tests, `wasInterrupted: false`. |
-| TypeScript release gate | PASS | `tsc --noEmit` exits 0. |
-| Source ESLint release gate | PASS | `eslint app src` exits 0 with no findings. |
-| Public platform/security configuration remains valid | PASS | Expo public config exits 0; `terminaldex` scheme, Android VIEW intent and biometric permissions, and iOS ATS arbitrary-load denial are present. |
-| Android/iOS/web bundle compilation | PASS with carried warning | Android exports 1 Hermes bundle/46 assets (48 files); iOS exports 1 Hermes bundle/23 assets (25 files); web exports 1 Metro JS bundle (20 files). Android still emits the non-fatal Noble exports-map fallback. |
-| Exact-build Android startup, navigation, accessibility, large text, offline/retry | BLOCKED | `adb.exe devices -l` produced no output before the 30-second bounded command timeout. A targetable API 37 emulator window exists but exposed no accessibility text and only a non-app wallpaper observation; it cannot prove the pinned bundle or any UI flow. |
+| Exact nested Curves/Hashes audited pair | PASS | Focused test independently confirms Curves `1.9.7`, its exact Hashes `1.8.0` dependency, and nested Hashes `1.8.0`. |
+| Strict-export mismatch is explicit | PASS | Focused test confirms `./crypto` is exported while `./crypto.js` is not; Android export reproduces the bounded warning rather than hiding it. |
+| CommonJS fallback remains present | PASS | Focused test confirms nested `@noble/hashes/crypto.js` exists. |
+| ESM fallback remains present | PASS | Focused test confirms nested `@noble/hashes/esm/crypto.js` exists. |
+| No silent root cryptography override | PASS | Focused test confirms root lockfile overrides for Curves and Hashes are absent. |
+| Focused compatibility gate | PASS | `noble-bundle-compatibility.test.ts`: 1 suite / 5 tests, exit 0. |
+| TypeScript and source ESLint | PASS | `tsc --noEmit` and `eslint app src` both exit 0 with no findings. |
+| Immutable full regression gate | PASS | JSON result: 81/81 suites and 400/400 tests passed, zero failures, `wasInterrupted: false`. This matches the DEV’s immutable expectation and excludes the uncommitted TokenRow slice. |
+| Public platform configuration | PASS | Expo public config exits 0 with `terminaldex`, Android `app.terminaldex.mobile`, and iOS `app.terminaldex.mobile`. |
+| Android/iOS/web compilation | PASS with known warning | Android: 1 Hermes bundle/46 assets (48 files), iOS: 1 Hermes bundle/23 assets (25 files), web: 1 Metro JS bundle (20 files). Android alone emits the known Noble `./crypto.js` exports-map warning and completes via file-based fallback. |
+| Expo Doctor lane | BLOCKED | `node_modules/expo-doctor/build/index.js` is absent; no substitute diagnostic was claimed. |
+| Exact-build Android navigation, TalkBack, large text, offline/retry/partial recovery | BLOCKED | ADB is installed and responsive, but device discovery lists no target. No UI, accessibility, navigation, empty/stale/offline/error/retry, or runtime-marker evidence is fabricated. |
 
 ## Findings and reconciliation
 
-| MOBILE-QA finding | Status | Evidence / affected files / exact NEXT_DEV_ACTION |
+| MOBILE-QA finding | Status / priority | Evidence, affected files, regression risk, and exact NEXT_DEV_ACTION |
 | --- | --- | --- |
-| MOBILE-QA-156-01: research/removal async settlement | PASS / P2 | Affected `src/__tests__/SnipeCard.test.tsx`. The first changed case now completes its initial token-detail query before teardown and retains distinct research/remove behavior. NEXT_DEV_ACTION: none. |
-| MOBILE-QA-156-02: threshold async settlement | PASS / P2 | Affected `src/__tests__/SnipeCard.test.tsx`. The changed threshold case persists `2.5` then completes its initial token-detail query before teardown. NEXT_DEV_ACTION: none. |
-| MOBILE-QA-156-03: failed token-evidence recovery regression | PASS / P2 | The focused third case still reaches retry after a failed first request and resolves on the second request. Regression risk: low; product code is unchanged. NEXT_DEV_ACTION: none. |
-| MOBILE-QA-154-01 through MOBILE-QA-154-15: primary-route Pressable semantics | PASS | Fifteen distinct parameterized route assertions remain included in the clean 395-test result. NEXT_DEV_ACTION: none. |
-| MOBILE-QA-154-16 through MOBILE-QA-154-30: primary-route TextInput labels | PASS | Fifteen distinct parameterized input-label assertions remain included in the clean result. NEXT_DEV_ACTION: none. |
-| MOBILE-QA-154-31: scalable Whale tab rail | PASS | The accessibility regression remains green in the immutable full gate. NEXT_DEV_ACTION: none. |
-| MOBILE-QA-154-32 through MOBILE-QA-154-34: Discover/Trenches/Portfolio private read errors | PASS | Three independently tested public-error boundaries remain green. NEXT_DEV_ACTION: none. |
-| MOBILE-QA-154-35: Monitor creation-form immutability | PASS | Pending-state control locking remains green. NEXT_DEV_ACTION: none. |
-| MOBILE-QA-154-36 through MOBILE-QA-154-41: auxiliary private-error boundaries | PASS | Six independently tested redaction/recovery boundaries remain green. NEXT_DEV_ACTION: none. |
-| MOBILE-QA-154-42: CopyTrade pending-form immutability | PASS | Pending-state control locking remains green. NEXT_DEV_ACTION: none. |
-| MOBILE-QA-007: semantic ordering assertions | RESOLVED / P1 | Current immutable full gate remains clean at 80/395. NEXT_DEV_ACTION: none. |
-| MOBILE-QA-009: immutable full-test count variance | RESOLVED / P3 | MOBILE-156 confirms the immutable count remains 80/395; the excluded concurrent TokenRow slice is not part of this result. NEXT_DEV_ACTION: preserve attribution until that slice has its own DEV handoff. |
-| MOBILE-QA-002: exact immutable Android marker, navigation, large text, TalkBack, recovery | BLOCKED / P2 (carried) | Android SDK 37.0.1 is installed, but device discovery did not respond. No runtime, navigation, offline, stale, empty, filtered-empty, error, retry, partial-page recovery, TalkBack, or large-text claim is made. NEXT_DEV_ACTION: restore responsive ADB access to API 37 or provide a physical Android development build, launch the exact verified bundle, capture `[MOBILE_BUILD] commit=4721a177…`, then exercise the listed flows. |
-| MOBILE-QA-004: Noble hashes exports-map fallback | OPEN / P3 (carried) | Android export completes but warns that `@noble/hashes` does not export `./crypto.js`; Metro falls back to file-based resolution. NEXT_DEV_ACTION: resolve or formally accept this dependency warning in an immutable build-focused MOBILE slice. |
-| MOBILE-QA-008: Expo Doctor availability | BLOCKED / P3 (carried) | `node_modules/expo-doctor/build/index.js` is absent. NEXT_DEV_ACTION: restore a locally executable Doctor diagnostic lane without rewriting historical release evidence. |
-| MOBILE-QA-010: verified-launcher from clean isolated checkout | SKIP / P3 (carried) | The archive isolation intentionally lacks `.git`, so `dev:verified` cannot bind a launcher to HEAD; it was not used as runtime proof. NEXT_DEV_ACTION: use a clean Git worktree with locally installed dependencies after the concurrent slice is isolated. |
+| MOBILE-QA-157-01 nested version pin | PASS / P3 | `src/__tests__/noble-bundle-compatibility.test.ts`; the explicitly audited nested pair is locked. Risk: dependency drift. NEXT_DEV_ACTION: retain the guard and review any lockfile version change. |
+| MOBILE-QA-157-02 strict exports boundary | PASS / P3 | Same test plus Android export warning. Risk: Metro behavior may change under a package/toolchain upgrade. NEXT_DEV_ACTION: preserve the warning as release evidence; do not suppress it through resolver overrides. |
+| MOBILE-QA-157-03 CommonJS fallback file | PASS / P3 | Focused guard confirms `crypto.js`. Risk: package-layout removal. NEXT_DEV_ACTION: fail the build review if the file disappears; obtain an upstream supported export before removing the guard. |
+| MOBILE-QA-157-04 ESM fallback file | PASS / P3 | Focused guard confirms `esm/crypto.js`. Risk: package-layout removal. NEXT_DEV_ACTION: same as MOBILE-QA-157-03. |
+| MOBILE-QA-157-05 root override prohibition | PASS / P2 | Focused guard rejects silent root Curves/Hashes override. Risk: a future override could alter wallet cryptography transitively. NEXT_DEV_ACTION: require a separately reviewed MOBILE security/compatibility change for any override. |
+| MOBILE-QA-004 Noble exports-map fallback | CONDITIONALLY ACCEPTED / P3 | All five compatibility assumptions and Android/iOS/web bundle gates pass; Android still prints the precise `./crypto.js` strict-exports fallback warning. This is not a clean upstream fix. NEXT_DEV_ACTION: track the upstream export-map fix and retest against any Expo/Metro, wallet-standard-util, or Noble upgrade. |
+| MOBILE-QA-002 immutable Android runtime/accessibility | BLOCKED / P2 | `adb devices -l` returned only `List of devices attached`. Affected evidence lane: all relevant mobile screens and recovery states. NEXT_DEV_ACTION: attach/start API 37 or a physical development device, launch the exact verified SHA, capture the bounded build marker, then exercise navigation, large text, TalkBack, loading/stale/empty/filtered-empty/offline/error/retry/partial-page recovery. |
+| MOBILE-QA-008 Expo Doctor availability | BLOCKED / P3 | Doctor entrypoint is absent locally. NEXT_DEV_ACTION: restore a repository-local executable Doctor diagnostic lane without changing historical evidence or relying on a global install. |
+| MOBILE-QA-010 clean-worktree launcher evidence | OPEN / P3 | A clean pinned Git worktree is now available; this run used exports, not a persistent verified Metro/device session. NEXT_DEV_ACTION: when a device is attached, use `npm run dev:verified` from a clean worktree and correlate the exact mount marker before runtime certification. |
 
 ## Commands and safe evidence
 
-- `git diff --check a0ae4da 4721a17` and source diff — PASS; only two `waitFor(fetchTokenDetail)` additions in the test plus evidence documents.
-- `node .../typescript/bin/tsc --noEmit` — PASS, exit 0.
-- `node .../eslint/bin/eslint.js app src` — PASS, exit 0/no findings.
-- `node .../jest/bin/jest.js --runInBand src/__tests__/SnipeCard.test.tsx` — PASS, 1 suite / 3 tests.
-- `node .../jest/bin/jest.js --runInBand --silent --json` — PASS, 80 suites / 395 tests; JSON confirms zero failures and no interruption. Safe stdout/stderr scan found no React `act` or overlapping-act warning.
+- `git diff --check 8d8971d 4ae3203` — PASS; only the compatibility regression and documentation increment are present.
+- `node .../jest/bin/jest.js --runInBand src/__tests__/noble-bundle-compatibility.test.ts` — PASS, 5/5.
+- `node .../typescript/bin/tsc --noEmit` — PASS.
+- `node .../eslint/bin/eslint.js app src` — PASS, no findings.
+- `node .../jest/bin/jest.js --runInBand --silent --json --outputFile jest-results.json` — PASS, immutable 81 suites / 400 tests, zero failures and no interruption.
 - `node .../expo/bin/cli config --type public --json` — PASS.
-- `node .../expo/bin/cli export --platform android|ios|web --output-dir <temporary>` — PASS. Android warning retained as `MOBILE-QA-004`; no generated output was placed in the repository.
-- `adb.exe version` — PASS (37.0.1-15733141); `adb.exe devices -l` — BLOCKED after 30 seconds with no output. The API 37 emulator window was observable but not testable; no screenshot was retained.
+- `node .../expo/bin/cli export --platform android|ios|web --output-dir <temporary>` — PASS; generated output stayed only in the clean temporary worktree. Android warning is retained under MOBILE-QA-004.
+- `adb.exe version` — PASS; `adb.exe devices -l` — PASS command / BLOCKED device evidence (no listed target).
 
 ## Throughput and release recommendation
 
-- Findings inspected/reconciled: 69 distinct carried accessibility/privacy/control assertions (MOBILE-QA-154-01 through -42 plus resolved IDs) and three SnipeCard behavioral checks, backed by the clean 395-test immutable result; five independent release/config/export gates and four carried diagnostics were also reconciled. The 20 explicitly named MOBILE-QA-156/MOBILE-QA-154 checks are distinct behavioral or semantic boundaries, not command counts or viewport variants.
-- Current DEV outcomes available: 2 material asynchronous-settlement outcomes. Outcomes independently verified: 2 PASS; FAIL: 0; BLOCKED: 0; SKIP/NOT_APPLICABLE: 0. Required-20 shortfall: 18 material DEV outcomes unavailable in this test-only delta.
-- Carry-forward order: (1) `MOBILE-QA-002` responsive Android/physical-device certification, (2) immutable QA of the separate Whales/token-logo slice after its DEV commit and handoff, (3) `MOBILE-QA-004` dependency-warning disposition, (4) `MOBILE-QA-008` Expo Doctor lane, then (5) `MOBILE-QA-010` clean-worktree launcher evidence.
+- Findings independently inspected/reconciled this run: five distinct new MOBILE-157 compatibility outcomes, plus four carried release-evidence blockers/statuses. No generic command, duplicate viewport, or cosmetic split was counted as an additional DEV outcome.
+- Current DEV outcomes available: 5. Independently verified: 5 PASS; FAIL: 0; BLOCKED within DEV acceptance: 0; SKIP/NOT_APPLICABLE: 0. Required-20 shortfall: **15**, because this narrow test-only DEV delta contains only five material compatibility outcomes. The independent regression/build lanes were exhausted without padding.
+- Carry-forward order: (1) MOBILE-QA-002 exact-build Android/physical-device certification, (2) immutable QA of the still-uncommitted Whales/token-logo slice after its own DEV commit and handoff, (3) upstream resolution/re-review of MOBILE-QA-004, (4) MOBILE-QA-008 Doctor lane, then (5) MOBILE-QA-010 verified-launcher runtime evidence.
 
-**MOBILE-QA automated GO for MOBILE-156’s test-settlement increment; overall release remains CONDITIONAL NO-GO.** The repaired asynchronous test evidence is green, but exact-build Android runtime/accessibility and the carried diagnostic lanes remain unresolved. No product code, tests, configuration, WEB files, or external state was modified.
+**MOBILE-QA conditional GO for MOBILE-157 only. Overall mobile release remains CONDITIONAL NO-GO:** the bounded Noble compatibility contract is independently green, but no device is attached for exact-build runtime/accessibility certification and Expo Doctor remains unavailable. No product code, test, configuration, WEB file, or external state was modified.

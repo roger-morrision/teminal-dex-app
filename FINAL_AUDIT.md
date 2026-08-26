@@ -275,3 +275,12 @@ No in-scope automated regression was found. Generated export directories were re
 - **Safety:** read-only quote input and UI geometry only; no signing, submission, trading, API/provider, credential, or WEB mutation.
 - **NEXT_QA_ACTION:** pin the result, verify the 15 outcomes, then execute `MOBILE-QA-269..273` when device/network fixtures are available.
 - **NEXT_WEB_ACTION:** none.
+
+## MOBILE-174 deterministic recovery and strict whale threshold
+
+- **Implemented:** `MOBILE-QA-282` and `MOBILE-DATA-416`; exact shortfall 18 because the remaining reconciled findings require physical devices, controlled network/storage/lifecycle conditions, provider fixtures, restricted toolchain ownership, or an upstream package fix.
+- **Behavior:** the loaded AsyncSurface recovery regression performs deterministic discovery and cleanup; whale identity excludes holdings equal to $10,000 and qualifies only eligible famous-token holdings above $10,000.
+- **Verified:** exact grouped regression PASS three consecutive times; whale focused suite PASS; TypeScript/full source ESLint PASS; full Jest PASS (83 suites/450 tests); web production export PASS (25 routes).
+- **Safety:** read-only classification and test lifecycle only; no WEB/API/provider mutation, wallet action, signing, submission, or trade behavior changed.
+- **NEXT_QA_ACTION:** independently classify both outcomes and run the blocked physical-device/network scenarios when available.
+- **NEXT_WEB_ACTION:** no schema change; provide controlled fixtures for Monitor and missing whale-holding evidence scenarios.

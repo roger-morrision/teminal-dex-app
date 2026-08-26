@@ -134,9 +134,8 @@ describe("one-off asynchronous surfaces", () => {
       </QueryClientProvider>,
     );
 
-    await fireEvent.press(
-      screen.getByLabelText("Disconnect and clear local data"),
-    );
+    const reset = await screen.findByLabelText("Disconnect and clear local data", {}, { timeout: 10_000 });
+    await fireEvent.press(reset);
     const buttons = jest.mocked(Alert.alert).mock.calls[0]?.[2];
     const destructive = buttons?.find(
       (button) => button.style === "destructive",
@@ -150,5 +149,9 @@ describe("one-off asynchronous surfaces", () => {
       screen.getByLabelText("Disconnect and clear local data").props
         .accessibilityState,
     ).toEqual({ disabled: false, busy: false });
-  });
+    await act(async () => {
+      screen.unmount();
+      client.clear();
+    });
+  }, 15_000);
 });

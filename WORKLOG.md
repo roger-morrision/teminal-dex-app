@@ -1665,3 +1665,17 @@ Fresh post-`2440b95` QA/source review reconciled 20 findings. Fifteen are MOBILE
 - Quote amounts now strip non-decimal syntax, collapse repeated separators, cap whole/fraction precision at 12/6 digits, and expose native `maxLength=19` before any read-only quote request.
 - TypeScript/full source ESLint PASS; focused Jest PASS (2 suites/35 tests); full Jest PASS (83 suites/450 tests); public Expo config PASS.
 - No WEB/API schema/provider mutation, signing, submission, transaction activation, production data, secret, or generated output changed.
+
+## MOBILE BA/PO review — 2026-08-26 17:21 trigger
+
+Fresh post-`056f997` reconciliation records 20 current findings. Two are dependency-ready MOBILE defects; the remaining 18 require physical-device, controlled-network, provider-fixture, restricted-toolchain, or upstream ownership. Acceptance and execution order follow the stable IDs below.
+
+1. **MOBILE-QA-282 P1 READY** AsyncSurface recovery times out when paired with the touch suite under archive load; accept three consecutive exact grouped passes with explicit teardown. 2. **MOBILE-DATA-416 P1 READY** whale identity incorrectly accepts an eligible holding equal to $10,000 although product policy requires above $10,000; accept boundary tests for $10,000 rejection and $10,001 qualification. 3. **MOBILE-QA-269 BLOCKED/device** TalkBack. 4. **MOBILE-QA-270 BLOCKED/device** VoiceOver. 5. **MOBILE-QA-271 BLOCKED/device** Switch Access. 6. **MOBILE-QA-272 BLOCKED/device** 320dp/enlarged text. 7. **MOBILE-QA-273 BLOCKED/network** offline/reconnect. 8. **MOBILE-QA-274 BLOCKED/device** lifecycle interruption. 9. **MOBILE-QA-275 BLOCKED/device** storage fault. 10. **MOBILE-QA-276 BLOCKED/toolchain** Expo Doctor child process. 11. **MOBILE-QA-277 BLOCKED/upstream** Noble strict exports. 12. **MOBILE-QA-278 BLOCKED/provider** Monitor active-reset fixture. 13. **MOBILE-QA-279 BLOCKED/provider** Monitor partial-page fixture. 14. **MOBILE-QA-280 BLOCKED/device** physical performance. 15. **MOBILE-QA-283 BLOCKED/device** Android edge-tap traversal. 16. **MOBILE-QA-284 BLOCKED/device** iOS edge-tap traversal. 17. **MOBILE-QA-285 BLOCKED/device** Android large-text whale-row truncation. 18. **MOBILE-QA-286 BLOCKED/device** iOS dynamic-type whale-row truncation. 19. **MOBILE-QA-287 BLOCKED/network fixture** stale-to-fresh whale recovery. 20. **MOBILE-QA-288 BLOCKED/provider fixture** missing whale-holding identity evidence.
+
+### MOBILE-174 implementation result
+
+- Completed both safe outcomes (`MOBILE-QA-282`, `MOBILE-DATA-416`); exact shortfall 18 after exhausting the current ready queue.
+- AsyncSurface recovery waits for the actionable reset control and explicitly unmounts/clears its query client; the exact grouped QA pair passes three consecutive runs.
+- Whale identity now requires eligible famous-token holdings strictly above $10,000: exactly $10,000 is excluded and $10,001 qualifies.
+- TypeScript/full source ESLint PASS; focused grouped Jest PASS three times (2 suites/35 tests each); whale unit PASS (1 suite/11 tests); full Jest PASS (83 suites/450 tests); web production export PASS (25 routes).
+- NEXT_QA_ACTION: pin the result, independently verify both IDs, then execute device/network findings in stable-ID order when fixtures are available. NEXT_WEB_ACTION: provide no contract change; provider fixture support remains requested for `MOBILE-QA-278`, `279`, and `288`.

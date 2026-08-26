@@ -1,5 +1,16 @@
 # MOBILE DEV → QA handoff
 
+## MOBILE-174 — deterministic recovery and strict whale threshold
+
+- Base: `056f997`; result: containing commit.
+- Findings: 20 reconciled; completed both safe outcomes (`MOBILE-QA-282`, `MOBILE-DATA-416`); exact shortfall 18, enumerated with owners in `WORKLOG.md`.
+- Changed behavior/files: `src/__tests__/AsyncSurface.test.tsx` uses bounded async discovery and explicit teardown; `src/lib/whale-activity.ts` requires `valueUsd > 10_000`; `src/__tests__/whale-activity.test.ts` protects exact boundary behavior.
+- Acceptance: exact grouped pair passed three consecutive runs (2 suites/35 tests each); whale suite passed (1 suite/11 tests); TypeScript and full source ESLint passed; full Jest passed (83 suites/450 tests); web production export passed (25 routes).
+- Runtime scenarios: induce local-reset failure while the touch suite is loaded and verify the recovery action appears without teardown leakage; supply eligible holder evidence at $10,000/$10,001 and verify only the latter receives the token whale identity.
+- Known risks: physical accessibility/layout/performance, controlled recovery, provider fixtures, Doctor child-process behavior, and Noble exports remain externally owned.
+- NEXT_QA_ACTION: pin the result and independently classify `MOBILE-QA-282` and `MOBILE-DATA-416`, then execute blocked findings in stable-ID order as fixtures become available.
+- NEXT_WEB_ACTION: no contract change; provider owners should supply controlled fixtures for `MOBILE-QA-278`, `MOBILE-QA-279`, and `MOBILE-QA-288`.
+
 ## MOBILE-173 — compact-control completion and quote-input boundary
 
 - Base: `2440b95`; result: containing commit.

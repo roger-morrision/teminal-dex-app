@@ -610,7 +610,7 @@ const styles = StyleSheet.create({
     gap: spacing.md,
   },
   filterInput: {
-    minHeight: 42,
+    minHeight: 44,
     paddingHorizontal: 12,
     borderRadius: 9,
     borderWidth: 1,

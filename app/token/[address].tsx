@@ -1106,6 +1106,8 @@ const styles = StyleSheet.create({
   },
   emptyTitle: { color: colors.text, fontSize: 18, fontWeight: "800" },
   retry: {
+    minHeight: 44,
+    justifyContent: "center",
     backgroundColor: colors.accent,
     paddingHorizontal: 18,
     paddingVertical: 10,

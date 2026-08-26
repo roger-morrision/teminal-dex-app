@@ -2,7 +2,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { act, fireEvent, render } from "@testing-library/react-native";
 import { Alert } from "react-native";
 import SettingsScreen, { ResetControl } from "../../app/settings";
-import { QuoteTokenState, ReadinessFailure } from "../../app/trade/[address]";
+import { boundedTradeAmount, QuoteTokenState, ReadinessFailure } from "../../app/trade/[address]";
 import { SettingsProvider } from "@/settings/SettingsProvider";
 import { clearLocalAppData } from "@/settings/privacy";
 
@@ -20,6 +20,11 @@ jest.mock("@/settings/privacy", () => ({
 }));
 
 describe("one-off asynchronous surfaces", () => {
+  it("bounds quote amounts before they can enter request state", () => {
+    expect(boundedTradeAmount("$123456789012345.123456789")).toBe("123456789012.123456");
+    expect(boundedTradeAmount("1..2e+3")).toBe("1.23");
+    expect(boundedTradeAmount("-0.5")).toBe("0.5");
+  });
   it("exposes quote token loading and failures distinctly", async () => {
     const screen = await render(
       <SettingsProvider>

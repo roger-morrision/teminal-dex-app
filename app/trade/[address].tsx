@@ -24,6 +24,11 @@ import { isSolanaAddress, parseBoundedJson } from "@/security/input";
 import { useSettings } from "@/settings/SettingsProvider";
 
 const AMOUNT = /^(?:0|[1-9]\d*)(?:\.\d+)?$/;
+export const boundedTradeAmount = (value: string) => {
+  const sanitized = value.replace(/[^0-9.]/g, "");
+  const [whole = "", ...fractions] = sanitized.split(".");
+  return `${whole.slice(0, 12)}${fractions.length ? `.${fractions.join("").slice(0, 6)}` : ""}`;
+};
 
 export default function TradeReviewScreen() {
   const router = useRouter();
@@ -202,7 +207,11 @@ export default function TradeReviewScreen() {
             accessibilityLabel={t("swapAmount")}
             accessibilityState={{ disabled: flowBusy, busy: flowBusy }}
             value={amount}
-            onChangeText={(value) => { resetSafetyFlow(); setAmount(value.replace(/[^0-9.]/g, "")); }}
+            onChangeText={(value) => {
+              resetSafetyFlow();
+              setAmount(boundedTradeAmount(value));
+            }}
+            maxLength={19}
             editable={!flowBusy}
             keyboardType="decimal-pad"
             placeholder="0.00"

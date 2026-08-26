@@ -594,6 +594,8 @@ const styles = StyleSheet.create({
   },
   period: {
     flex: 1,
+    minHeight: 44,
+    justifyContent: "center",
     alignItems: "center",
     padding: 9,
     borderRadius: 9,

@@ -330,7 +330,7 @@ export default function DiscoverScreen() {
                   <Pressable
                     accessibilityRole="button"
                     accessibilityLabel={t("clearSearch")}
-                    hitSlop={10}
+                    hitSlop={14}
                     onPress={() => setSearch("")}
                   >
                     <Ionicons name="close-circle" color={colors.muted} size={18} />

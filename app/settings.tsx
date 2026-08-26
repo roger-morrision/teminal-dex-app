@@ -294,7 +294,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: colors.background,
   },
-  segmentItem: { flex: 1, alignItems: "center", padding: 9, borderRadius: 8 },
+  segmentItem: { flex: 1, minHeight: 44, justifyContent: "center", alignItems: "center", padding: 9, borderRadius: 8 },
   active: { backgroundColor: colors.accent },
   segmentText: { color: colors.muted, fontSize: 10, fontWeight: "800" },
   activeText: { color: colors.background },
@@ -319,6 +319,7 @@ const styles = StyleSheet.create({
   },
   evidenceText: { flex: 1, color: colors.muted, fontSize: 9, lineHeight: 14 },
   destructive: {
+    minHeight: 44,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",

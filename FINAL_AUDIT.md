@@ -265,3 +265,13 @@ No in-scope automated regression was found. Generated export directories were re
 - **Safety:** UI geometry and test scheduling only; APIs, providers, wallets, transactions, credentials, and WEB remain unchanged.
 - **NEXT_QA_ACTION:** pin the result, rerun the exact grouped command under archive load, then edge-tap all 19 families at normal/enlarged text.
 - **NEXT_WEB_ACTION:** none.
+
+## MOBILE-173 compact-control completion and quote-input boundary
+
+- **Implemented:** 15 safe outcomes (`MOBILE-TOUCH-401..414`, `MOBILE-DATA-415`); exact shortfall 5 (`MOBILE-QA-269..273`) after exhausting this measured ready queue.
+- **Behavior:** remaining named compact controls use 44px-equivalent geometry/hit slop; quote input is bounded to normalized 12+6 digit decimal form before request state.
+- **Verified:** TypeScript/full source ESLint PASS; focused Jest PASS (2 suites/35 tests); full Jest PASS (83 suites/450 tests); public Expo config PASS.
+- **Blocked:** physical TalkBack, VoiceOver, Switch Access, 320dp/enlarged-text, and controlled offline/reconnect evidence; owner QA/device/network provider.
+- **Safety:** read-only quote input and UI geometry only; no signing, submission, trading, API/provider, credential, or WEB mutation.
+- **NEXT_QA_ACTION:** pin the result, verify the 15 outcomes, then execute `MOBILE-QA-269..273` when device/network fixtures are available.
+- **NEXT_WEB_ACTION:** none.

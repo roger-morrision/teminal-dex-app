@@ -1108,6 +1108,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface,
   },
   action: {
+    minHeight: 44,
+    justifyContent: "center",
     paddingHorizontal: 18,
     paddingVertical: 10,
     borderRadius: 9,

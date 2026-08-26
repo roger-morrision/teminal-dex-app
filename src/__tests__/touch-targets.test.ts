@@ -63,4 +63,27 @@ describe("primary market touch targets", () => {
   it("extends the compact Monitor switch to a 44px touch area", () => {
     expect(source("app/(tabs)/monitor.tsx")).toContain("hitSlop={11}");
   });
+
+  it.each([
+    ["AI governance", "app/ai.tsx", ["action"]],
+    ["Market load-more", "app/market-intelligence.tsx", ["load"]],
+    ["Portfolio periods", "app/(tabs)/portfolio.tsx", ["period"]],
+    ["Settings", "app/settings.tsx", ["segmentItem", "destructive"]],
+    ["Token recovery", "app/token/[address].tsx", ["retry"]],
+    ["Trenches input", "app/(tabs)/trenches.tsx", ["filterInput"]],
+  ])("keeps %s remaining controls at a 44px minimum", (_name, path, styles) => {
+    const text = source(path as string);
+    for (const style of styles as string[])
+      expect(text).toMatch(new RegExp(`${style}: \\{[\\s\\S]*?minHeight: 44`));
+  });
+
+  it("keeps compact search-clear and Whale controls reachable", () => {
+    const discover = source("app/(tabs)/discover.tsx");
+    const whales = source("app/(tabs)/whales.tsx");
+    expect(discover).toContain("hitSlop={14}");
+    expect(whales).toContain("hitSlop={14}");
+    expect(whales).toContain("minWidth: 88, minHeight: 44");
+    expect(whales).toContain("style={[styles.control, { minHeight: 44 }");
+    expect(whales).toContain("style={[styles.secondary, { minHeight: 44 }");
+  });
 });

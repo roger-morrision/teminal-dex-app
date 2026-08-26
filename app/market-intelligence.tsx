@@ -814,6 +814,8 @@ const styles = StyleSheet.create({
   evidence: { color: colors.muted, fontSize: 7, marginTop: 4 },
   load: {
     margin: spacing.lg,
+    minHeight: 44,
+    justifyContent: "center",
     padding: 12,
     alignItems: "center",
     borderWidth: 1,

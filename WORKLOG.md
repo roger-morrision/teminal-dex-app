@@ -1652,3 +1652,16 @@ Fresh post-`16ee90f` QA/source reconciliation records 20 current dependency-read
 - The Monitor case retains act-safe cleanup and now declares a bounded 15s loaded-suite budget; the exact grouped QA command passes three consecutive runs. Nineteen independently named control families now have explicit 44px geometry or 11px compact-switch hit slop.
 - TypeScript/full source ESLint PASS; grouped regression PASS three times (2 suites/24 tests each); full Jest PASS (83 suites/442 tests); public Expo config PASS.
 - No WEB/API/provider mutation, transaction behavior, wallet action, production data, secret, or generated output changed.
+
+## MOBILE BA/PO review — 2026-08-26 16:21 trigger
+
+Fresh post-`2440b95` QA/source review reconciled 20 findings. Fifteen are MOBILE-ready with direct style/input evidence; five require unavailable physical device or controlled network ownership. Every ready item accepts a 44px-equivalent target or bounded quote-input behavior and focused/full regression evidence.
+
+1. **MOBILE-TOUCH-401 READY** AI governance action. 2. **MOBILE-TOUCH-402 READY** Market Intelligence load-more. 3. **MOBILE-TOUCH-403 READY** Portfolio periods. 4. **MOBILE-TOUCH-404 READY** Settings language segments. 5. **MOBILE-TOUCH-405 READY** Settings destructive reset. 6. **MOBILE-TOUCH-406 READY** Token recovery. 7. **MOBILE-TOUCH-407 READY** Trenches filter input. 8. **MOBILE-TOUCH-408 READY** Discover clear search. 9. **MOBILE-TOUCH-409 READY** Whale search input. 10. **MOBILE-TOUCH-410 READY** Whale clear search. 11. **MOBILE-TOUCH-411 READY** Whale mode tabs. 12. **MOBILE-TOUCH-412 READY** Whale direction/amount/sort controls. 13. **MOBILE-TOUCH-413 READY** Whale filtered-empty reset. 14. **MOBILE-TOUCH-414 READY** Whale retry. 15. **MOBILE-DATA-415 READY** quote amount accepts unbounded/repeated decimal input before request state. 16. **MOBILE-QA-269 BLOCKED/device** TalkBack. 17. **MOBILE-QA-270 BLOCKED/device** VoiceOver. 18. **MOBILE-QA-271 BLOCKED/device** Switch Access. 19. **MOBILE-QA-272 BLOCKED/device** 320dp/enlarged-text layout. 20. **MOBILE-QA-273 BLOCKED/network fixture** offline/reconnect recovery.
+
+### MOBILE-173 implementation result
+
+- Completed all 15 safe outcomes (`MOBILE-TOUCH-401..414`, `MOBILE-DATA-415`); exact shortfall 5 to 20, limited to `MOBILE-QA-269..273` with QA/device/network-fixture owners.
+- Quote amounts now strip non-decimal syntax, collapse repeated separators, cap whole/fraction precision at 12/6 digits, and expose native `maxLength=19` before any read-only quote request.
+- TypeScript/full source ESLint PASS; focused Jest PASS (2 suites/35 tests); full Jest PASS (83 suites/450 tests); public Expo config PASS.
+- No WEB/API schema/provider mutation, signing, submission, transaction activation, production data, secret, or generated output changed.

@@ -1,5 +1,16 @@
 # MOBILE DEV → QA handoff
 
+## MOBILE-173 — compact-control completion and quote-input boundary
+
+- Base: `2440b95`; result: containing commit.
+- Findings: 20 reconciled. Completed all 15 safe outcomes (`MOBILE-TOUCH-401..414`, `MOBILE-DATA-415`); exact shortfall 5 (`MOBILE-QA-269..273`) due physical device/network-fixture ownership.
+- Changed behavior: 14 compact action/search/filter/recovery families expose 44px-equivalent geometry; quote amounts normalize non-decimal/repeated-separator input and cap whole/fraction precision before request state.
+- Evidence: touch/async suites PASS (2 suites/35 tests); TypeScript/full source ESLint PASS; full Jest PASS (83 suites/450 tests); public Expo config PASS.
+- Runtime scenarios: edge-tap named controls at normal/enlarged text; enter currency signs, exponent text, repeated decimal points, and overlong precision; confirm bounded UI value and no request until explicit quote action.
+- Known risks: physical accessibility/small-screen/offline recovery, Doctor child-Node failure, and Noble fallback remain external.
+- NEXT_QA_ACTION: pin the result, independently verify all 15 implemented IDs, and run the five blocked device/network scenarios when fixtures exist.
+- NEXT_WEB_ACTION: none.
+
 ## MOBILE-172 — 20/20 secondary controls and loaded regression stability
 
 - Base: `16ee90f`; result: containing commit.

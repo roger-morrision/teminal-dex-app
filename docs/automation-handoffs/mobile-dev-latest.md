@@ -1,5 +1,16 @@
 # MOBILE DEV → QA handoff
 
+## MOBILE-175 — Discover token-row localization integrity
+
+- Base: `25c939b`; result: containing commit.
+- Findings: 20 reconciled; completed all eight safe outcomes (`MOBILE-I18N-417..424`); exact shortfall 12 (`MOBILE-QA-269..280`) due unchanged external ownership.
+- Changed behavior/files: `TokenRow` obtains eight user-facing strings from `SettingsProvider`; EN/VI catalogs and a rendered Vietnamese regression protect actions, unavailable/verified evidence, volume, and social semantics.
+- Acceptance evidence: TypeScript PASS; full source ESLint PASS; focused TokenRow PASS (1 suite/11 tests); full Jest PASS (83 suites/451 tests); public Expo config PASS.
+- Runtime scenario: open Discover, switch EN/VI, inspect a row with missing age/holders and social evidence, then toggle watch state; verify visible and accessibility text changes without changing navigation or stored watch intent.
+- Known risks: physical-device accessibility/layout/recovery/performance, Doctor, Noble exports, and provider Monitor fixtures remain external.
+- NEXT_QA_ACTION: independently classify all eight IDs in EN/VI with visual and screen-reader checks, then continue `MOBILE-QA-269..280` as fixtures allow.
+- NEXT_WEB_ACTION: none.
+
 ## MOBILE-174 — deterministic recovery and strict whale threshold
 
 - Base: `056f997`; result: containing commit.

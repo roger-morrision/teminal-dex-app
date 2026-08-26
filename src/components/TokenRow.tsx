@@ -6,20 +6,23 @@ import { compactUsd, signedPercent, tokenPrice } from '@/lib/format';
 import { colors, spacing } from '@/theme';
 import { TokenAvatar } from '@/components/TokenAvatar';
 import { DexLogo } from '@/components/DexLogo';
+import { useSettings } from '@/settings/SettingsProvider';
 
 type TokenRowPeriod = '1h' | '6h' | '24h';
 
 export const TokenRow = memo(function TokenRow({ token, onPress, watched, onToggleWatch, dense = false, period = '1h' }: { token: MarketToken; onPress: () => void; watched?: boolean; onToggleWatch?: () => void; dense?: boolean; period?: TokenRowPeriod }) {
+  const { t } = useSettings();
   const symbol = displayTokenIdentity(token);
-  const age = reliableAgeLabel(token);
-  const holders = reliableHolderLabel(token);
+  const age = reliableAgeLabel(token) ?? t('tokenAgeUnavailable');
+  const holderCount = reliableHolderLabel(token);
+  const holders = holderCount == null ? t('tokenHoldersUnavailable') : t('tokenHolderCount', { count: holderCount });
   const change = selectedChange(token, period);
   const positive = change != null && change >= 0;
-  return <Pressable accessibilityRole="button" accessibilityLabel={`Open ${symbol} details`} onPress={onPress} style={({ pressed }) => [styles.row, dense && styles.denseRow, pressed && styles.pressed]}>
+  return <Pressable accessibilityRole="button" accessibilityLabel={t('openTokenDetails', { symbol })} onPress={onPress} style={({ pressed }) => [styles.row, dense && styles.denseRow, pressed && styles.pressed]}>
     <View style={styles.avatarWrap}><TokenAvatar symbol={symbol} identity={token.address} imageUrl={token.imageUrl} /><View style={styles.dexBadge}><DexLogo dex={token.dex} /></View></View>
-    <View style={styles.identity}><View style={styles.titleLine}><Text numberOfLines={1} style={styles.symbol}>{symbol}</Text><Text style={styles.age}>{age}</Text></View><View style={styles.metaLine}><Text numberOfLines={1} style={styles.meta}>{holders} · {compactUsd(token.volume24h)} vol</Text><SocialEvidence token={token} /></View></View>
+    <View style={styles.identity}><View style={styles.titleLine}><Text numberOfLines={1} style={styles.symbol}>{symbol}</Text><Text style={styles.age}>{age}</Text></View><View style={styles.metaLine}><Text numberOfLines={1} style={styles.meta}>{holders} · {t('tokenVolumeShort', { volume: compactUsd(token.volume24h) })}</Text><SocialEvidence token={token} label={(networks) => t('tokenSocialEvidence', { networks })} /></View></View>
     <View style={styles.metric}><Text style={styles.price}>{tokenPrice(token.price)}</Text><View style={styles.metricSecondLine}><Text style={styles.subMetric}>{compactUsd(token.marketCap)} MC</Text><View style={styles.inlineChange}>{change == null ? null : <Ionicons name={positive ? 'caret-up' : 'caret-down'} size={9} color={positive ? colors.positive : colors.negative} />}<Text style={[styles.inlineChangeText, { color: change == null ? colors.muted : positive ? colors.positive : colors.negative }]}>{change == null ? '—' : signedPercent(change)}</Text></View></View></View>
-    {onToggleWatch ? <Pressable accessibilityRole="button" accessibilityLabel={watched ? `Remove ${symbol} from watchlist` : `Add ${symbol} to watchlist`} hitSlop={10} onPress={(event) => { event.stopPropagation(); onToggleWatch(); }}><Ionicons name={watched ? 'star' : 'star-outline'} size={18} color={watched ? colors.warning : colors.muted} /></Pressable> : null}
+    {onToggleWatch ? <Pressable accessibilityRole="button" accessibilityLabel={t(watched ? 'removeTokenFromWatchlist' : 'addTokenToWatchlist', { symbol })} hitSlop={10} onPress={(event) => { event.stopPropagation(); onToggleWatch(); }}><Ionicons name={watched ? 'star' : 'star-outline'} size={18} color={watched ? colors.warning : colors.muted} /></Pressable> : null}
   </Pressable>;
 }, (previous, next) => previous.token === next.token && previous.watched === next.watched && previous.dense === next.dense && previous.period === next.period && Boolean(previous.onToggleWatch) === Boolean(next.onToggleWatch));
 
@@ -28,15 +31,15 @@ export function displayTokenIdentity(token: MarketToken) {
 }
 
 export function reliableAgeLabel(token: MarketToken) {
-  if (!Number.isFinite(token.ageMinutes) || token.ageMinutes <= 0) return 'age unavailable';
+  if (!Number.isFinite(token.ageMinutes) || token.ageMinutes <= 0) return null;
   const label = token.ageLabel.trim();
-  return label && label !== '—' && label.toLowerCase() !== 'new' ? label : 'age unavailable';
+  return label && label !== '—' && label.toLowerCase() !== 'new' ? label : null;
 }
 
 export function reliableHolderLabel(token: MarketToken) {
   const value = token.holderCount;
-  if (value == null || !Number.isInteger(value) || value < 1 || token.holderCountFreshness === 'stale' || token.holderCountSafeForAutomation === false) return 'holders unavailable';
-  return `${compactCount(value)}${token.holderCountExact === false ? '+' : ''} holders`;
+  if (value == null || !Number.isInteger(value) || value < 1 || token.holderCountFreshness === 'stale' || token.holderCountSafeForAutomation === false) return null;
+  return `${compactCount(value)}${token.holderCountExact === false ? '+' : ''}`;
 }
 
 export function selectedChange(token: MarketToken, period: TokenRowPeriod) {
@@ -44,14 +47,14 @@ export function selectedChange(token: MarketToken, period: TokenRowPeriod) {
   return typeof value === 'number' && Number.isFinite(value) ? value : null;
 }
 
-function SocialEvidence({ token }: { token: MarketToken }) {
+function SocialEvidence({ token, label }: { token: MarketToken; label: (networks: string) => string }) {
   const entries = [
     token.social?.twitter ? { key: 'twitter', icon: 'logo-twitter' as const, label: 'X' } : null,
     token.social?.telegram ? { key: 'telegram', icon: 'paper-plane' as const, label: 'Telegram' } : null,
     token.social?.website ? { key: 'website', icon: 'globe-outline' as const, label: 'Website' } : null,
   ].filter((entry): entry is NonNullable<typeof entry> => Boolean(entry));
   if (!entries.length) return null;
-  return <View accessible accessibilityLabel={`Social evidence: ${entries.map((entry) => entry.label).join(', ')}`} style={styles.socials}>{entries.map((entry) => <Ionicons key={entry.key} name={entry.icon} size={11} color={colors.muted} />)}</View>;
+  return <View accessible accessibilityLabel={label(entries.map((entry) => entry.label).join(', '))} style={styles.socials}>{entries.map((entry) => <Ionicons key={entry.key} name={entry.icon} size={11} color={colors.muted} />)}</View>;
 }
 
 function compactCount(value: number) {

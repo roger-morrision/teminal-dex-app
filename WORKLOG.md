@@ -1679,3 +1679,16 @@ Fresh post-`056f997` reconciliation records 20 current findings. Two are depende
 - Whale identity now requires eligible famous-token holdings strictly above $10,000: exactly $10,000 is excluded and $10,001 qualifies.
 - TypeScript/full source ESLint PASS; focused grouped Jest PASS three times (2 suites/35 tests each); whale unit PASS (1 suite/11 tests); full Jest PASS (83 suites/450 tests); web production export PASS (25 routes).
 - NEXT_QA_ACTION: pin the result, independently verify both IDs, then execute device/network findings in stable-ID order when fixtures are available. NEXT_WEB_ACTION: provide no contract change; provider fixture support remains requested for `MOBILE-QA-278`, `279`, and `288`.
+
+## MOBILE BA/PO review — 2026-08-26 18:22 trigger
+
+Fresh post-`25c939b` QA/source reconciliation records 20 distinct current findings. Eight Discover token-row localization defects are MOBILE-ready with direct hard-coded source evidence; twelve carried findings retain external device/network/toolchain/upstream/provider ownership. Each ready item accepts rendered EN/VI output plus type/lint/focused/full regression evidence.
+
+1. **MOBILE-I18N-417 READY** token-detail accessibility action. 2. **MOBILE-I18N-418 READY** add-watchlist accessibility action. 3. **MOBILE-I18N-419 READY** remove-watchlist accessibility action. 4. **MOBILE-I18N-420 READY** unavailable token age. 5. **MOBILE-I18N-421 READY** unavailable holder evidence. 6. **MOBILE-I18N-422 READY** verified holder-count suffix. 7. **MOBILE-I18N-423 READY** volume abbreviation. 8. **MOBILE-I18N-424 READY** social-evidence accessibility summary. 9–20. **MOBILE-QA-269..280 BLOCKED/CONDITIONAL** physical accessibility/layout/recovery/lifecycle/storage/performance, Doctor child process, Noble exports, and provider-controlled Monitor fixtures; owners remain QA/device/network/toolchain/upstream/provider.
+
+### MOBILE-175 implementation result
+
+- Completed all eight safe outcomes (`MOBILE-I18N-417..424`); exact shortfall 12 (`MOBILE-QA-269..280`) after exhausting the ready queue.
+- Discover token rows now localize open/watchlist actions, age/holder fallbacks, verified holder counts, volume abbreviation, and social-evidence semantics in English and Vietnamese.
+- TypeScript PASS; full source ESLint PASS; focused TokenRow Jest PASS (1 suite/11 tests); full Jest PASS (83 suites/451 tests); public Expo config PASS.
+- NEXT_QA_ACTION: switch EN/VI at runtime and verify visual plus screen-reader output for all eight IDs, then continue the physical/device matrix. NEXT_WEB_ACTION: none.

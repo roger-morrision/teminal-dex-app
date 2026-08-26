@@ -284,3 +284,12 @@ No in-scope automated regression was found. Generated export directories were re
 - **Safety:** read-only classification and test lifecycle only; no WEB/API/provider mutation, wallet action, signing, submission, or trade behavior changed.
 - **NEXT_QA_ACTION:** independently classify both outcomes and run the blocked physical-device/network scenarios when available.
 - **NEXT_WEB_ACTION:** no schema change; provide controlled fixtures for Monitor and missing whale-holding evidence scenarios.
+
+## MOBILE-175 Discover token-row localization integrity
+
+- **Implemented:** all eight safe outcomes (`MOBILE-I18N-417..424`); exact shortfall 12 (`MOBILE-QA-269..280`) with unchanged external owners.
+- **Behavior:** Discover token-row actions, holder/age truthfulness, volume shorthand, and social accessibility evidence now follow the persistent EN/VI language selection.
+- **Verified:** TypeScript/full source ESLint PASS; TokenRow focused PASS (1 suite/11 tests); full Jest PASS (83 suites/451 tests); public Expo configuration PASS.
+- **Safety:** presentation/localization only; API/provider evidence, wallet state, signing, submission, and WEB remain unchanged.
+- **NEXT_QA_ACTION:** independently verify all eight strings in both languages visually and with assistive technology.
+- **NEXT_WEB_ACTION:** none.

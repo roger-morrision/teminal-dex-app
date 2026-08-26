@@ -197,3 +197,62 @@ The initial sandboxed diagnostic could not open Expo's user native-module cache 
 - Material DEV outcomes available: 6; independently verified: 6/6 PASS.
 - Remaining to 20 DEV outcomes: 14. No padding applied; remaining capacity depends on upstream audit remediation, exact device ownership, Doctor availability, Noble ownership, or the excluded concurrent slice.
 - Carry-forward order: `MOBILE-QA-011`, `MOBILE-QA-002`, `MOBILE-QA-010`, `MOBILE-QA-008`, `MOBILE-QA-004`.
+
+---
+
+# MOBILE-QA validation handoff — MOBILE-162
+
+- Run: 2026-08-26T05:44:53.5241938Z.
+- Inspected DEV commit: `1da40fc28c0475ac1b279a7a946f45dc732ad78f` (`chore(expo): restore local doctor gate`); base `6c5c5a9`.
+- Scope: PASS. The canonical mobile workspace is confirmed. The primary worktree has an unrelated uncommitted Whales/token-logo/MOBILE-to-WEB slice, so QA tested a clean archive of exactly `1da40fc` with the existing dependencies attached as a junction. No product code, tests, or configuration were changed.
+- Environment: Windows, bundled Node 24.19.0, Expo 57 local CLI, `%LOCALAPPDATA%\Temp\mobile-qa-162-1da40fc`; no Android target was available.
+
+## Current DEV acceptance results
+
+| MOBILE-QA criterion | Result | Independent evidence |
+| --- | --- | --- |
+| Exact repository-local `expo-doctor` dependency | PASS | Installed package is `expo-doctor` 1.20.3 with declared local binary. |
+| No implicit global/`npx` Doctor resolution | PASS | Focused command/provenance tests pass 14/14. |
+| Dynamic config consumes static Expo config | PASS | Focused config/provenance tests pass; public config resolves Android/iOS/web and retains nullable build provenance. |
+| Local Doctor command executes | PASS | Direct local executable starts all 21 checks. |
+| Doctor 21/21 result | BLOCKED | QA environment lacks `npm`; Doctor returns 17/21 and identifies four dependency-tree/npm-version checks as unavailable. This is not classified as an app/config failure. |
+| TypeScript / source ESLint / full regression | PASS | Immutable typecheck and lint pass; Jest passes 82 suites / 408 tests. |
+| Local Expo compatibility / platform exports | PASS with condition | Compatibility reports dependencies up to date. Android exports with the carried Noble warning; iOS/web exports pass. |
+
+## MOBILE-QA reconciled finding inventory (20)
+
+| ID | Result | Evidence, regression risk, and exact NEXT_DEV_ACTION |
+| --- | --- | --- |
+| MOBILE-QA-001 | PASS | MOBILE-162 is diagnostics/config/test infrastructure only; API, wallet, signing, submission, trading, secrets, and WEB contracts unchanged. |
+| MOBILE-QA-002 | BLOCKED P1 | No exact-build Android emulator/device evidence. **NEXT_DEV_ACTION:** provide responsive target plus immutable marker. |
+| MOBILE-QA-003 | PASS | Clean archive pinned to `1da40fc`; concurrent worktree paths excluded. |
+| MOBILE-QA-004 | CONDITIONAL PASS P2 | Android export completes with known Noble strict-exports fallback. **NEXT_DEV_ACTION:** preserve guard and revalidate platform exports before resolver/dependency changes. |
+| MOBILE-QA-005 | PASS | Immutable full regression passes 82/408. |
+| MOBILE-QA-006 | RESOLVED | No mixed-state evidence; concurrent paths were not changed. |
+| MOBILE-QA-007 | PASS | Semantic accessibility ordering remains green in full regression. |
+| MOBILE-QA-008 | PARTIALLY VERIFIED P2 | Local Doctor is installed, local-first, and starts 21 checks, but QA gets 17/21 because npm is unavailable for four package-tree checks. **NEXT_DEV_ACTION:** supply repository-local/bundled npm or record a reproducible 21/21 Doctor run from the immutable commit. |
+| MOBILE-QA-009 | PASS | Exact archive baseline is 82 suites / 408 tests. |
+| MOBILE-QA-010 | BLOCKED P2 | Physical accessibility/resilience matrix remains unexecuted. **NEXT_DEV_ACTION:** run after QA-002. |
+| MOBILE-QA-011 | PARTIALLY VERIFIED P2 | Upstream audit remains bounded by guard; raw audit unavailable without npm. **NEXT_DEV_ACTION:** isolated `npm audit --package-lock-only --omit=dev --json`; no forced remediation. |
+| MOBILE-QA-012 | PASS | Local Expo compatibility reports dependencies up to date. |
+| MOBILE-QA-013 | RESOLVED | Complete suite remains free of the prior SnipeCard settlement warning. |
+| MOBILE-QA-014 | PASS | TypeScript passes in exact archive. |
+| MOBILE-QA-015 | PASS | Source ESLint passes in exact archive. |
+| MOBILE-QA-016 | PASS | Public config preserves ATS/HTTPS, deep links, biometric-only permission and no secret/endpoint leakage. |
+| MOBILE-QA-017 | CONDITIONAL PASS | Android export: one Hermes bundle/46 assets, no unresolved module; see QA-004. |
+| MOBILE-QA-018 | PASS | iOS export: one Hermes bundle/23 assets. |
+| MOBILE-QA-019 | PASS | Web static export: one bundle, successful completion. |
+| MOBILE-QA-020 | PASS | Local Doctor command and dynamic-config contract are regression-covered; Expo compatibility remains aligned. |
+
+## Scope change, commands, and release
+
+- `qa_scope_changed` applies only to the primary worktree. Excluded paths: `.gitignore`, `app/(tabs)/whales.tsx`, `expo-env.d.ts`, `src/__tests__/TokenRow.test.tsx`, `src/components/TokenAvatar.tsx`, `src/components/TokenRow.tsx`, `src/components/DexLogo.tsx`, and three untracked MOBILE-to-WEB handoffs.
+- Commands/results: focused package/config tests 14/14 PASS; local Doctor execution PARTIAL 17/21 (four npm-dependent checks unavailable); TypeScript PASS; ESLint PASS; full Jest 82/408 PASS; local Expo compatibility PASS; public config PASS; Android export CONDITIONAL PASS; iOS/web PASS. Android device/navigation/error/recovery/accessibility checks BLOCKED. No screenshots, device logs, secret, backend origin, or provider diagnostic evidence collected.
+- **MOBILE-QA release recommendation: CONDITIONAL NO-GO.** The repository-local Doctor is a material improvement, but immutable Doctor 21/21 cannot be independently certified in this npm-less environment. Continue `MOBILE-QA-002`, `010`, `008`, `011`, and `004`.
+
+## 20/20 reconciliation
+
+- Findings inspected/reconciled: 20.
+- Material DEV outcomes available: 8; independently verified: 7 PASS, 1 BLOCKED (Doctor 21/21).
+- Remaining to 20 DEV outcomes: 12. No padding applied; remaining capacity requires npm-enabled Doctor/audit evidence, device ownership, upstream Noble/audit remediation, or the excluded concurrent slice.
+- Carry-forward order: `MOBILE-QA-008`, `MOBILE-QA-011`, `MOBILE-QA-002`, `MOBILE-QA-010`, `MOBILE-QA-004`.

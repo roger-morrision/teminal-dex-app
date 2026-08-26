@@ -85,5 +85,13 @@ describe('TokenRow', () => {
     expect(screen.getByLabelText('Bằng chứng xã hội: Telegram')).toBeTruthy();
     expect(screen.getByLabelText('Không có logo token DEX; đang hiển thị ký tự viết tắt')).toBeTruthy();
     expect(screen.getByLabelText('Logo DEX Raydium')).toBeTruthy();
+    expect(screen.getByText('Vốn hóa $10')).toBeTruthy();
+    expect(screen.getByLabelText('Giá $1, vốn hóa $10, thay đổi 1h: +1.00%')).toBeTruthy();
+  });
+
+  it('announces missing selected-period change without inventing a percentage', async () => {
+    const screen = await render(row({ token: { ...token, change6h: undefined }, period: '6h', onPress: jest.fn() }));
+    expect(screen.getByLabelText('Price $1, market cap $10, 6h change: unavailable')).toBeTruthy();
+    expect(screen.getByText('—')).toBeTruthy();
   });
 });

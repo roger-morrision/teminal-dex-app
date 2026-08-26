@@ -1,5 +1,16 @@
 # MOBILE DEV → QA handoff
 
+## MOBILE-177 — localized Discover market metrics
+
+- Base: `03b342a`; result: containing commit.
+- Findings: 20 reconciled; completed all four safe outcomes (`MOBILE-I18N-430`, `MOBILE-A11Y-431..433`); exact shortfall 16 (`MOBILE-QA-269..280`, `MOBILE-QA-283..286`) with external owners.
+- Changed behavior/files: TokenRow localizes visible market-cap shorthand and groups price/market-cap/selected-period change into a truthful accessibility label; EN/VI catalog and focused regression cover available and unavailable change.
+- Acceptance evidence: TypeScript PASS; full source ESLint PASS; focused TokenRow PASS (1 suite/12 tests); full Jest PASS (83 suites/452 tests); public Expo config PASS.
+- Runtime scenario: in Discover switch 1h/6h/24h and EN/VI across positive, negative, and missing provider change; verify the visual second row and announced snapshot agree exactly.
+- Known risks: physical assistive-tech/layout/recovery/performance, Doctor, Noble exports, and controlled provider fixtures remain external.
+- NEXT_QA_ACTION: independently classify the four IDs with the runtime scenario, then continue the blocked matrix.
+- NEXT_WEB_ACTION: none.
+
 ## MOBILE-176 — localized token and DEX artwork semantics
 
 - Base: `5a1c4f3`; result: containing commit.

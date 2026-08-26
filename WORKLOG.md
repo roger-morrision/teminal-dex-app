@@ -1705,3 +1705,16 @@ Fresh post-`5a1c4f3` QA/source reconciliation records 20 current findings. Five 
 - Shared token artwork now accepts localized success/fallback semantics, DEX badges accept localized known/unknown semantics, and Discover plus Token Detail provide those labels in EN/VI.
 - TypeScript PASS; full source ESLint PASS; focused Jest PASS (2 suites/19 tests); full Jest PASS (83 suites/451 tests); public Expo config PASS.
 - NEXT_QA_ACTION: verify provider image success/failure and known/unknown DEX badges in EN/VI on Discover and Token Detail. NEXT_WEB_ACTION: none.
+
+## MOBILE BA/PO review — 2026-08-26 20:20 trigger
+
+Fresh post-`03b342a` QA/source reconciliation records 20 current findings. Four MOBILE-ready Discover metric defects have direct source evidence; sixteen carried findings need device/network/toolchain/upstream/provider ownership. Ready acceptance requires localized visible market-cap shorthand plus one truthful accessibility snapshot binding price, market cap, selected period, and available/unavailable change.
+
+1. **MOBILE-I18N-430 READY** market-cap shorthand is English-only. 2. **MOBILE-A11Y-431 READY** price lacks explicit metric semantics. 3. **MOBILE-A11Y-432 READY** change output does not announce its selected 1h/6h/24h period. 4. **MOBILE-A11Y-433 READY** missing change renders a visual dash without a truthful semantic fallback. 5–16. **MOBILE-QA-269..280 BLOCKED/CONDITIONAL** carried external matrix. 17–20. **MOBILE-QA-283..286 BLOCKED/device** Android/iOS edge traversal and large-text/dynamic-type whale rows.
+
+### MOBILE-177 implementation result
+
+- Completed all four safe outcomes (`MOBILE-I18N-430`, `MOBILE-A11Y-431..433`); exact shortfall 16 after exhausting the ready queue.
+- Discover market-cap shorthand is localized; its metric group announces price, market cap, selected period, and a truthful percentage or unavailable value while retaining the compact second-row UI.
+- TypeScript PASS; full source ESLint PASS; focused TokenRow Jest PASS (1 suite/12 tests); full Jest PASS (83 suites/452 tests); public Expo config PASS.
+- NEXT_QA_ACTION: traverse 1h/6h/24h with positive, negative, and absent change in EN/VI using visual and screen-reader checks. NEXT_WEB_ACTION: none.

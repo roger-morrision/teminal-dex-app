@@ -302,3 +302,12 @@ No in-scope automated regression was found. Generated export directories were re
 - **Safety:** accessibility presentation only; provider URLs, images, API data, navigation, wallets, and transactions are unchanged.
 - **NEXT_QA_ACTION:** exercise image load/error and known/unknown DEX states in EN/VI across both surfaces.
 - **NEXT_WEB_ACTION:** none.
+
+## MOBILE-177 localized Discover market metrics
+
+- **Implemented:** all four safe outcomes (`MOBILE-I18N-430`, `MOBILE-A11Y-431..433`); exact shortfall 16 with external owners.
+- **Behavior:** visible market-cap shorthand follows EN/VI; the metric group announces price, market cap, selected change period, and unavailable change without inventing data.
+- **Verified:** TypeScript/full source ESLint PASS; TokenRow focused PASS (1 suite/12 tests); full Jest PASS (83 suites/452 tests); public Expo config PASS.
+- **Safety:** display/accessibility only; provider values, calculations, APIs, wallets, navigation, and transactions are unchanged.
+- **NEXT_QA_ACTION:** verify all three periods and positive/negative/missing values visually and with assistive technology in EN/VI.
+- **NEXT_WEB_ACTION:** none.

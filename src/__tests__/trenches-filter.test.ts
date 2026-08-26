@@ -4,6 +4,8 @@ import {
   boundedKeyword,
   boundedNumber,
   emptyTrenchFilters,
+  normalizeTrenchDex,
+  trenchLaunchpads,
   trenchFilterCount,
 } from "@/lib/trenches";
 
@@ -30,6 +32,19 @@ const token = (overrides: Partial<MarketToken>): MarketToken => ({
 });
 
 describe("Trenches filters", () => {
+  it("normalizes, deduplicates, reserves All, and caps provider DEX controls", () => {
+    const values = trenchLaunchpads([
+      { dex: undefined },
+      { dex: "  " },
+      { dex: "All" },
+      { dex: " Raydium " },
+      { dex: "raydium" },
+      ...Array.from({ length: 12 }, (_, index) => ({ dex: `dex-${index}` })),
+    ]);
+    expect(values).toEqual(["All", "Raydium", "dex-0", "dex-1", "dex-2", "dex-3", "dex-4", "dex-5", "dex-6"]);
+    expect(normalizeTrenchDex(undefined)).toBeNull();
+    expect(normalizeTrenchDex("  orca  ")).toBe("orca");
+  });
   it("combines launchpad, keyword and authoritative metric thresholds", () => {
     const rows = [
       token({ id: "match" }),
@@ -72,6 +87,16 @@ describe("Trenches filters", () => {
         { ...emptyTrenchFilters, minBondingProgress: "1" },
       ),
     ).toHaveLength(0);
+  });
+  it("fails soft when provider DEX evidence is missing", () => {
+    const missingDex = token({ dex: undefined as unknown as string });
+    expect(applyTrenchFilters([missingDex], emptyTrenchFilters)).toEqual([missingDex]);
+    expect(
+      applyTrenchFilters([missingDex], {
+        ...emptyTrenchFilters,
+        launchpad: "raydium",
+      }),
+    ).toEqual([]);
   });
   it("bounds text inputs and reports active criteria", () => {
     expect(boundedKeyword(`abc\u0000${"x".repeat(60)}`)).toHaveLength(50);

@@ -1476,3 +1476,36 @@ Impact is reduced missed taps and improved switch-access reliability across Disc
 - Completed 20/20 touch-target outcomes (`MOBILE-TOUCH-241..260`); remaining to 20: 0. All named control families now expose at least a 44×44 logical target or a 44px minimum height.
 - TypeScript and full source ESLint PASS; focused Jest PASS (5 suites/81 tests); full Jest PASS (83 suites/417 tests); public Expo config PASS. Restricted-shell Doctor remains 17/21 because child `npm` is unavailable; MOBILE-162 retains normal-environment 21/21 evidence.
 - No API, WEB, market-data, wallet, signing, submission, trading, or storage behavior changed.
+## MOBILE BA/PO review — 2026-08-26 09:20 trigger
+
+Fresh post-`54b6cdf` reconciliation found 20 distinct items. Eight are dependency-ready MOBILE production outcomes; twelve are hard environment/provider/device blockers or follow-ups and are not padded into implementation counts.
+
+1. **MOBILE-DATA-261 P1 READY** — QA-021: missing/non-string DEX values render an undefined launchpad and duplicate key. Accept by excluding invalid values; verify unit + API 37 filter flow.
+2. **MOBILE-DATA-262 P1 READY** — whitespace-only DEX labels can render blank controls. Accept by trimming before display/filtering.
+3. **MOBILE-DATA-263 P1 READY** — case variants can create duplicate semantic launchpads. Accept by case-insensitive deduplication with stable first-provider casing.
+4. **MOBILE-DATA-264 P1 READY** — provider value `All` can collide with the local sentinel. Accept by reserving exactly one local All option.
+5. **MOBILE-DATA-265 P1 READY** — filtering calls `toLocaleLowerCase` on missing runtime DEX data. Accept with a null-safe normalized comparison.
+6. **MOBILE-REC-266 P1 READY** — selected launchpad can disappear after refresh and strand the list empty. Accept by resetting stale selection to All.
+7. **MOBILE-DATA-267 P2 READY** — Trench cards print `undefined`/blank DEX provenance. Accept with localized unavailable evidence.
+8. **MOBILE-PERF-268 P2 READY** — launchpad limiting occurs before invalid/duplicate normalization, allowing bad values to displace valid options. Accept by normalize/dedupe first, then cap at nine total controls.
+9. **MOBILE-QA-269 P2 BLOCKED/device** — physical Android TalkBack traversal remains unavailable; accept on real hardware, owner QA/user.
+10. **MOBILE-QA-270 P2 BLOCKED/device** — iOS VoiceOver traversal remains unavailable; accept on physical iOS, owner QA/user.
+11. **MOBILE-QA-271 P2 BLOCKED/device** — Switch Access motor flow remains unavailable; accept on physical Android, owner QA/user.
+12. **MOBILE-QA-272 P2 BLOCKED/device** — 320dp/small-screen layout matrix remains incomplete; owner QA/device provider.
+13. **MOBILE-QA-273 P2 BLOCKED/device** — offline → retry → reconnect is not verified on physical device; owner QA/device provider.
+14. **MOBILE-QA-274 P2 BLOCKED/device** — background/restore query recovery remains unverified; owner QA/device provider.
+15. **MOBILE-QA-275 P2 BLOCKED/device** — local persistence failure/retry needs controllable device fault injection; owner QA/device provider.
+16. **MOBILE-QA-276 P2 BLOCKED/environment** — immutable Doctor remains 17/21 because child npm cannot spawn; owner toolchain.
+17. **MOBILE-QA-277 P2 BLOCKED/upstream** — Noble strict-exports fallback remains in Android export; owner upstream dependency lane.
+18. **MOBILE-QA-278 P2 BLOCKED/provider** — Monitor active-reset runtime branch needs controllable provider data; owner QA/provider fixture.
+19. **MOBILE-QA-279 P2 BLOCKED/provider** — Monitor partial-page retry needs a controllable cursor failure; owner QA/provider fixture.
+20. **MOBILE-QA-280 P2 BLOCKED/device** — physical-device startup/performance budget lacks measurements; owner QA/device provider.
+
+Selected order: MOBILE-DATA-261..268. Verification: focused Trenches unit/render tests, TypeScript, ESLint, full Jest, Expo diagnostics/config, then QA API 37 rerun. NEXT_WEB_ACTION: none; malformed optional DEX is handled fail-soft on MOBILE without inventing provider data.
+
+### MOBILE-166 implementation result
+
+- Findings reconciled: 20. Material outcomes completed: 8 (`MOBILE-DATA-261..268`). Exact shortfall to 20: 12 (`MOBILE-QA-269..280`), all blocked by physical devices, QA tooling, upstream dependency ownership, or controllable provider fixtures as recorded above.
+- The QA-021 warning/root cause is closed in source: invalid/blank/reserved DEX labels are excluded, case variants deduplicate, valid options are capped after normalization, comparisons are null-safe, stale selections fail soft to All, and cards show localized unavailable provenance.
+- TypeScript and full source ESLint PASS; focused Jest PASS (3 suites/9 tests); full Jest PASS (83 suites/419 tests); public Expo config PASS. Restricted-shell Doctor remains 17/21 because child npm cannot spawn.
+- No WEB, wallet, signing, submission, trading, provider, production data, or generated output changed.

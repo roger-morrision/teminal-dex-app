@@ -23,6 +23,8 @@ import {
   boundedKeyword,
   boundedNumber,
   emptyTrenchFilters,
+  normalizeTrenchDex,
+  trenchLaunchpads,
   trenchFilterCount,
   type TrenchFilters,
 } from "@/lib/trenches";
@@ -61,23 +63,30 @@ export default function TrenchesScreen() {
     [whaleActivity.data],
   );
   const laneRows = useMemo(() => query.data?.[lane] ?? [], [lane, query.data]);
-  const rows = useMemo(
-    () => applyTrenchFilters(laneRows, filters),
-    [filters, laneRows],
-  );
   const launchpads = useMemo(
     () =>
-      [
-        "All",
-        ...new Set(
-          Object.values(query.data ?? {}).flatMap((value) =>
-            Array.isArray(value) ? value.map((token) => token.dex) : [],
-          ),
+      trenchLaunchpads(
+        Object.values(query.data ?? {}).flatMap((value) =>
+          Array.isArray(value) ? value : [],
         ),
-      ].slice(0, 9),
+    ),
     [query.data],
   );
-  const activeFilterCount = trenchFilterCount(filters);
+  const effectiveFilters = useMemo(() => {
+    if (filters.launchpad === "All") return filters;
+    const launchpad = launchpads.find(
+      (value) =>
+        value.toLocaleLowerCase() === filters.launchpad.toLocaleLowerCase(),
+    );
+    return launchpad === filters.launchpad
+      ? filters
+      : { ...filters, launchpad: launchpad ?? "All" };
+  }, [filters, launchpads]);
+  const rows = useMemo(
+    () => applyTrenchFilters(laneRows, effectiveFilters),
+    [effectiveFilters, laneRows],
+  );
+  const activeFilterCount = trenchFilterCount(effectiveFilters);
   function openDetail(token: MarketToken) {
     router.push({
       pathname: "/token/[address]",
@@ -201,7 +210,7 @@ export default function TrenchesScreen() {
             </View>
             {filtersOpen ? (
               <TrenchFilterPanel
-                value={filters}
+                value={effectiveFilters}
                 launchpads={launchpads}
                 onChange={setFilters}
                 onReset={() => setFilters(emptyTrenchFilters)}
@@ -375,7 +384,7 @@ export function TrenchCard({
             <Text style={styles.age}>{token.ageLabel}</Text>
           </View>
           <Text style={styles.meta}>
-            {token.dex} · {short(token.address)}
+            {normalizeTrenchDex(token.dex) ?? t("unknown")} · {short(token.address)}
           </Text>
         </View>
         <View>

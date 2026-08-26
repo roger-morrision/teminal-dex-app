@@ -18,6 +18,24 @@ export const emptyTrenchFilters: TrenchFilters = {
   minBondingProgress: "",
 };
 
+export function normalizeTrenchDex(value: unknown): string | null {
+  if (typeof value !== "string") return null;
+  const normalized = value.trim();
+  return normalized && normalized.toLocaleLowerCase() !== "all"
+    ? normalized
+    : null;
+}
+
+export function trenchLaunchpads(tokens: { dex?: unknown }[]) {
+  const unique = new Map<string, string>();
+  for (const token of tokens) {
+    const dex = normalizeTrenchDex(token.dex);
+    if (!dex) continue;
+    if (!unique.has(dex.toLocaleLowerCase())) unique.set(dex.toLocaleLowerCase(), dex);
+  }
+  return ["All", ...unique.values()].slice(0, 9);
+}
+
 export function boundedKeyword(value: string) {
   return value.replace(/[\u0000-\u001f\u007f]/g, "").slice(0, 50);
 }
@@ -57,6 +75,7 @@ export function applyTrenchFilters(
   const minVolume24h = threshold(filters.minVolume24h);
   const maxAgeMinutes = threshold(filters.maxAgeMinutes);
   const minBondingProgress = threshold(filters.minBondingProgress);
+  const launchpad = normalizeTrenchDex(filters.launchpad);
   return tokens.filter((token) => {
     const progress = token.bondingProgress ?? token.progress ?? null;
     return (
@@ -65,8 +84,9 @@ export function applyTrenchFilters(
           .toLocaleLowerCase()
           .includes(keyword)) &&
       (filters.launchpad === "All" ||
-        token.dex.toLocaleLowerCase() ===
-          filters.launchpad.toLocaleLowerCase()) &&
+        (launchpad != null &&
+          normalizeTrenchDex(token.dex)?.toLocaleLowerCase() ===
+            launchpad.toLocaleLowerCase())) &&
       (minMarketCap == null ||
         (token.marketCap != null && token.marketCap >= minMarketCap)) &&
       (minVolume24h == null || token.volume24h >= minVolume24h) &&

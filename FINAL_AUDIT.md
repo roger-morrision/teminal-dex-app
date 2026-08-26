@@ -203,3 +203,11 @@ No in-scope automated regression was found. Generated export directories were re
 - **Partially verified:** restricted-shell Doctor is 17/21 because child `npm` is unavailable; MOBILE-162 retains normal-environment 21/21 evidence. Physical-device Switch Access/TalkBack reachability and small-screen visual review remain QA device tasks.
 - **NEXT_QA_ACTION:** validate all 20 target families on the immutable result at 1.0× and 1.3× font scale, including edge taps, horizontal rails, screen-reader focus, and small-screen wrapping.
 - **NEXT_WEB_ACTION:** none.
+## MOBILE-166 Trenches provider DEX normalization
+
+- **Implemented:** 8 dependency-ready material outcomes (`MOBILE-DATA-261..268`) close `MOBILE-QA-021` at the provider-data boundary.
+- **Verified:** TypeScript/full ESLint PASS; focused Jest 3 suites/9 tests PASS; full Jest 83 suites/419 tests PASS; public Expo configuration PASS.
+- **Shortfall:** 12 to 20. `MOBILE-QA-269..280` are explicitly blocked by physical Android/iOS/accessibility/performance devices, unavailable child npm, upstream Noble ownership, or controllable provider cursor/data fixtures. No safe ready item remains in this reconciled queue.
+- **Partially verified:** restricted-shell Doctor 17/21; immutable API 37 rerun of the corrected filter panel is assigned to QA.
+- **NEXT_QA_ACTION:** pin the result; open Trenches filters with undefined, blank, duplicate-case, and `All` DEX provider rows; verify no warning/undefined option, one stable option per DEX, touch targets retained, and stale selection recovers.
+- **NEXT_WEB_ACTION:** none; MOBILE treats absent optional DEX evidence as unavailable without manufacturing it.

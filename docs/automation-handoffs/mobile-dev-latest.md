@@ -1,5 +1,17 @@
 # MOBILE DEV → QA handoff
 
+## MOBILE-166 — Trenches provider DEX normalization
+
+- Base: `51fd2e8`; result: containing commit.
+- BA/PO: 20 current findings reconciled. Completed 8 material ready outcomes (`MOBILE-DATA-261..268`); exact shortfall 12 (`MOBILE-QA-269..280`) with device/toolchain/upstream/provider-fixture owners recorded in `WORKLOG.md`.
+- Changed behavior: invalid/blank/reserved DEX values are excluded; case variants deduplicate with stable first casing; limiting occurs after normalization; filter comparison is null-safe; stale selection fails soft to All; card provenance uses localized unavailable evidence.
+- Changed files: Trenches screen/filter library, focused regression, and MOBILE evidence documents only.
+- Evidence: TypeScript/full source ESLint PASS; focused Jest PASS (3 suites/9 tests); full Jest PASS (83 suites/419 tests); public Expo config PASS. Restricted-shell Doctor remains 17/21 because child npm cannot spawn.
+- Runtime scenario: inject undefined/blank/`All`/case-duplicate DEX values, open filter panel, select surviving DEX, refresh with selection removed, confirm no React key warning or undefined option and truthful card provenance.
+- Known risks: immutable API 37 rerun is pending; Doctor/Noble/physical accessibility/provider-fixture blockers remain `MOBILE-QA-269..280`.
+- NEXT_QA_ACTION: rerun the QA-021 reproduction on the immutable result and independently classify outcomes 261..268.
+- NEXT_WEB_ACTION: none.
+
 ## MOBILE-165 — 20/20 touch-target and motor accessibility
 
 - Base: `fe31e0c`; result: containing commit.

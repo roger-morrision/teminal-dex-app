@@ -611,3 +611,68 @@ The initial sandboxed diagnostic could not open Expo's user native-module cache 
 - Scenario status not counted as an additional DEV outcome: malformed-evidence UI traversal is BLOCKED by no deterministic provider fixture and the development-client route not settling.
 - Carry-forward order: `MOBILE-QA-269`, `MOBILE-QA-270`, `MOBILE-QA-271`, `MOBILE-QA-272`, `MOBILE-QA-273`, `MOBILE-QA-274`, `MOBILE-QA-275`, `MOBILE-QA-276`, `MOBILE-QA-277`, `MOBILE-QA-278`, `MOBILE-QA-279`, `MOBILE-QA-280`.
 - **NEXT_DEV_ACTION:** provide a deterministic whitespace/missing-evidence fixture and a verified dev-client route that opens each affected screen so QA can execute the rendered labels, retry, offline/error, navigation, and accessibility matrix on the immutable result.
+
+---
+
+# MOBILE-QA validation handoff — MOBILE-170
+
+- Trigger: 2026-08-26T13:41:33.980Z. Inspected exact result `b9a5b2e1c6a9c78a42ff17328e21fb740c65bc86` (`fix(mobile): normalize live feed evidence`), base `c28a7f6`.
+- Scope/coordination: PASS. The explicit canonical directory and safe-directory Git top-level normalize to `c:/tuan/devapps/teminal-dex-app`; Git prefix is empty. Start/end primary worktree was clean; no DEV writer lock was present; the result was pinned in a clean archive with the existing dependency tree attached. QA acquired the dedicated report lock only for this report. No product, test, config, provider/API, WEB, wallet, transaction, or data write occurred.
+- Environment/device: Windows; bundled Node 24.19.0; Expo 57 local CLI; API 37 `emulator-5554` (1080x2400); archive `%LOCALAPPDATA%\\Temp\\mobile-qa-170-b9a5b2e`. The exact canonical development bundle emitted `[MOBILE_BUILD] commit=b9a5b2e1c6a9c78a42ff17328e21fb740c65bc86`; the deep-linked development client remained on its `Tools` accessibility view, so no visual content, navigation, retry, or malformed-provider result is inferred.
+
+## MOBILE-QA acceptance matrix
+
+| Criterion | Result | Independent evidence |
+| --- | --- | --- |
+| Type and changed-surface lint | PASS | Archive `tsc --noEmit` and ESLint for all six changed product surfaces, shared formatter, and formatter test exit 0. |
+| Focused live-feed regression | PASS with flake finding | `MonitorTokenTable.test.tsx` rerun alone passes 1/3; format and all changed-surface component coverage is included in the final full suite. The initial seven-suite mixed invocation exposed `MOBILE-QA-281`, documented below. |
+| Full regression | PASS | Archive `jest --ci --runInBand --silent`: 83 suites / 423 tests pass in 47.177s. |
+| Expo public configuration | PASS | Android/iOS/web resolve with `terminaldex` deep-link scheme, iOS HTTPS-only ATS, biometric-only Android permissions, and no public secret/endpoint. |
+| Android / iOS / web bundles | CONDITIONAL PASS / PASS / PASS | Android exports one 5.7 MB Hermes bundle plus metadata and retains Noble strict-exports fallback. iOS exports one 2.3 MB Hermes bundle plus metadata. Web static export completes with one bundle and routes output. |
+| Expo Doctor | BLOCKED | Direct local `expo-doctor` attempts `spawn node ENOENT`; complete Doctor lane cannot run in this toolchain. |
+| Exact Android runtime | PASS with blocked scenario | ADB reverse/deep-link and bundling complete; exact MOBILE_BUILD marker is present. UI dump contains only development-client `Tools`; no deterministic blank/duplicate provider fixture is available, so live-feed evidence, list ordering, loading/stale/empty/filtered-empty/offline/error/retry/partial-page, large-text, and accessibility traversal is BLOCKED rather than fabricated. |
+
+## MOBILE-QA reconciliation (20 distinct DEV outcomes)
+
+| Stable ID | Result | Evidence, affected surface, and regression risk |
+| --- | --- | --- |
+| MOBILE-DATA-341 | PASS | CopyTrade ranking quality uses bounded evidence fallback; reviewed display-only change preserves trading/submission safety boundary. |
+| MOBILE-DATA-342 | PASS | Market Intelligence quality now trims valid text/localizes blank evidence; static and full suite pass. |
+| MOBILE-DATA-343 | PASS | Market Intelligence source now uses localized unavailable evidence instead of raw blank text. |
+| MOBILE-DATA-344 | PASS | Market Intelligence provider list uses `evidenceList`: blanks are removed, trimmed exact duplicates collapse, and empty lists fall back truthfully. |
+| MOBILE-DATA-345 | PASS | Claims source uses bounded source fallback in the evidence bar. |
+| MOBILE-DATA-346 | PASS | Claims RPC endpoint uses bounded unavailable fallback and does not alter the read-only contract. |
+| MOBILE-DATA-347 | PASS | Claims health uses bounded unavailable fallback; no health-state mutation is introduced. |
+| MOBILE-DATA-348 | PASS | Monitor delivery source is bounded before user-visible live-feed output. |
+| MOBILE-DATA-349 | PASS | Monitor transaction source is bounded in the live-event metadata row. |
+| MOBILE-DATA-350 | PASS | Monitor event channel is bounded in delivery metadata. |
+| MOBILE-DATA-351 | PASS | Monitor event status is bounded in delivery metadata. |
+| MOBILE-DATA-352 | PASS | Monitor evaluation source is bounded in evaluation-history metadata. |
+| MOBILE-DATA-353 | PASS | Trenches page quality uses `evidenceLabel` rather than whitespace-preserving uppercased text. |
+| MOBILE-DATA-354 | PASS | Trenches page source is bounded in provenance output. |
+| MOBILE-DATA-355 | PASS | Trenches provider list uses `evidenceList`, preventing blank separators and exact duplicate entries. |
+| MOBILE-DATA-356 | PASS | Whales event source is bounded in compact live-event evidence. |
+| MOBILE-DATA-357 | PASS | Whales event quality is bounded in compact live-event evidence. |
+| MOBILE-DATA-358 | PASS | Track delivery channel is bounded in delivery title output. |
+| MOBILE-DATA-359 | PASS | Track delivery status is bounded in delivery title output. |
+| MOBILE-DATA-360 | PASS | Track social provider list uses `evidenceList`, preventing blank separators and exact duplicate entries. |
+
+## MOBILE-QA finding and carry-forward blockers
+
+| ID | Severity / owner | Result | Reproduction, risk, and disposition |
+| --- | --- | --- | --- |
+| MOBILE-QA-281 | P2 / DEV test-maintenance | FAIL (intermittent) | Running the seven related suites together under `--ci --runInBand --silent` produced one `MonitorTokenTable` 5s timeout (`keeps provider market rows explicitly monitor-only across presets`) and the following test used an unmounted renderer. The same file rerun alone passes 3/3 and the complete 83/423 suite passes. Risk: order/resource-sensitive focused regression evidence can be non-deterministic. |
+
+- `MOBILE-QA-269..275`, `MOBILE-QA-278..280`: BLOCKED P2, owner QA/device/provider fixture. Physical assistive-tech/small-screen/offline/lifecycle/storage/provider-cursor/performance evidence remains unavailable.
+- `MOBILE-QA-276`: BLOCKED P2, owner toolchain. Doctor cannot spawn `node` in its child process.
+- `MOBILE-QA-277`: CONDITIONAL PASS P2, owner upstream dependency lane. Android export completes with no unresolved module but retains `@solana/wallet-standard-util` → Noble `./crypto.js` strict-exports fallback.
+- Runtime/log references: `%LOCALAPPDATA%\\Temp\\mobile-qa-170-full.err.log`, `mobile-qa-170-android-export.err.log`, `mobile-qa-170-runtime.out.log`, and `mobile-qa-170-window.xml`. No screenshot, secret, backend response, or provider diagnostic was retained. No MOBILE-to-WEB contract blocker; WEB was neither read nor written.
+- **MOBILE-QA release recommendation: CONDITIONAL NO-GO.** The 20 DEV outcomes pass independent source/automated gates, but `MOBILE-QA-281`, rendered live-feed fixture traversal, physical/toolchain lanes, and Noble condition prevent release certification.
+
+## MOBILE-QA 20/20 throughput disposition
+
+- Findings inspected/reconciled: 21 distinct evidence-backed MOBILE-QA items (20 DEV outcomes plus `MOBILE-QA-281`).
+- Material DEV outcomes available/verified: 20/20 PASS. Exact shortfall to 20: 0.
+- Stable blocked/skipped IDs: `MOBILE-QA-269..276`, `MOBILE-QA-278..280`; conditional `MOBILE-QA-277`; intermittent fail `MOBILE-QA-281`.
+- Carry-forward order: `MOBILE-QA-281`, `MOBILE-QA-269`, `MOBILE-QA-270`, `MOBILE-QA-271`, `MOBILE-QA-272`, `MOBILE-QA-273`, `MOBILE-QA-274`, `MOBILE-QA-275`, `MOBILE-QA-276`, `MOBILE-QA-277`, `MOBILE-QA-278`, `MOBILE-QA-279`, `MOBILE-QA-280`.
+- **NEXT_DEV_ACTION:** isolate and eliminate the `MonitorTokenTable` cross-suite timeout/unmounted-renderer flake, then provide deterministic blank/duplicate live-feed fixtures with a development-client route that opens all six affected surfaces for exact runtime/a11y verification.

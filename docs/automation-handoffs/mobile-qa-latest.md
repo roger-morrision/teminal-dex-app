@@ -528,3 +528,24 @@ The initial sandboxed diagnostic could not open Expo's user native-module cache 
 - Findings reconciled: 20. DEV outcomes available/verified: 8/8 PASS. Exact shortfall: 12 (`MOBILE-QA-269..280`); no padding.
 - No MOBILE-to-WEB blocker. QA lock released after this report.
 - **NEXT_DEV_ACTION:** provide a stable verified Monitor dev-client route and controlled/physical evidence for `MOBILE-QA-269..280`.
+
+---
+
+# MOBILE-QA validation handoff — MOBILE-168
+
+- Trigger: 2026-08-26T11:40:32.054Z. Scope PASS: canonical safe-directory Git top-level `c:/tuan/devapps/teminal-dex-app`, empty prefix, clean worktree, no DEV lock. Inspected immutable result `649fbd88750f0e0cd9b9628da458e0fe09db6bcf`, base `df8b438`, from a clean archive.
+- Evidence: TypeScript PASS; changed-surface ESLint PASS; focused provenance regression PASS (4 suites/9 tests). No product, WEB, API, data, wallet, transaction, or configuration mutation occurred.
+
+## MOBILE-QA reconciliation and release
+
+| IDs | Result | Evidence / exact NEXT_DEV_ACTION |
+| --- | --- | --- |
+| MOBILE-DATA-301..308 | PASS | Shared formatter and focused render tests cover trimmed valid provider labels plus localized fallbacks across Token Detail, Quote Review, Operations, Discover, Monitor, Trenches, Market Intelligence, and Wallet Intelligence. **NEXT_DEV_ACTION:** retain shared formatter regression. |
+| MOBILE-QA-269..275 | BLOCKED P2 | Physical accessibility, small-screen, offline/reconnect, lifecycle, and storage-fault evidence unavailable; owner QA/device provider. **NEXT_DEV_ACTION:** run physical matrix. |
+| MOBILE-QA-276 | BLOCKED P2 | npm-enabled Doctor unavailable; owner toolchain. **NEXT_DEV_ACTION:** provide exact 21/21 lane. |
+| MOBILE-QA-277 | CONDITIONAL PASS P2 | Known Noble Android fallback; owner upstream. **NEXT_DEV_ACTION:** revalidate on dependency change. |
+| MOBILE-QA-278..280 | BLOCKED P2 | Provider fixtures and physical performance unavailable; owner QA/provider/device. **NEXT_DEV_ACTION:** provide controlled fixtures and hardware measurements. |
+
+- Full Jest/config/bundle/runtime were not re-run in this bounded trigger; the DEV handoff claims 83/422 and public config PASS, but QA does not treat that as independent evidence. **NEXT_DEV_ACTION:** rerun full regression, exports, and exact API 37 malformed-provenance flow.
+- **MOBILE-QA release: CONDITIONAL NO-GO.** 8/8 available outcomes pass proportional independent verification; 12 external blocker IDs remain. QA lock released after reporting.
+- Throughput: 20 reconciled; 8 available/verified PASS; exact shortfall 12 (`MOBILE-QA-269..280`), no padding.

@@ -996,3 +996,55 @@ The initial sandboxed diagnostic could not open Expo's user native-module cache 
 - Findings inspected/reconciled: 20. DEV outcomes available/verified: 5/5 PASS. Exact shortfall to 20: 15 (`MOBILE-QA-269..280`, `MOBILE-QA-283..285`); no padding applied.
 - Carry-forward order: `MOBILE-QA-269`, `MOBILE-QA-270`, `MOBILE-QA-271`, `MOBILE-QA-272`, `MOBILE-QA-273`, `MOBILE-QA-274`, `MOBILE-QA-275`, `MOBILE-QA-276`, `MOBILE-QA-277`, `MOBILE-QA-278`, `MOBILE-QA-279`, `MOBILE-QA-280`, `MOBILE-QA-283`, `MOBILE-QA-284`, `MOBILE-QA-285`.
 - **NEXT_DEV_ACTION:** provide a controlled unknown-DEX artwork row and a physical accessibility/small-screen fixture so QA can finish the remaining visual semantic and motor/layout matrix without changing provider contracts.
+
+---
+
+# MOBILE-QA validation handoff — MOBILE-177
+
+- Trigger: 2026-08-26T20:41:41.140Z. Inspected immutable result `b1112f57bda13a0a94b659cf4dca35dfa325caa6` (`fix(mobile): clarify discover market metrics`), base `03b342a`.
+- Scope/coordination: PASS. Canonical explicit workspace and safe-directory Git top-level normalized to `c:/tuan/devapps/teminal-dex-app`, prefix empty, result clean, and no DEV or QA lock existed before validation. Source and automated evidence used clean archive `%LOCALAPPDATA%\\Temp\\mobile-qa-177-b1112f5` with existing dependencies linked. This report is the only repository write and is guarded by the dedicated QA lock.
+- Environment/device: Windows; bundled Node 24.19.0; Expo 57 local CLI. The API 37 Android discovery attempt did not settle before the bounded window. Verified launcher on port 8101 reached Metro `Waiting on http://localhost:8101`, but the exact dev client did not request the bundle or expose a stable hierarchy/immutable marker. No visual, assistive, navigation, provider, wallet, signing, submission, trading, API, WEB, configuration, or application-data conclusion is fabricated.
+
+## MOBILE-QA acceptance matrix
+
+| Criterion | Result | Independent evidence |
+| --- | --- | --- |
+| Type and changed-surface lint | PASS | Archive `tsc --noEmit` and ESLint of `TokenRow.tsx`, `SettingsProvider.tsx`, and `TokenRow.test.tsx` exit 0. |
+| Focused localized metrics regression | PASS | Archive `TokenRow.test.tsx`: 1 suite / 12 tests pass, including Vietnamese market-cap text and unavailable 6h semantic fallback. |
+| Full regression | PASS | Archive `jest --ci --runInBand --silent`: 83 suites / 452 tests pass in 56.082s. |
+| Expo/configuration | PASS with Doctor blocker | Public Expo configuration resolves; Expo Doctor emits `Error: spawn node ENOENT`, so Doctor is BLOCKED despite its wrapper exit code. |
+| Android / iOS / web bundles | CONDITIONAL PASS / PASS / PASS | Fresh archive exports produce Android 5.7 MB Hermes bundle plus metadata, iOS 2.3 MB Hermes bundle plus metadata, and a web 1.1 MB static bundle. Android retains the known Noble strict-exports fallback. |
+| Exact Discover runtime flow | BLOCKED | Metro reached port 8101, but no exact client bundle request, period selection, EN/VI row, or accessibility hierarchy settled. The bounded ADB discovery attempt also did not settle. |
+
+## MOBILE-QA reconciliation (20 current findings)
+
+| Stable ID | Result | Evidence / owner |
+| --- | --- | --- |
+| MOBILE-I18N-430 | PASS | Market-cap shorthand is catalog-backed: `tokenMarketCapShort` renders `$10 MC` in English and `Vốn hóa $10` in Vietnamese; rendered regression passes. |
+| MOBILE-A11Y-431 | PASS | Token metrics container now announces explicit price and market-cap semantics; focused accessible-label assertion passes. |
+| MOBILE-A11Y-432 | PASS | Token metric summary includes the selected 1h/6h/24h period and signed change; focused regression verifies period-aware label output. |
+| MOBILE-A11Y-433 | PASS | Missing selected-period change renders the visible dash while the accessible label truthfully says `unavailable`; focused 6h regression passes without inventing a percentage. |
+| MOBILE-QA-269 | BLOCKED P2 | Android TalkBack; owner QA/device. |
+| MOBILE-QA-270 | BLOCKED P2 | iOS VoiceOver; owner QA/device. |
+| MOBILE-QA-271 | BLOCKED P2 | Switch Access; owner QA/device. |
+| MOBILE-QA-272 | BLOCKED P2 | 320dp/enlarged-text layout; owner QA/device. |
+| MOBILE-QA-273 | BLOCKED P2 | Offline/reconnect recovery; owner QA/network fixture. |
+| MOBILE-QA-274 | BLOCKED P2 | Lifecycle interruption; owner QA/device. |
+| MOBILE-QA-275 | BLOCKED P2 | Storage-fault recovery; owner QA/device. |
+| MOBILE-QA-276 | BLOCKED P2 | Expo Doctor child Node ENOENT; owner toolchain. |
+| MOBILE-QA-277 | CONDITIONAL PASS P2 | Android bundle completes with Noble strict-exports fallback; owner upstream dependency. |
+| MOBILE-QA-278 | BLOCKED P2 | Monitor active-reset fixture; owner provider. |
+| MOBILE-QA-279 | BLOCKED P2 | Monitor partial-page/cursor fixture; owner provider. |
+| MOBILE-QA-280 | BLOCKED P2 | Physical performance measurement; owner QA/device. |
+| MOBILE-QA-283 | BLOCKED P2 | Android physical edge-tap traversal; owner QA/device. |
+| MOBILE-QA-284 | BLOCKED P2 | iOS physical edge-tap traversal; owner QA/device. |
+| MOBILE-QA-285 | BLOCKED P2 | Android large-text whale-row truncation; owner QA/device. |
+| MOBILE-QA-286 | BLOCKED P2 | iOS dynamic-type whale-row truncation; owner QA/device. |
+
+## MOBILE-QA release and throughput
+
+- Evidence references: `%LOCALAPPDATA%\\Temp\\mobile-qa-177-full.out.log`, `mobile-qa-177-full.err.log`, `mobile-qa-177-android-export.out.log`, `mobile-qa-177-ios-export.out.log`, `mobile-qa-177-web-export.out.log`, and `mobile-qa-177-runtime.out.log`. No screenshot, credential, secret, backend payload, or WEB evidence was retained. No MOBILE-to-WEB contract blocker exists.
+- **MOBILE-QA release recommendation: CONDITIONAL NO-GO.** All four available localized-market-metric outcomes pass independent source/automated/bundle evidence, but exact runtime period-language traversal and the physical accessibility/layout/recovery, Doctor, Noble, provider, and performance matrix remain incomplete.
+- Findings inspected/reconciled: 20. DEV material outcomes available/verified: 4/4 PASS. Exact shortfall to 20: 16 (`MOBILE-QA-269..280`, `MOBILE-QA-283..286`); no padding applied.
+- Carry-forward order: `MOBILE-QA-269`, `MOBILE-QA-270`, `MOBILE-QA-271`, `MOBILE-QA-272`, `MOBILE-QA-273`, `MOBILE-QA-274`, `MOBILE-QA-275`, `MOBILE-QA-276`, `MOBILE-QA-277`, `MOBILE-QA-278`, `MOBILE-QA-279`, `MOBILE-QA-280`, `MOBILE-QA-283`, `MOBILE-QA-284`, `MOBILE-QA-285`, `MOBILE-QA-286`.
+- **NEXT_DEV_ACTION:** provide an immutable dev-client route with controllable Discover 1h/6h/24h positive, negative, and unavailable token states so QA can complete EN/VI visual and assistive period-metric verification without changing provider contracts.

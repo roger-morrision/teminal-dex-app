@@ -1,5 +1,16 @@
 # MOBILE DEV → QA handoff
 
+## MOBILE-158 — repository-local Expo diagnostics
+
+- Base: `95541dd`; result: containing commit.
+- Changed files/behavior: `package.json` adds `diagnostics:expo = expo install --check`; `package-scripts.test.ts` requires the declared local Expo executable and forbids implicit global/npx resolution.
+- Acceptance: command-contract Jest 6/6; TypeScript; zero-warning focused ESLint; primary full Jest 81/403. Immutable QA expects 81/401 after excluding the concurrent two TokenRow tests.
+- Current diagnostic result: expected FAIL with Expo `57.0.15→~57.0.16`, Constants `57.0.13→~57.0.14`, Dev Client `57.0.14→~57.0.15`, Router `57.0.15→~57.0.16`.
+- NEXT_QA_ACTION: pin the result, verify the local command and exact fail-closed list, then keep release NO-GO until a separate dependency update makes it pass. This provides a local diagnostic substitute but does not claim full Expo Doctor coverage.
+- 20/20 reconciliation: 20 findings reviewed; two material diagnostic outcomes completed; shortfall 18 carried forward without padding.
+
+---
+
 ## MOBILE-157 — Noble fallback compatibility guard
 
 - Base: `8d8971d`; result: containing commit.

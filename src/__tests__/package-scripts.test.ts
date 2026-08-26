@@ -3,6 +3,7 @@ import packageJson from '../../package.json';
 const qualityScriptExecutables = {
   typecheck: { command: 'tsc', packageName: 'typescript' },
   lint: { command: 'eslint', packageName: 'eslint' },
+  'diagnostics:expo': { command: 'expo', packageName: 'expo' },
   test: { command: 'jest', packageName: 'jest' },
   'test:ci': { command: 'jest', packageName: 'jest' },
 } as const;

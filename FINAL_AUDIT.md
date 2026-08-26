@@ -152,3 +152,8 @@ No in-scope automated regression was found. Generated export directories were re
 
 - The existing non-fatal `./crypto.js` strict-exports fallback is conditionally accepted only for the audited nested Noble 1.9.7/1.8.0 pair while both installed fallback files exist and Android/iOS/web bundles complete.
 - Five automated guards force explicit review on version drift, missing fallback files, changed export behavior, or a root cryptography override. The warning remains visible; no unsafe resolver bypass was added.
+
+## MOBILE-158 local Expo diagnostic lane
+
+- `diagnostics:expo` resolves through the repository-declared Expo executable and never uses implicit global or `npx` tooling. Its command contract is tested.
+- The current diagnostic correctly exits nonzero for four SDK patch mismatches. This is actionable readiness evidence, not a release pass; upgrades require an isolated dependency install and full platform revalidation.

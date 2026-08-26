@@ -12,6 +12,7 @@
     "web": "expo start --web",
     "typecheck": "tsc --noEmit",
     "lint": "eslint app src",
+    "diagnostics:expo": "expo install --check",
     "test": "jest --runInBand",
     "test:ci": "jest --ci --runInBand --coverage"
   },

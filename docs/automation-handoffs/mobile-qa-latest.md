@@ -945,3 +945,54 @@ The initial sandboxed diagnostic could not open Expo's user native-module cache 
 - Findings inspected/reconciled: 20. DEV outcomes available/verified: 8/8 PASS. Exact shortfall to 20: 12 (`MOBILE-QA-269..280`); no padding applied.
 - Carry-forward order: `MOBILE-QA-269`, `MOBILE-QA-270`, `MOBILE-QA-271`, `MOBILE-QA-272`, `MOBILE-QA-273`, `MOBILE-QA-274`, `MOBILE-QA-275`, `MOBILE-QA-276`, `MOBILE-QA-277`, `MOBILE-QA-278`, `MOBILE-QA-279`, `MOBILE-QA-280`.
 - **NEXT_DEV_ACTION:** provide a dev-client route that reliably loads the immutable bundle plus controllable Discover token states, so QA can switch EN/VI and verify all eight visual/accessibility strings without changing navigation or stored watch intent.
+
+---
+
+# MOBILE-QA validation handoff — MOBILE-176
+
+- Trigger: 2026-08-26T19:40:40.144Z. Inspected immutable result `e9521409308d807e769221e7740b04ab61ffd3ef` (`fix(mobile): localize token artwork semantics`), base `5a1c4f3`.
+- Scope/coordination: PASS. Canonical safe-directory top-level normalized to `c:/tuan/devapps/teminal-dex-app`, Git prefix empty, result worktree clean, no DEV lock. Source/automated evidence used archive `%LOCALAPPDATA%\\Temp\\mobile-qa-176-e952140`; QA used the dedicated report lock only while writing. No product, config, WEB, API/provider, wallet, signing, submission, trading, or data write occurred.
+- Environment/runtime: Windows, bundled Node 24.19.0, Expo 57, API 37 `emulator-5554`. Exact verified launcher / port `8100` bundled Android 1,887 modules after deep link. UI dumps captured English Discover, Vietnamese Discover, and Vietnamese Token Detail. No screenshot, secret, provider payload, or WEB evidence was retained.
+
+## MOBILE-QA acceptance matrix
+
+| Criterion | Result | Independent evidence |
+| --- | --- | --- |
+| Type and changed-surface lint | PASS | Archive `tsc --noEmit` and ESLint of TokenAvatar, DexLogo, TokenRow, SettingsProvider, Token Detail, and TokenRow test exit 0. |
+| Focused artwork/localization regressions | PASS | `TokenRow` and `PrimaryDetailState`: 2 suites / 19 tests pass. |
+| Full regression | PASS | Archive `jest --ci --runInBand --silent`: 83 suites / 451 tests pass in 39.019s. |
+| Expo/config/platform bundles | PASS with carried conditions | Public config and Android/iOS/web exports pass. Android retains Noble strict-exports fallback; Doctor child Node remains blocked. |
+| Exact EN/VI runtime traversal | PASS with fixture limitation | EN Discover renders `FZqd…jKa2 token logo`, `age unavailable`, `Pump.fun DEX logo`, and social semantics. After Settings → Tiếng Việt, Discover renders localized search/actions, `Không có logo token …; đang hiển thị ký tự viết tắt`, `Logo DEX Pump.fun`, and localized age/holder/social evidence. Vietnamese Token Detail renders localized missing-artwork semantics. No unknown-DEX provider row was available at runtime. |
+
+## MOBILE-QA reconciliation (20 current findings)
+
+| Stable ID | Result | Evidence / owner |
+| --- | --- | --- |
+| MOBILE-I18N-425 | PASS | Token artwork semantics are localized; EN/VI Discover runtime shows token-logo/fallback descriptions and focused regression passes. |
+| MOBILE-I18N-426 | PASS | Missing token artwork renders localized initials fallback in Vietnamese Discover and Token Detail; focused regression passes. |
+| MOBILE-I18N-427 | PASS | Recognized DEX label is localized (`Pump.fun DEX logo` / `Logo DEX Pump.fun`) in exact runtime. |
+| MOBILE-I18N-428 | PASS (automated); runtime fixture BLOCKED | Unknown-DEX localized semantic is covered by focused regression/source; no unknown provider DEX row appeared during bounded runtime. Owner for visual fixture: provider. |
+| MOBILE-I18N-429 | PASS | Vietnamese Token Detail header shows localized missing-artwork semantics; focused detail regression passes. |
+| MOBILE-QA-269 | BLOCKED P2 | Android TalkBack; owner QA/device. |
+| MOBILE-QA-270 | BLOCKED P2 | iOS VoiceOver; owner QA/device. |
+| MOBILE-QA-271 | BLOCKED P2 | Switch Access; owner QA/device. |
+| MOBILE-QA-272 | BLOCKED P2 | 320dp/enlarged-text layout; owner QA/device. |
+| MOBILE-QA-273 | BLOCKED P2 | Offline/reconnect; owner QA/network fixture. |
+| MOBILE-QA-274 | BLOCKED P2 | Lifecycle interruption; owner QA/device. |
+| MOBILE-QA-275 | BLOCKED P2 | Storage-fault recovery; owner QA/device. |
+| MOBILE-QA-276 | BLOCKED P2 | Expo Doctor child Node; owner toolchain. |
+| MOBILE-QA-277 | CONDITIONAL PASS P2 | Android Noble strict-exports fallback; owner upstream. |
+| MOBILE-QA-278 | BLOCKED P2 | Monitor active-reset fixture; owner provider. |
+| MOBILE-QA-279 | BLOCKED P2 | Monitor partial-page/cursor fixture; owner provider. |
+| MOBILE-QA-280 | BLOCKED P2 | Physical performance; owner QA/device. |
+| MOBILE-QA-283 | BLOCKED P2 | Android physical edge-tap matrix; owner QA/device. |
+| MOBILE-QA-284 | BLOCKED P2 | iOS edge-tap matrix; owner QA/device. |
+| MOBILE-QA-285 | BLOCKED P2 | Android large-text whale-row truncation; owner QA/device. |
+
+## MOBILE-QA release and throughput
+
+- Runtime references: `%LOCALAPPDATA%\\Temp\\mobile-qa-176-discover.xml`, `mobile-qa-176-discover-vi2.xml`, `mobile-qa-176-detail-vi.xml`, `mobile-qa-176-runtime.out.log`, `mobile-qa-176-full.err.log`, and `mobile-qa-176-android-export.err.log`.
+- **MOBILE-QA release recommendation: CONDITIONAL NO-GO.** All five M176 outcomes pass (four with exact EN/VI runtime proof, unknown DEX automated only); physical accessibility/layout/recovery, Doctor, Noble, and provider scenarios remain incomplete.
+- Findings inspected/reconciled: 20. DEV outcomes available/verified: 5/5 PASS. Exact shortfall to 20: 15 (`MOBILE-QA-269..280`, `MOBILE-QA-283..285`); no padding applied.
+- Carry-forward order: `MOBILE-QA-269`, `MOBILE-QA-270`, `MOBILE-QA-271`, `MOBILE-QA-272`, `MOBILE-QA-273`, `MOBILE-QA-274`, `MOBILE-QA-275`, `MOBILE-QA-276`, `MOBILE-QA-277`, `MOBILE-QA-278`, `MOBILE-QA-279`, `MOBILE-QA-280`, `MOBILE-QA-283`, `MOBILE-QA-284`, `MOBILE-QA-285`.
+- **NEXT_DEV_ACTION:** provide a controlled unknown-DEX artwork row and a physical accessibility/small-screen fixture so QA can finish the remaining visual semantic and motor/layout matrix without changing provider contracts.

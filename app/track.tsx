@@ -6,7 +6,7 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { fetchAlertDeliveries, fetchFeedHistory, fetchSocialRadar, fetchTrackFeed } from "@/api/client";
 import type { FeedHistoryCursor, FeedHistoryEvent, SocialRadarTrend, TrackNotification } from "@/api/schema";
-import { compactUsd, evidenceLabel } from "@/lib/format";
+import { compactUsd, evidenceLabel, evidenceList } from "@/lib/format";
 import { useWalletSession } from "@/security/WalletSessionProvider";
 import { useSettings } from "@/settings/SettingsProvider";
 import {
@@ -232,7 +232,8 @@ export default function TrackScreen() {
             >
               <View style={styles.flex}>
                 <Text style={styles.eventTitle}>
-                  {item.channel} · {item.status}
+                  {evidenceLabel(item.channel, t("unavailable"))} ·{" "}
+                  {evidenceLabel(item.status, t("unavailable"))}
                 </Text>
                 <Text style={styles.meta}>{item.eventKey}</Text>
               </View>
@@ -277,7 +278,7 @@ export function SocialTrendCard({ item, onOpen }: { item: SocialRadarTrend; onOp
         })}
       </Text>
       <Text style={styles.meta}>
-        {item.trend.providers.join(" · ") || t("unavailable")} · {item.trend.freshness} · {item.trend.marketConfirmation}
+        {evidenceList(item.trend.providers, " · ", t("unavailable"))} · {item.trend.freshness} · {item.trend.marketConfirmation}
       </Text>
       {item.evidence.map((evidence, index) => evidence.text ? (
         <Text key={`${evidence.provider ?? "social"}:${evidence.externalId ?? index}`} numberOfLines={3} style={styles.socialEvidence}>

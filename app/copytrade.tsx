@@ -30,7 +30,7 @@ import type {
   CopyTradeConfig,
   TopTrader,
 } from "@/api/schema";
-import { compactUsd, signedPercent } from "@/lib/format";
+import { compactUsd, evidenceLabel, signedPercent } from "@/lib/format";
 import { publicErrorMessage } from "@/lib/public-error";
 import {
   boundedCopyNumber,
@@ -272,7 +272,7 @@ function Rankings({
           <Text style={styles.provenance}>
             {t("sourceEvidence", {
               source: source ?? "none",
-              quality: quality?.replaceAll("_", " ") ?? t("unavailable"),
+              quality: evidenceLabel(quality?.replaceAll("_", " "), t("unavailable")),
             })}
           </Text>
           <Text style={styles.limitation}>{t("rankingLimitation")}</Text>

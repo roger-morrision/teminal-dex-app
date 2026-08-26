@@ -1,4 +1,4 @@
-import { compactUsd, evidenceLabel, signedPercent, tokenPrice } from '@/lib/format';
+import { compactUsd, evidenceLabel, evidenceList, signedPercent, tokenPrice } from '@/lib/format';
 describe('formatters', () => {
   it('formats market values defensively', () => {
     expect(compactUsd(null)).toBe('—');
@@ -18,5 +18,10 @@ describe('formatters', () => {
     expect(evidenceLabel('  raydium  ', 'unknown')).toBe('raydium');
     expect(evidenceLabel('   ', 'unknown')).toBe('unknown');
     expect(evidenceLabel(undefined, 'unavailable')).toBe('unavailable');
+  });
+
+  it('normalizes provider lists and removes blank duplicate evidence', () => {
+    expect(evidenceList([' raydium ', '', 'raydium', 'orca'], ' + ', 'none')).toBe('raydium + orca');
+    expect(evidenceList([' ', null], ', ', 'none')).toBe('none');
   });
 });

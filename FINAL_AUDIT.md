@@ -238,3 +238,12 @@ No in-scope automated regression was found. Generated export directories were re
 - **Safety:** no WEB/API/provider mutation, wallet action, signing, submission, or trading behavior changed.
 - **NEXT_QA_ACTION:** pin the result; inject whitespace-only values for all 20 stable IDs, verify localized fallbacks and unchanged navigation, then run exact API 37 and release gates.
 - **NEXT_WEB_ACTION:** none.
+
+## MOBILE-170 20/20 live-feed evidence integrity
+
+- **Implemented:** 20/20 material outcomes (`MOBILE-DATA-341..360`); exact shortfall 0 across CopyTrade, Market Intelligence, Monitor, Trenches, Whales, and Track.
+- **Verified:** TypeScript/full ESLint PASS; focused Jest 7 suites/24 tests PASS; full Jest 83 suites/423 tests PASS; public Expo configuration PASS.
+- **Truthfulness:** blank quality/source/provider/RPC/channel/status labels no longer render as present evidence; provider arrays remove blanks and duplicates before display.
+- **Safety:** display normalization only; no WEB/API/provider mutation, wallet action, signing, submission, or trading behavior changed.
+- **NEXT_QA_ACTION:** pin the result, inject whitespace and duplicate provider labels for all 20 IDs, then verify visual/accessibility output and exact API 37 navigation.
+- **NEXT_WEB_ACTION:** none.

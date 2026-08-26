@@ -97,7 +97,7 @@ function LiveEvents({ rows, largeText, onReset, onOpen }: { rows: TrackNotificat
         <Text style={[styles.actionText, { color: buy ? colors.positive : colors.negative }]}>{t(buy ? "bought" : "sold")} {amount} {item.tokenSymbol}</Text>
         {whale ? <Text style={styles.meta}>{t("whaleHolds", { amount: compactUsd(whale.valueUsd), symbol: whale.tokenSymbol })}</Text> : null}
         <MarketSnapshot item={item} compact />
-        <Text numberOfLines={1} style={styles.evidence}>{item.wallet ? short(item.wallet) : item.source} · {item.source} · {item.dataQuality}</Text>
+        <Text numberOfLines={1} style={styles.evidence}>{item.wallet ? short(item.wallet) : evidenceLabel(item.source, t("sourceUnavailable"))} · {evidenceLabel(item.source, t("sourceUnavailable"))} · {evidenceLabel(item.dataQuality, t("qualityUnavailable"))}</Text>
         {whaleAmountContext(item) === "amount_exceeds_market_cap" ? <Text style={{ color: colors.warning, fontSize: 8, marginTop: 5 }}>{t("whaleAmountContextWarning")}</Text> : null}
       </View>
       <View style={{ width: 42, alignItems: "center", gap: 3 }}>

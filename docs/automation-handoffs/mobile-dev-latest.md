@@ -1,5 +1,17 @@
 # MOBILE DEV → QA handoff
 
+## MOBILE-170 — 20/20 live-feed evidence integrity
+
+- Base: `c28a7f6`; result: containing commit.
+- BA/PO and DEV: 20 current findings reconciled and 20 material outcomes completed (`MOBILE-DATA-341..360`); exact shortfall 0.
+- Changed behavior: CopyTrade, Market Intelligence, Monitor, Trenches, Whales, and Track normalize 20 audited quality/source/provider/RPC/channel/status outputs; provider arrays trim, deduplicate, and fall back truthfully.
+- Changed files: six production areas, shared formatter/regression, and MOBILE evidence documents only.
+- Evidence: TypeScript/full source ESLint PASS; focused Jest 7 suites/24 tests PASS; full Jest 83 suites/423 tests PASS; public Expo config PASS.
+- Runtime scenario: inject blank, whitespace, and duplicate provider evidence for each ID; verify localized fallback labels, stable provider ordering, no empty separators, and unchanged navigation/retry behavior.
+- Known risks: immutable API 37 traversal, physical accessibility/resilience/performance, npm-enabled Doctor, and Noble fallback remain separately QA-owned.
+- NEXT_QA_ACTION: pin the result, independently classify all 20 IDs, run malformed live-feed traversal and standard release gates.
+- NEXT_WEB_ACTION: none.
+
 ## MOBILE-169 — 20/20 evidence-label integrity
 
 - Base: `6d53b9e`; result: containing commit.

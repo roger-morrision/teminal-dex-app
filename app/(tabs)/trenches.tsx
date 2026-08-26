@@ -15,7 +15,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { fetchTrackFeed, fetchTrenches } from "@/api/client";
 import type { MarketToken } from "@/api/schema";
-import { compactUsd, evidenceLabel, signedPercent, tokenPrice } from "@/lib/format";
+import { compactUsd, evidenceLabel, evidenceList, signedPercent, tokenPrice } from "@/lib/format";
 import { WhaleFlowBadge } from "@/components/WhaleFlowBadge";
 import { whaleFlowByToken } from "@/lib/whale-activity";
 import {
@@ -131,7 +131,7 @@ export default function TrenchesScreen() {
                   ]}
                 />
                 <Text style={styles.statusText}>
-                  {query.data?.dataQuality?.toUpperCase() ?? t("realData")}
+                  {evidenceLabel(query.data?.dataQuality?.toUpperCase(), t("realData"))}
                 </Text>
               </View>
             </View>
@@ -171,8 +171,8 @@ export default function TrenchesScreen() {
             </View>
             <View style={styles.provenance}>
               <Text style={styles.provenanceText}>
-                {t("source")}: {query.data?.source ?? t("loading")} ·{" "}
-                {query.data?.providers.join(", ") ?? t("launchFeed")}
+                {t("source")}: {evidenceLabel(query.data?.source, t("loading"))} ·{" "}
+                {evidenceList(query.data?.providers, ", ", t("launchFeed"))}
               </Text>
             </View>
             <View style={styles.filterHeader}>

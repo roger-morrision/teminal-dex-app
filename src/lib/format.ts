@@ -34,3 +34,17 @@ export function signedPercent(value: number): string {
 export function evidenceLabel(value: unknown, fallback: string): string {
   return typeof value === 'string' && value.trim() ? value.trim() : fallback;
 }
+
+export function evidenceList(
+  values: unknown,
+  separator: string,
+  fallback: string,
+): string {
+  if (!Array.isArray(values)) return fallback;
+  const normalized = values
+    .flatMap((value) =>
+      typeof value === 'string' && value.trim() ? [value.trim()] : [],
+    )
+    .filter((value, index, all) => all.indexOf(value) === index);
+  return normalized.length ? normalized.join(separator) : fallback;
+}

@@ -1611,3 +1611,18 @@ Impact: blank evidence can imply a present value while conveying nothing, includ
 - Operations, Whales, Wallet Intelligence, Track, Token Detail, Discover, Monitor, and Trenches now trim valid quality/source/provider/method/DEX/token labels and localize blank/missing values.
 - TypeScript/full source ESLint PASS; focused Jest PASS (7 suites/15 tests); full Jest PASS (83 suites/422 tests); public Expo config PASS.
 - No WEB/API/provider mutation, wallet action, transaction behavior, production data, secret, or generated output changed.
+
+## MOBILE BA/PO review — 2026-08-26 13:20 trigger
+
+Fresh post-`c28a7f6` QA/source reconciliation found 20 dependency-ready live-feed labels that still accept blank provider text. Acceptance for every item: trim valid text and localize blank/missing evidence through `evidenceLabel`, with no schema or provider mutation.
+
+1. **MOBILE-DATA-341** CopyTrade ranking quality. 2. **MOBILE-DATA-342** Market Intelligence page quality. 3. **MOBILE-DATA-343** Market Intelligence page source. 4. **MOBILE-DATA-344** Market Intelligence provider list. 5. **MOBILE-DATA-345** Claims source. 6. **MOBILE-DATA-346** Claims RPC endpoint. 7. **MOBILE-DATA-347** Claims health. 8. **MOBILE-DATA-348** Monitor delivery source. 9. **MOBILE-DATA-349** Monitor transaction source. 10. **MOBILE-DATA-350** Monitor event channel. 11. **MOBILE-DATA-351** Monitor event status. 12. **MOBILE-DATA-352** Monitor evaluation source. 13. **MOBILE-DATA-353** Trenches page quality. 14. **MOBILE-DATA-354** Trenches page source. 15. **MOBILE-DATA-355** Trenches provider list. 16. **MOBILE-DATA-356** Whale event source. 17. **MOBILE-DATA-357** Whale event quality. 18. **MOBILE-DATA-358** Track delivery channel. 19. **MOBILE-DATA-359** Track delivery status. 20. **MOBILE-DATA-360** Track social provider list.
+
+Impact: blank live-feed provenance can imply evidence exists while presenting none. Dependencies: all ready, existing read-only contracts only. Verification: formatter plus affected component suites, TypeScript, ESLint, full Jest, Expo config. Priority/execution follows stable-ID order. NEXT_WEB_ACTION: none.
+
+### MOBILE-170 implementation result
+
+- Completed 20/20 material outcomes (`MOBILE-DATA-341..360`); exact shortfall 0.
+- CopyTrade, Market Intelligence, Monitor, Trenches, Whales, and Track now normalize the 20 audited live-feed quality/source/provider/RPC/channel/status labels; provider arrays remove blank duplicates before display.
+- TypeScript/full source ESLint PASS; focused Jest PASS (7 suites/24 tests); full Jest PASS (83 suites/423 tests); public Expo config PASS.
+- No WEB/API/provider mutation, wallet action, transaction behavior, production data, secret, or generated output changed.

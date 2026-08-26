@@ -28,7 +28,7 @@ import type {
   MarketSignal,
   SignalsResponse,
 } from "@/api/schema";
-import { compactUsd, evidenceLabel, signedPercent } from "@/lib/format";
+import { compactUsd, evidenceLabel, evidenceList, signedPercent } from "@/lib/format";
 import { isSolanaAddress } from "@/security/input";
 import { colors, spacing } from "@/theme";
 import { useSettings } from "@/settings/SettingsProvider";
@@ -229,7 +229,7 @@ function SignalsPanel({
           })}
         </View>
         <Text style={styles.provenance}>
-          {page?.dataQuality ?? t("checking")} · {page?.recordCount ?? 0}/
+          {evidenceLabel(page?.dataQuality, t("checking"))} · {page?.recordCount ?? 0}/
           {page?.totalCount ?? 0}
         </Text>
       </View>
@@ -261,7 +261,7 @@ function SignalsPanel({
       {page ? (
         <EvidenceBar
           stale={page.freshness.isStale}
-          text={`${page.source} · ${page.providers?.join(" + ") || t("providerUnavailable")} · ${t("ingestion", { status: page.ingestion?.status ?? t("untracked") })}`}
+          text={`${evidenceLabel(page.source, t("sourceUnavailable"))} · ${evidenceList(page.providers, " + ", t("providerUnavailable"))} · ${t("ingestion", { status: page.ingestion?.status ?? t("untracked") })}`}
         />
       ) : null}
       {query.isLoading ? (
@@ -393,7 +393,7 @@ function HeatmapPanel({
           <EvidenceBar
             stale={data.freshness.isStale}
             text={t("heatmapInclusion", {
-              source: data.providers.join(" + ") || data.source,
+              source: evidenceList(data.providers, " + ", evidenceLabel(data.source, t("sourceUnavailable"))),
               included: data.recordCount,
               excluded: data.trustSummary.excludedRecordCount,
             })}
@@ -491,7 +491,7 @@ function ClaimsPanel({
         <>
           <EvidenceBar
             stale={data.health !== "healthy"}
-            text={`${data.source} · ${data.rpcEndpoint} · ${data.health}`}
+            text={`${evidenceLabel(data.source, t("sourceUnavailable"))} · ${evidenceLabel(data.rpcEndpoint, t("unavailable"))} · ${evidenceLabel(data.health, t("unavailable"))}`}
           />
           <View style={styles.kpis}>
             <Kpi label={t("detected")} value={String(data.claimsDetected)} />

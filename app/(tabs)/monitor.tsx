@@ -31,6 +31,7 @@ import { useSettings } from "@/settings/SettingsProvider";
 import { colors, spacing } from "@/theme";
 import { publicErrorMessage } from "@/lib/public-error";
 import { publicReasonKey } from "@/lib/public-evidence-reason";
+import { evidenceLabel } from "@/lib/format";
 
 type ViewMode = "live" | "rules" | "delivery";
 type AlertType = CreateAlertInput["type"];
@@ -189,7 +190,7 @@ function LiveFeed({
   return (
     <View>
       <Text style={styles.provenance}>
-        {t("source")}: {query.data?.source} ·{" "}
+        {t("source")}: {evidenceLabel(query.data?.source, t("sourceUnavailable"))} ·{" "}
         {t("signedObservations", { count: query.data?.recordCount ?? 0 })}
       </Text>
       {query.data?.alerts.length ? (
@@ -227,7 +228,7 @@ function LiveFeed({
                 {item.tokenSymbol} · {item.type.replaceAll("_", " ")}
               </Text>
               <Text style={styles.eventMeta}>
-                {short(item.txHash)} · {item.source} ·{" "}
+                {short(item.txHash)} · {evidenceLabel(item.source, t("sourceUnavailable"))} ·{" "}
                 {relative(item.timestamp, t)}
               </Text>
             </View>
@@ -566,7 +567,8 @@ function Delivery({
           />
           <View style={styles.flex}>
             <Text style={styles.eventTitle}>
-              {item.channel} · {item.status}
+              {evidenceLabel(item.channel, t("unavailable"))} ·{" "}
+              {evidenceLabel(item.status, t("unavailable"))}
             </Text>
             <Text style={styles.eventMeta}>
               {item.reason ? t(publicReasonKey(item.reason)) :
@@ -593,7 +595,7 @@ export function EvaluationHistory({ data, loading, error, retrying = false, onRe
       <View style={styles.flex}>
         <Text style={styles.eventTitle}>{item.alert.name} · {t(item.status === "triggered" ? "triggered" : item.status === "not_triggered" ? "notTriggered" : "unavailable")}</Text>
         <Text style={styles.eventMeta}>{t("evaluationMetric", { metric: item.metric.name, value: item.metric.value ?? t("unavailable"), threshold: item.metric.threshold ?? t("unavailable") })} · {relative(item.evaluatedAt, t)}</Text>
-        <Text style={styles.eventMeta}>{item.source} · {short(item.sourceIdentity)}{item.reason ? ` · ${t(publicReasonKey(item.reason))}` : ""}</Text>
+        <Text style={styles.eventMeta}>{evidenceLabel(item.source, t("sourceUnavailable"))} · {short(item.sourceIdentity)}{item.reason ? ` · ${t(publicReasonKey(item.reason))}` : ""}</Text>
       </View>
     </View>)}
     {hasMore && onLoadMore ? <Pressable accessibilityRole="button" accessibilityLabel={t("loadOlderEvaluations")} accessibilityState={{ disabled: loadingMore, busy: loadingMore }} disabled={loadingMore} onPress={onLoadMore} style={[styles.primary, loadingMore && styles.disabled]}><Text style={styles.primaryText}>{loadingMore ? t("loadingOlderEvaluations") : t("loadOlderEvaluations")}</Text></Pressable> : null}

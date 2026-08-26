@@ -76,6 +76,8 @@ describe("Trenches filters", () => {
   it("bounds text inputs and reports active criteria", () => {
     expect(boundedKeyword(`abc\u0000${"x".repeat(60)}`)).toHaveLength(50);
     expect(boundedNumber("12.3x4.567")).toBe("12.34");
+    expect(boundedNumber("101", 100)).toBe("100");
+    expect(boundedNumber("99.75", 100)).toBe("99.75");
     expect(
       trenchFilterCount({
         ...emptyTrenchFilters,

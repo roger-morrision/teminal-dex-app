@@ -1,5 +1,17 @@
 # MOBILE DEV → QA handoff
 
+## MOBILE-163 — 20/20 filter integrity and accessibility batch
+
+- Base: `2830415`; result: containing commit.
+- Findings/outcomes: `MOBILE-A11Y-201..204`, `MOBILE-DATA-205..207`, `MOBILE-UX-208`, `MOBILE-A11Y-209..218`, and `MOBILE-DATA-219..220`. All 20 are material production behaviors with acceptance criteria recorded in `WORKLOG.md`; remaining to 20: 0.
+- Changed behavior: Discover exposes tab/radio/modal/filter/pagination state and normalizes bounded thresholds; Monitor exposes separate exclusive groups, checkboxes, a real density switch, named reset, and truthful pagination state; Trenches aligns native/state text limits and caps bonding progress at 100.
+- Changed files: `app/(tabs)/discover.tsx`, `app/(tabs)/trenches.tsx`, `src/components/MonitorTokenTable.tsx`, `src/lib/trenches.ts`, focused tests, and MOBILE evidence documents.
+- Acceptance evidence: TypeScript PASS; focused ESLint PASS; focused Jest PASS (3 suites/12 tests); full Jest PASS (82 suites/411 tests). Restricted-shell Doctor 17/21 because child `npm` is unavailable; compatibility check blocked on external user-cache `EPERM`; normal-environment 21/21 remains recorded in MOBILE-162. No production mock/API/transaction behavior added.
+- Runtime scenarios: Discover mode/period/DEX traversal; malformed threshold paste; modal open/close; pagination retry while busy; Monitor window/preset/direction/DEX/sort/density traversal; reset and load-more; Trenches 50-character keyword and 100% bonding cap.
+- Known risk: TalkBack/VoiceOver traversal requires physical-device confirmation. API 37 already rendered Whales/Discover through the current Metro bundle without fatal or module-resolution errors; native rebuild remains host-loopback blocked.
+- NEXT_QA_ACTION: pin the result commit and independently classify all 20 IDs pass/fail/blocked, then rerun type/lint/full Jest and API 37 runtime scenarios.
+- NEXT_WEB_ACTION: none.
+
 ## MOBILE-162 — repository-local Expo Doctor
 
 - Base: `6c5c5a9`; result: containing commit.

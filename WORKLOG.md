@@ -1379,3 +1379,36 @@
 - Added exact dev dependency `expo-doctor` 1.20.3 and `diagnostics:doctor`, extending the executable contract so the release diagnostic cannot silently use global tooling or `npx`.
 - The first live run exposed that dynamic config copied `app.json` internally instead of consuming Expo's supplied config. Converted it to the supported config-function merge and retained nullable `mobileBuildCommit`; the provenance tests now exercise the same merge contract.
 - Local Doctor passes 21/21; focused command/config coverage passes 14/14. Twenty findings were reconciled; eight material diagnostic/config outcomes completed; shortfall 12 remains exact device/runtime evidence, physical accessibility, upstream audit/Noble remediation, WEB-QC fixtures, and concurrent Whales/logo acceptance.
+## MOBILE 20/20 review — 2026-08-26 accessibility and filter integrity
+
+The current run reconciled these distinct dependency-ready findings before implementation. Evidence is the current production JSX in `discover.tsx`, `trenches.tsx`, and `MonitorTokenTable.tsx`; each item is verified by focused interaction/accessibility tests plus TypeScript and lint.
+
+1. **MOBILE-A11Y-201** (high): Discover mode tabs have no containing tab list. Accept when assistive technology receives the tab relationship.
+2. **MOBILE-A11Y-202** (high): Discover period radios have no radio group. Accept when 5m/1h/6h/24h are announced as one exclusive set.
+3. **MOBILE-A11Y-203** (high): Discover DEX radios have no radio group. Accept when the modal DEX choices expose exclusive-set semantics.
+4. **MOBILE-A11Y-204** (medium): Discover filter trigger does not expose expanded state. Accept when screen readers receive open/closed state.
+5. **MOBILE-DATA-205** (high): Discover numeric filters accept malformed multi-decimal text. Accept when only one decimal separator and bounded precision are retained.
+6. **MOBILE-DATA-206** (medium): Discover minimum-liquidity input has no length bound. Accept when excessively large query values cannot be entered.
+7. **MOBILE-DATA-207** (medium): Discover minimum-market-cap input has no length bound. Accept when excessively large query values cannot be entered.
+8. **MOBILE-UX-208** (medium): Discover search has no explicit query length bound. Accept when input is capped without changing valid searches.
+9. **MOBILE-A11Y-209** (medium): Discover pagination retry omits disabled state from accessibility state. Accept when busy retry is announced disabled.
+10. **MOBILE-A11Y-210** (medium): Discover modal sheet has no descriptive label. Accept when its purpose is announced on entry.
+11. **MOBILE-A11Y-211** (high): Monitor window controls have no exclusive group semantics. Accept when the time-window choices are a radio group.
+12. **MOBILE-A11Y-212** (high): Monitor preset controls have no exclusive group semantics. Accept when preset choices are a separate radio group.
+13. **MOBILE-A11Y-213** (high): Monitor direction choices have no exclusive group semantics. Accept when all/positive/negative are grouped radios.
+14. **MOBILE-A11Y-214** (high): Monitor DEX choices have no exclusive group semantics. Accept when DEX choices are grouped radios.
+15. **MOBILE-A11Y-215** (high): Monitor multi-sort choices are incorrectly exposed as generic selected buttons. Accept when each is an independently checked checkbox.
+16. **MOBILE-A11Y-216** (medium): Monitor density toggle is exposed as a permanently selected generic control. Accept when it exposes switch state.
+17. **MOBILE-A11Y-217** (medium): Monitor reset-filters action has no accessible name. Accept when its localized label is announced.
+18. **MOBILE-A11Y-218** (medium): Monitor load-more omits disabled state from accessibility state. Accept when busy pagination is announced disabled.
+19. **MOBILE-DATA-219** (medium): Trenches keyword input has no native length bound even though state truncates it. Accept when native and state limits agree at 50 characters.
+20. **MOBILE-DATA-220** (high): Trenches percentage filtering accepts values above 100 and numeric inputs lack native length bounds. Accept when bonding progress is capped at 100 and every threshold input enforces the shared bound.
+
+All 20 are MOBILE-owned, safe, real-data compatible, and independent of the dirty concurrent Whales/TokenRow slice. Ranked implementation order is the numeric stable-ID order. NEXT_WEB_ACTION: none.
+
+### MOBILE-163 implementation result
+
+- Completed 20/20: each finding above now has a corresponding production behavior change; remaining to 20: 0.
+- TypeScript and focused ESLint pass. Focused regression passes 3 suites/12 tests; the full regression passes 82 suites/411 tests.
+- Repository-local Expo Doctor executed 21 checks but this restricted QA shell can resolve only 17 because child `npm` is unavailable. Expo compatibility also reached the external user cache and was blocked by sandbox `EPERM`; neither is an app regression, and MOBILE-162 already records 21/21 from the normal DEV environment.
+- No WEB change, mock production data, secrets, wallet mutation, transaction execution, or generated output was introduced.

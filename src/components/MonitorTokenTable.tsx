@@ -145,23 +145,29 @@ export function MonitorTokenTable({ polling = true }: { polling?: boolean }) {
         {t("monitorOnlyBoundary")}
       </Text>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.controls}>
-        {windows.map((window) => (
-          <Control
-            key={window}
-            label={window}
-            active={preferences.window === window}
-            onPress={() => update({ window })}
-          />
-        ))}
+        <View accessibilityRole="radiogroup" style={styles.controlGroup}>
+          {windows.map((window) => (
+            <Control
+              key={window}
+              label={window}
+              active={preferences.window === window}
+              role="radio"
+              onPress={() => update({ window })}
+            />
+          ))}
+        </View>
         <View style={styles.separator} />
-        {presets.map((preset) => (
-          <Control
-            key={preset}
-            label={t(`monitorPreset_${preset}`)}
-            active={preferences.preset === preset}
-            onPress={() => update({ preset })}
-          />
-        ))}
+        <View accessibilityRole="radiogroup" style={styles.controlGroup}>
+          {presets.map((preset) => (
+            <Control
+              key={preset}
+              label={t(`monitorPreset_${preset}`)}
+              active={preferences.preset === preset}
+              role="radio"
+              onPress={() => update({ preset })}
+            />
+          ))}
+        </View>
       </ScrollView>
       <View style={styles.toolbar}>
         <TextInput
@@ -191,21 +197,23 @@ export function MonitorTokenTable({ polling = true }: { polling?: boolean }) {
       {filtersOpen ? (
         <View style={styles.filterPanel}>
           <Text style={styles.filterLabel}>{t("monitorDirection")}</Text>
-          <View style={styles.choiceRow}>
+          <View accessibilityRole="radiogroup" style={styles.choiceRow}>
             {(["all", "positive", "negative"] as const).map((direction) => (
               <Control
                 key={direction}
                 label={t(`monitorDirection_${direction}`)}
                 active={preferences.direction === direction}
+                role="radio"
                 onPress={() => update({ direction })}
               />
             ))}
           </View>
           <Text style={styles.filterLabel}>{t("monitorDex")}</Text>
-          <View style={styles.choiceRow}>
+          <View accessibilityRole="radiogroup" style={styles.choiceRow}>
             <Control
               label={t("allDexes")}
               active={preferences.dex === "all"}
+              role="radio"
               onPress={() => update({ dex: "all" })}
             />
             {dexes.map((dex) => (
@@ -213,6 +221,7 @@ export function MonitorTokenTable({ polling = true }: { polling?: boolean }) {
                 key={dex}
                 label={dex}
                 active={preferences.dex === dex}
+                role="radio"
                 onPress={() => update({ dex })}
               />
             ))}
@@ -245,6 +254,7 @@ export function MonitorTokenTable({ polling = true }: { polling?: boolean }) {
                   key={key}
                   label={`${position >= 0 ? `${position + 1}·` : ""}${t(`monitorSort_${key}`)}${sort ? (sort.direction === "desc" ? " ↓" : " ↑") : ""}`}
                   active={position >= 0}
+                  role="checkbox"
                   onPress={() => update({ sorts: toggleMonitorSort(preferences.sorts, key) })}
                 />
               );
@@ -254,12 +264,14 @@ export function MonitorTokenTable({ polling = true }: { polling?: boolean }) {
             <Control
               label={t(preferences.density === "compact" ? "compactRows" : "comfortableRows")}
               active
+              role="switch"
+              checked={preferences.density === "compact"}
               onPress={() =>
                 update({ density: preferences.density === "compact" ? "comfortable" : "compact" })
               }
             />
             {activeFilters ? (
-              <Pressable accessibilityRole="button" onPress={resetFilters}>
+              <Pressable accessibilityRole="button" accessibilityLabel={t("resetFilters")} onPress={resetFilters}>
                 <Text style={styles.reset}>{t("resetFilters")}</Text>
               </Pressable>
             ) : null}
@@ -319,7 +331,7 @@ export function MonitorTokenTable({ polling = true }: { polling?: boolean }) {
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={t("loadMoreMonitorTokens")}
-          accessibilityState={{ busy: query.isFetchingNextPage }}
+          accessibilityState={{ busy: query.isFetchingNextPage, disabled: query.isFetchingNextPage }}
           disabled={query.isFetchingNextPage}
           onPress={() => void query.fetchNextPage()}
           style={[styles.loadMore, query.isFetchingNextPage && styles.disabled]}
@@ -333,11 +345,27 @@ export function MonitorTokenTable({ polling = true }: { polling?: boolean }) {
   );
 }
 
-function Control({ label, active, onPress }: { label: string; active: boolean; onPress: () => void }) {
+function Control({
+  label,
+  active,
+  role = "button",
+  checked,
+  onPress,
+}: {
+  label: string;
+  active: boolean;
+  role?: "button" | "radio" | "checkbox" | "switch";
+  checked?: boolean;
+  onPress: () => void;
+}) {
   return (
     <Pressable
-      accessibilityRole="button"
-      accessibilityState={{ selected: active }}
+      accessibilityRole={role}
+      accessibilityState={
+        role === "radio" || role === "checkbox" || role === "switch"
+          ? { checked: checked ?? active }
+          : { selected: active }
+      }
       onPress={onPress}
       style={[styles.control, active && styles.controlActive]}
     >
@@ -424,6 +452,7 @@ const styles = StyleSheet.create({
   boundary: { color: colors.warning, fontSize: 9, lineHeight: 14, paddingHorizontal: spacing.md, paddingBottom: spacing.sm },
   iconButton: { width: 36, height: 36, alignItems: "center", justifyContent: "center", borderWidth: 1, borderColor: colors.border, borderRadius: 9 },
   controls: { gap: 6, paddingHorizontal: spacing.md, paddingBottom: spacing.sm },
+  controlGroup: { flexDirection: "row", gap: 6 },
   separator: { width: 1, backgroundColor: colors.border, marginHorizontal: 2 },
   control: { minHeight: 34, justifyContent: "center", paddingHorizontal: 10, borderWidth: 1, borderColor: colors.border, borderRadius: 8 },
   controlActive: { borderColor: colors.accent, backgroundColor: colors.accentDim },

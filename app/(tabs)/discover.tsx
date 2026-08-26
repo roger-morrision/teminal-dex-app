@@ -296,7 +296,10 @@ export default function DiscoverScreen() {
               <Pressable
                 accessibilityRole="button"
                 accessibilityLabel={t("retry")}
-                accessibilityState={{ busy: feed.isFetchingNextPage }}
+                accessibilityState={{
+                  busy: feed.isFetchingNextPage,
+                  disabled: feed.isFetchingNextPage,
+                }}
                 disabled={feed.isFetchingNextPage}
                 onPress={() => void feed.fetchNextPage()}
                 style={[styles.retry, feed.isFetchingNextPage && styles.retryDisabled]}
@@ -314,7 +317,8 @@ export default function DiscoverScreen() {
                 <TextInput
                   accessibilityLabel={t("searchTokens")}
                   value={search}
-                  onChangeText={setSearch}
+                  onChangeText={(value) => setSearch(value.slice(0, 80))}
+                  maxLength={80}
                   placeholder={t("searchTokens")}
                   placeholderTextColor={colors.muted}
                   style={styles.search}
@@ -339,43 +343,50 @@ export default function DiscoverScreen() {
               showsHorizontalScrollIndicator={false}
               contentContainerStyle={styles.controlRow}
             >
-              {modes.map((item) => {
-                const label = t(item.key);
-                return (
-                  <Pressable
-                    key={item.id}
-                    accessibilityRole="tab"
-                    accessibilityLabel={t("selectMode", { mode: label })}
-                    accessibilityState={{ selected: mode === item.id }}
-                    onPress={() => {
-                      setMode(item.id);
-                      setSearch("");
-                      setFiltersOpen(false);
-                      setDraftFilters(filters);
-                      if (item.id === "watchlist")
-                        void saveWatchlistWindow(period).then(
-                          () =>
-                            setWatchStorageError((current) =>
-                              current === "window" ? null : current,
-                            ),
-                          () => setWatchStorageError("window"),
-                        );
-                    }}
-                    style={[styles.pill, mode === item.id && styles.activePill]}
-                  >
-                    <Text
-                      style={[
-                        styles.pillText,
-                        mode === item.id && styles.activePillText,
-                      ]}
+              <View accessibilityRole="tablist" style={styles.modeGroup}>
+                {modes.map((item) => {
+                  const label = t(item.key);
+                  return (
+                    <Pressable
+                      key={item.id}
+                      accessibilityRole="tab"
+                      accessibilityLabel={t("selectMode", { mode: label })}
+                      accessibilityState={{ selected: mode === item.id }}
+                      onPress={() => {
+                        setMode(item.id);
+                        setSearch("");
+                        setFiltersOpen(false);
+                        setDraftFilters(filters);
+                        if (item.id === "watchlist")
+                          void saveWatchlistWindow(period).then(
+                            () =>
+                              setWatchStorageError((current) =>
+                                current === "window" ? null : current,
+                              ),
+                            () => setWatchStorageError("window"),
+                          );
+                      }}
+                      style={[styles.pill, mode === item.id && styles.activePill]}
                     >
-                      {label}
-                    </Text>
-                  </Pressable>
-                );
-              })}
+                      <Text
+                        style={[
+                          styles.pillText,
+                          mode === item.id && styles.activePillText,
+                        ]}
+                      >
+                        {label}
+                      </Text>
+                    </Pressable>
+                  );
+                })}
+              </View>
             </ScrollView>
-            <View style={styles.periodRow}>
+            <View
+              accessibilityRole={
+                modeCapabilities.period ? "radiogroup" : undefined
+              }
+              style={styles.periodRow}
+            >
               {!searching && modeCapabilities.period
                 ? periods.map((item) => (
                     <Pressable
@@ -405,6 +416,7 @@ export default function DiscoverScreen() {
                 <Pressable
                   accessibilityRole="button"
                   accessibilityLabel={t("openFilters")}
+                  accessibilityState={{ expanded: filtersOpen }}
                   onPress={() => setFiltersOpen(true)}
                   style={[
                     styles.filterButton,
@@ -637,6 +649,7 @@ function FilterModal({
       />
       <SafeAreaView
         accessibilityViewIsModal
+        accessibilityLabel={t("marketFilters")}
         style={styles.sheet}
         edges={["bottom"]}
       >
@@ -646,6 +659,7 @@ function FilterModal({
         </Text>
         <Text style={styles.fieldLabel}>DEX</Text>
         <ScrollView
+          accessibilityRole="radiogroup"
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.dexRow}
@@ -679,10 +693,11 @@ function FilterModal({
           accessibilityLabel={t("minLiquidity")}
           keyboardType="numeric"
           value={value.minLiquidity}
+          maxLength={15}
           onChangeText={(minLiquidity) =>
             onChange({
               ...value,
-              minLiquidity: minLiquidity.replace(/[^0-9.]/g, ""),
+              minLiquidity: sanitizeDecimal(minLiquidity),
             })
           }
           placeholder="e.g. 25000"
@@ -694,10 +709,11 @@ function FilterModal({
           accessibilityLabel={t("minMarketCap")}
           keyboardType="numeric"
           value={value.minMarketCap}
+          maxLength={15}
           onChangeText={(minMarketCap) =>
             onChange({
               ...value,
-              minMarketCap: minMarketCap.replace(/[^0-9.]/g, ""),
+              minMarketCap: sanitizeDecimal(minMarketCap),
             })
           }
           placeholder="e.g. 100000"
@@ -727,9 +743,19 @@ function FilterModal({
   );
 }
 
+export function sanitizeDecimal(value: string) {
+  const normalized = value.replace(/[^0-9.]/g, "");
+  const [whole = "", ...fractions] = normalized.split(".");
+  const fraction = fractions.join("").slice(0, 2);
+  return fractions.length
+    ? `${whole.slice(0, 12)}.${fraction}`
+    : whole.slice(0, 12);
+}
+
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: colors.background },
   grow: { flexGrow: 1 },
+  modeGroup: { flexDirection: "row", gap: spacing.sm },
   footer: { padding: spacing.xl },
   footerError: { alignItems: "center", gap: spacing.sm, padding: spacing.lg },
   header: {

@@ -269,6 +269,7 @@ function TrenchFilterPanel({
       <TextInput
         accessibilityLabel={t("trenchKeyword")}
         value={value.keyword}
+        maxLength={50}
         onChangeText={(keyword) =>
           onChange({ ...value, keyword: boundedKeyword(keyword) })
         }
@@ -311,8 +312,15 @@ function TrenchFilterPanel({
               accessibilityLabel={field.label}
               keyboardType="decimal-pad"
               value={value[field.key]}
+              maxLength={15}
               onChangeText={(text) =>
-                onChange({ ...value, [field.key]: boundedNumber(text) })
+                onChange({
+                  ...value,
+                  [field.key]: boundedNumber(
+                    text,
+                    field.key === "minBondingProgress" ? 100 : undefined,
+                  ),
+                })
               }
               placeholder={field.placeholder}
               placeholderTextColor={colors.muted}

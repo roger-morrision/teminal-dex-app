@@ -1,5 +1,5 @@
 import { fireEvent, render } from "@testing-library/react-native";
-import { State as DiscoverState } from "../../app/(tabs)/discover";
+import { sanitizeDecimal, State as DiscoverState } from "../../app/(tabs)/discover";
 import { State as TrenchesState } from "../../app/(tabs)/trenches";
 
 jest.mock("@/security/WalletSessionProvider", () => ({
@@ -7,6 +7,10 @@ jest.mock("@/security/WalletSessionProvider", () => ({
 }));
 
 describe("primary market dynamic states", () => {
+  it("normalizes malformed Discovery thresholds before they reach API query keys", () => {
+    expect(sanitizeDecimal("12.3x4.567")).toBe("12.34");
+    expect(sanitizeDecimal("1234567890123456")).toBe("123456789012");
+  });
   it("announces Discover loading as a polite busy summary", async () => {
     const screen = await render(
       <DiscoverState loading message="Loading markets" />,

@@ -22,10 +22,13 @@ export function boundedKeyword(value: string) {
   return value.replace(/[\u0000-\u001f\u007f]/g, "").slice(0, 50);
 }
 
-export function boundedNumber(value: string) {
+export function boundedNumber(value: string, maximum?: number) {
   const cleaned = value.replace(/[^0-9.]/g, "");
   const [whole = "", ...fractions] = cleaned.split(".");
-  return `${whole.slice(0, 12)}${fractions.length ? `.${fractions.join("").slice(0, 2)}` : ""}`;
+  const bounded = `${whole.slice(0, 12)}${fractions.length ? `.${fractions.join("").slice(0, 2)}` : ""}`;
+  if (maximum == null || bounded === "" || bounded === ".") return bounded;
+  const parsed = Number(bounded);
+  return Number.isFinite(parsed) && parsed > maximum ? String(maximum) : bounded;
 }
 
 function threshold(value: string): number | null {

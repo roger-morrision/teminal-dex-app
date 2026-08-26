@@ -177,3 +177,13 @@ No in-scope automated regression was found. Generated export directories were re
 
 - Exact local `expo-doctor` 1.20.3 is invoked through a tested package command with no global or `npx` dependency. The current project passes 21/21 checks.
 - Dynamic Expo configuration now consumes Expo's supplied static config before adding bounded build provenance, resolving the Doctor finding without duplicating or discarding platform configuration.
+## MOBILE-163 filter integrity and assistive-control semantics
+
+- **Implemented and verified:** 20 current findings (`MOBILE-A11Y-201..218`, `MOBILE-DATA-205..208`, `MOBILE-DATA-219..220`) were reconciled and closed across Discover, Monitor, and Trenches without touching concurrent Whales/TokenRow work.
+- **Data correctness:** Discovery thresholds now retain one decimal separator, at most two fractional digits, and at most twelve whole digits. Trenches keeps the same numeric boundary and caps bonding-progress filters at 100. Native length bounds agree with state bounds.
+- **Accessibility/recovery:** mode tabs, period/window/preset/direction/DEX groups, multi-sort checkboxes, density switch, filter expansion, reset naming, and pagination disabled/busy state expose their real behavior.
+- **Verification:** TypeScript PASS; focused ESLint PASS; focused Jest PASS (3 suites, 12 tests); full Jest PASS (82 suites, 411 tests). Manual API 37 evidence from the preceding install run remains valid for the pre-commit runtime; immutable-commit QA recheck is assigned below.
+- **Security:** no API, wallet, signing, submission, trading, credential, environment, or WEB behavior changed. Production mock data remains absent.
+- **Partially verified / external:** physical-device screen-reader traversal and an immutable-commit Android reinstall remain QA device tasks. Native Gradle rebuild remains externally blocked by the host loopback IOException; existing compatible APK + current Metro bundle rendered without fatal/module-resolution errors. This restricted shell ran 17/21 Doctor checks (child `npm` unavailable) and Expo compatibility was blocked from the external user cache by `EPERM`; MOBILE-162 retains normal-environment 21/21 evidence.
+- **NEXT_QA_ACTION:** verify all 20 stable IDs on the committed checkout, including TalkBack group traversal, malformed filter entry, pagination retry state, and Discover/Monitor/Trenches navigation on API 37.
+- **NEXT_WEB_ACTION:** none.

@@ -1,9 +1,7 @@
-const app = require('./app.json');
-
-module.exports = {
-  ...app.expo,
+module.exports = ({ config }) => ({
+  ...config,
   extra: {
-    ...app.expo.extra,
+    ...config.extra,
     mobileBuildCommit: process.env.MOBILE_BUILD_COMMIT || null,
   },
-};
+});

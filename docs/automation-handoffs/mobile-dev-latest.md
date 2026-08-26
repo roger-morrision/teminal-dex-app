@@ -1,5 +1,16 @@
 # MOBILE DEV → QA handoff
 
+## MOBILE-162 — repository-local Expo Doctor
+
+- Base: `6c5c5a9`; result: containing commit.
+- Changed files/behavior: exact dev dependency `expo-doctor` 1.20.3; `diagnostics:doctor = expo-doctor`; command contract forbids implicit global/`npx`; dynamic config consumes Expo's supplied static config and preserves nullable public commit provenance.
+- Acceptance: local Doctor 21/21; local Expo compatibility, TypeScript, and full primary-worktree Jest pass. Focused command/config Jest passes 14/14; the initial lint found one stale test-only suppression, removed before the final zero-warning lint gate.
+- Security/release: development diagnostics only; no API, wallet, signing, submission, trading, credential, or WEB behavior changed. Existing 11 moderate build-tool advisories remain separately bounded by MOBILE-161.
+- NEXT_QA_ACTION: pin the result; run `npm run diagnostics:doctor`, command/config focused tests, TypeScript, ESLint, full Jest, public config, and platform exports. Close `MOBILE-QA-008` only on 21/21 from the immutable checkout.
+- 20/20 reconciliation: 20 findings reviewed; eight material diagnostic/config outcomes completed; shortfall 12 carried forward without padding.
+
+---
+
 ## MOBILE-161 — dependency-audit runtime boundary
 
 - Base: `b73b47a`; result: containing commit.

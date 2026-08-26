@@ -1373,3 +1373,9 @@
 - Enumerated the production lockfile audit: 11 moderate, zero high, zero critical. The actionable root advisory is `uuid` 7.0.3 (`GHSA-w5hq-g745-h8pq`), propagated through `xcode` 3.0.1 and Expo configuration/build tooling; npm's proposed Expo 46 downgrade and forced fixes were rejected as unsafe.
 - Added six regression assertions proving `uuid`, `xcode`, and Expo config plugins are not direct app dependencies, pinning the audited transitive chain, and rejecting runtime imports from `app` or `src`. This does not claim the upstream advisory is resolved.
 - Focused security coverage passes 6/6. Twenty findings were reconciled; six material boundary outcomes completed; shortfall 14 remains upstream remediation, exact device/runtime evidence, Doctor parity, WEB-QC fixtures, physical-device scenarios, and concurrent Whales/logo acceptance.
+
+## 2026-08-26 — MOBILE-162: repository-local Expo Doctor
+
+- Added exact dev dependency `expo-doctor` 1.20.3 and `diagnostics:doctor`, extending the executable contract so the release diagnostic cannot silently use global tooling or `npx`.
+- The first live run exposed that dynamic config copied `app.json` internally instead of consuming Expo's supplied config. Converted it to the supported config-function merge and retained nullable `mobileBuildCommit`; the provenance tests now exercise the same merge contract.
+- Local Doctor passes 21/21; focused command/config coverage passes 14/14. Twenty findings were reconciled; eight material diagnostic/config outcomes completed; shortfall 12 remains exact device/runtime evidence, physical accessibility, upstream audit/Noble remediation, WEB-QC fixtures, and concurrent Whales/logo acceptance.

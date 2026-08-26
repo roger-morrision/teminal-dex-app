@@ -4,6 +4,7 @@ const qualityScriptExecutables = {
   typecheck: { command: 'tsc', packageName: 'typescript' },
   lint: { command: 'eslint', packageName: 'eslint' },
   'diagnostics:expo': { command: 'expo', packageName: 'expo' },
+  'diagnostics:doctor': { command: 'expo-doctor', packageName: 'expo-doctor' },
   test: { command: 'jest', packageName: 'jest' },
   'test:ci': { command: 'jest', packageName: 'jest' },
 } as const;

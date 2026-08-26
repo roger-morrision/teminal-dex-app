@@ -14,7 +14,9 @@ function loadConfig(commit?: string) {
   else process.env.MOBILE_BUILD_COMMIT = commit;
   jest.resetModules();
   // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const config = require('../../app.config');
+  const createConfig = require('../../app.config');
+  const app = require('../../app.json');
+  const config = createConfig({ config: app.expo });
   if (previous === undefined) delete process.env.MOBILE_BUILD_COMMIT;
   else process.env.MOBILE_BUILD_COMMIT = previous;
   return config;

@@ -75,3 +75,66 @@ The initial sandboxed diagnostic could not open Expo's user native-module cache 
 - Material DEV outcomes available: 4; independently verified: 4/4 PASS.
 - Remaining to 20 DEV outcomes: 16; no padding applied.
 - Carry-forward order: `MOBILE-QA-013`, `MOBILE-QA-002`, `MOBILE-QA-010`, `MOBILE-QA-008`, `MOBILE-QA-011`, `MOBILE-QA-004`.
+
+---
+
+# MOBILE-QA validation handoff — MOBILE-160
+
+- Run: 2026-08-26T03:46:52.9669154Z.
+- Inspected DEV commit: `12c8f98b9c3bfc43d6154e22db8b4c35c4998fc7` (`test(research): await rendered query settlement`); base `55326ce`.
+- Scope: PASS. The current directory and Git top-level are the canonical mobile workspace. The primary worktree contains the unrelated uncommitted Whales/token-logo/MOBILE-to-WEB slice listed below, so all executable evidence was obtained from a clean temporary archive of exactly `12c8f98` with a junction to the existing dependency tree. No product code, configuration, or test was edited.
+- Environment: Windows, bundled Node 24.19.0, Expo 57 local CLI, `%LOCALAPPDATA%\Temp\mobile-qa-160-12c8f98`. No emulator/device result was inferred.
+
+## Current DEV acceptance results
+
+| MOBILE-QA acceptance criterion | Result | Independent evidence |
+| --- | --- | --- |
+| Initial research/removal waits for visible settlement | PASS | Focused `SnipeCard` test passes; it observes `Token unavailable` after the distinct open/remove controls before asserting one query. |
+| Threshold editing waits for visible settlement | PASS | Focused test persists the positive visual threshold, then observes `Token unavailable` before asserting one query. |
+| Failed evidence retry waits for recovery settlement | PASS | Focused test observes Retry removal after recovery and verifies exactly two queries. |
+| Full rendered-settlement regression | PASS | Immutable `jest --ci --runInBand`: 81/81 suites and 401/401 tests; explicit scan found `MOBILE-QA_REACT_ACT_WARNING_COUNT=0`. |
+| TypeScript / source ESLint | PASS | Exact archive `tsc --noEmit` and `eslint app src` both exited 0. |
+| Local dependency diagnostic | PASS | `expo install --check` reported “Dependencies are up to date” when run with its normal user cache. Sandboxed attempt was EPERM cache-only and was not treated as a dependency failure. |
+| Public config and bundle exports | PASS with condition | Public config resolves Android/iOS/web. iOS and web exports pass; Android export completes (1 Hermes bundle/46 assets) with the carried Noble strict-exports warning. |
+
+## MOBILE-QA reconciled finding inventory (20)
+
+| ID | Result | Evidence, regression risk, and exact NEXT_DEV_ACTION |
+| --- | --- | --- |
+| MOBILE-QA-001 | PASS | MOBILE-160 changes test settlement only; no API, UI behavior, secret, signing, submission, trading, or CopyTrade activation boundary changed. |
+| MOBILE-QA-002 | BLOCKED P1 | No responsive exact-build Android target was available in this run. **NEXT_DEV_ACTION:** provide a responsive Android emulator/device carrying the immutable build marker. |
+| MOBILE-QA-003 | PASS | Archive was created from `12c8f98`; concurrent primary-worktree paths were excluded. |
+| MOBILE-QA-004 | CONDITIONAL PASS P2 | Android export succeeds but logs the known Noble `./crypto.js` strict-exports fallback. **NEXT_DEV_ACTION:** retain the audited guard and require full platform revalidation for any dependency/resolver change. |
+| MOBILE-QA-005 | PASS | Immutable full Jest gate passes 81/401. |
+| MOBILE-QA-006 | RESOLVED | No mixed-state evidence was used; dirty paths remained untouched. |
+| MOBILE-QA-007 | PASS | Semantic accessibility ordering regression remains green within the complete immutable suite. |
+| MOBILE-QA-008 | BLOCKED P2 | Local Expo CLI explicitly rejects `expo doctor`; no standalone `expo-doctor` is installed. **NEXT_DEV_ACTION:** provide an isolated repository-local Doctor evidence lane. |
+| MOBILE-QA-009 | PASS | Immutable test count is 81 suites / 401 tests, matching the MOBILE-160 handoff’s isolated expectation. |
+| MOBILE-QA-010 | BLOCKED P2 | TalkBack/VoiceOver, enlarged text, offline/reconnect, background/restore, and performance need physical-device evidence. **NEXT_DEV_ACTION:** run the device matrix after QA-002. |
+| MOBILE-QA-011 | BLOCKED P2 | The reported 11 moderate audit items still cannot be enumerated: neither npm on PATH nor a local npm CLI is available. **NEXT_DEV_ACTION:** capture `npm audit --package-lock-only --json` in an isolated dependency-maintenance run; do not auto-remediate. |
+| MOBILE-QA-012 | PASS | Repository-local Expo compatibility diagnostic reports all dependencies up to date. |
+| MOBILE-QA-013 | RESOLVED | Both focused 3/3 and immutable full 81/401 evidence are free of React `act()`/overlapping-act warnings; prior order-dependent warning is not reproduced. |
+| MOBILE-QA-014 | PASS | Exact archive TypeScript compilation succeeds. |
+| MOBILE-QA-015 | PASS | Exact archive source-owned ESLint succeeds with no reported warnings/errors. |
+| MOBILE-QA-016 | PASS | Resolved public config retains the `terminaldex` scheme, iOS ATS denial of arbitrary loads, Android biometric permissions, and no exposed endpoint/secret. |
+| MOBILE-QA-017 | CONDITIONAL PASS | Android Hermes export: 1 bundle/46 assets, with no unresolved-module failure; see QA-004 warning. |
+| MOBILE-QA-018 | PASS | iOS export: 1 Hermes bundle/23 assets. |
+| MOBILE-QA-019 | PASS | Web static export: 1 bundle; completed without bundle failure. |
+| MOBILE-QA-020 | PASS | Expo, Constants, Dev Client, and Router remain aligned; local diagnostic confirms no compatibility drift. |
+
+## Scope change and safe evidence
+
+- `qa_scope_changed` applies only to the primary worktree, not the inspected archive. Excluded paths at start/end: `.gitignore`, `app/(tabs)/whales.tsx`, `expo-env.d.ts`, `src/__tests__/TokenRow.test.tsx`, `src/components/TokenAvatar.tsx`, `src/components/TokenRow.tsx`, `src/components/DexLogo.tsx`, and three untracked MOBILE-to-WEB handoffs.
+- Commands/results: focused SnipeCard 3/3 PASS; full Jest 81/401 PASS and warning count 0; TypeScript PASS; ESLint PASS; local Expo dependency check PASS; public config PASS; Android export CONDITIONAL PASS (Noble warning); iOS/web export PASS; `expo doctor` BLOCKED.
+- No screenshots, device logs, backend-origin data, credentials, or provider diagnostics were captured.
+
+## Release recommendation
+
+**MOBILE-QA: CONDITIONAL NO-GO.** MOBILE-160 closes `MOBILE-QA-013`, but release certification remains blocked by exact-device/runtime evidence (`MOBILE-QA-002`/`010`), unavailable Doctor evidence (`MOBILE-QA-008`), untriaged audit advisories (`MOBILE-QA-011`), and the conditionally accepted Noble warning (`MOBILE-QA-004`).
+
+## 20/20 reconciliation
+
+- Findings inspected/reconciled: 20.
+- Material DEV outcomes available: 3; independently verified: 3/3 PASS.
+- Remaining to 20 DEV outcomes: 17. No padding applied; the remaining slots require device ownership, Expo Doctor availability, audit-advisory enumeration, Noble ownership, or the excluded concurrent Whales/token-logo slice.
+- Carry-forward order: `MOBILE-QA-002`, `MOBILE-QA-010`, `MOBILE-QA-008`, `MOBILE-QA-011`, `MOBILE-QA-004`.

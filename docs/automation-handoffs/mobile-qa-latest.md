@@ -894,3 +894,54 @@ The initial sandboxed diagnostic could not open Expo's user native-module cache 
 - Findings inspected/reconciled: 20. DEV material outcomes available/verified: 2/2 PASS. Exact shortfall to 20: 18, stable IDs `MOBILE-QA-269..280`, `MOBILE-QA-283..288`; no padding applied.
 - Carry-forward order: `MOBILE-QA-269`, `MOBILE-QA-270`, `MOBILE-QA-271`, `MOBILE-QA-272`, `MOBILE-QA-273`, `MOBILE-QA-274`, `MOBILE-QA-275`, `MOBILE-QA-276`, `MOBILE-QA-277`, `MOBILE-QA-278`, `MOBILE-QA-279`, `MOBILE-QA-280`, `MOBILE-QA-283`, `MOBILE-QA-284`, `MOBILE-QA-285`, `MOBILE-QA-286`, `MOBILE-QA-287`, `MOBILE-QA-288`.
 - **NEXT_DEV_ACTION:** provide deterministic provider and device routes that settle on the immutable build, including threshold holdings, Monitor reset/cursor states, stale recovery, and accessibility/large-text modes for the blocked matrix.
+
+---
+
+# MOBILE-QA validation handoff — MOBILE-175
+
+- Trigger: 2026-08-26T18:41:39.180Z. Inspected immutable result `ca70061a33c32eed24d29758a58e7a86e3e2bc1b` (`fix(mobile): localize discover token evidence`), base `25c939b`.
+- Scope/coordination: PASS. Canonical safe-directory top-level normalizes to `c:/tuan/devapps/teminal-dex-app`, prefix empty, worktree clean, no DEV lock. QA validated source/automated gates from clean archive `%LOCALAPPDATA%\\Temp\\mobile-qa-175-ca70061`; only the QA handoff is written under the report lock. No product, configuration, WEB, provider/API, wallet, signing, submission, trading, or data write occurred.
+- Runtime: API 37 emulator was connected; port reverse and a non-blocking exact dev-client deep link were attempted against verified server port 8099. The client did not request/bundle the project or emit the immutable build marker before the bounded window, and UI hierarchy capture did not settle. No visual EN/VI, screen-reader, navigation, or persisted-watch intent claim is inferred.
+
+## MOBILE-QA acceptance matrix
+
+| Criterion | Result | Independent evidence |
+| --- | --- | --- |
+| Type and changed-surface lint | PASS | Archive `tsc --noEmit` and ESLint of TokenRow, SettingsProvider, and focused regression exit 0. |
+| EN/VI TokenRow regression | PASS | Archive `TokenRow.test.tsx`: 1 suite / 11 tests pass, including rendered Vietnamese catalog behavior. |
+| Full regression | PASS | Archive `jest --ci --runInBand --silent`: 83 suites / 451 tests pass in 85.802s. |
+| Expo/config/platform bundles | PASS with carried conditions | Public config and Android/iOS/web exports pass. Android retains Noble strict-exports fallback; Doctor cannot spawn child Node. |
+| Exact visual/accessibility language flow | BLOCKED | Exact dev-client route did not settle despite connected emulator; no visual/assistive result fabricated. |
+
+## MOBILE-QA reconciliation (20 current findings)
+
+| Stable ID | Result | Evidence / owner |
+| --- | --- | --- |
+| MOBILE-I18N-417 | PASS | Token-detail accessibility action is obtained from persistent localization settings; EN/VI rendered regression passes. |
+| MOBILE-I18N-418 | PASS | Add-watchlist accessibility action is localized; rendered regression passes. |
+| MOBILE-I18N-419 | PASS | Remove-watchlist accessibility action is localized; rendered regression passes. |
+| MOBILE-I18N-420 | PASS | Unavailable token-age evidence is localized; rendered regression passes. |
+| MOBILE-I18N-421 | PASS | Unavailable holder evidence is localized; rendered regression passes. |
+| MOBILE-I18N-422 | PASS | Verified holder-count suffix is localized; rendered regression passes. |
+| MOBILE-I18N-423 | PASS | Volume abbreviation is localized; rendered regression passes. |
+| MOBILE-I18N-424 | PASS | Social-evidence accessibility summary is localized; rendered regression passes. |
+| MOBILE-QA-269 | BLOCKED P2 | Android TalkBack; owner QA/device. |
+| MOBILE-QA-270 | BLOCKED P2 | iOS VoiceOver; owner QA/device. |
+| MOBILE-QA-271 | BLOCKED P2 | Switch Access; owner QA/device. |
+| MOBILE-QA-272 | BLOCKED P2 | 320dp/enlarged-text layout; owner QA/device. |
+| MOBILE-QA-273 | BLOCKED P2 | Offline/reconnect; owner QA/network fixture. |
+| MOBILE-QA-274 | BLOCKED P2 | Lifecycle interruption; owner QA/device. |
+| MOBILE-QA-275 | BLOCKED P2 | Storage-fault recovery; owner QA/device. |
+| MOBILE-QA-276 | BLOCKED P2 | Doctor child Node; owner toolchain. |
+| MOBILE-QA-277 | CONDITIONAL PASS P2 | Noble strict-exports fallback; owner upstream. |
+| MOBILE-QA-278 | BLOCKED P2 | Monitor active-reset fixture; owner provider. |
+| MOBILE-QA-279 | BLOCKED P2 | Monitor partial-page/cursor fixture; owner provider. |
+| MOBILE-QA-280 | BLOCKED P2 | Physical performance; owner QA/device. |
+
+## MOBILE-QA release and throughput
+
+- Evidence references: `%LOCALAPPDATA%\\Temp\\mobile-qa-175-full.err.log`, `mobile-qa-175-android-export.err.log`, `mobile-qa-175-runtime.out.log`. No screenshot, secret, credential, provider payload, or WEB evidence retained; no MOBILE-to-WEB contract blocker exists.
+- **MOBILE-QA release recommendation: CONDITIONAL NO-GO.** Eight available localization outcomes pass source/automated evidence; visual EN/VI accessibility confirmation and the external device/toolchain/upstream matrix remain incomplete.
+- Findings inspected/reconciled: 20. DEV outcomes available/verified: 8/8 PASS. Exact shortfall to 20: 12 (`MOBILE-QA-269..280`); no padding applied.
+- Carry-forward order: `MOBILE-QA-269`, `MOBILE-QA-270`, `MOBILE-QA-271`, `MOBILE-QA-272`, `MOBILE-QA-273`, `MOBILE-QA-274`, `MOBILE-QA-275`, `MOBILE-QA-276`, `MOBILE-QA-277`, `MOBILE-QA-278`, `MOBILE-QA-279`, `MOBILE-QA-280`.
+- **NEXT_DEV_ACTION:** provide a dev-client route that reliably loads the immutable bundle plus controllable Discover token states, so QA can switch EN/VI and verify all eight visual/accessibility strings without changing navigation or stored watch intent.

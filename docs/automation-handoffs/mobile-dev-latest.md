@@ -1,5 +1,16 @@
 # MOBILE DEV → QA handoff
 
+## MOBILE-192 — Windows Metro file-handle recovery
+
+- Base: `d1a633c`; result: containing commit.
+- ID: `MOBILE-DEV-EMFILE-528`.
+- Changed behavior/files: `scripts/start-verified.mjs` injects a two-worker default only when the operator did not supply `--max-workers`; `MOBILE_METRO_MAX_WORKERS` is accepted only as an integer from 1 through 8; `src/__tests__/build-provenance.test.ts` protects the bounded/default/override contract.
+- Exact validation: TypeScript PASS; focused ESLint PASS; focused launcher suite 10/10 PASS; full Jest 86 suites / 467 tests PASS.
+- Runtime evidence: the pre-fix verified port-8082 run logged `EMFILE: too many open files` during concurrent first-route bundles, then recovered and rendered Privy EN/VI with working More→Auth, Close, Settings, language switching, enabled provider buttons, and zero browser console errors.
+- Known runtime blocker: port 8081 is held by PID 56660 and port 8082 by the prior verified PID 58776. Termination approval was denied because PID 56660 ownership could not be proven; the code fix is committed but exact port-8081 replacement requires the user/operator to close or explicitly authorize replacement of that session.
+- NEXT_QA_ACTION: start the result commit with `npm run dev:verified -- --web --port 8081 --clear`, confirm the log includes `--max-workers 2` behavior through absence of `EMFILE`, then repeat More→Privy, EN/VI, close/back, and console-error checks.
+- NEXT_WEB_ACTION: none; WEB remains read-only.
+
 ## MOBILE-191 — fourteen-phase completion and Privy release hardening
 
 - Base: `1b820ff`; result: containing commit.

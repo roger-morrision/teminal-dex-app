@@ -4,6 +4,7 @@ Status legend: `[x]` verified, `[ ]` incomplete, `[~]` intentionally visible but
 
 ## Fourteen-phase delivery ledger (MOBILE-523..527)
 
+- [x] Verified development startup applies a bounded two-worker Metro default (configurable from 1–8 or by an explicit CLI option), preventing the Windows `EMFILE` failure observed under concurrent first-route compilation without hiding operator overrides.
 - [x] Phase 1 — Privy identity: official native/web SDKs, signup/login/account recovery, bilingual EN/VI copy, public App ID/client-ID configuration aliases, and secret-shaped public-value rejection are implemented. Live provider login remains an environment/device acceptance activity.
 - [x] Phase 2 — Navigation and shell: whale-first tabs, auxiliary routes, deep links, safe-area behavior, and auth entry points are implemented and regression-covered.
 - [x] Phase 3 — Backend health and evidence transparency: validated real API contracts, provenance/freshness/degraded states, bounded recovery, and fail-closed production origins are implemented.

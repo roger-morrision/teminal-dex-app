@@ -1,5 +1,13 @@
 # Mobile Worklog
 
+## 2026-08-27 — MOBILE-192 bounded verified Metro startup
+
+- Reproduced the browser-test startup failure as Windows `EMFILE` during multiple concurrent initial Expo Router web bundles; the app later recovered, but first navigation was slow and unreliable.
+- The verified launcher now defaults Metro to two workers, accepts a bounded `MOBILE_METRO_MAX_WORKERS=1..8` override, and preserves an explicit `--max-workers` CLI choice without duplication.
+- Added launcher-contract regression coverage and retained the clean-worktree/build-commit provenance boundary.
+- Validation: strict TypeScript and focused ESLint PASS; focused launcher suite 10/10 PASS; full Jest 86 suites / 467 tests PASS.
+- Runtime replacement on port 8081 remains operator-blocked because an existing process owns the port and process termination was not approved. No unknown process was killed.
+
 ## 2026-08-27 — MOBILE-191 fourteen-phase release hardening
 
 - Reconciled the full 14-phase product roadmap against current production code instead of rewriting already-delivered Whales, Discover, research, portfolio, Monitor, Trenches, intelligence, accessibility, recovery, security, and release behavior.

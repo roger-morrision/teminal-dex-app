@@ -14,9 +14,30 @@ if (trackedChanges) {
 }
 
 console.log(`Starting verified MOBILE development bundle at ${commit}.`);
+const requestedArgs = process.argv.slice(2);
+const hasWorkerLimit = requestedArgs.some(
+  (argument) => argument === '--max-workers' || argument.startsWith('--max-workers='),
+);
+const requestedWorkerLimit = Number.parseInt(
+  process.env.MOBILE_METRO_MAX_WORKERS ?? '',
+  10,
+);
+const workerLimit =
+  Number.isInteger(requestedWorkerLimit) &&
+  requestedWorkerLimit >= 1 &&
+  requestedWorkerLimit <= 8
+    ? String(requestedWorkerLimit)
+    : '2';
+const expoArgs = [
+  'node_modules/expo/bin/cli',
+  'start',
+  '--dev-client',
+  ...(hasWorkerLimit ? [] : ['--max-workers', workerLimit]),
+  ...requestedArgs,
+];
 const result = spawnSync(
   process.execPath,
-  ['node_modules/expo/bin/cli', 'start', '--dev-client', ...process.argv.slice(2)],
+  expoArgs,
   {
     env: { ...process.env, MOBILE_BUILD_COMMIT: commit },
     stdio: 'inherit',

@@ -65,11 +65,20 @@ describe('verified development build provenance', () => {
 
   it('passes the verified commit only to the child Expo process', () => {
     expect(launcher).toContain('MOBILE_BUILD_COMMIT: commit');
-    expect(launcher).toContain("'start', '--dev-client'");
+    expect(launcher).toContain("'start',");
+    expect(launcher).toContain("'--dev-client',");
+    expect(launcher).toContain('expoArgs');
   });
 
   it('retains interactive Expo output for device testing', () => {
     expect(launcher).toContain("stdio: 'inherit'");
+  });
+
+  it('bounds Metro concurrency while preserving an explicit CLI override', () => {
+    expect(launcher).toContain("argument === '--max-workers'");
+    expect(launcher).toContain("argument.startsWith('--max-workers=')");
+    expect(launcher).toContain("requestedWorkerLimit <= 8");
+    expect(launcher).toContain("['--max-workers', workerLimit]");
   });
 
   it('emits a bounded device-log marker at app mount', () => {

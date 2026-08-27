@@ -1203,6 +1203,29 @@ The initial sandboxed diagnostic could not open Expo's user native-module cache 
 
 ---
 
+# MOBILE-QA scope change — MOBILE-186
+
+- Trigger: user-requested in-app-browser filter retest on 2026-08-27.
+- Scope result: `qa_scope_changed` / BLOCKED P1. The run began from QA-report commit `644fdaa`; while the app was being exercised, the mobile tree advanced to `8c1b1af` (`feat(mobile): add Privy login and signup`) with product, configuration, dependency, bundle, and DEV-handoff changes. The browser evidence is therefore not assigned to either immutable result.
+- Safe, non-certifying observations before the scope change: local Expo web server started on port 8081; the API returned HTTP 200 with `Access-Control-Allow-Origin: http://127.0.0.1:8081`; Discover Trending, Gainers, Losers, Volume, New Pairs, Hot Searches, Surge, NextBC, Pump Live, and 1h/6h/24h all settled with live data; Watchlist was truthfully empty. Trenches status tabs and Whales Wallets also rendered provider data.
+- Re-test signal, not a closure: Monitor → Filters → observed DEX → Pump.fun showed 46/50 rows while a letsbonk row remained visible. This contradicts the DEV handoff's claimed `MOBILE-FILTER-515` closure, but because the runtime crossed commits it is **RETEST REQUIRED**, not a certified FAIL.
+- No source, test, configuration, WEB, credential, wallet, signing, submission, trade, or CopyTrade action was changed. Only this report is written.
+
+## MOBILE-QA reconciliation and handoff
+
+| Stable ID | Result | Exact NEXT_DEV_ACTION |
+| --- | --- | --- |
+| MOBILE-QA-006 | BLOCKED P1 | Keep a single immutable mobile result available while QA runs; do not land changes until the test window is completed. |
+| MOBILE-FILTER-515 | RETEST REQUIRED P2 | From the exact `8c1b1af` build, prove Pump.fun removes every letsbonk row and Reset restores it; capture DOM/accessibility evidence. |
+| MOBILE-A11Y-517 | RETEST REQUIRED P2 | From the exact result, confirm no fresh nested-button/hydration browser error in Discover and Trenches. |
+| MOBILE-AUTH-518..520 / MOBILE-SEC-521 / MOBILE-BUNDLE-522 | SKIP | Execute the DEV handoff's authorized Privy web/Android matrix only after the public identifiers and exact build are supplied. |
+
+- Findings inspected/reconciled: 20 (scope stability, live-mode/tab/time controls, filter panels, Monitor DEX signal, browser semantics, and new DEV handoff outcomes).
+- DEV outcomes available: 5; independently verified: 0. Exact shortfall to 20: 20. The unverified live observations are deliberately not counted because of `qa_scope_changed`.
+- **MOBILE-QA release recommendation: NO-GO.** Re-run against an immutable `8c1b1af` build; first resolve/retest `MOBILE-QA-006`, then `MOBILE-FILTER-515`, `MOBILE-A11Y-517`, and the authorized identity matrix.
+
+---
+
 # MOBILE-QA runtime filter retest — MOBILE-185
 
 - Trigger: user-requested live filter retest after the authorized WEB operator repaired local-browser CORS.

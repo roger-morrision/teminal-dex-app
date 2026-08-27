@@ -4,6 +4,7 @@ Status legend: `[x]` verified, `[ ]` incomplete, `[~]` intentionally visible but
 
 ## Fourteen-phase delivery ledger (MOBILE-523..527)
 
+- [x] Privy initialization is bounded to 12 seconds: a stalled SDK now becomes a localized, screen-reader-announced recovery state with a working return action instead of trapping the user behind an infinite spinner.
 - [x] Verified development startup applies a bounded two-worker Metro default (configurable from 1–8 or by an explicit CLI option), preventing the Windows `EMFILE` failure observed under concurrent first-route compilation without hiding operator overrides.
 - [x] Phase 1 — Privy identity: official native/web SDKs, signup/login/account recovery, bilingual EN/VI copy, public App ID/client-ID configuration aliases, and secret-shaped public-value rejection are implemented. Live provider login remains an environment/device acceptance activity.
 - [x] Phase 2 — Navigation and shell: whale-first tabs, auxiliary routes, deep links, safe-area behavior, and auth entry points are implemented and regression-covered.
@@ -18,7 +19,7 @@ Status legend: `[x]` verified, `[ ]` incomplete, `[~]` intentionally visible but
 - [x] Phase 11 — Accessibility and responsive behavior: semantic controls, minimum touch targets, large-text-safe layouts, localized auth UX, and screen-reader labels are code-verified. Physical assistive-technology evidence remains a QA prerequisite.
 - [x] Phase 12 — Recovery, lifecycle, and performance: offline/reconnect, bounded retry, retained evidence, render/page budgets, and lifecycle-safe state are implemented. Physical fault-injection/performance evidence remains a QA prerequisite.
 - [x] Phase 13 — Security and privacy: HTTPS/fail-closed origins, redaction, secure storage, public-config validation, secret rejection, and disabled transaction execution are implemented.
-- [x] Phase 14 — Release engineering: strict TypeScript, ESLint, 466-test regression gate, Expo compatibility, Doctor 21/21, and configured Android/iOS/Web exports pass. The guarded upstream Noble export warning and physical-device acceptance remain explicitly conditional.
+- [x] Phase 14 — Release engineering: strict TypeScript, ESLint, 468-test regression gate, Expo compatibility, Doctor 21/21, and configured Android/iOS/Web exports pass. The guarded upstream Noble export warning and physical-device acceptance remain explicitly conditional.
 
 ## Foundation and security
 

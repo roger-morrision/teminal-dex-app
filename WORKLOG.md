@@ -1,5 +1,13 @@
 # Mobile Worklog
 
+## 2026-08-27 — MOBILE-193 bounded Privy initialization recovery
+
+- Reconciled the fourteen-phase ledger against current source and QA evidence; phases 2–10 remain implemented without speculative rewrites, while the remaining dependency-ready Phase 1/12 defect was an unbounded Privy SDK initialization spinner.
+- Privy initialization now waits at most 12 seconds before presenting a localized English/Vietnamese alert and an accessible Return to app action. Successful initialization behavior is unchanged.
+- Added deterministic fake-timer coverage for the initial loading state, timeout transition, and recovery navigation, plus translation coverage for both new strings.
+- Validation: strict TypeScript PASS; source ESLint PASS; focused 3 suites / 5 tests PASS; full Jest 87 suites / 468 tests PASS; Expo compatibility PASS; Expo Doctor 21/21 PASS; configured Web, Android, and iOS exports PASS.
+- External acceptance remains open for live authorized Privy login/session scenarios and the physical accessibility/layout/lifecycle/performance matrix. The known upstream Noble strict-exports fallback warning remains non-fatal and guarded.
+
 ## 2026-08-27 — MOBILE-192 bounded verified Metro startup
 
 - Reproduced the browser-test startup failure as Windows `EMFILE` during multiple concurrent initial Expo Router web bundles; the app later recovered, but first navigation was slow and unreliable.

@@ -461,6 +461,8 @@ const en = {
   privyContinue: "Continue",
   privySignOut: "Sign out",
   privyCloseLogin: "Close login",
+  privyInitializationTimeout: "Privy is taking longer than expected to initialize. Return to the app and retry after checking your connection.",
+  privyReturnToApp: "Return to the app",
   walletSafety:
     "Terminal DEX never requests or stores seed phrases. Android uses Mobile Wallet Adapter to sign a non-transaction ownership challenge.",
   openingWallet: "Opening wallet…",
@@ -1565,6 +1567,8 @@ const vi: { [K in TranslationKey]: string } = {
   privyContinue: "Tiếp tục",
   privySignOut: "Đăng xuất",
   privyCloseLogin: "Đóng đăng nhập",
+  privyInitializationTimeout: "Privy mất nhiều thời gian hơn dự kiến để khởi tạo. Quay lại ứng dụng và thử lại sau khi kiểm tra kết nối.",
+  privyReturnToApp: "Quay lại ứng dụng",
   walletSafety:
     "Terminal DEX không yêu cầu hoặc lưu cụm từ khôi phục. Android dùng Mobile Wallet Adapter để ký thử thách sở hữu không phải giao dịch.",
   openingWallet: "Đang mở ví…",

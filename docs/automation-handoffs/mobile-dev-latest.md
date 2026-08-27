@@ -1,5 +1,18 @@
 # MOBILE DEV → QA handoff
 
+## MOBILE-193 — bounded Privy initialization recovery
+
+- Base: `9890872`; result: containing commit.
+- IDs: `MOBILE-AUTH-529` bounded initialization, `MOBILE-RECOVERY-530` return path, `MOBILE-A11Y-531` announced alert/action semantics, `MOBILE-I18N-532` English/Vietnamese recovery copy.
+- Fourteen-phase reconciliation: all phases remain implemented at source and automated-gate level. Existing phases 2–10 were verified without churn. This increment closes the remaining safe dependency-ready Phase 1/12 gap; no backend capability, provider result, or physical-device evidence was invented.
+- Changed behavior/files: `app/auth.tsx` changes an unresolved Privy initialization from an infinite spinner to a 12-second bounded state with a localized alert and Return to app button; `src/settings/SettingsProvider.tsx` adds typed EN/VI copy; `src/__tests__/AuthScreen.test.tsx` and `src/__tests__/SettingsProvider.test.tsx` protect timing, navigation, and localization.
+- Acceptance evidence: the spinner is present before the deadline; at 12 seconds it is removed, the alert is rendered, and pressing Return calls router back. Configured/ready provider behavior remains unchanged.
+- Exact validation: TypeScript PASS; `eslint app src` PASS; focused Auth/Settings/Privy tests PASS (3 suites / 5 tests); full Jest PASS (87 suites / 468 tests); Expo compatibility PASS; Expo Doctor PASS (21/21); configured Web export PASS (26 routes including `/auth`); configured Android and iOS Hermes exports PASS. Native exports retain the known non-fatal upstream Noble `./crypto.js` strict-exports fallback warning.
+- Security/evidence: public Privy identifiers were process-local only and were never printed, copied, staged, or committed. No environment file, WEB file, mock data, signing, submission, trading, or CopyTrade activation changed.
+- Remaining conditional evidence: authorized live Privy signup/login/cancel/session-restore/logout; physical TalkBack/VoiceOver/Switch Access, large-text/layout, lifecycle/network fault injection, and performance; current provider ingestion fixtures.
+- NEXT_QA_ACTION: pin the result commit and exercise unready → timeout → Return on Web and Android; then execute live EN/VI email and Google flows plus session restoration using an authorized exact development build, recording device/OS/build/provider evidence.
+- NEXT_WEB_ACTION: keep WEB read-only from MOBILE. WEB/provider operations must maintain current discovery/indexer/research ingestion and deterministic qualified-current fixtures; no API schema change is requested.
+
 ## MOBILE-192 — Windows Metro file-handle recovery
 
 - Base: `d1a633c`; result: containing commit.

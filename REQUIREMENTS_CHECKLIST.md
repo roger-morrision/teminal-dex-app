@@ -4,7 +4,7 @@ Status legend: `[x]` verified, `[ ]` incomplete, `[~]` intentionally visible but
 
 ## Fourteen-phase delivery ledger (MOBILE-523..527)
 
-- [x] Repository-local Expo Doctor prepends the actual `process.execPath` directory for child processes, eliminating isolated Windows `spawn node ENOENT`; the repaired lane passes 21/21 checks.
+- [x] Repository-local Expo Doctor prepends the actual `process.execPath` directory and supplies a temporary, fail-closed npm compatibility command limited to version reporting and lockfile-backed dependency explanation, eliminating isolated Windows `spawn node/npm ENOENT`; the exact non-escalated QA-style lane passes 21/21 checks.
 - [x] Verified Metro startup probes a bounded 19-port window from 8081 (or `MOBILE_DEV_PORT`) and selects the first free loopback port without terminating unknown processes; explicit `--port` remains authoritative.
 - [x] Privy initialization is bounded to 12 seconds: a stalled SDK now becomes a localized, screen-reader-announced recovery state with a working return action instead of trapping the user behind an infinite spinner.
 - [x] Verified development startup applies a bounded two-worker Metro default (configurable from 1–8 or by an explicit CLI option), preventing the Windows `EMFILE` failure observed under concurrent first-route compilation without hiding operator overrides.

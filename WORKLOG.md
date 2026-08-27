@@ -1,5 +1,13 @@
 # Mobile Worklog
 
+## 2026-08-27 — MOBILE-195 Doctor npm isolation closure
+
+- Consumed fresh independent QA evidence showing MOBILE-194 resolved child `node` discovery but the archive shell still failed four Doctor checks at `spawn npm ENOENT`.
+- The Doctor wrapper now creates an ephemeral PATH shim backed by a repository script that implements only the read-only npm surface Doctor invokes: semantic version reporting and `npm explain ... --json` derived directly from `package-lock.json`.
+- The inspector fails closed for installation or any unsupported package-manager command, cleans its temporary shim in finally-style cleanup, and never mutates dependencies, caches, environments, or provider data.
+- Deterministic tests prove all three prohibited legacy/conflicting packages are absent from the actual lockfile and that mutation commands are rejected.
+- Exact non-escalated QA-style Doctor invocation now passes 21/21. TypeScript and zero-warning source/script ESLint pass; focused inspector/package-script tests pass; full Jest passes 88 suites / 476 tests.
+
 ## 2026-08-27 — MOBILE-194 release-tooling blocker recovery
 
 - Reproduced the QA-only Doctor failure mode: the bundled Node executable was available as `process.execPath` but absent from child `PATH`, causing Expo Doctor subprocesses to fail with `spawn node ENOENT`.

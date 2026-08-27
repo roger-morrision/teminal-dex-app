@@ -1,4 +1,6 @@
 import packageJson from '../../package.json';
+import fs from 'node:fs';
+import path from 'node:path';
 
 const qualityScriptExecutables = {
   typecheck: { command: 'tsc', packageName: 'typescript' },
@@ -34,5 +36,15 @@ describe('package quality scripts', () => {
     expect(packageJson.scripts['diagnostics:doctor']).toBe(
       'node scripts/run-expo-doctor.mjs',
     );
+  });
+
+  it('keeps the Doctor npm fallback read-only and lockfile-backed', () => {
+    const inspector = fs.readFileSync(
+      path.join(process.cwd(), 'scripts/doctor-npm-inspector.mjs'),
+      'utf8',
+    );
+    expect(inspector).toContain("readFileSync(join(process.cwd(), 'package-lock.json')");
+    expect(inspector).toContain("args[0] === 'explain'");
+    expect(inspector).not.toContain('npm install');
   });
 });

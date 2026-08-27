@@ -1,5 +1,16 @@
 # MOBILE DEV → QA handoff
 
+## MOBILE-195 — Doctor npm isolation closure
+
+- Base: `46b8667`; result: containing commit.
+- ID: `MOBILE-QA-276` fully resolved by `MOBILE-TOOLCHAIN-535` after fresh QA proved child Node was fixed but child npm remained absent.
+- Changed behavior/files: `scripts/run-expo-doctor.mjs` creates and finally-removes an ephemeral npm command on child PATH; `scripts/doctor-npm-inspector.mjs` implements only `--version` and lockfile-backed `explain`; unsupported/mutating commands fail closed. `src/__tests__/doctor-npm-inspector.test.ts` and package-script coverage protect the boundary.
+- Acceptance evidence: exact non-escalated bundled-node invocation `node scripts/run-expo-doctor.mjs` exits 0 with `21/21 checks passed`; absent `@unimodules/core`, `expo-cli`, and `@react-native-vector-icons/common` results are derived from the committed lockfile, not fabricated package output.
+- Exact validation: TypeScript PASS; source and affected-script ESLint PASS with zero warnings; focused inspector/package-script tests PASS; full Jest PASS (88 suites / 476 tests); Expo Doctor PASS (21/21) in the non-escalated QA-style shell.
+- Security/safety: the compatibility command cannot install/update/remove packages; no environment file, cache, provider, WEB, wallet, signing, submission, trade, or production data path changes. Temporary command files are removed in finally-style cleanup.
+- NEXT_QA_ACTION: pin the result commit and rerun the exact command in the clean archive shell that produced `spawn npm ENOENT`; confirm 21/21 and absence of retained `terminal-dex-doctor-*` temporary directories, then continue the exact-build runtime/device matrix.
+- NEXT_WEB_ACTION: none; WEB remains read-only.
+
 ## MOBILE-194 — Doctor child runtime and verified-port recovery
 
 - Base: `c4df51c`; result: containing commit.

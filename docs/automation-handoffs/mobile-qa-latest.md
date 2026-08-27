@@ -1153,3 +1153,29 @@ The initial sandboxed diagnostic could not open Expo's user native-module cache 
 - **MOBILE-QA release recommendation: CONDITIONAL NO-GO.** The available migration passes, but physical accessibility/layout/offline runtime remains incomplete.
 - Carry-forward order: `MOBILE-QA-269`, `MOBILE-QA-270`, `MOBILE-QA-271`, `MOBILE-QA-272`, `MOBILE-QA-273`.
 - **NEXT_DEV_ACTION:** provide immutable timestamp fixtures for Discover, Trenches, Operations, and Monitor across EN/VI and controlled device/network lanes for the five blocked physical scenarios.
+
+---
+
+# MOBILE-QA validation handoff — MOBILE-181
+
+- Trigger: 2026-08-27T00:42:14.852Z. Inspected immutable result `4257931dd77d212e9d49709ee50019ea25335ad6` (`fix(mobile): localize AI and Track chronology`), base `f409ec2`. Scope PASS: canonical top-level/prefix, clean result, no DEV lock; clean archive `%LOCALAPPDATA%\\Temp\\mobile-qa-181-4257931` used. Only this report is written under QA lock.
+- Environment/runtime: Windows, bundled Node 24.19.0, Expo 57. No deterministic AI/Track seconds/milliseconds/ISO/malformed fixture or exact device settled; visual, assistive, ordering, navigation, and provider results are BLOCKED, not inferred.
+
+## MOBILE-QA acceptance matrix
+
+| Criterion | Result | Independent evidence |
+| --- | --- | --- |
+| Type and changed-surface lint | PASS | Archive `tsc --noEmit` and ESLint of formatter, AI, Track, and focused test exit 0. |
+| Focused chronology regression | PASS | `format.test.ts` plus `TrackEventCard.test.tsx`: 2 suites / 9 tests pass. |
+| Full regression | PASS | Archive Jest: 83 suites / 455 tests pass in 38.996s. |
+| Expo/configuration | PASS with Doctor blocker | Public config resolves; Doctor emits child-Node ENOENT. |
+| Bundles/runtime | SKIP / BLOCKED | No fresh M181 export completed in this trigger; M180 Android and M179 iOS/web evidence is not reclassified. Exact AI/Track runtime fixture unavailable. |
+
+## MOBILE-QA reconciliation and release
+
+- `MOBILE-I18N-460..464`, `MOBILE-DATA-465..466`: PASS. Shared formatter accepts seconds, milliseconds, valid ISO strings, and fails closed for malformed string evidence; focused, type/lint, and full-regression evidence pass.
+- `MOBILE-QA-269..280`, `MOBILE-QA-283`: BLOCKED/CONDITIONAL P2 physical accessibility/layout/recovery/performance, Doctor/Noble, and provider fixtures; owner QA/device/toolchain/upstream/provider.
+- Findings inspected/reconciled: 20. DEV outcomes available/verified: 7/7 PASS. Exact shortfall: 13 (`MOBILE-QA-269..280`, `MOBILE-QA-283`). Evidence: `%LOCALAPPDATA%\\Temp\\mobile-qa-181-full.out.log` and `.err`. No credential, secret, screenshot, provider payload, or WEB evidence retained; no MOBILE-to-WEB blocker.
+- **MOBILE-QA release recommendation: CONDITIONAL NO-GO.** Seven available chronology outcomes pass; runtime, fresh bundle, and external matrix evidence remain incomplete.
+- Carry-forward order: `MOBILE-QA-269`, `MOBILE-QA-270`, `MOBILE-QA-271`, `MOBILE-QA-272`, `MOBILE-QA-273`, `MOBILE-QA-274`, `MOBILE-QA-275`, `MOBILE-QA-276`, `MOBILE-QA-277`, `MOBILE-QA-278`, `MOBILE-QA-279`, `MOBILE-QA-280`, `MOBILE-QA-283`.
+- **NEXT_DEV_ACTION:** provide an immutable AI/Track fixture covering seconds, milliseconds, valid ISO, and malformed observations in EN/VI, plus a responsive exact device route for chronology accessibility verification.

@@ -13,7 +13,7 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint app src",
     "diagnostics:expo": "expo install --check",
-    "diagnostics:doctor": "expo-doctor",
+    "diagnostics:doctor": "node scripts/run-expo-doctor.mjs",
     "test": "jest --runInBand",
     "test:ci": "jest --ci --runInBand --coverage"
   },

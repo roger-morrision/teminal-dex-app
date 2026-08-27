@@ -1,5 +1,17 @@
 # MOBILE DEV → QA handoff
 
+## MOBILE-194 — Doctor child runtime and verified-port recovery
+
+- Base: `c4df51c`; result: containing commit.
+- IDs: `MOBILE-QA-276` resolved by `MOBILE-TOOLCHAIN-533`; occupied runtime port blocker resolved by `MOBILE-RUNTIME-534`.
+- Changed behavior/files: `scripts/run-expo-doctor.mjs` runs the local Doctor with the exact current Node directory prepended to child PATH; `package.json` routes the diagnostic through it. `scripts/start-verified.mjs` selects the first free loopback port in a bounded 19-port window when no explicit port is supplied, preserves `MOBILE_DEV_PORT`, and never terminates another process. Focused package/launcher tests protect both contracts.
+- Acceptance evidence: the exact bundled-node wrapper invocation reports `21/21 checks passed`; the launcher contract proves explicit-port precedence, bounded selection, environment override, and absence of termination logic.
+- Exact validation: TypeScript PASS; affected ESLint PASS; focused 2 suites / 19 tests PASS; full Jest PASS (87 suites / 470 tests); Expo compatibility PASS; Expo Doctor PASS (21/21).
+- Security/safety: no WEB, environment, secret, provider, wallet, signing, submission, trade, or CopyTrade mutation. Existing processes are never terminated. No production mock data or generated output was added.
+- Findings reconciled: 20 release lanes. Material outcomes completed: 2. Exact shortfall to 20: 18; the remaining lanes require authorized live Privy/provider operation, controlled provider fixtures, physical hardware/assistive technology, or upstream Noble remediation. Owner/carry-forward: QA/device (`MOBILE-QA-269..275`, `MOBILE-QA-280`), QA/provider fixture (`MOBILE-QA-278..279`), upstream dependency (`MOBILE-QA-277`), authorized identity/provider operator (live Privy and current ingestion evidence).
+- NEXT_QA_ACTION: from the immutable result run `npm run diagnostics:doctor`, then run `npm run dev:verified -- --web` while 8081 is occupied and verify it reports/serves the next free port; execute Privy recovery and physical-device matrices on that exact build.
+- NEXT_WEB_ACTION: keep WEB read-only from MOBILE; provider operations should supply controlled current/partial-failure evidence for QA without changing MOBILE production data paths.
+
 ## MOBILE-193 — bounded Privy initialization recovery
 
 - Base: `9890872`; result: containing commit.

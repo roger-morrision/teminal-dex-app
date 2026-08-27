@@ -1,5 +1,13 @@
 # Mobile Worklog
 
+## 2026-08-27 — MOBILE-194 release-tooling blocker recovery
+
+- Reproduced the QA-only Doctor failure mode: the bundled Node executable was available as `process.execPath` but absent from child `PATH`, causing Expo Doctor subprocesses to fail with `spawn node ENOENT`.
+- Added a repository-local Doctor wrapper that prepends the exact running Node directory, preserves the inherited environment, forwards arguments and stdio, and propagates launch/exit failures. The canonical isolated invocation now passes 21/21 checks.
+- Removed the occupied-port no-action path from verified Metro startup. Without an explicit `--port`, the launcher probes a bounded 19-port loopback window from 8081 or `MOBILE_DEV_PORT`, selects the first free port, and never terminates an existing process. Explicit operator ports remain unchanged.
+- Added focused quality-script and verified-launcher contracts. Validation: TypeScript PASS; affected ESLint PASS; focused 2 suites / 19 tests PASS; full Jest 87 suites / 470 tests PASS; Expo compatibility PASS; Expo Doctor 21/21 PASS.
+- External-only remainder is unchanged: authorized live Privy/provider flows, controlled provider failure fixtures owned by QA/WEB operations, physical accessibility/lifecycle/performance evidence, and the guarded upstream Noble warning.
+
 ## 2026-08-27 — MOBILE-193 bounded Privy initialization recovery
 
 - Reconciled the fourteen-phase ledger against current source and QA evidence; phases 2–10 remain implemented without speculative rewrites, while the remaining dependency-ready Phase 1/12 defect was an unbounded Privy SDK initialization spinner.

@@ -4,7 +4,7 @@ const qualityScriptExecutables = {
   typecheck: { command: 'tsc', packageName: 'typescript' },
   lint: { command: 'eslint', packageName: 'eslint' },
   'diagnostics:expo': { command: 'expo', packageName: 'expo' },
-  'diagnostics:doctor': { command: 'expo-doctor', packageName: 'expo-doctor' },
+  'diagnostics:doctor': { command: 'node', packageName: 'expo-doctor' },
   test: { command: 'jest', packageName: 'jest' },
   'test:ci': { command: 'jest', packageName: 'jest' },
 } as const;
@@ -28,5 +28,11 @@ describe('package quality scripts', () => {
 
   it('keeps lint scoped to source-owned roots', () => {
     expect(packageJson.scripts.lint).toBe('eslint app src');
+  });
+
+  it('runs Expo Doctor through the child-Node PATH recovery wrapper', () => {
+    expect(packageJson.scripts['diagnostics:doctor']).toBe(
+      'node scripts/run-expo-doctor.mjs',
+    );
   });
 });

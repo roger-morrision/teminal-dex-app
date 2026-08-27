@@ -81,6 +81,15 @@ describe('verified development build provenance', () => {
     expect(launcher).toContain("['--max-workers', workerLimit]");
   });
 
+  it('selects a bounded free development port without terminating an existing process', () => {
+    expect(launcher).toContain("argument === '--port'");
+    expect(launcher).toContain("argument.startsWith('--port=')");
+    expect(launcher).toContain('MOBILE_DEV_PORT');
+    expect(launcher).toContain('selectDevelopmentPort');
+    expect(launcher).toContain('start + 18');
+    expect(launcher).not.toContain('Stop-Process');
+  });
+
   it('emits a bounded device-log marker at app mount', () => {
     expect(rootLayout).toContain('[MOBILE_BUILD] commit=');
     expect(rootLayout).toContain("commit : 'unverified'");

@@ -1,5 +1,16 @@
 # MOBILE DEV → QA handoff
 
+## MOBILE-181 — localized AI and Track chronology
+
+- Base: `f409ec2`; result: containing commit.
+- Findings: 20 reconciled; completed all seven safe outcomes (`MOBILE-I18N-460..464`, `MOBILE-DATA-465..466`); exact shortfall 13 (`MOBILE-QA-269..280`, `MOBILE-QA-283`) with external owners.
+- Changed behavior/files: AI discovery observations plus Track delivery, social, durable-history, and event timestamps use `observedDateTime`; the shared formatter accepts numeric or ISO provider time and fails closed for malformed strings.
+- Acceptance evidence: TypeScript PASS; full source ESLint PASS; focused Jest PASS (2 suites/9 tests); full Jest PASS (83 suites/455 tests).
+- Runtime scenario: switch EN/VI; feed seconds, milliseconds, valid ISO, and malformed time through AI and all four Track surfaces; verify localized/fallback output with unchanged ordering.
+- Known risks: physical accessibility/layout/recovery/performance and controlled provider/network fixtures remain external.
+- NEXT_QA_ACTION: independently classify all seven IDs through the runtime scenario, then continue the blocked matrix.
+- NEXT_WEB_ACTION: none.
+
 ## MOBILE-180 — shared defensive relative ages
 
 - Base: `cce8d4a`; result: containing commit.

@@ -6,7 +6,7 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { fetchAlertDeliveries, fetchFeedHistory, fetchSocialRadar, fetchTrackFeed } from "@/api/client";
 import type { FeedHistoryCursor, FeedHistoryEvent, SocialRadarTrend, TrackNotification } from "@/api/schema";
-import { compactUsd, evidenceLabel, evidenceList } from "@/lib/format";
+import { compactUsd, evidenceLabel, evidenceList, observedDateTime } from "@/lib/format";
 import { useWalletSession } from "@/security/WalletSessionProvider";
 import { useSettings } from "@/settings/SettingsProvider";
 import {
@@ -28,7 +28,7 @@ const typeTone = (type: TrackNotification["type"]) =>
 export default function TrackScreen() {
   const router = useRouter();
   const wallet = useWalletSession();
-  const { t } = useSettings();
+  const { t, language } = useSettings();
   const [filter, setFilter] = React.useState<TrackFilter>("all");
   React.useEffect(() => {
     void loadTrackFilter().then(setFilter);
@@ -238,7 +238,7 @@ export default function TrackScreen() {
                 <Text style={styles.meta}>{item.eventKey}</Text>
               </View>
               <Text style={styles.meta}>
-                {new Date(item.updatedAt).toLocaleString()}
+                {observedDateTime(item.updatedAt, language, t("timeUnavailable"))}
               </Text>
               {item.reason ? (
                 <Text style={styles.reason}>{t(publicReasonKey(item.reason))}</Text>
@@ -254,7 +254,7 @@ export default function TrackScreen() {
 }
 
 export function SocialTrendCard({ item, onOpen }: { item: SocialRadarTrend; onOpen: () => void }) {
-  const { t } = useSettings();
+  const { t, language } = useSettings();
   const score = item.trend.socialTrendScore;
   return (
     <Pressable
@@ -267,7 +267,7 @@ export function SocialTrendCard({ item, onOpen }: { item: SocialRadarTrend; onOp
         <Text style={[styles.type, { color: score != null && score >= 62 ? colors.positive : colors.warning }]}>
           {item.trend.trendState.replaceAll("_", " ")}
         </Text>
-        <Text style={styles.meta}>{new Date(item.trend.observedAt).toLocaleString()}</Text>
+        <Text style={styles.meta}>{observedDateTime(item.trend.observedAt, language, t("timeUnavailable"))}</Text>
       </View>
       <Text style={styles.eventTitle}>{item.token.symbol} · {item.token.name}</Text>
       <Text style={styles.message}>
@@ -292,7 +292,8 @@ export function SocialTrendCard({ item, onOpen }: { item: SocialRadarTrend; onOp
 }
 
 function FeedHistoryCard({ item, onOpen }: { item: FeedHistoryEvent; onOpen?: () => void }) {
-  const content = <><View style={styles.eventTop}><Text style={styles.type}>{item.kind.replaceAll("_", " ")}</Text><Text style={styles.meta}>{new Date(item.observedAt).toLocaleString()}</Text></View><Text style={styles.eventTitle}>{item.mint ?? item.topic}</Text><Text style={styles.message}>{item.source} · {item.channel} · {item.dataQuality}</Text><Text style={styles.dedupe}>{item.replaySequence} · {item.id}</Text></>;
+  const { t, language } = useSettings();
+  const content = <><View style={styles.eventTop}><Text style={styles.type}>{item.kind.replaceAll("_", " ")}</Text><Text style={styles.meta}>{observedDateTime(item.observedAt, language, t("timeUnavailable"))}</Text></View><Text style={styles.eventTitle}>{item.mint ?? item.topic}</Text><Text style={styles.message}>{item.source} · {item.channel} · {item.dataQuality}</Text><Text style={styles.dedupe}>{item.replaySequence} · {item.id}</Text></>;
   return onOpen ? <Pressable accessibilityRole="button" accessibilityLabel={`Open ${item.kind} history event`} onPress={onOpen} style={styles.event}>{content}</Pressable> : <View accessibilityRole="summary" style={styles.event}>{content}</View>;
 }
 
@@ -303,7 +304,7 @@ export function TrackEventCard({
   item: TrackNotification;
   onOpen: () => void;
 }) {
-  const { t } = useSettings();
+  const { t, language } = useSettings();
   return (
     <Pressable
       accessibilityRole="button"
@@ -319,7 +320,7 @@ export function TrackEventCard({
           {item.type.replaceAll("_", " ")}
         </Text>
         <Text style={styles.meta}>
-          {new Date(item.observedAt).toLocaleString()}
+          {observedDateTime(item.observedAt, language, t("timeUnavailable"))}
         </Text>
       </View>
       <Text style={styles.eventTitle}>{item.title}</Text>

@@ -338,3 +338,12 @@ No in-scope automated regression was found. Generated export directories were re
 - **Safety:** presentation/data-validation only; provider records, sorting, APIs, wallets, and transactions are unchanged.
 - **NEXT_QA_ACTION:** independently traverse the timestamp matrix on all four surfaces in EN/VI, then execute the five blocked device/network cases.
 - **NEXT_WEB_ACTION:** none.
+
+## MOBILE-181 localized AI and Track chronology
+
+- **Implemented:** all seven safe outcomes (`MOBILE-I18N-460..464`, `MOBILE-DATA-465..466`); exact shortfall 13 with device/network/toolchain/upstream owners.
+- **Behavior:** AI discovery history, delivery evidence, social trends, durable history, and Track events use EN/VI locale; the shared parser safely accepts numeric seconds/milliseconds and ISO strings and rejects malformed strings.
+- **Verified:** TypeScript/full source ESLint PASS; focused Jest PASS (2 suites/9 tests); full Jest PASS (83 suites/455 tests).
+- **Safety:** presentation/parser only; provider events, ordering, APIs, wallets, and transactions are unchanged.
+- **NEXT_QA_ACTION:** independently exercise the complete timestamp matrix on AI and Track in EN/VI.
+- **NEXT_WEB_ACTION:** none.

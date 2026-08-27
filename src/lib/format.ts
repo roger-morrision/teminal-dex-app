@@ -50,11 +50,14 @@ export function evidenceList(
 }
 
 export function observedDateTime(
-  value: number,
+  value: number | string,
   language: 'en' | 'vi',
   fallback: string,
 ): string {
-  const milliseconds = value < 1_000_000_000_000 ? value * 1000 : value;
+  const numericValue = typeof value === 'string' ? Number(value) : value;
+  const milliseconds = typeof value === 'string' && !Number.isFinite(numericValue)
+    ? Date.parse(value)
+    : numericValue < 1_000_000_000_000 ? numericValue * 1000 : numericValue;
   if (!Number.isFinite(milliseconds)) return fallback;
   const date = new Date(milliseconds);
   if (!Number.isFinite(date.getTime())) return fallback;

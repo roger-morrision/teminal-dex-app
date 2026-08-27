@@ -1757,3 +1757,16 @@ Fresh post-`cce8d4a` source/QA reconciliation records 20 current findings. Fifte
 - Discover, Trenches, Operations, and Monitor now share defensive localized relative-age behavior instead of four divergent calculations.
 - TypeScript PASS; full source ESLint PASS; focused Jest PASS (4 suites/32 tests); full Jest PASS (83 suites/455 tests); public Expo config PASS via the bundled Node runtime.
 - NEXT_QA_ACTION: exercise all four screens with seconds/milliseconds, older-than-24h, malformed, and future timestamps in EN/VI. NEXT_WEB_ACTION: none.
+
+## MOBILE BA/PO review — 2026-08-27 00:21 trigger
+
+Fresh post-`f409ec2` reconciliation records 20 current findings. Seven timestamp-integrity outcomes are MOBILE-ready; thirteen carried findings require physical devices, controlled providers/network, or upstream toolchain ownership. Ready acceptance is locale-aware display plus fail-closed seconds, milliseconds, ISO-string, and malformed provider time without changing event order.
+
+1. **MOBILE-I18N-460 READY** AI discovery observation locale. 2. **MOBILE-I18N-461 READY** delivery update locale. 3. **MOBILE-I18N-462 READY** social-trend observation locale. 4. **MOBILE-I18N-463 READY** durable-history observation locale. 5. **MOBILE-I18N-464 READY** Track event observation locale. 6. **MOBILE-DATA-465 READY** ISO provider-time support. 7. **MOBILE-DATA-466 READY** malformed string fallback. 8–19. **MOBILE-QA-269..280 BLOCKED/CONDITIONAL** device/network/toolchain/upstream matrix. 20. **MOBILE-QA-283 BLOCKED/device** Android edge traversal.
+
+### MOBILE-181 implementation result
+
+- Completed all seven safe outcomes (`MOBILE-I18N-460..464`, `MOBILE-DATA-465..466`); exact shortfall 13 after exhausting the ready queue.
+- AI discovery history and four Track feed surfaces now use selected EN/VI locale and the shared defensive provider-time parser.
+- TypeScript PASS; full source ESLint PASS; focused Jest PASS (2 suites/9 tests); full Jest PASS (83 suites/455 tests).
+- NEXT_QA_ACTION: verify seconds/milliseconds/ISO/malformed timestamps on AI and Track in EN/VI. NEXT_WEB_ACTION: none.

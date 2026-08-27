@@ -29,6 +29,8 @@ describe('formatters', () => {
     expect(observedDateTime(1_700_000_000, 'en', 'Unavailable')).toContain('2023');
     expect(observedDateTime(1_700_000_000_000, 'vi', 'Không có')).toContain('2023');
     expect(observedDateTime(Number.NaN, 'en', 'Unavailable')).toBe('Unavailable');
+    expect(observedDateTime('2023-11-14T22:13:20.000Z', 'en', 'Unavailable')).toContain('2023');
+    expect(observedDateTime('not-a-date', 'en', 'Unavailable')).toBe('Unavailable');
   });
 
   it('classifies relative observation age and rejects invalid or future timestamps', () => {

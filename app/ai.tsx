@@ -24,7 +24,7 @@ import type {
   AiPlatform,
   AiRecommendation,
 } from "@/api/schema";
-import { compactUsd, signedPercent } from "@/lib/format";
+import { compactUsd, observedDateTime, signedPercent } from "@/lib/format";
 import { useWalletSession } from "@/security/WalletSessionProvider";
 import { colors, spacing } from "@/theme";
 import { useSettings } from "@/settings/SettingsProvider";
@@ -204,7 +204,7 @@ export function GmgnHistory({
   onRetry?: () => void;
   onOpen: (address: string) => void;
 }) {
-  const { t } = useSettings();
+  const { t, language } = useSettings();
   if (loading) return <State loading text={t("loadingDiscoveryHistory")} />;
   if (error || !data)
     return <State error text={error ?? t("discoveryHistoryUnavailable")} action={t("retry")} actionBusy={retrying} onAction={onRetry} />;
@@ -273,7 +273,7 @@ export function GmgnHistory({
           <Text style={styles.meta}>
             {t("gmgnObserved", {
               provider: row.provider,
-              observed: new Date(row.observedAt).toLocaleString(),
+              observed: observedDateTime(row.observedAt, language, t("timeUnavailable")),
             })}
           </Text>
         </Pressable>

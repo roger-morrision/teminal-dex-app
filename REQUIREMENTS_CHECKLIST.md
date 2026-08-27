@@ -124,3 +124,4 @@ Status legend: `[x]` verified, `[ ]` incomplete, `[~]` intentionally visible but
 - [x] MOBILE-I18N-434 / MOBILE-DATA-435..438: Whale flow chronology formats seconds/milliseconds in EN/VI and fails closed for invalid time; market chips localize market cap and partial missing evidence.
 - [x] MOBILE-I18N-439..442 / MOBILE-DATA-443..444: live Whale cards localize seconds/minutes/hours/days and reject malformed or future observation ages instead of showing misleading values.
 - [x] MOBILE-DATA-445..459: Discover, Trenches, Operations, and Monitor share localized defensive relative-age handling for provider seconds/milliseconds, malformed/future evidence, and day rollover where supported.
+- [x] MOBILE-I18N-460..464 / MOBILE-DATA-465..466: AI and Track chronology follows EN/VI and defensively accepts provider seconds/milliseconds/ISO strings while rejecting malformed values.

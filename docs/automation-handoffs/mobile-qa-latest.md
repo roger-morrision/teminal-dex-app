@@ -1212,3 +1212,15 @@ The initial sandboxed diagnostic could not open Expo's user native-module cache 
 - Findings inspected/reconciled: 20. DEV outcomes available: 13; independently verified PASS: 13 conditional source/automated outcomes; exact shortfall: 7 (`MOBILE-QA-269..274`, `MOBILE-WEB-CORS-001`). Evidence: no secrets, credentials, payloads, screenshots, or WEB changes.
 - **MOBILE-QA release recommendation: CONDITIONAL NO-GO.** Focus discrepancy plus missing full/runtime/device evidence prevents release approval.
 - **NEXT_DEV_ACTION:** correct or provide the exact fourth focused suite and immutable EN/VI quantity fixtures across Portfolio, Wallet, Market Intelligence, Token Detail, and Operations for independent full/regression/runtime validation.
+
+---
+
+# MOBILE-QA validation handoff — MOBILE-184
+
+- Trigger: 2026-08-27T03:41:18.684Z. Inspected immutable result `cdfc5cd1bed0b7325293614b831216777de8a95b` (`fix(mobile): localize Token and Wallet percentages`), base `e0a6dc9`. Canonical scope/clean result/no DEV lock: PASS. Archive `%LOCALAPPDATA%\\Temp\\mobile-qa-184-cdfc5cd` used; report is the only repository write.
+- Type/lint PASS; focused formatter, Token Detail, and wallet classification: 3 suites / 19 tests PASS. Full regression, fresh diagnostics/bundles, and runtime remain SKIP/BLOCKED this trigger.
+- `MOBILE-I18N-483..498`: CONDITIONAL PASS from shared bounded localized fixed/percent formatter source plus type/lint/focused evidence. EN/VI rendered Wallet and Token Detail flow remains unverified.
+- `MOBILE-QA-269..271`, `MOBILE-WEB-CORS-001`: BLOCKED P2 physical assistive tech and authorized WEB port-3000 rebuild; WEB not touched.
+- Findings inspected/reconciled: 20. DEV outcomes available/verified: 16/16 conditional source/automated PASS. Exact shortfall: 4 (`MOBILE-QA-269..271`, `MOBILE-WEB-CORS-001`). No secrets, credentials, payloads, screenshots, or WEB changes.
+- **MOBILE-QA release recommendation: CONDITIONAL NO-GO.** Missing full/runtime/device evidence prevents release approval.
+- **NEXT_DEV_ACTION:** provide immutable EN/VI Token Detail and Wallet percentage fixtures plus a rendered wallet regression and exact device route for end-to-end validation.

@@ -1338,3 +1338,14 @@ The initial sandboxed diagnostic could not open Expo's user native-module cache 
 - Findings inspected/reconciled: `MOBILE-AUTH-529`, `MOBILE-RECOVERY-530`, `MOBILE-A11Y-531`, `MOBILE-I18N-532`: PASS automated. Sixteen other release findings BLOCKED/CONDITIONAL; no padding.
 - **MOBILE-QA release recommendation: CONDITIONAL NO-GO.** Bounded recovery works under independent focused evidence, but full, bundle, Doctor, and live/device gates remain incomplete.
 - **NEXT_DEV_ACTION:** provide authorized exact-build Privy configuration plus an available runtime port so QA can verify 12-second recovery, EN/VI alert, return action, and the full authenticated flow on web/Android.
+
+---
+
+# MOBILE-QA validation handoff — MOBILE-194 Doctor/runtime recovery
+
+- Trigger: 2026-08-27T16:41:46.735Z. Inspected immutable result `571179b9f2a8ab7ee3db0254de443d1e16b0e6a5`, base `c4df51c`. Canonical scope/prefix and clean result: PASS.
+- PASS: focused build-provenance and package-scripts suites, 2 suites / 19 tests, validate bounded free-port selection and package wiring.
+- FAIL P1 — `MOBILE-QA-276` remains unresolved. Exact `node scripts/run-expo-doctor.mjs` reaches Doctor but exits 1 at 17/21: four checks cannot spawn `npm` (`spawn npm ENOENT`), and npm version is undetectable. This is an improvement from child-node failure but not a release-gate pass.
+- BLOCKED: exact launched runtime on selected free port, full regression, platform exports, device/accessibility, and authorized Privy flows were not completed in this bounded trigger.
+- **MOBILE-QA release recommendation: NO-GO.** Doctor still fails in canonical QA shell.
+- **NEXT_DEV_ACTION:** prepend the current Node runtime directory containing both `node` and `npm`/`npm.cmd` correctly for Doctor child processes, then provide immutable revalidation evidence and a safe runtime port.

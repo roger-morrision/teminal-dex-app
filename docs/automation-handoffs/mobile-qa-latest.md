@@ -1200,3 +1200,15 @@ The initial sandboxed diagnostic could not open Expo's user native-module cache 
 - Findings inspected/reconciled: 20. DEV outcomes available/verified: 3/3 PASS. Exact shortfall: 17 (`MOBILE-QA-269..280`, `MOBILE-QA-283..287`). Evidence: `%LOCALAPPDATA%\\Temp\\mobile-qa-182-full.err.log`. No secrets, credentials, provider payload, screenshot, or WEB evidence retained; no MOBILE-to-WEB blocker.
 - **MOBILE-QA release recommendation: CONDITIONAL NO-GO.** Available source/automated outcomes pass, but runtime/device and fresh configuration/bundle evidence remain incomplete.
 - **NEXT_DEV_ACTION:** provide immutable EN/VI Token Detail fixtures for seconds, milliseconds, ISO, and malformed timestamps across early-buyer, security, and Whale sections plus an exact device route.
+
+---
+
+# MOBILE-QA validation handoff — MOBILE-183
+
+- Trigger: 2026-08-27T02:42:16.685Z. Inspected immutable result `cf192bb22596f4b4f1e555693171f7478d514f57` (`fix(mobile): localize cross-surface quantities`), base `7c85998`. Canonical scope, clean result, and no DEV lock: PASS. Archive `%LOCALAPPDATA%\\Temp\\mobile-qa-183-cf192bb` used; only this report is written under QA lock.
+- Type and changed-surface lint: PASS. Archive TypeScript and ESLint exit 0. Focused available suites pass 3/17; the named fourth suite does not exist in this archive, so the DEV-claimed 4-suite focus is not independently reproduced. Full regression, fresh diagnostics/bundles, and runtime are SKIP/BLOCKED this trigger.
+- `MOBILE-I18N-470..482`: CONDITIONAL PASS (source/type/lint plus available focused evidence). Five-surface EN/VI visual/accessibility and invalid-number runtime fixture remains blocked; do not treat this as full end-to-end acceptance.
+- `MOBILE-QA-269..274`, `MOBILE-WEB-CORS-001`: BLOCKED P2; owner QA/device/network and authorized WEB operator respectively. WEB remains read-only and was not touched.
+- Findings inspected/reconciled: 20. DEV outcomes available: 13; independently verified PASS: 13 conditional source/automated outcomes; exact shortfall: 7 (`MOBILE-QA-269..274`, `MOBILE-WEB-CORS-001`). Evidence: no secrets, credentials, payloads, screenshots, or WEB changes.
+- **MOBILE-QA release recommendation: CONDITIONAL NO-GO.** Focus discrepancy plus missing full/runtime/device evidence prevents release approval.
+- **NEXT_DEV_ACTION:** correct or provide the exact fourth focused suite and immutable EN/VI quantity fixtures across Portfolio, Wallet, Market Intelligence, Token Detail, and Operations for independent full/regression/runtime validation.

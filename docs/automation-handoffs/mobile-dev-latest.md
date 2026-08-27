@@ -1,5 +1,16 @@
 # MOBILE DEV → QA handoff
 
+## MOBILE-184 — localized Token and Wallet percentages
+
+- Base: `e0a6dc9`; result: containing commit.
+- Findings: 20 reconciled; completed all 16 safe outcomes (`MOBILE-I18N-483..498`); exact shortfall 4 (`MOBILE-QA-269..271`, `MOBILE-WEB-CORS-001`) with external owners.
+- Changed behavior/files: shared bounded `localizedFixed`/`localizedPercent` formatters drive Token Detail holder/cluster/trader/early-buyer/overview/narrative evidence and Wallet Intelligence reliability/performance/balance/portfolio evidence.
+- Acceptance evidence: TypeScript PASS; full source ESLint PASS; focused available Jest PASS (3 suites/19 tests); full Jest PASS (83 suites/457 tests); two requested wallet suite names were absent and are explicitly not counted.
+- Runtime scenario: switch EN/VI and exercise fractional/whole/non-finite values across Token Detail and Wallet Intelligence, verifying separators, precision, and fallback without changed calculations.
+- Known risks: physical assistive verification and stale WEB port-3000 runtime remain externally owned.
+- NEXT_QA_ACTION: independently classify all 16 IDs and add rendered wallet regression if required.
+- NEXT_WEB_ACTION: authorized operator supplies the existing Compose secret and rebuilds/restarts port 3000 from `acf2907`.
+
 ## MOBILE-183 — localized cross-surface quantities
 
 - Base: `7c85998`; result: containing commit.

@@ -365,3 +365,12 @@ No in-scope automated regression was found. Generated export directories were re
 - **Safety:** formatting only; provider values, APIs, ordering, wallets, and transactions are unchanged.
 - **NEXT_QA_ACTION:** verify migrated quantities in both languages and malformed fallback.
 - **NEXT_WEB_ACTION:** rebuild/restart port 3000 from WEB `acf2907` after the authorized operator supplies the existing Compose secret.
+
+## MOBILE-184 localized Token and Wallet percentages
+
+- **Implemented:** all 16 safe outcomes (`MOBILE-I18N-483..498`); exact shortfall 4 with physical-device/WEB-operations owners.
+- **Behavior:** Token Detail and Wallet Intelligence percentages and bounded decimals follow EN/VI and fail closed for non-finite values.
+- **Verified:** TypeScript/full source ESLint PASS; focused available Jest PASS (3 suites/19 tests); full Jest PASS (83 suites/457 tests); absent requested wallet suite names were not counted.
+- **Safety:** formatting only; calculations, provider values, APIs, wallets, and transactions are unchanged.
+- **NEXT_QA_ACTION:** verify migrated values visually and with assistive technology in both languages.
+- **NEXT_WEB_ACTION:** rebuild/restart stale port 3000 from WEB `acf2907` using the existing authorized Compose secret.

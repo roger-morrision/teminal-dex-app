@@ -127,3 +127,4 @@ Status legend: `[x]` verified, `[ ]` incomplete, `[~]` intentionally visible but
 - [x] MOBILE-I18N-460..464 / MOBILE-DATA-465..466: AI and Track chronology follows EN/VI and defensively accepts provider seconds/milliseconds/ISO strings while rejecting malformed values.
 - [x] MOBILE-I18N-467..469: Token Detail early-buyer, security-history, and Whale chronology uses localized fail-closed provider-time formatting.
 - [x] MOBILE-I18N-470..482: Portfolio, Wallet Intelligence, Market Intelligence, Token Detail, and Operations quantities use selected EN/VI separators and fail closed for invalid numbers.
+- [x] MOBILE-I18N-483..498: Token Detail and Wallet Intelligence percentages/fixed decimals use bounded EN/VI formatting and fail closed for invalid numbers.

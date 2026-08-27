@@ -37,6 +37,20 @@ export function localizedNumber(value: number, language: 'en' | 'vi', fallback =
     : fallback;
 }
 
+export function localizedFixed(value: number, digits: number, language: 'en' | 'vi', fallback = '—'): string {
+  if (!Number.isFinite(value)) return fallback;
+  const precision = Math.max(0, Math.min(8, Math.trunc(digits)));
+  return value.toLocaleString(language === 'vi' ? 'vi-VN' : 'en-US', {
+    minimumFractionDigits: precision,
+    maximumFractionDigits: precision,
+  });
+}
+
+export function localizedPercent(value: number, digits: number, language: 'en' | 'vi', fallback = '—'): string {
+  const formatted = localizedFixed(value, digits, language, fallback);
+  return formatted === fallback ? fallback : `${formatted}%`;
+}
+
 export function evidenceLabel(value: unknown, fallback: string): string {
   return typeof value === 'string' && value.trim() ? value.trim() : fallback;
 }

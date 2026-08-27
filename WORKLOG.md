@@ -1796,3 +1796,16 @@ Fresh post-`7c85998` reconciliation records 20 current findings. Thirteen numeri
 - Five product areas now use one fail-closed EN/VI number formatter for user-visible quantities and operational counts.
 - TypeScript PASS; full source ESLint PASS; focused Jest PASS (4 suites/16 tests); full Jest PASS (83 suites/456 tests).
 - NEXT_QA_ACTION: switch EN/VI and verify all migrated quantities, including non-finite fallback. NEXT_WEB_ACTION: authorized WEB operator supplies the existing Compose secret and rebuilds/restarts port 3000 from `acf2907`.
+
+## MOBILE BA/PO review — 2026-08-27 03:21 trigger
+
+Fresh post-`e0a6dc9` reconciliation records 20 findings. Sixteen locale-sensitive percentage/decimal outcomes are MOBILE-ready across Token Detail and Wallet Intelligence; four findings retain physical-device or WEB-operations ownership. Ready acceptance requires bounded precision, EN/VI separators, and non-finite fallback without changing calculations.
+
+1–16. **MOBILE-I18N-483..498 READY** holder/cluster/trader shares, early-buyer delay, holder/sniper/narrative percentages, smart-wallet reliability/win/drawdown/best-token evidence, wallet SOL precision, and portfolio share. 17–19. **MOBILE-QA-269..271 BLOCKED/device** TalkBack, VoiceOver, and Switch Access. 20. **MOBILE-WEB-CORS-001 BLOCKED/WEB-OPS** WEB code fixed at `acf2907`; stale port-3000 image awaits authorized secret-backed rebuild.
+
+### MOBILE-184 implementation result
+
+- Completed all 16 safe outcomes (`MOBILE-I18N-483..498`); exact shortfall 4 after exhausting the ready queue.
+- Token Detail and Wallet Intelligence now share bounded EN/VI fixed-decimal and percentage formatting with fail-closed invalid values.
+- TypeScript PASS; full source ESLint PASS; focused available Jest PASS (3 suites/19 tests); full Jest PASS (83 suites/457 tests); two requested wallet suite names were absent and are not counted.
+- NEXT_QA_ACTION: verify all migrated percentages/decimals in EN/VI and add rendered wallet coverage if needed. NEXT_WEB_ACTION: rebuild/restart port 3000 from `acf2907` with the existing authorized Compose secret.

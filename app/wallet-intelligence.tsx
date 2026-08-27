@@ -19,7 +19,7 @@ import {
   fetchWalletPnl,
 } from "@/api/client";
 import type { TopTrader, WalletHoldingsResponse } from "@/api/schema";
-import { compactUsd, evidenceLabel, localizedNumber } from "@/lib/format";
+import { compactUsd, evidenceLabel, localizedFixed, localizedNumber, localizedPercent } from "@/lib/format";
 import { isSolanaAddress } from "@/security/input";
 import {
   addTrackedWallet,
@@ -149,7 +149,7 @@ function SmartMoney({
   selected: string;
   onSelect: (address: string) => void;
 }) {
-  const { t } = useSettings();
+  const { t, language } = useSettings();
   const total = data.reduce((sum, item) => sum + item.pnlUsd, 0);
   const avgWin = data.length
     ? data.reduce((sum, item) => sum + item.winRate, 0) / data.length
@@ -174,7 +174,7 @@ function SmartMoney({
         />
         <Kpi
           label={t("averageWinRate")}
-          value={avgWin == null ? "—" : `${avgWin.toFixed(1)}%`}
+          value={avgWin == null ? "—" : localizedPercent(avgWin, 1, language)}
         />
       </View>
       {data.map((item) => (
@@ -199,7 +199,7 @@ export function SmartWalletCard({
   active: boolean;
   onPress: () => void;
 }) {
-  const { t } = useSettings();
+  const { t, language } = useSettings();
   return (
     <Pressable
       accessibilityRole="button"
@@ -225,7 +225,7 @@ export function SmartWalletCard({
               reliability:
                 item.reliability == null
                   ? t("unavailable")
-                  : `${item.reliability.toFixed(0)}%`,
+                  : localizedPercent(item.reliability, 0, language),
             })}
           </Text>
         </View>
@@ -237,18 +237,18 @@ export function SmartWalletCard({
         </View>
       </View>
       <View style={styles.metrics}>
-        <Metric label={t("winRate")} value={`${item.winRate.toFixed(1)}%`} />
+        <Metric label={t("winRate")} value={localizedPercent(item.winRate, 1, language)} />
         <Metric
           label={t("maxDrawdown")}
           value={
             item.maxDrawdownPct == null
               ? "—"
-              : `${item.maxDrawdownPct.toFixed(1)}%`
+              : localizedPercent(item.maxDrawdownPct, 1, language)
           }
         />
         <Metric
           label={t("bestObserved")}
-          value={`${item.bestToken} ${item.bestTokenPct.toFixed(0)}%`}
+          value={`${item.bestToken} ${localizedPercent(item.bestTokenPct, 0, language)}`}
         />
       </View>
     </Pressable>
@@ -422,7 +422,7 @@ export function TrackedWalletRow({
 }
 
 function WalletEvidence({ address }: { address: string }) {
-  const { t } = useSettings();
+  const { t, language } = useSettings();
   const holdings = useQuery({
     queryKey: ["wallet-holdings", address],
     queryFn: ({ signal }) => fetchWalletHoldings(address, signal),
@@ -451,7 +451,7 @@ function WalletEvidence({ address }: { address: string }) {
         <Text style={styles.value}>{compactUsd(wallet?.totalValueUsd)}</Text>
       </View>
       <View style={styles.kpis}>
-        <Kpi label="SOL" value={wallet ? wallet.solBalance.toFixed(4) : "—"} />
+        <Kpi label="SOL" value={wallet ? localizedFixed(wallet.solBalance, 4, language) : "—"} />
         <Kpi
           label={t("tokenAccounts")}
           value={wallet ? String(wallet.tokenCount) : "—"}
@@ -530,7 +530,7 @@ function Holding({
         <Text style={styles.meta}>
           {item.priceUsd == null
             ? t("unpriced")
-            : `${item.pctOfPortfolio.toFixed(1)}%`}
+            : localizedPercent(item.pctOfPortfolio, 1, language)}
         </Text>
       </View>
     </View>

@@ -24,7 +24,7 @@ import {
 } from "@/api/schema";
 import { PriceChart } from "@/components/PriceChart";
 import { TokenAvatar } from "@/components/TokenAvatar";
-import { compactUsd, evidenceLabel, localizedNumber, observedDateTime, signedPercent, tokenPrice } from "@/lib/format";
+import { compactUsd, evidenceLabel, localizedFixed, localizedNumber, localizedPercent, observedDateTime, signedPercent, tokenPrice } from "@/lib/format";
 import { aggregateWhaleActivity, whaleActivityForToken } from "@/lib/whale-activity";
 import { colors, spacing } from "@/theme";
 import { isSolanaAddress, parseBoundedJson } from "@/security/input";
@@ -270,7 +270,7 @@ export default function TokenDetail() {
                     <DataRow
                       key={holder.address}
                       title={`#${holder.rank} ${short(holder.address)}`}
-                      value={`${holder.pct.toFixed(2)}%`}
+                      value={localizedPercent(holder.pct, 2, language)}
                       detail={`${localizedNumber(holder.uiAmount, language)} ${t("tokens").toLowerCase()}`}
                     />
                   ))}
@@ -305,7 +305,7 @@ export default function TokenDetail() {
                       <DataRow
                         key={node.address}
                         title={node.label ?? t("unknown")}
-                        value={`${node.pct.toFixed(2)}%`}
+                        value={localizedPercent(node.pct, 2, language)}
                         detail={`${short(node.address)} · ${node.source}`}
                       />
                     ))}
@@ -383,11 +383,11 @@ export default function TokenDetail() {
                   />
                   <EvidenceLine
                     label={t("roundTripWalletShare")}
-                    value={`${data.metrics.roundTripWalletSharePct.toFixed(1)}%`}
+                    value={localizedPercent(data.metrics.roundTripWalletSharePct, 1, language)}
                   />
                   <EvidenceLine
                     label={t("topTraderVolumeShare")}
-                    value={`${data.metrics.topTraderVolumeSharePct.toFixed(1)}%`}
+                    value={localizedPercent(data.metrics.topTraderVolumeSharePct, 1, language)}
                   />
                   {data.flags.map((flag) => (
                     <DataRow
@@ -401,7 +401,7 @@ export default function TokenDetail() {
                     <DataRow
                       key={item.wallet}
                       title={short(item.wallet)}
-                      value={`${item.sharePct.toFixed(1)}%`}
+                      value={localizedPercent(item.sharePct, 1, language)}
                       detail={compactUsd(item.volumeUsd)}
                     />
                   ))}
@@ -505,7 +505,7 @@ export function EarlyBuyerEvidence({ data }: { data: SnipersResponse }) {
         <DataRow
           key={`${item.address}-${item.boughtAt}`}
           title={short(item.address)}
-          value={t("secondsAfterPair", { seconds: item.delaySec.toFixed(1) })}
+          value={t("secondsAfterPair", { seconds: localizedFixed(item.delaySec, 1, language) })}
           detail={observedDateTime(item.boughtAt, language, t("timeUnavailable"))}
         />
       ))}
@@ -638,13 +638,13 @@ function Overview({
           value={
             token.topHolderPct == null
               ? "—"
-              : `${token.topHolderPct.toFixed(1)}%`
+              : localizedPercent(token.topHolderPct, 1, language)
           }
         />
         <Metric
           label={t("snipers")}
           value={
-            token.sniperPct == null ? "—" : `${token.sniperPct.toFixed(1)}%`
+            token.sniperPct == null ? "—" : localizedPercent(token.sniperPct, 1, language)
           }
         />
       </View>
@@ -746,7 +746,7 @@ function IntelPanel({
   narrative: UseQueryResult<NarrativeResponse, Error>;
   smartMoney: UseQueryResult<SmartMoneyResponse, Error>;
 }) {
-  const { t } = useSettings();
+  const { t, language } = useSettings();
   if (narrative.isLoading || smartMoney.isLoading)
     return <PanelState loading message={t("loadingIntelligence")} />;
   return (
@@ -761,7 +761,7 @@ function IntelPanel({
           </Text>
           <EvidenceLine
             label={t("confidence")}
-            value={`${narrative.data.narrative.confidence.toFixed(0)}%`}
+            value={localizedPercent(narrative.data.narrative.confidence, 0, language)}
           />
           <EvidenceLine
             label={t("methodSources")}

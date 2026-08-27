@@ -1,5 +1,5 @@
 import type { TrackNotification } from "@/api/schema";
-import { aggregateWhaleActivity, buildWhaleMarketPulse, filterWhaleEvents, filterWhaleFlows, filterWhaleWalletRankings, isWhaleActivity, whaleActivityForToken, whaleAmountContext, whaleHoldingIdentity } from "@/lib/whale-activity";
+import { aggregateWhaleActivity, buildWhaleMarketPulse, filterWhaleEvents, filterWhaleFlows, filterWhaleWalletRankings, isCurrentWhaleActivity, isWhaleActivity, whaleActivityForToken, whaleAmountContext, whaleHoldingIdentity } from "@/lib/whale-activity";
 
 const event = (input: Partial<TrackNotification> & Pick<TrackNotification, "id" | "type">): TrackNotification => ({
   title: "Observed activity",
@@ -16,6 +16,12 @@ const event = (input: Partial<TrackNotification> & Pick<TrackNotification, "id" 
 });
 
 describe("whale activity aggregation", () => {
+  it("keeps historical indexed fallback out of current whale activity", () => {
+    expect(isCurrentWhaleActivity(event({ id: "live", type: "whale_buy", dataQuality: "provider_live" }))).toBe(true);
+    expect(isCurrentWhaleActivity(event({ id: "indexed", type: "smart_buy", dataQuality: "historical_indexed" }))).toBe(false);
+    expect(isCurrentWhaleActivity(event({ id: "flagged", type: "whale_sell", historical: true }))).toBe(false);
+  });
+
   it("keeps only whale and smart-money evidence", () => {
     expect(isWhaleActivity(event({ id: "w", type: "whale_buy" }))).toBe(true);
     expect(isWhaleActivity(event({ id: "k", type: "kol_buy" }))).toBe(false);

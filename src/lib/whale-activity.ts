@@ -44,6 +44,11 @@ export const isWhaleActivity = (event: TrackNotification) =>
   event.type === "smart_buy" ||
   event.type === "smart_take_profit";
 
+export const isCurrentWhaleActivity = (event: TrackNotification) =>
+  isWhaleActivity(event) &&
+  event.dataQuality !== "historical_indexed" &&
+  event.historical !== true;
+
 export const whaleAmountContext = (event: TrackNotification) => {
   if (event.amountUsd == null) return "amount_missing" as const;
   const marketCap = event.market.marketCap;

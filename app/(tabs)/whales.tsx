@@ -7,7 +7,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { fetchTopTraders, fetchTrackFeed } from "@/api/client";
 import type { TopTrader, TrackNotification } from "@/api/schema";
 import { compactUsd, evidenceLabel, observedDateTime, relativeObservedAge, signedPercent, tokenPrice } from "@/lib/format";
-import { aggregateWhaleActivity, filterWhaleEvents, filterWhaleFlows, filterWhaleWalletRankings, isWhaleActivity, whaleAmountContext, whaleHoldingIdentity, type WhaleEventDirection, type WhaleEventSort, type WhaleFlow } from "@/lib/whale-activity";
+import { aggregateWhaleActivity, filterWhaleEvents, filterWhaleFlows, filterWhaleWalletRankings, isCurrentWhaleActivity, whaleAmountContext, whaleHoldingIdentity, type WhaleEventDirection, type WhaleEventSort, type WhaleFlow } from "@/lib/whale-activity";
 import { useSettings } from "@/settings/SettingsProvider";
 import { defaultWhaleWatchPreferences, loadWhaleWatchPreferences, saveWhaleWatchPreferences, type WhaleWatchMode } from "@/store/whale-watch";
 import { colors, spacing } from "@/theme";
@@ -51,7 +51,7 @@ export default function WhalesScreen() {
   const activityMode = mode === "live" || mode === "accumulating" || mode === "distributing";
   const feed = useQuery({ queryKey: ["whale-activity"], queryFn: ({ signal }) => fetchTrackFeed(signal), enabled: activityMode, refetchInterval: activityMode ? 30_000 : false });
   const rankings = useQuery({ queryKey: ["whale-wallet-rankings"], queryFn: ({ signal }) => fetchTopTraders("30D", signal), enabled: mode === "wallets" });
-  const allEvents = useMemo(() => (feed.data?.notifications ?? []).filter(isWhaleActivity).sort((a, b) => b.observedAt - a.observedAt), [feed.data]);
+  const allEvents = useMemo(() => (feed.data?.notifications ?? []).filter(isCurrentWhaleActivity).sort((a, b) => b.observedAt - a.observedAt), [feed.data]);
   const events = useMemo(() => filterWhaleEvents(allEvents, { direction, minimumUsd, sort, query }), [allEvents, direction, minimumUsd, query, sort]);
   const flows = useMemo(() => aggregateWhaleActivity(allEvents), [allEvents]);
   const searchedFlows = useMemo(() => filterWhaleFlows(flows, query), [flows, query]);

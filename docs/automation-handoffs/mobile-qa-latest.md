@@ -1269,3 +1269,15 @@ The initial sandboxed diagnostic could not open Expo's user native-module cache 
 - Findings inspected/reconciled: 20. DEV outcomes available/verified: 16/16 conditional source/automated PASS. Exact shortfall: 4 (`MOBILE-QA-269..271`, `MOBILE-WEB-CORS-001`). No secrets, credentials, payloads, screenshots, or WEB changes.
 - **MOBILE-QA release recommendation: CONDITIONAL NO-GO.** Missing full/runtime/device evidence prevents release approval.
 - **NEXT_DEV_ACTION:** provide immutable EN/VI Token Detail and Wallet percentage fixtures plus a rendered wallet regression and exact device route for end-to-end validation.
+
+---
+
+# MOBILE-QA validation handoff — blocker-cleanup retest
+
+- Trigger: 2026-08-27T08:41:07.053Z. Inspected immutable `5276f7a952a2df3333dfa3f3dfd043594999b35f` after base `4d1b8f2`. Canonical scope/prefix and clean result: PASS; no DEV lock.
+- PASS: TypeScript; changed-surface ESLint; Monitor DEX, touch-target, and Noble focused suites (3 suites / 38 tests). `MOBILE-FILTER-515` source/regression evidence supports canonical observed-DEX filtering; sibling-control fixes remain source-audited pending exact runtime.
+- FAIL P1 — `MOBILE-QA-276` is **not resolved** in this QA environment. Exact bundled-node Doctor command still outputs `Error: spawn node ENOENT` (despite wrapper exit 0). DEV claim of Doctor 21/21 is not independently reproducible.
+- BLOCKED: full regression, Android export, device/visual navigation, TalkBack/VoiceOver/Switch Access, large-text, lifecycle/storage/offline/provider fixtures. `MOBILE-QA-277` Noble remains conditional upstream.
+- Findings inspected/reconciled: 20. Available outcomes independently PASS: 2 (`MOBILE-FILTER-515`, `MOBILE-A11Y-517` source/focused); FAIL: 1 (`MOBILE-QA-276`); remaining 17 blocked/conditional. No WEB, product, provider, wallet, or transaction mutation.
+- **MOBILE-QA release recommendation: NO-GO.** Doctor failure is a current reproducible release-gate defect.
+- **NEXT_DEV_ACTION:** make Expo Doctor spawn the bundled Node successfully in the canonical QA shell, then provide a new immutable commit and matching handoff for full/device revalidation.

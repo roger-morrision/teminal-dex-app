@@ -1327,3 +1327,14 @@ The initial sandboxed diagnostic could not open Expo's user native-module cache 
 - Findings inspected/reconciled: `MOBILE-DEV-EMFILE-528` PASS automated / runtime BLOCKED. Existing 19 physical/provider/toolchain findings carry unchanged; no padding.
 - **MOBILE-QA release recommendation: CONDITIONAL NO-GO.** The bounded launcher contract passes, but exact runtime replacement and broader release gates remain incomplete.
 - **NEXT_DEV_ACTION:** provide an operator-owned free port or explicit authorization to terminate the verified Metro sessions, then run the exact port-8081 browser/runtime acceptance flow.
+
+---
+
+# MOBILE-QA validation handoff — MOBILE-193 Privy recovery
+
+- Trigger: 2026-08-27T15:40:45.593Z. Inspected immutable result `fa62b7065a98cdfac74b70fe095e52744383a2b2`, base `9890872`. Canonical scope/prefix and clean result: PASS; no DEV lock.
+- PASS: archive-equivalent canonical TypeScript; changed auth/settings ESLint; AuthScreen, SettingsProvider, and Privy focused suites (3 suites / 5 tests). The rendered regression establishes spinner-before-deadline, localized alert after 12 seconds, and router-back return action.
+- BLOCKED: full regression, Doctor, fresh Android/iOS/web exports, and exact runtime/device navigation were not completed in this bounded trigger. Live Privy identity flows require authorized public identifiers and provider setup; none were inspected or invented. Physical accessibility/network/lifecycle/provider matrix remains external.
+- Findings inspected/reconciled: `MOBILE-AUTH-529`, `MOBILE-RECOVERY-530`, `MOBILE-A11Y-531`, `MOBILE-I18N-532`: PASS automated. Sixteen other release findings BLOCKED/CONDITIONAL; no padding.
+- **MOBILE-QA release recommendation: CONDITIONAL NO-GO.** Bounded recovery works under independent focused evidence, but full, bundle, Doctor, and live/device gates remain incomplete.
+- **NEXT_DEV_ACTION:** provide authorized exact-build Privy configuration plus an available runtime port so QA can verify 12-second recovery, EN/VI alert, return action, and the full authenticated flow on web/Android.

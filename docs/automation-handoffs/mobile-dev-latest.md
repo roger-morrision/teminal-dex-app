@@ -1,5 +1,18 @@
 # MOBILE DEV → QA handoff
 
+## MOBILE blocker cleanup — Monitor DEX, web semantics, and Expo SDK
+
+- Base: `4d1b8f2`; result: containing commit.
+- Closed/reconciled IDs: `MOBILE-FILTER-515`, `MOBILE-A11Y-517`, and `MOBILE-QA-276`.
+- Changed behavior/files: `src/components/MonitorTokenTable.tsx` stores observed DEX selections canonically; `src/__tests__/MonitorTokenTable.test.tsx` covers mixed Pump.fun/letsbonk filtering and reset; `package.json`/`package-lock.json` align nine Expo SDK patches and declare the separated React Native/Jest renderer peers.
+- Prior immutable fixes: Discover sibling detail/watchlist controls are commit `3c2ac41`; Trenches sibling detail/quote controls are commit `4d1b8f2`.
+- Acceptance evidence: TypeScript PASS; full source ESLint PASS; focused blocker regression 3 suites/17 tests PASS; full regression 83 suites/459 tests PASS; Expo compatibility PASS; Expo Doctor 21/21 PASS; Android Hermes export PASS (1,729 modules, 5.7 MB bundle) with the guarded upstream Noble fallback warning.
+- Security evidence: production audit has no high/critical finding at the configured threshold. Eleven moderate Expo configuration-tooling advisories remain; `npm audit fix --force` would break compatibility by downgrading Expo to 46 and was not used.
+- Runtime scenarios for QA: Monitor → Filters → observed DEX Pump.fun must remove letsbonk rows and show the filtered count; Reset must restore both providers. Discover and Trenches must expose sibling actions with `button button = 0` and no fresh hydration error. Run Expo Doctor with bundled Node on PATH and repeat Android export.
+- Known external conditions: physical TalkBack/VoiceOver/Switch Access, physical-device large-text/layout/performance, lifecycle/storage/network fault injection, and upstream Noble package exports. These are not represented as code failures or silently closed.
+- NEXT_QA_ACTION: pin the result commit and independently rerun the scenarios and exact commands above.
+- NEXT_WEB_ACTION: none; WEB remains read-only and current local-browser CORS is recorded PASS.
+
 ## MOBILE-184 — localized Token and Wallet percentages
 
 - Base: `e0a6dc9`; result: containing commit.

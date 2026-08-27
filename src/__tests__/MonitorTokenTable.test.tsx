@@ -72,6 +72,62 @@ describe("MonitorTokenTable", () => {
     });
   }, 15_000);
 
+  it("constrains visible rows to the selected observed DEX and resets cleanly", async () => {
+    const marketToken = (address: string, symbol: string, dex: string) => ({
+      id: address,
+      symbol,
+      name: `${symbol} token`,
+      address,
+      pairAddress: `pair-${address}`,
+      dex,
+      quoteSymbol: "SOL",
+      price: 1,
+      marketCap: 100,
+      liquidity: 50,
+      volume24h: 200,
+      volume1h: 20,
+      change24h: 3,
+      change1h: 1,
+      txns5m: { buys: 2, sells: 1 },
+      ageLabel: "1h",
+      ageMinutes: 60,
+      source: "provider",
+      dataQuality: "live" as const,
+    });
+    mockedFetch.mockResolvedValue({
+      tokens: [
+        marketToken("11111111111111111111111111111111", "PUMP", "Pump.fun"),
+        marketToken("11111111111111111111111111111112", "BONK", "letsbonk"),
+      ],
+      source: "provider",
+      dataQuality: "live",
+      recordCount: 2,
+    });
+    const client = new QueryClient({
+      defaultOptions: { queries: { retry: false, gcTime: Infinity } },
+    });
+    const screen = await render(
+      <SettingsProvider>
+        <QueryClientProvider client={client}>
+          <MonitorTokenTable polling={false} />
+        </QueryClientProvider>
+      </SettingsProvider>,
+    );
+    await screen.findByText("PUMP");
+    fireEvent.press(screen.getByLabelText("Monitor token table filters"));
+    fireEvent.press(await screen.findByText("Pump.fun"));
+    await waitFor(() => expect(screen.queryByText("BONK")).toBeNull());
+    expect(screen.getByText("PUMP")).toBeTruthy();
+    expect(screen.getByText(/1\/2 records/)).toBeTruthy();
+    fireEvent.press(screen.getByLabelText("Reset filters"));
+    await waitFor(() => expect(screen.getByText("BONK")).toBeTruthy());
+    expect(screen.getByText(/2\/2 records/)).toBeTruthy();
+    await act(async () => {
+      screen.unmount();
+      client.clear();
+    });
+  });
+
   it("loads the next cursor page and includes later rows in filtering and sorting", async () => {
     const marketToken = (address: string, symbol: string, liquidity: number) => ({
       id: address,

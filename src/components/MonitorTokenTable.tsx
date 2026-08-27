@@ -225,7 +225,7 @@ export function MonitorTokenTable({ polling = true }: { polling?: boolean }) {
                 label={dex}
                 active={effectivePreferences.dex === dex.toLowerCase()}
                 role="radio"
-                onPress={() => update({ dex })}
+                onPress={() => update({ dex: dex.toLowerCase() })}
               />
             ))}
           </View>

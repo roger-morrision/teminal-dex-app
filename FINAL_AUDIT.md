@@ -374,3 +374,12 @@ No in-scope automated regression was found. Generated export directories were re
 - **Safety:** formatting only; calculations, provider values, APIs, wallets, and transactions are unchanged.
 - **NEXT_QA_ACTION:** verify migrated values visually and with assistive technology in both languages.
 - **NEXT_WEB_ACTION:** rebuild/restart stale port 3000 from WEB `acf2907` using the existing authorized Compose secret.
+
+## MOBILE blocker cleanup — Monitor, web semantics, and Expo toolchain
+
+- **Implemented:** `MOBILE-FILTER-515` and `MOBILE-QA-276`; `MOBILE-A11Y-517` is reconciled to committed Discover/Trenches fixes.
+- **Behavior:** selected Monitor DEX values use the predicate's canonical representation; detail and secondary card actions are sibling web controls; Expo dependencies and Jest peers match SDK 57 patch requirements.
+- **Verified:** TypeScript/full ESLint PASS; focused 17/17 and full 459/459 Jest PASS; Expo install check PASS; Doctor 21/21 PASS; Android Hermes export PASS with the known guarded Noble fallback warning.
+- **Release boundary:** no dependency-ready code blocker remains from QA MOBILE-185. Physical TalkBack/VoiceOver/Switch Access, exact physical-device layout/performance, lifecycle/storage/network fault injection, and upstream Noble export ownership remain external evidence conditions rather than code-complete claims.
+- **NEXT_QA_ACTION:** independently retest the immutable result across the Monitor mixed-DEX/reset case and web DOM hydration checks, then execute physical-device conditions when hardware is available.
+- **NEXT_WEB_ACTION:** none.

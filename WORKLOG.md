@@ -1809,3 +1809,13 @@ Fresh post-`e0a6dc9` reconciliation records 20 findings. Sixteen locale-sensitiv
 - Token Detail and Wallet Intelligence now share bounded EN/VI fixed-decimal and percentage formatting with fail-closed invalid values.
 - TypeScript PASS; full source ESLint PASS; focused available Jest PASS (3 suites/19 tests); full Jest PASS (83 suites/457 tests); two requested wallet suite names were absent and are not counted.
 - NEXT_QA_ACTION: verify all migrated percentages/decimals in EN/VI and add rendered wallet coverage if needed. NEXT_WEB_ACTION: rebuild/restart port 3000 from `acf2907` with the existing authorized Compose secret.
+
+## MOBILE blocker cleanup — 2026-08-27
+
+- Closed `MOBILE-FILTER-515`: Monitor now canonicalizes a selected observed DEX before applying its predicate; a mixed Pump.fun/letsbonk rendered regression proves filtering and reset.
+- Reconciled `MOBILE-A11Y-517` against committed fixes `3c2ac41` and `4d1b8f2`; the live web DOM contains zero nested buttons and emitted no fresh hydration errors after reload.
+- Closed `MOBILE-QA-276`: the bundled Node directory is supplied to Expo child processes, nine Expo SDK patch dependencies were aligned, required Jest peers were declared, and Expo Doctor now passes 21/21.
+- Verification: TypeScript PASS; full source ESLint PASS; focused blocker Jest 3 suites/17 tests PASS; full Jest 83 suites/459 tests PASS; Expo dependency check PASS; Expo Doctor 21/21 PASS; Android Hermes export PASS with the existing guarded Noble strict-exports fallback warning.
+- Security audit: high/critical production threshold PASS. Eleven moderate advisories remain in Expo configuration tooling through `xcode -> uuid`; the only automated fix downgrades Expo to 46 and is rejected as a breaking unsafe remediation.
+- NEXT_QA_ACTION: retest Monitor Pump.fun against mixed provider rows, reset, Discover/Trenches DOM semantics, Doctor, and Android export on the immutable result.
+- NEXT_WEB_ACTION: none; current local-browser CORS is independently recorded PASS and WEB remains read-only.

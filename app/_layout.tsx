@@ -14,6 +14,7 @@ import { SettingsProvider } from '@/settings/SettingsProvider';
 import { ConnectivityProvider } from '@/network/connectivity';
 import { ConnectivityBanner } from '@/network/ConnectivityBanner';
 import { queryDefaults } from '@/api/query-policy';
+import { TerminalPrivyProvider } from '@/auth/PrivyAuthProvider';
 
 const cluster = { id: 'solana:mainnet', url: 'https://api.mainnet-beta.solana.com' } as const;
 const identity = { name: 'Terminal DEX' } as const;
@@ -26,5 +27,5 @@ export default function RootLayout() {
       console.info(`[MOBILE_BUILD] commit=${typeof commit === 'string' ? commit : 'unverified'}`);
     }
   }, []);
-  return <SafeAreaProvider><SettingsProvider><ConnectivityProvider><MobileWalletProvider cluster={cluster} identity={identity} cache={secureWalletCache}><WalletSessionProvider><QueryClientProvider client={queryClient}><StatusBar style="light" /><View style={{ flex: 1, backgroundColor: colors.background }}><ConnectivityBanner /><Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.background } }} /></View></QueryClientProvider></WalletSessionProvider></MobileWalletProvider></ConnectivityProvider></SettingsProvider></SafeAreaProvider>;
+  return <SafeAreaProvider><SettingsProvider><TerminalPrivyProvider><ConnectivityProvider><MobileWalletProvider cluster={cluster} identity={identity} cache={secureWalletCache}><WalletSessionProvider><QueryClientProvider client={queryClient}><StatusBar style="light" /><View style={{ flex: 1, backgroundColor: colors.background }}><ConnectivityBanner /><Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.background } }} /></View></QueryClientProvider></WalletSessionProvider></MobileWalletProvider></ConnectivityProvider></TerminalPrivyProvider></SettingsProvider></SafeAreaProvider>;
 }

@@ -3,6 +3,7 @@ import { Pressable, ScrollView, StyleSheet, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { colors, spacing } from "@/theme";
 import { useSettings } from "@/settings/SettingsProvider";
+import { usePrivyIdentity } from "@/auth/PrivyAuthProvider";
 const groups = [
   { id: "ai", key: "aiIntelligence", pathname: "/ai" },
   { id: "track", key: "track", pathname: "/track" },
@@ -61,12 +62,17 @@ const groups = [
 export default function MoreScreen() {
   const router = useRouter();
   const { t } = useSettings();
+  const auth = usePrivyIdentity();
   return (
     <SafeAreaView style={styles.safe}>
       <ScrollView contentContainerStyle={styles.content}>
         <Text style={styles.eyebrow}>TERMINAL DEX</Text>
         <Text style={styles.title}>{t("moreTools")}</Text>
         <Text style={styles.note}>{t("routesNote")}</Text>
+        <Pressable accessibilityRole="button" accessibilityLabel={auth.authenticated ? "Open Privy account" : "Sign up or sign in with Privy"} onPress={() => router.push('/auth' as never)} style={styles.settings}>
+          <Text style={styles.label}>{auth.authenticated ? "Privy account" : "Sign up / Sign in"}</Text>
+          <Text style={[styles.status, auth.authenticated && styles.live]}>{auth.authenticated ? "SIGNED IN" : auth.configured ? "PRIVY" : "SETUP REQUIRED"}</Text>
+        </Pressable>
         <Pressable
           accessibilityRole="button"
           accessibilityLabel={t("openSettings")}

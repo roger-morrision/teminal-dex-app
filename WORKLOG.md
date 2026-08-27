@@ -1819,3 +1819,13 @@ Fresh post-`e0a6dc9` reconciliation records 20 findings. Sixteen locale-sensitiv
 - Security audit: high/critical production threshold PASS. Eleven moderate advisories remain in Expo configuration tooling through `xcode -> uuid`; the only automated fix downgrades Expo to 46 and is rejected as a breaking unsafe remediation.
 - NEXT_QA_ACTION: retest Monitor Pump.fun against mixed provider rows, reset, Discover/Trenches DOM semantics, Doctor, and Android export on the immutable result.
 - NEXT_WEB_ACTION: none; current local-browser CORS is independently recorded PASS and WEB remains read-only.
+
+## MOBILE Privy identity integration
+
+- Base `a492ad2`; result: containing commit.
+- Added official Privy web and Expo adapters, a shared fail-closed identity contract, native email OTP/Google flows, web modal login, logout/account state, and an accessible `/auth` entry from More.
+- Preserved the existing wallet-ownership provider and all transaction safety gates; Privy identity alone grants no wallet or execution authority.
+- Added public build configuration for `EXPO_PUBLIC_PRIVY_APP_ID` and `EXPO_PUBLIC_PRIVY_CLIENT_ID`; no environment file, token, secret, or backend file was read or written.
+- Validation: TypeScript PASS; full ESLint PASS; focused Privy tests 4/4 PASS; full Jest 85 suites/463 tests PASS; web export PASS; Android Hermes export PASS; Expo compatibility PASS; Doctor 21/21 PASS; npm production audit 0 high/critical (20 moderate).
+- NEXT_QA_ACTION: supply an authorized Privy App ID and mobile Client ID, register scheme `terminaldex`, then verify new/existing email OTP, Google signup/login, persisted restart, logout, cancellation, offline recovery, and unchanged wallet-verification gates on web and an exact Android development build.
+- NEXT_WEB_ACTION: confirm the existing Privy application enables email and Google and authorize the public App ID/mobile Client ID pair; no WEB code change is requested.

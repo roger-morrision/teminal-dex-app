@@ -131,3 +131,8 @@ Status legend: `[x]` verified, `[ ]` incomplete, `[~]` intentionally visible but
 - [x] MOBILE-FILTER-515: Monitor persists observed DEX selections in canonical lowercase form, constrains mixed-provider rows, and restores all rows on reset with rendered regression coverage.
 - [x] MOBILE-A11Y-517: Discover and Trenches detail/watchlist-or-quote actions render as sibling controls; live web DOM verification reports zero nested buttons and no fresh hydration errors.
 - [x] MOBILE-QA-276: bundled Node is explicitly available to Expo child processes; Expo SDK dependencies are patch-aligned and repository-local Expo Doctor passes all 21 checks.
+- [x] MOBILE-AUTH-518: Privy identity is available from More on web and native through isolated official SDK adapters; email OTP and Google are supported natively, while web uses the configured Privy modal.
+- [x] MOBILE-AUTH-519: missing Privy App/Client IDs fail closed with an explicit setup state; no credential, access token, or provider exception is persisted or rendered.
+- [x] MOBILE-AUTH-520: Privy authentication remains separate from verified Solana ownership and does not grant signing, trading, CopyTrade activation, or transaction submission authority.
+- [x] MOBILE-SEC-521: patched axios/ws transitive overrides remove high/critical npm production advisories; remaining findings are moderate.
+- [x] MOBILE-BUNDLE-522: platform-specific Privy modules bundle successfully for Expo web and Android; native jose resolves to its WebCrypto implementation instead of Node zlib.

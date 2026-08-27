@@ -187,6 +187,15 @@ No in-scope automated regression was found. Generated export directories were re
 - **Partially verified / external:** physical-device screen-reader traversal and an immutable-commit Android reinstall remain QA device tasks. Native Gradle rebuild remains externally blocked by the host loopback IOException; existing compatible APK + current Metro bundle rendered without fatal/module-resolution errors. This restricted shell ran 17/21 Doctor checks (child `npm` unavailable) and Expo compatibility was blocked from the external user cache by `EPERM`; MOBILE-162 retains normal-environment 21/21 evidence.
 - **NEXT_QA_ACTION:** verify all 20 stable IDs on the committed checkout, including TalkBack group traversal, malformed filter entry, pagination retry state, and Discover/Monitor/Trenches navigation on API 37.
 - **NEXT_WEB_ACTION:** none.
+
+## MOBILE Privy identity integration
+
+- **Outcome:** platform-specific official Privy providers now wrap the MOBILE application; `/auth` supports native email OTP and Google login/signup, web delegates to Privy's configured email/Google/wallet modal, and More reports configured/authenticated state.
+- **Security:** configuration is public identifier-only and fail-closed; errors are bounded; Privy identity is intentionally independent of wallet ownership, biometrics, signing, and transaction gates. Production npm audit has 0 high/critical findings after patched transitive overrides.
+- **Verified:** strict TypeScript, full ESLint, 85/85 suites and 463/463 tests, Expo dependency compatibility, Doctor 21/21, web static export, and Android Hermes export all pass.
+- **Runtime boundary:** live provider authentication cannot be truthfully exercised until the authorized Privy operator supplies the App ID/mobile Client ID and registers `terminaldex`; the unconfigured UI exposes this exact prerequisite rather than simulating success.
+- **NEXT_QA_ACTION:** validate the complete login/signup/session/logout/recovery matrix against an authorized exact build without treating authentication as wallet verification.
+- **NEXT_WEB_ACTION:** enable/confirm email and Google in the existing Privy app and provide the public identifiers; WEB remains read-only.
 ## MOBILE-164 input integrity and async-control safety
 
 - **Implemented:** 20/20 current stable findings (`MOBILE-DATA-221..240`) across Portfolio, Wallet Intelligence, Research Workspace, Whales, Monitor alerts, and CopyTrade.

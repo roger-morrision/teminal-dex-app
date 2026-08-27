@@ -1,5 +1,17 @@
 # MOBILE DEV → QA handoff
 
+## MOBILE Privy identity integration
+
+- Base: `a492ad2`; result: containing commit.
+- IDs: `MOBILE-AUTH-518..520`, `MOBILE-SEC-521`, `MOBILE-BUNDLE-522`.
+- Changed behavior/files: `app/auth.tsx` provides accessible signup/login/account UI; `src/auth/PrivyAuthProvider.native.tsx` uses Privy Expo email OTP and Google; `.web.tsx` uses Privy's web modal; `app/_layout.tsx` installs the provider; More exposes account state; `app.config.js` accepts public App/Client IDs; `metro.config.js` keeps native jose on WebCrypto; package manifests include official peers and patched axios/ws overrides.
+- Acceptance evidence: TypeScript PASS; full source ESLint PASS; focused Privy 2 suites/4 tests PASS; full Jest 85 suites/463 tests PASS; Expo install check PASS; Doctor 21/21 PASS; web static export PASS (26 routes including `/auth`); Android Hermes export PASS (3,411 modules, 9.4 MB); npm production audit 0 high/critical and 20 moderate.
+- Security acceptance: no secret/environment file or backend mutation; provider errors are bounded; missing config fails closed; authentication cannot verify a Solana wallet or enable trade/sign/submit/CopyTrade paths.
+- Runtime scenarios: (1) unconfigured build shows setup prerequisite; (2) new email gets OTP and creates account; (3) existing email logs in; (4) invalid/expired OTP remains recoverable; (5) Google success/cancel/offline; (6) process restart restores Privy session; (7) logout clears it; (8) Portfolio still separately requires verified wallet ownership.
+- Known blocker/owner: live authentication evidence requires the authorized Privy operator to provide the public App ID and mobile Client ID and register URL scheme `terminaldex`. These identifiers were not inspected or invented.
+- NEXT_QA_ACTION: create an exact development build with authorized identifiers and execute all eight scenarios on web and Android, recording Privy dashboard/client configuration and build commit.
+- NEXT_WEB_ACTION: confirm email and Google are enabled in the existing Privy application and provide/authorize its public App ID plus MOBILE Client ID; no WEB source change requested.
+
 ## MOBILE blocker cleanup — Monitor DEX, web semantics, and Expo SDK
 
 - Base: `4d1b8f2`; result: containing commit.

@@ -1316,3 +1316,14 @@ The initial sandboxed diagnostic could not open Expo's user native-module cache 
 - Findings inspected/reconciled: 20. `MOBILE-AUTH-518..520`, `MOBILE-SEC-521`, `MOBILE-BUNDLE-522` conditional PASS source/automated; `MOBILE-QA-276` FAIL; 14 external runtime/device/provider findings blocked. No WEB or provider mutation.
 - **MOBILE-QA release recommendation: NO-GO.** Reproducible Doctor failure and unauthorised live identity setup block release.
 - **NEXT_DEV_ACTION:** fix Doctor's child-Node PATH in canonical QA shell, then provide authorized exact-build Privy configuration/fixture for all eight web/Android identity scenarios.
+
+---
+
+# MOBILE-QA validation handoff — MOBILE-192 Metro recovery
+
+- Trigger: 2026-08-27T11:40:12.168Z. Inspected immutable result `654602b2601027b8189da33c3d2592fcc62d328c`, base `d1a633c`. Canonical scope/prefix: PASS; no DEV lock.
+- PASS: exact `build-provenance.test.ts` 1 suite / 10 tests verifies default two-worker bound and valid override contract.
+- BLOCKED: QA could not start an exact port-8081/8082 runtime because both declared ports are held by unverified existing processes and their termination is not authorized. Therefore no fresh EMFILE, browser console, More→Privy, EN/VI, or navigation outcome is inferred. Full regression and changed-surface type/lint did not settle within this bounded trigger.
+- Findings inspected/reconciled: `MOBILE-DEV-EMFILE-528` PASS automated / runtime BLOCKED. Existing 19 physical/provider/toolchain findings carry unchanged; no padding.
+- **MOBILE-QA release recommendation: CONDITIONAL NO-GO.** The bounded launcher contract passes, but exact runtime replacement and broader release gates remain incomplete.
+- **NEXT_DEV_ACTION:** provide an operator-owned free port or explicit authorization to terminate the verified Metro sessions, then run the exact port-8081 browser/runtime acceptance flow.

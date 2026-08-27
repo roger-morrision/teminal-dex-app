@@ -1,4 +1,4 @@
-import { compactUsd, evidenceLabel, evidenceList, localizedRelativeObservedAge, observedDateTime, relativeObservedAge, signedPercent, tokenPrice } from '@/lib/format';
+import { compactUsd, evidenceLabel, evidenceList, localizedNumber, localizedRelativeObservedAge, observedDateTime, relativeObservedAge, signedPercent, tokenPrice } from '@/lib/format';
 describe('formatters', () => {
   it('formats market values defensively', () => {
     expect(compactUsd(null)).toBe('—');
@@ -12,6 +12,12 @@ describe('formatters', () => {
     expect(compactUsd(433_565_871.94)).toBe('$434M');
     expect(compactUsd(-12_632_757_110.95)).toBe('-$12.6B');
     expect(compactUsd(1_052_693_990.66)).toBe('$1.05B');
+  });
+
+  it('formats counts with the selected locale and fails closed', () => {
+    expect(localizedNumber(1234.5, 'en')).toBe('1,234.5');
+    expect(localizedNumber(1234.5, 'vi')).toBe('1.234,5');
+    expect(localizedNumber(Number.NaN, 'en', 'Unavailable')).toBe('Unavailable');
   });
 
   it('normalizes optional provider evidence without inventing a value', () => {

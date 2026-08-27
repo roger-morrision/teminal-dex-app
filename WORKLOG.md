@@ -1783,3 +1783,16 @@ Fresh post-`a2c5f6b` reconciliation records 20 current findings. Three Token Det
 - Token Detail early buyers, security history, and Whale activity now share defensive EN/VI provider-time formatting.
 - TypeScript PASS; full source ESLint PASS; focused Jest PASS (3 suites/17 tests); full Jest PASS (83 suites/455 tests).
 - NEXT_QA_ACTION: verify seconds/milliseconds/ISO/malformed time on all three Token Detail sections in EN/VI. NEXT_WEB_ACTION: none.
+
+## MOBILE BA/PO review — 2026-08-27 02:21 trigger
+
+Fresh post-`7c85998` reconciliation records 20 current findings. Thirteen numeric-localization outcomes are MOBILE-ready across Portfolio, Wallet Intelligence, Market Intelligence, Token Detail, and Operations; seven findings require physical devices, controlled network, or WEB runtime ownership. Ready acceptance requires selected EN/VI separators and fail-closed non-finite values without altering provider numbers.
+
+1–13. **MOBILE-I18N-470..482 READY** portfolio holding, wallet holding, claim slot, Token Detail holder/index evidence, indexer tip, recovery counters/delta, and persisted pair/transaction/candle/total counts. 14–19. **MOBILE-QA-269..274 BLOCKED/device/network** physical accessibility/layout/offline matrix. 20. **MOBILE-WEB-CORS-001 BLOCKED/WEB-OPS** code fixed at WEB `acf2907`, but port 3000 still runs the stale image pending authorized Compose secret/rebuild.
+
+### MOBILE-183 implementation result
+
+- Completed all 13 safe outcomes (`MOBILE-I18N-470..482`); exact shortfall 7 after exhausting the ready queue.
+- Five product areas now use one fail-closed EN/VI number formatter for user-visible quantities and operational counts.
+- TypeScript PASS; full source ESLint PASS; focused Jest PASS (4 suites/16 tests); full Jest PASS (83 suites/456 tests).
+- NEXT_QA_ACTION: switch EN/VI and verify all migrated quantities, including non-finite fallback. NEXT_WEB_ACTION: authorized WEB operator supplies the existing Compose secret and rebuilds/restarts port 3000 from `acf2907`.

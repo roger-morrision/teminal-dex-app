@@ -28,7 +28,7 @@ import type {
   MarketSignal,
   SignalsResponse,
 } from "@/api/schema";
-import { compactUsd, evidenceLabel, evidenceList, signedPercent } from "@/lib/format";
+import { compactUsd, evidenceLabel, evidenceList, localizedNumber, signedPercent } from "@/lib/format";
 import { isSolanaAddress } from "@/security/input";
 import { colors, spacing } from "@/theme";
 import { useSettings } from "@/settings/SettingsProvider";
@@ -550,7 +550,7 @@ function ClaimsPanel({
   );
 }
 function ClaimCard({ item }: { item: ClaimMonitorResponse["events"][number] }) {
-  const { t } = useSettings();
+  const { t, language } = useSettings();
   return (
     <View style={styles.card}>
       <View style={styles.cardTop}>
@@ -573,7 +573,7 @@ function ClaimCard({ item }: { item: ClaimMonitorResponse["events"][number] }) {
           </Text>
           <Text style={styles.meta}>
             {item.instruction} ·{" "}
-            {t("slot", { slot: item.slot.toLocaleString() })}
+            {t("slot", { slot: localizedNumber(item.slot, language) })}
           </Text>
         </View>
         <Text

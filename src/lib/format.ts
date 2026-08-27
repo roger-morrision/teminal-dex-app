@@ -31,6 +31,12 @@ export function signedPercent(value: number): string {
   return `${value >= 0 ? '+' : ''}${value.toFixed(2)}%`;
 }
 
+export function localizedNumber(value: number, language: 'en' | 'vi', fallback = '—'): string {
+  return Number.isFinite(value)
+    ? value.toLocaleString(language === 'vi' ? 'vi-VN' : 'en-US')
+    : fallback;
+}
+
 export function evidenceLabel(value: unknown, fallback: string): string {
   return typeof value === 'string' && value.trim() ? value.trim() : fallback;
 }

@@ -1,5 +1,16 @@
 # MOBILE DEV → QA handoff
 
+## MOBILE-183 — localized cross-surface quantities
+
+- Base: `7c85998`; result: containing commit.
+- Findings: 20 reconciled; completed all 13 safe outcomes (`MOBILE-I18N-470..482`); exact shortfall 7 (`MOBILE-QA-269..274`, `MOBILE-WEB-CORS-001`) with external owners.
+- Changed behavior/files: a shared `localizedNumber` formats Portfolio and wallet holdings, Market Intelligence slots, Token Detail holder/index counts, and Operations tip/recovery/persisted counters using selected EN/VI; non-finite values fail closed.
+- Acceptance evidence: TypeScript PASS; full source ESLint PASS; focused Jest PASS (4 suites/16 tests); full Jest PASS (83 suites/456 tests).
+- Runtime scenario: switch EN/VI across all five product areas and verify thousands/decimal separators plus invalid-number fallback without changed source values.
+- Known risks: physical accessibility/layout/offline evidence remains external; WEB CORS code is committed at `acf2907`, but the stale port-3000 container awaits authorized secret-backed rebuild/restart.
+- NEXT_QA_ACTION: independently classify all 13 IDs through the runtime scenario.
+- NEXT_WEB_ACTION: authorized WEB operator supplies existing Compose secret and rebuilds/restarts port 3000, then verifies credentialed Whales/Discover web reads.
+
 ## MOBILE-182 — localized Token Detail chronology
 
 - Base: `a2c5f6b`; result: containing commit.

@@ -20,7 +20,7 @@ import {
   fetchTopTraders,
 } from "@/api/client";
 import type { FeedConnectionsResponse, IndexerHealthResponse, MarketToken } from "@/api/schema";
-import { compactUsd, evidenceLabel, localizedRelativeObservedAge, signedPercent, tokenPrice } from "@/lib/format";
+import { compactUsd, evidenceLabel, localizedNumber, localizedRelativeObservedAge, signedPercent, tokenPrice } from "@/lib/format";
 import {
   feedCounterSnapshot,
   type FeedCounterSnapshot,
@@ -527,7 +527,7 @@ export function IndexerHealthCard({
   retrying: boolean;
   onRetry: () => unknown;
 }) {
-  const { t } = useSettings();
+  const { t, language } = useSettings();
   if (error) {
     return <InlineWarning text={t("indexerHealthLoadFailed")} retrying={retrying} onRetry={onRetry} />;
   }
@@ -560,7 +560,7 @@ export function IndexerHealthCard({
         <Text style={[styles.status, !evidence.healthy && styles.warn]}>{status}</Text>
       </View>
       <Text style={styles.meta}>{t("indexerEvidenceSummary", {
-        tip: evidence.tip == null ? t("unavailable") : evidence.tip.toLocaleString(),
+        tip: evidence.tip == null ? t("unavailable") : localizedNumber(evidence.tip, language),
         age: evidence.updatedAt ? ageLabel(Date.parse(evidence.updatedAt), t) : t("unavailable"),
         lag: evidence.ingestion.exportLagSlots == null ? t("unavailable") : evidence.ingestion.exportLagSlots,
       })}</Text>
@@ -587,7 +587,7 @@ export function FeedRuntimeRecovery({
   counters: FeedCounterSnapshot | null;
   delta: FeedCounterSnapshot | null;
 }) {
-  const { t } = useSettings();
+  const { t, language } = useSettings();
   const bus = response.runtime.eventBus;
   return (
     <View>
@@ -616,8 +616,8 @@ export function FeedRuntimeRecovery({
                 <View key={key} style={styles.recoveryMetric}>
                   <Text style={styles.kpiLabel}>{t(`feedCounter_${key}`)}</Text>
                   <Text style={styles.qualityValue}>
-                    {counters[key].toLocaleString()}
-                    {delta ? ` · +${delta[key]}` : ""}
+                    {localizedNumber(counters[key], language)}
+                    {delta ? ` · +${localizedNumber(delta[key], language)}` : ""}
                   </Text>
                 </View>
               ),
@@ -662,7 +662,7 @@ export function FeedConnectionCard({
 }: {
   item: FeedConnectionsResponse["connections"][number];
 }) {
-  const { t } = useSettings();
+  const { t, language } = useSettings();
   const warning =
     item.health === "degraded" ||
     item.health === "unhealthy" ||
@@ -702,17 +702,17 @@ export function FeedConnectionCard({
       </View>
       <View style={styles.recordLine}>
         <Text style={styles.meta}>
-          {t("pairsCount", { count: item.records.pairs.toLocaleString() })}
+          {t("pairsCount", { count: localizedNumber(item.records.pairs, language) })}
         </Text>
         <Text style={styles.meta}>
           {t("transactionsCount", {
-            count: item.records.transactions.toLocaleString(),
+            count: localizedNumber(item.records.transactions, language),
           })}
         </Text>
         <Text style={styles.meta}>
-          {t("candlesCount", { count: item.records.candles.toLocaleString() })}
+          {t("candlesCount", { count: localizedNumber(item.records.candles, language) })}
         </Text>
-        <Text style={styles.metric}>{item.records.total.toLocaleString()}</Text>
+        <Text style={styles.metric}>{localizedNumber(item.records.total, language)}</Text>
       </View>
       <Text style={styles.freshness}>
         {item.records.freshness ?? t("freshnessUnavailable")} ·{" "}

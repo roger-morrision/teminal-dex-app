@@ -14,7 +14,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { fetchPortfolioAnalytics, fetchTrackFeed, fetchWalletPnl } from "@/api/client";
-import { compactUsd } from "@/lib/format";
+import { compactUsd, localizedNumber } from "@/lib/format";
 import { whaleFlowByToken } from "@/lib/whale-activity";
 import { isSolanaAddress } from "@/security/input";
 import { useWalletSession } from "@/security/WalletSessionProvider";
@@ -28,7 +28,7 @@ const periods = ["7d", "30d", "90d", "1y"] as const;
 
 export default function PortfolioScreen() {
   const wallet = useWalletSession();
-  const { t } = useSettings();
+  const { t, language } = useSettings();
   const [watchAddress, setWatchAddress] = useState("");
   const [draft, setDraft] = useState("");
   const [period, setPeriod] = useState<(typeof periods)[number]>("30d");
@@ -321,7 +321,7 @@ export default function PortfolioScreen() {
                 <View style={styles.card}>
                   {holdings.map((holding) => (
                     <View key={holding.mint}><View style={styles.holding}>
-                      <View style={styles.holdingMain}><Text style={styles.rowTitle}>{holding.symbol}</Text><Text style={styles.rowMeta}>{holding.uiAmount.toLocaleString()} · {short(holding.mint)}</Text></View>
+                      <View style={styles.holdingMain}><Text style={styles.rowTitle}>{holding.symbol}</Text><Text style={styles.rowMeta}>{localizedNumber(holding.uiAmount, language)} · {short(holding.mint)}</Text></View>
                       <View><Text style={styles.rowValue}>{compactUsd(holding.valueUsd)}</Text><Text style={styles.rowMeta}>{holding.pctOfPortfolio == null ? "—" : `${holding.pctOfPortfolio.toFixed(1)}%`}</Text></View>
                     </View><WhaleFlowBadge flow={whaleFlows.get(holding.mint)} /></View>
                   ))}

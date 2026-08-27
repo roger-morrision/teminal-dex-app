@@ -19,7 +19,7 @@ import {
   fetchWalletPnl,
 } from "@/api/client";
 import type { TopTrader, WalletHoldingsResponse } from "@/api/schema";
-import { compactUsd, evidenceLabel } from "@/lib/format";
+import { compactUsd, evidenceLabel, localizedNumber } from "@/lib/format";
 import { isSolanaAddress } from "@/security/input";
 import {
   addTrackedWallet,
@@ -516,13 +516,13 @@ function Holding({
 }: {
   item: WalletHoldingsResponse["wallet"]["tokens"][number];
 }) {
-  const { t } = useSettings();
+  const { t, language } = useSettings();
   return (
     <View style={styles.holding}>
       <View style={styles.flex}>
         <Text style={styles.cardTitle}>{item.symbol}</Text>
         <Text style={styles.meta}>
-          {item.uiAmount.toLocaleString()} · {short(item.mint)}
+          {localizedNumber(item.uiAmount, language)} · {short(item.mint)}
         </Text>
       </View>
       <View>

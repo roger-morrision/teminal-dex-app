@@ -356,3 +356,12 @@ No in-scope automated regression was found. Generated export directories were re
 - **Safety:** presentation only; provider records, ordering, APIs, wallets, and transactions are unchanged.
 - **NEXT_QA_ACTION:** independently traverse the three evidence sections using numeric, ISO, and malformed provider time in EN/VI.
 - **NEXT_WEB_ACTION:** none.
+
+## MOBILE-183 localized cross-surface quantities
+
+- **Implemented:** all 13 safe outcomes (`MOBILE-I18N-470..482`); exact shortfall 7 with device/network/WEB-operations owners.
+- **Behavior:** Portfolio, Wallet Intelligence, Market Intelligence, Token Detail, and Operations quantities follow EN/VI separators and fail closed for non-finite values.
+- **Verified:** TypeScript/full source ESLint PASS; focused Jest PASS (4 suites/16 tests); full Jest PASS (83 suites/456 tests).
+- **Safety:** formatting only; provider values, APIs, ordering, wallets, and transactions are unchanged.
+- **NEXT_QA_ACTION:** verify migrated quantities in both languages and malformed fallback.
+- **NEXT_WEB_ACTION:** rebuild/restart port 3000 from WEB `acf2907` after the authorized operator supplies the existing Compose secret.

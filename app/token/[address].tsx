@@ -24,7 +24,7 @@ import {
 } from "@/api/schema";
 import { PriceChart } from "@/components/PriceChart";
 import { TokenAvatar } from "@/components/TokenAvatar";
-import { compactUsd, evidenceLabel, observedDateTime, signedPercent, tokenPrice } from "@/lib/format";
+import { compactUsd, evidenceLabel, localizedNumber, observedDateTime, signedPercent, tokenPrice } from "@/lib/format";
 import { aggregateWhaleActivity, whaleActivityForToken } from "@/lib/whale-activity";
 import { colors, spacing } from "@/theme";
 import { isSolanaAddress, parseBoundedJson } from "@/security/input";
@@ -46,7 +46,7 @@ const timeframes = ["5m", "15m", "1h", "4h", "1d"] as const;
 
 export default function TokenDetail() {
   const router = useRouter();
-  const { t } = useSettings();
+  const { t, language } = useSettings();
   const { address, snapshot } = useLocalSearchParams<{
     address: string;
     snapshot?: string;
@@ -271,7 +271,7 @@ export default function TokenDetail() {
                       key={holder.address}
                       title={`#${holder.rank} ${short(holder.address)}`}
                       value={`${holder.pct.toFixed(2)}%`}
-                      detail={`${holder.uiAmount.toLocaleString()} ${t("tokens").toLowerCase()}`}
+                      detail={`${localizedNumber(holder.uiAmount, language)} ${t("tokens").toLowerCase()}`}
                     />
                   ))}
                   <Limitation text={t("holderLimitation")} />
@@ -375,11 +375,11 @@ export default function TokenDetail() {
                   </View>
                   <EvidenceLine
                     label={t("indexedSwaps")}
-                    value={data.metrics.indexedSwaps.toLocaleString()}
+                    value={localizedNumber(data.metrics.indexedSwaps, language)}
                   />
                   <EvidenceLine
                     label={t("indexedWallets")}
-                    value={data.metrics.indexedWallets.toLocaleString()}
+                    value={localizedNumber(data.metrics.indexedWallets, language)}
                   />
                   <EvidenceLine
                     label={t("roundTripWalletShare")}
@@ -619,7 +619,7 @@ function Overview({
   refreshBusy: boolean;
   onRetry: () => void;
 }) {
-  const { t } = useSettings();
+  const { t, language } = useSettings();
   return (
     <View style={styles.panel}>
       <View style={styles.grid}>
@@ -631,7 +631,7 @@ function Overview({
         />
         <Metric
           label={t("holdersTab")}
-          value={token.holderCount?.toLocaleString() ?? "—"}
+          value={token.holderCount == null ? "—" : localizedNumber(token.holderCount, language)}
         />
         <Metric
           label={t("largestHolders")}

@@ -69,9 +69,9 @@ export default function MoreScreen() {
         <Text style={styles.eyebrow}>TERMINAL DEX</Text>
         <Text style={styles.title}>{t("moreTools")}</Text>
         <Text style={styles.note}>{t("routesNote")}</Text>
-        <Pressable accessibilityRole="button" accessibilityLabel={auth.authenticated ? "Open Privy account" : "Sign up or sign in with Privy"} onPress={() => router.push('/auth' as never)} style={styles.settings}>
-          <Text style={styles.label}>{auth.authenticated ? "Privy account" : "Sign up / Sign in"}</Text>
-          <Text style={[styles.status, auth.authenticated && styles.live]}>{auth.authenticated ? "SIGNED IN" : auth.configured ? "PRIVY" : "SETUP REQUIRED"}</Text>
+        <Pressable accessibilityRole="button" accessibilityLabel={t(auth.authenticated ? "privyOpenAccount" : "privyOpenLogin")} onPress={() => router.push('/auth' as never)} style={styles.settings}>
+          <Text style={styles.label}>{t(auth.authenticated ? "privyAccount" : "privySignIn")}</Text>
+          <Text style={[styles.status, auth.authenticated && styles.live]}>{auth.authenticated ? t("privySignedIn") : auth.configured ? "PRIVY" : t("privySetupRequired")}</Text>
         </Pressable>
         <Pressable
           accessibilityRole="button"

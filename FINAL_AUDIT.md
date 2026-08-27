@@ -1,8 +1,8 @@
 # Terminal DEX Mobile Final Audit
 
-Audit date: 2026-08-24
+Audit date: 2026-08-27
 
-Audit maintained through: MOBILE-146
+Audit maintained through: MOBILE-191
 
 Backend authority: `C:\Tuan\devApps\TERMINAL_DEX_Intelligent` (source of truth; isolated Slice 43–49 contracts added with explicit write approval)
 
@@ -11,6 +11,12 @@ Backend authority: `C:\Tuan\devApps\TERMINAL_DEX_Intelligent` (source of truth; 
 The implemented Expo application passes the automated regression gate and covers the approved mobile information architecture with real, runtime-validated backend evidence. No mock production market data, mobile-held backend secrets, transaction execution, or hidden activation path was found.
 
 Completion is intentionally not claimed for requirements that need an absent backend safety/provider contract or physical-device evidence. Those boundaries remain visible in the product and in the blocker matrix below.
+
+## Fourteen-phase acceptance summary
+
+All fourteen roadmap phases are implemented at the repository and automated-validation level. Phase 1 additionally accepts the authorized WEB environment's public App ID/mobile Client ID names without copying values into MOBILE source, rejects secret-shaped values, and presents the complete Privy flow in EN/VI. Phases 2–10 retain their mature routed product surfaces and real-data contracts. Phases 11–13 retain accessibility, recovery/performance, and security/privacy controls. Phase 14 passes TypeScript, ESLint, 86 suites / 466 tests, Expo compatibility, Doctor 21/21, and configured exports for Web, Android, and iOS.
+
+Release acceptance is still conditional on evidence that cannot be produced safely from repository automation: live authorized Privy provider scenarios, physical assistive-technology/layout/lifecycle/performance matrices, current backend ingestion/provider fixtures, and upstream resolution of the guarded Noble strict-exports warning. These are acceptance prerequisites, not hidden code completion claims.
 
 ## Evidence matrix
 

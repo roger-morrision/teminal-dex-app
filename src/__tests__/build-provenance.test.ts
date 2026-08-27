@@ -22,6 +22,27 @@ function loadConfig(commit?: string) {
   return config;
 }
 
+function loadPrivyConfig(values: Record<string, string | undefined>) {
+  const keys = ['EXPO_PUBLIC_PRIVY_APP_ID', 'NEXT_PUBLIC_PRIVY_APP_ID', 'EXPO_PUBLIC_PRIVY_CLIENT_ID', 'PRIVY_CLIENT_ID_MOBILE'] as const;
+  const previous = Object.fromEntries(keys.map((key) => [key, process.env[key]]));
+  for (const key of keys) {
+    const value = values[key];
+    if (value === undefined) delete process.env[key];
+    else process.env[key] = value;
+  }
+  jest.resetModules();
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const createConfig = require('../../app.config');
+  const app = require('../../app.json');
+  const config = createConfig({ config: app.expo });
+  for (const key of keys) {
+    const value = previous[key];
+    if (value === undefined) delete process.env[key];
+    else process.env[key] = value;
+  }
+  return config.extra as { privyAppId: string | null; privyClientId: string | null };
+}
+
 describe('verified development build provenance', () => {
   it('embeds the exact supplied public commit in Expo config', () => {
     expect(loadConfig('0123456789abcdef').extra.mobileBuildCommit).toBe(
@@ -54,5 +75,13 @@ describe('verified development build provenance', () => {
   it('emits a bounded device-log marker at app mount', () => {
     expect(rootLayout).toContain('[MOBILE_BUILD] commit=');
     expect(rootLayout).toContain("commit : 'unverified'");
+  });
+
+  it('maps coordinated WEB App ID and MOBILE Client ID aliases', () => {
+    expect(loadPrivyConfig({ NEXT_PUBLIC_PRIVY_APP_ID: 'app-public', PRIVY_CLIENT_ID_MOBILE: 'client-mobile' })).toMatchObject({ privyAppId: 'app-public', privyClientId: 'client-mobile' });
+  });
+
+  it('refuses secret-shaped Privy values from public Expo config', () => {
+    expect(loadPrivyConfig({ EXPO_PUBLIC_PRIVY_APP_ID: 'app-public', EXPO_PUBLIC_PRIVY_CLIENT_ID: 'privy_app_secret_never_public' })).toMatchObject({ privyAppId: 'app-public', privyClientId: null });
   });
 });

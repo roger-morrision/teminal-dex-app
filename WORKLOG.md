@@ -1,5 +1,14 @@
 # Mobile Worklog
 
+## 2026-08-27 — MOBILE-191 fourteen-phase release hardening
+
+- Reconciled the full 14-phase product roadmap against current production code instead of rewriting already-delivered Whales, Discover, research, portfolio, Monitor, Trenches, intelligence, accessibility, recovery, security, and release behavior.
+- Closed the dependency-ready Phase 1 gap by accepting the WEB operator's existing public configuration names (`NEXT_PUBLIC_PRIVY_APP_ID`, `PRIVY_CLIENT_ID_MOBILE`) as safe Expo aliases while retaining the documented Expo names. Values remain process-local and were never copied into source or output.
+- Public configuration now rejects secret-shaped Privy values, and focused regressions prove both alias mapping and fail-closed secret handling.
+- Localized the complete Privy login/signup/account/recovery surface in English and Vietnamese, including email, verification, Google, setup-required, signed-in, sign-out, close, and safety-boundary states.
+- Verified all 14 phases with strict TypeScript, zero-warning source ESLint, 86 suites / 466 tests, Expo dependency compatibility, Expo Doctor 21/21, and configured Web/Android/iOS exports. Android/iOS retain the audited upstream Noble strict-exports fallback warning; no unresolved module occurred.
+- External acceptance remains intentionally open for live Privy success/cancel/session restoration, physical TalkBack/VoiceOver/Switch Access and large-text/layout/performance matrices, and backend provider freshness. No mock data, secret, WEB edit, signing, submission, trade, or CopyTrade activation was introduced.
+
 ## 2026-08-25 — MOBILE-150 quote expiry TOCTOU closure
 
 - Closed the quote-expiry time-of-check/time-of-use gap: preparation and confirmation independently re-check the exact 15-second TTL at invocation, while confirmation also remains native/visual/accessibility-disabled after expiry.

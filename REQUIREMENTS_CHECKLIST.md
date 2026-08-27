@@ -2,6 +2,23 @@
 
 Status legend: `[x]` verified, `[ ]` incomplete, `[~]` intentionally visible but backend-connected behavior incomplete.
 
+## Fourteen-phase delivery ledger (MOBILE-523..527)
+
+- [x] Phase 1 — Privy identity: official native/web SDKs, signup/login/account recovery, bilingual EN/VI copy, public App ID/client-ID configuration aliases, and secret-shaped public-value rejection are implemented. Live provider login remains an environment/device acceptance activity.
+- [x] Phase 2 — Navigation and shell: whale-first tabs, auxiliary routes, deep links, safe-area behavior, and auth entry points are implemented and regression-covered.
+- [x] Phase 3 — Backend health and evidence transparency: validated real API contracts, provenance/freshness/degraded states, bounded recovery, and fail-closed production origins are implemented.
+- [x] Phase 4 — Whales: transaction-first activity, qualified holdings, artwork fallbacks, filters, rankings, pagination, and historical/live distinction are implemented without promoting stale evidence.
+- [x] Phase 5 — Discover: provider-backed modes, search, capability-aware filters, deterministic ordering/paging, artwork, evidence, and retained-page recovery are implemented.
+- [x] Phase 6 — Token detail and research: market/security/holder/transaction/pair evidence, charting, quote review, and recovery are implemented; execution remains locked.
+- [x] Phase 7 — Portfolio and wallet intelligence: ownership boundaries, holdings, token rankings, PnL evidence, and watch-only states are implemented.
+- [x] Phase 8 — Monitor, alerts, and tracking: bounded feeds, rules, delivery/evaluation history, filtering, sorting, paging, and recovery are implemented.
+- [x] Phase 9 — Trenches: provider launch lanes, filters, token handoff, artwork/evidence, and guarded quote entry are implemented.
+- [x] Phase 10 — Intelligence and automation: signals, smart money, analytics, CopyTrade configuration, and audit evidence are implemented while activation/signing/submission remain disabled.
+- [x] Phase 11 — Accessibility and responsive behavior: semantic controls, minimum touch targets, large-text-safe layouts, localized auth UX, and screen-reader labels are code-verified. Physical assistive-technology evidence remains a QA prerequisite.
+- [x] Phase 12 — Recovery, lifecycle, and performance: offline/reconnect, bounded retry, retained evidence, render/page budgets, and lifecycle-safe state are implemented. Physical fault-injection/performance evidence remains a QA prerequisite.
+- [x] Phase 13 — Security and privacy: HTTPS/fail-closed origins, redaction, secure storage, public-config validation, secret rejection, and disabled transaction execution are implemented.
+- [x] Phase 14 — Release engineering: strict TypeScript, ESLint, 466-test regression gate, Expo compatibility, Doctor 21/21, and configured Android/iOS/Web exports pass. The guarded upstream Noble export warning and physical-device acceptance remain explicitly conditional.
+
 ## Foundation and security
 
 - [x] Expo 57 / React Native / Expo Router strict-TypeScript foundation.

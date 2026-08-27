@@ -1,5 +1,18 @@
 # MOBILE DEV → QA handoff
 
+## MOBILE-191 — fourteen-phase completion and Privy release hardening
+
+- Base: `1b820ff`; result: containing commit.
+- IDs: `MOBILE-AUTH-523` public-config compatibility, `MOBILE-SEC-524` public-secret rejection, `MOBILE-I18N-525` bilingual Privy flow, `MOBILE-BUNDLE-526` configured three-platform exports, `MOBILE-RELEASE-527` fourteen-phase acceptance ledger.
+- Changed behavior/files: `app.config.js` safely accepts the authorized public WEB aliases without storing their values; `app/auth.tsx`, `app/(tabs)/more.tsx`, and `src/settings/SettingsProvider.tsx` localize all Privy states in EN/VI; focused config/settings regressions protect both behavior and security.
+- Phase acceptance: phases 1–14 are reconciled and implemented at source/automated-gate level. Existing phases 2–10 were verified, not churned. No backend capability, provider evidence, transaction path, or production mock was invented.
+- Exact validation: `tsc --noEmit` PASS; `eslint app src` PASS with zero warnings; `jest --runInBand` PASS 86 suites / 466 tests; `expo install --check` PASS; `expo-doctor` PASS 21/21; configured Web export PASS with `/auth`; configured Android export PASS (3,411 modules, 9.4 MB Hermes, 46 assets); configured iOS export PASS (3,287 modules, 9.1 MB Hermes, 42 assets).
+- Security evidence: WEB `.env.local` was read only for the two named public values and injected only into child export/config processes; no value was printed, copied, staged, or committed. Secret-shaped `privy_app_secret_*` values fail closed. Production trading/signing/submission/CopyTrade activation remains disabled.
+- Known conditional: Android/iOS exports retain the regression-guarded upstream Noble `./crypto.js` strict-exports fallback warning; bundles succeed without unresolved modules.
+- Runtime scenarios for QA: EN and VI unconfigured setup state; email signup/login OTP success, invalid and expired recovery; Google success/cancel/offline; session restoration; logout; account entry from More; Portfolio ownership remains separate; 320dp/large-text plus TalkBack/VoiceOver/Switch Access; offline/reconnect/background/restore; Whales/Discover live/empty/stale/retry with current provider evidence.
+- NEXT_QA_ACTION: pin the result commit, configure only authorized public IDs in the exact development build, then execute the runtime/device matrix above and record build marker, OS/device, locale, provider outcome, screenshots, accessibility findings, and performance evidence.
+- NEXT_WEB_ACTION: keep WEB read-only from MOBILE; WEB/provider operations must keep discovery/indexer/research heartbeats current and supply deterministic qualified-current fixtures. No API-schema change is requested.
+
 ## MOBILE Privy identity integration
 
 - Base: `a492ad2`; result: containing commit.

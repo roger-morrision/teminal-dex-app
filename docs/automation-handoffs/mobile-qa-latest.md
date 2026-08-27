@@ -1304,3 +1304,15 @@ The initial sandboxed diagnostic could not open Expo's user native-module cache 
 - Findings inspected/reconciled: 20. Available outcomes independently PASS: 2 (`MOBILE-FILTER-515`, `MOBILE-A11Y-517` source/focused); FAIL: 1 (`MOBILE-QA-276`); remaining 17 blocked/conditional. No WEB, product, provider, wallet, or transaction mutation.
 - **MOBILE-QA release recommendation: NO-GO.** Doctor failure is a current reproducible release-gate defect.
 - **NEXT_DEV_ACTION:** make Expo Doctor spawn the bundled Node successfully in the canonical QA shell, then provide a new immutable commit and matching handoff for full/device revalidation.
+
+---
+
+# MOBILE-QA validation handoff — Privy integration retest
+
+- Trigger: 2026-08-27T09:42:08.119Z. Inspected immutable Privy result `8c1b1af` (current report wrapper `d7f3a97`). Scope and clean result: PASS; no DEV lock.
+- PASS: TypeScript; changed auth-surface ESLint; actual focused suites `privy-auth.test.ts` and `privy-bundle-boundary.test.ts` (2 suites / 4 tests). The initially named `PrivyAuthProvider`/`AuthScreen` test paths do not exist; they are not counted.
+- FAIL P1 — `MOBILE-QA-276` remains reproducible: exact bundled-node Expo Doctor emits `Error: spawn node ENOENT`, contrary to DEV's 21/21 claim. Its wrapper exit code is not a pass.
+- BLOCKED: full regression, fresh web/Android exports, and all eight live Privy scenarios. Authorized public App ID, mobile Client ID, enabled email/Google providers, registered `terminaldex` scheme, and exact dev build are absent; no credentials were invented or exposed. Safety boundary remains source-only: no wallet verification, signing, submit, trade, or CopyTrade activation was exercised.
+- Findings inspected/reconciled: 20. `MOBILE-AUTH-518..520`, `MOBILE-SEC-521`, `MOBILE-BUNDLE-522` conditional PASS source/automated; `MOBILE-QA-276` FAIL; 14 external runtime/device/provider findings blocked. No WEB or provider mutation.
+- **MOBILE-QA release recommendation: NO-GO.** Reproducible Doctor failure and unauthorised live identity setup block release.
+- **NEXT_DEV_ACTION:** fix Doctor's child-Node PATH in canonical QA shell, then provide authorized exact-build Privy configuration/fixture for all eight web/Android identity scenarios.

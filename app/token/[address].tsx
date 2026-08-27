@@ -24,7 +24,7 @@ import {
 } from "@/api/schema";
 import { PriceChart } from "@/components/PriceChart";
 import { TokenAvatar } from "@/components/TokenAvatar";
-import { compactUsd, evidenceLabel, signedPercent, tokenPrice } from "@/lib/format";
+import { compactUsd, evidenceLabel, observedDateTime, signedPercent, tokenPrice } from "@/lib/format";
 import { aggregateWhaleActivity, whaleActivityForToken } from "@/lib/whale-activity";
 import { colors, spacing } from "@/theme";
 import { isSolanaAddress, parseBoundedJson } from "@/security/input";
@@ -493,7 +493,7 @@ export default function TokenDetail() {
 }
 
 export function EarlyBuyerEvidence({ data }: { data: SnipersResponse }) {
-  const { t } = useSettings();
+  const { t, language } = useSettings();
   return (
     <>
       <Text style={styles.sectionTitle}>{t("earlyBuyers")}</Text>
@@ -506,7 +506,7 @@ export function EarlyBuyerEvidence({ data }: { data: SnipersResponse }) {
           key={`${item.address}-${item.boughtAt}`}
           title={short(item.address)}
           value={t("secondsAfterPair", { seconds: item.delaySec.toFixed(1) })}
-          detail={new Date(item.boughtAt).toLocaleString()}
+          detail={observedDateTime(item.boughtAt, language, t("timeUnavailable"))}
         />
       ))}
       <Limitation text={t("earlyBuyerLimitation")} />
@@ -519,7 +519,7 @@ export function SecurityHistoryEvidence({
 }: {
   data: SecurityHistoryResponse;
 }) {
-  const { t } = useSettings();
+  const { t, language } = useSettings();
   return (
     <>
       <Text style={styles.sectionTitle}>{t("securityHistory")}</Text>
@@ -533,7 +533,7 @@ export function SecurityHistoryEvidence({
         return (
           <DataRow
             key={snapshot.id}
-            title={`${snapshot.source} · ${new Date(snapshot.observedAt).toLocaleString()}`}
+            title={`${snapshot.source} · ${observedDateTime(snapshot.observedAt, language, t("timeUnavailable"))}`}
             value={
               snapshot.evidence.isHoneypot === true
                 ? t("honeypotObserved")
@@ -560,7 +560,7 @@ function WhaleEvidencePanel({
   address: string;
   query: UseQueryResult<TrackFeedResponse, Error>;
 }) {
-  const { t } = useSettings();
+  const { t, language } = useSettings();
   if (query.isLoading) return <PanelState loading message={t("loadingWhaleActivity")} />;
   if (query.isError) return <PanelState error message={t("evidenceLoadFailed")} retrying={query.isFetching} onRetry={() => query.refetch()} />;
   const events = whaleActivityForToken(query.data?.notifications ?? [], address);
@@ -594,7 +594,7 @@ function WhaleEvidencePanel({
             <DataRow
               key={event.id}
               title={`${t(buy ? "whaleBuy" : "whaleSell")} · ${event.amountUsd == null ? "—" : compactUsd(event.amountUsd)}`}
-              value={new Date(event.observedAt).toLocaleString()}
+              value={observedDateTime(event.observedAt, language, t("timeUnavailable"))}
               detail={`${event.wallet ? short(event.wallet) : t("classifiedWallet")} · ${event.source} · ${event.dataQuality}`}
               tone={buy ? "positive" : "negative"}
             />

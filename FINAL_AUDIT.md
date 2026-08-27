@@ -347,3 +347,12 @@ No in-scope automated regression was found. Generated export directories were re
 - **Safety:** presentation/parser only; provider events, ordering, APIs, wallets, and transactions are unchanged.
 - **NEXT_QA_ACTION:** independently exercise the complete timestamp matrix on AI and Track in EN/VI.
 - **NEXT_WEB_ACTION:** none.
+
+## MOBILE-182 localized Token Detail chronology
+
+- **Implemented:** all three safe outcomes (`MOBILE-I18N-467..469`); exact shortfall 17 with device/provider/network/toolchain owners.
+- **Behavior:** early-buyer, security-history, and token-Whale timestamps use EN/VI locale and fail closed through the shared provider-time formatter.
+- **Verified:** TypeScript/full source ESLint PASS; focused Jest PASS (3 suites/17 tests); full Jest PASS (83 suites/455 tests).
+- **Safety:** presentation only; provider records, ordering, APIs, wallets, and transactions are unchanged.
+- **NEXT_QA_ACTION:** independently traverse the three evidence sections using numeric, ISO, and malformed provider time in EN/VI.
+- **NEXT_WEB_ACTION:** none.

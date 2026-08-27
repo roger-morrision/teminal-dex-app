@@ -1,5 +1,16 @@
 # MOBILE DEV → QA handoff
 
+## MOBILE-182 — localized Token Detail chronology
+
+- Base: `a2c5f6b`; result: containing commit.
+- Findings: 20 reconciled; completed all three safe outcomes (`MOBILE-I18N-467..469`); exact shortfall 17 (`MOBILE-QA-269..280`, `MOBILE-QA-283..287`) with external owners.
+- Changed behavior/files: Token Detail early buyers, security snapshots, and Whale events delegate provider time to the shared localized defensive formatter.
+- Acceptance evidence: TypeScript PASS; full source ESLint PASS; focused Jest PASS (3 suites/17 tests); full Jest PASS (83 suites/455 tests).
+- Runtime scenario: switch EN/VI and feed seconds, milliseconds, ISO, and malformed timestamps through all three Token Detail evidence sections; verify localized/fallback output without reordered rows.
+- Known risks: exact physical accessibility/layout/recovery/performance and controlled provider fixtures remain external.
+- NEXT_QA_ACTION: independently classify all three IDs through the runtime scenario, then continue the blocked matrix.
+- NEXT_WEB_ACTION: none.
+
 ## MOBILE-181 — localized AI and Track chronology
 
 - Base: `f409ec2`; result: containing commit.

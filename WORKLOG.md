@@ -1770,3 +1770,16 @@ Fresh post-`f409ec2` reconciliation records 20 current findings. Seven timestamp
 - AI discovery history and four Track feed surfaces now use selected EN/VI locale and the shared defensive provider-time parser.
 - TypeScript PASS; full source ESLint PASS; focused Jest PASS (2 suites/9 tests); full Jest PASS (83 suites/455 tests).
 - NEXT_QA_ACTION: verify seconds/milliseconds/ISO/malformed timestamps on AI and Track in EN/VI. NEXT_WEB_ACTION: none.
+
+## MOBILE BA/PO review — 2026-08-27 01:20 trigger
+
+Fresh post-`a2c5f6b` reconciliation records 20 current findings. Three Token Detail chronology outcomes are MOBILE-ready; seventeen carried findings require device, controlled provider/network, or toolchain/upstream ownership. Ready acceptance requires locale-aware, fail-closed evidence time without changing API records or order.
+
+1. **MOBILE-I18N-467 READY** early-buyer purchase chronology. 2. **MOBILE-I18N-468 READY** security-snapshot chronology. 3. **MOBILE-I18N-469 READY** token Whale chronology. 4–15. **MOBILE-QA-269..280 BLOCKED/CONDITIONAL** external matrix. 16–20. **MOBILE-QA-283..287 BLOCKED/device/provider** edge traversal, large text, and controlled evidence.
+
+### MOBILE-182 implementation result
+
+- Completed all three safe outcomes (`MOBILE-I18N-467..469`); exact shortfall 17 after exhausting the ready queue.
+- Token Detail early buyers, security history, and Whale activity now share defensive EN/VI provider-time formatting.
+- TypeScript PASS; full source ESLint PASS; focused Jest PASS (3 suites/17 tests); full Jest PASS (83 suites/455 tests).
+- NEXT_QA_ACTION: verify seconds/milliseconds/ISO/malformed time on all three Token Detail sections in EN/VI. NEXT_WEB_ACTION: none.

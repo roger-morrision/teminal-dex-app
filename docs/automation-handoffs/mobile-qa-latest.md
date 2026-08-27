@@ -1179,3 +1179,24 @@ The initial sandboxed diagnostic could not open Expo's user native-module cache 
 - **MOBILE-QA release recommendation: CONDITIONAL NO-GO.** Seven available chronology outcomes pass; runtime, fresh bundle, and external matrix evidence remain incomplete.
 - Carry-forward order: `MOBILE-QA-269`, `MOBILE-QA-270`, `MOBILE-QA-271`, `MOBILE-QA-272`, `MOBILE-QA-273`, `MOBILE-QA-274`, `MOBILE-QA-275`, `MOBILE-QA-276`, `MOBILE-QA-277`, `MOBILE-QA-278`, `MOBILE-QA-279`, `MOBILE-QA-280`, `MOBILE-QA-283`.
 - **NEXT_DEV_ACTION:** provide an immutable AI/Track fixture covering seconds, milliseconds, valid ISO, and malformed observations in EN/VI, plus a responsive exact device route for chronology accessibility verification.
+
+---
+
+# MOBILE-QA validation handoff — MOBILE-182
+
+- Trigger: 2026-08-27T01:41:45.854Z. Inspected immutable result `7d82045d98b3b2fa68b8f99d764a94a5e4502113` (`fix(mobile): localize token evidence chronology`), base `a2c5f6b`. Canonical scope, clean result, and no DEV lock: PASS. Archive `%LOCALAPPDATA%\\Temp\\mobile-qa-182-7d82045` supplied evidence; only this report is written under QA lock.
+- Runtime/device/config/bundles: BLOCKED/SKIP this trigger—no deterministic Token Detail timestamp fixture or exact device lane settled; fresh Expo diagnostics and exports were not completed. No result is inferred from earlier commits.
+
+## MOBILE-QA verification
+
+| Criterion | Result | Evidence |
+| --- | --- | --- |
+| Type and changed-surface lint | PASS | Archive `tsc --noEmit` and Token Detail/formatter ESLint exit 0. |
+| Focused chronology regression | PASS | Primary Detail, formatter, and whale-activity suites: 3 suites / 26 tests pass. |
+| Full regression | PASS | Archive Jest: 83 suites / 455 tests pass in 41.494s. |
+| MOBILE-I18N-467..469 | PASS | Token Detail early buyers, security snapshots, and Whale events delegate timestamps to shared localized defensive formatter; automated gates pass. |
+
+- `MOBILE-QA-269..280`, `MOBILE-QA-283..287`: BLOCKED/CONDITIONAL P2 physical accessibility/layout/recovery/performance, Doctor/Noble, and provider fixtures; owner QA/device/toolchain/upstream/provider.
+- Findings inspected/reconciled: 20. DEV outcomes available/verified: 3/3 PASS. Exact shortfall: 17 (`MOBILE-QA-269..280`, `MOBILE-QA-283..287`). Evidence: `%LOCALAPPDATA%\\Temp\\mobile-qa-182-full.err.log`. No secrets, credentials, provider payload, screenshot, or WEB evidence retained; no MOBILE-to-WEB blocker.
+- **MOBILE-QA release recommendation: CONDITIONAL NO-GO.** Available source/automated outcomes pass, but runtime/device and fresh configuration/bundle evidence remain incomplete.
+- **NEXT_DEV_ACTION:** provide immutable EN/VI Token Detail fixtures for seconds, milliseconds, ISO, and malformed timestamps across early-buyer, security, and Whale sections plus an exact device route.

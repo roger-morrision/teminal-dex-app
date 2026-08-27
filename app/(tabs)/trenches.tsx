@@ -368,12 +368,13 @@ export function TrenchCard({
     (lane === "migrated" ? 100 : null);
   const change = token.change1h;
   return (
-    <Pressable
-      accessibilityRole="button"
-      accessibilityLabel={t("openLaunch", { symbol: token.symbol })}
-      onPress={onDetail}
-      style={({ pressed }) => [styles.card, pressed && styles.pressed]}
-    >
+    <View style={styles.card}>
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel={t("openLaunch", { symbol: token.symbol })}
+        onPress={onDetail}
+        style={({ pressed }) => [styles.cardDetails, pressed && styles.pressed]}
+      >
       <View style={styles.cardTop}>
         <View style={styles.tokenIcon}>
           <Text style={styles.tokenIconText}>{token.symbol.slice(0, 2)}</Text>
@@ -434,6 +435,7 @@ export function TrenchCard({
           value={`${token.txns5m.buys}/${token.txns5m.sells}`}
         />
       </View>
+      </Pressable>
       <View style={styles.actions}>
         <Pressable
           accessibilityRole="button"
@@ -459,7 +461,7 @@ export function TrenchCard({
             : t("timeUnavailable")}
         </Text>
       </View>
-    </Pressable>
+    </View>
   );
 }
 function Metric({ label, value }: { label: string; value: string }) {
@@ -651,12 +653,13 @@ const styles = StyleSheet.create({
   card: {
     marginHorizontal: spacing.lg,
     marginTop: spacing.md,
-    padding: spacing.lg,
     borderRadius: 15,
     borderWidth: 1,
     borderColor: colors.border,
     backgroundColor: colors.surface,
+    overflow: "hidden",
   },
+  cardDetails: { padding: spacing.lg },
   pressed: { backgroundColor: colors.surfaceRaised },
   cardTop: { flexDirection: "row", alignItems: "center", gap: spacing.md },
   tokenIcon: {
@@ -718,6 +721,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+    paddingHorizontal: spacing.lg,
+    paddingBottom: spacing.lg,
     marginTop: spacing.lg,
   },
   trade: {

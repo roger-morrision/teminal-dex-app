@@ -1349,3 +1349,15 @@ The initial sandboxed diagnostic could not open Expo's user native-module cache 
 - BLOCKED: exact launched runtime on selected free port, full regression, platform exports, device/accessibility, and authorized Privy flows were not completed in this bounded trigger.
 - **MOBILE-QA release recommendation: NO-GO.** Doctor still fails in canonical QA shell.
 - **NEXT_DEV_ACTION:** prepend the current Node runtime directory containing both `node` and `npm`/`npm.cmd` correctly for Doctor child processes, then provide immutable revalidation evidence and a safe runtime port.
+
+---
+
+# MOBILE-QA validation handoff — MOBILE-195 Doctor npm isolation
+
+- Trigger: 2026-08-27T17:40:47.459Z. Inspected immutable result `99663122500228cf96a47905b7e0b8bfec016faf`, base `46b8667`. Canonical scope/prefix and clean result: PASS; no DEV lock.
+- PASS / RESOLVED — `MOBILE-QA-276`: exact non-escalated bundled-node `scripts/run-expo-doctor.mjs` exits 0 with **21/21 checks passed**. This independently closes the prior child `node` and child `npm` ENOENT failures.
+- PASS: `doctor-npm-inspector` and package-script focused suites: 2 suites / 14 tests. The inspection boundary is source/test verified; no package installation, provider, WEB, wallet, signing, submission, trade, or data mutation occurred.
+- BLOCKED: full regression, fresh Android/iOS/web exports, runtime/device, and remaining physical/provider fixture matrix were not completed in this bounded trigger. Noble package export condition remains upstream.
+- Findings inspected/reconciled: 20. `MOBILE-QA-276` RESOLVED; one toolchain outcome independently PASS; nineteen physical/provider/upstream outcomes carry blocked/conditional without padding.
+- **MOBILE-QA release recommendation: CONDITIONAL NO-GO.** Doctor is now green, but broader regression, platform/runtime, and physical accessibility/recovery evidence remain incomplete.
+- **NEXT_DEV_ACTION:** supply an exact free runtime port plus authorized Privy configuration and deterministic provider fixtures so QA can complete the remaining platform, accessibility, recovery, and authenticated-flow validation.

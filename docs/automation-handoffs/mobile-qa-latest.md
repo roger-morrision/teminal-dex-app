@@ -1203,6 +1203,51 @@ The initial sandboxed diagnostic could not open Expo's user native-module cache 
 
 ---
 
+# MOBILE-QA runtime filter retest — MOBILE-185
+
+- Trigger: user-requested live filter retest after the authorized WEB operator repaired local-browser CORS.
+- Inspected mobile commit: `61dfe68` (`docs: specify mobile browser CORS contract`); runtime `http://127.0.0.1:8081`, Windows in-app browser, 2026-08-27. Scope PASS: cwd and Git top-level are `C:\Tuan\devApps\teminal-dex-app`; only this handoff is changed. The WEB API remains an external read-only contract.
+- CORS evidence: live provider response `200`, `Access-Control-Allow-Origin: http://127.0.0.1:8081`, `Access-Control-Allow-Credentials: true`. No credentials, wallet, watchlist, alert, signing, submission, trade, or CopyTrade action was used.
+
+## MOBILE-QA acceptance and evidence
+
+| ID | Result | Evidence / affected files / exact NEXT_DEV_ACTION |
+| --- | --- | --- |
+| MOBILE-WEB-CORS-001 | PASS | Discover live provider request succeeds with the browser origin and credentials CORS headers above. WEB contract blocker is resolved in this runtime. |
+| MOBILE-FILTER-499 | PASS | Discover Trending returned 50 live rows. |
+| MOBILE-FILTER-500 | PASS | Discover Gainers returned 50 live rows. |
+| MOBILE-FILTER-501 | PASS | Discover Losers returned 28 live rows. |
+| MOBILE-FILTER-502 | PASS | Discover Volume returned 50 live rows. |
+| MOBILE-FILTER-503 | PASS | Discover New Pairs settled from loading to 50 live rows. |
+| MOBILE-FILTER-504 | PASS | Discover Hot Searches returned 10 live rows. |
+| MOBILE-FILTER-505 | PASS | Discover Surge returned provider-backed rows (20 observed after individual settle). |
+| MOBILE-FILTER-506 | PASS | Discover NextBC returned 60 live rows. |
+| MOBILE-FILTER-507 | PASS | Discover Pump Live returned 20 live rows. |
+| MOBILE-FILTER-508 | PASS | Discover Watchlist settled to its truthful empty personal state; no user watchlist was mutated. |
+| MOBILE-FILTER-509 | PASS | Discover 1h, 6h, and 24h controls each returned settled provider rows (50, 50, 50). |
+| MOBILE-FILTER-510 | PASS | Discover Pump.fun plus high liquidity/market-cap thresholds yielded a truthful filtered-empty state, not a network error. |
+| MOBILE-FILTER-511 | PASS | Trenches New, Almost bonded, and Migrated each returned 40 rendered launch rows; feed settled at 60/60 provider-backed launches. |
+| MOBILE-FILTER-512 | PASS | Trenches launchpad and market-cap, volume, age, and bonding fields constrained the result set (Pump.fun 11; $100k cap 10; $25k volume 23; 60m age 41; 70% bonding 38). The no-match search produced zero launch cards without an error. |
+| MOBILE-FILTER-513 | PASS | Monitor started at 50/50 CURRENT provider-backed records; 1h/6h/24h and Market/Liquidity/Flow controls remained populated and error-free. |
+| MOBILE-FILTER-514 | PASS | Monitor no-match search exposed the intentional empty message, `No provider-backed tokens match these saved filters`, while the independent signed-onchain feed stayed visible. |
+| MOBILE-FILTER-515 | FAIL P2 | Selecting Monitor observed DEX `Pump.fun` leaves the table at 50/50 and still renders a `letsbonk` row. Repro: `/monitor` → Filters → Observed DEX → Pump.fun. Affected: `src/components/MonitorTokenTable.tsx` and filter data plumbing. **NEXT_DEV_ACTION:** make the selected DEX predicate constrain the displayed token rows; add a regression containing mixed Pump.fun/letsbonk records and verify the reset path. |
+| MOBILE-FILTER-516 | PASS | Whales Wallets settled to ranked Whale/Smart Money cards; searching `BILLY` returned exactly its one matching wallet, with no error. |
+| MOBILE-A11Y-517 | FAIL P2 | Browser console reports invalid nested buttons/hydration errors for Discover TokenRow (`Open … details` contains `Add … to watchlist`) and Trenches TrenchCard (`Open … launch details` contains `Review … quote`). Affected: `src/components/TokenRow.tsx`, `app/(tabs)/trenches.tsx`. **NEXT_DEV_ACTION:** refactor each card into sibling, non-nested interactive controls; add web DOM/a11y regression that rejects nested buttons. |
+
+## Runtime notes and release recommendation
+
+- Commands/evidence: live browser navigation and semantic interaction only; direct CORS header check; page DOM state and browser console. No fabricated device, offline, or provider-fixture claim. No screenshots/logs containing provider payloads were retained.
+- Regression risk: `MOBILE-FILTER-515` can mislead a user into believing a DEX-scoped Monitor result is scoped; `MOBILE-A11Y-517` can cause web hydration and keyboard/screen-reader interaction failures.
+- **MOBILE-QA release recommendation: NO-GO** until both P2 failures are corrected and independently retested. CORS itself is PASS.
+
+## 20/20 reconciliation
+
+- Findings inspected/reconciled: 20 stable IDs (including two failures).
+- Material runtime outcomes available: 20; outcomes verified: 18 PASS, 2 FAIL. Remaining count to 20: 0. Carry-forward `MOBILE-QA-269`, `MOBILE-QA-270`, `MOBILE-FILTER-515`, `MOBILE-A11Y-517`.
+- `qa_scope_changed`: not observed; HEAD remained `61dfe68` and no concurrent product change was tested.
+
+---
+
 # MOBILE-QA validation handoff — MOBILE-183
 
 - Trigger: 2026-08-27T02:42:16.685Z. Inspected immutable result `cf192bb22596f4b4f1e555693171f7478d514f57` (`fix(mobile): localize cross-surface quantities`), base `7c85998`. Canonical scope, clean result, and no DEV lock: PASS. Archive `%LOCALAPPDATA%\\Temp\\mobile-qa-183-cf192bb` used; only this report is written under QA lock.

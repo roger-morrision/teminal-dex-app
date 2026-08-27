@@ -22,12 +22,14 @@ export const TokenRow = memo(function TokenRow({ token, onPress, watched, onTogg
   const price = tokenPrice(token.price);
   const marketCap = compactUsd(token.marketCap);
   const changeLabel = change == null ? t('tokenChangeUnavailable') : signedPercent(change);
-  return <Pressable accessibilityRole="button" accessibilityLabel={t('openTokenDetails', { symbol })} onPress={onPress} style={({ pressed }) => [styles.row, dense && styles.denseRow, pressed && styles.pressed]}>
-    <View style={styles.avatarWrap}><TokenAvatar symbol={symbol} identity={token.address} imageUrl={token.imageUrl} accessibilityLabel={t('tokenLogo', { symbol })} fallbackAccessibilityLabel={t('tokenLogoFallback', { symbol })} /><View style={styles.dexBadge}><DexLogo dex={token.dex} accessibilityLabel={dex ? t('dexLogo', { dex }) : t('unknownDexLogo')} /></View></View>
-    <View style={styles.identity}><View style={styles.titleLine}><Text numberOfLines={1} style={styles.symbol}>{symbol}</Text><Text style={styles.age}>{age}</Text></View><View style={styles.metaLine}><Text numberOfLines={1} style={styles.meta}>{holders} · {t('tokenVolumeShort', { volume: compactUsd(token.volume24h) })}</Text><SocialEvidence token={token} label={(networks) => t('tokenSocialEvidence', { networks })} /></View></View>
-    <View accessible accessibilityLabel={t('tokenMarketMetrics', { price, marketCap, period, change: changeLabel })} style={styles.metric}><Text style={styles.price}>{price}</Text><View style={styles.metricSecondLine}><Text style={styles.subMetric}>{t('tokenMarketCapShort', { marketCap })}</Text><View style={styles.inlineChange}>{change == null ? null : <Ionicons name={positive ? 'caret-up' : 'caret-down'} size={9} color={positive ? colors.positive : colors.negative} />}<Text style={[styles.inlineChangeText, { color: change == null ? colors.muted : positive ? colors.positive : colors.negative }]}>{change == null ? '—' : changeLabel}</Text></View></View></View>
+  return <View style={[styles.row, dense && styles.denseRow]}>
+    <Pressable accessibilityRole="button" accessibilityLabel={t('openTokenDetails', { symbol })} onPress={onPress} style={({ pressed }) => [styles.detailsAction, dense && styles.denseDetailsAction, pressed && styles.pressed]}>
+      <View style={styles.avatarWrap}><TokenAvatar symbol={symbol} identity={token.address} imageUrl={token.imageUrl} accessibilityLabel={t('tokenLogo', { symbol })} fallbackAccessibilityLabel={t('tokenLogoFallback', { symbol })} /><View style={styles.dexBadge}><DexLogo dex={token.dex} accessibilityLabel={dex ? t('dexLogo', { dex }) : t('unknownDexLogo')} /></View></View>
+      <View style={styles.identity}><View style={styles.titleLine}><Text numberOfLines={1} style={styles.symbol}>{symbol}</Text><Text style={styles.age}>{age}</Text></View><View style={styles.metaLine}><Text numberOfLines={1} style={styles.meta}>{holders} · {t('tokenVolumeShort', { volume: compactUsd(token.volume24h) })}</Text><SocialEvidence token={token} label={(networks) => t('tokenSocialEvidence', { networks })} /></View></View>
+      <View accessible accessibilityLabel={t('tokenMarketMetrics', { price, marketCap, period, change: changeLabel })} style={styles.metric}><Text style={styles.price}>{price}</Text><View style={styles.metricSecondLine}><Text style={styles.subMetric}>{t('tokenMarketCapShort', { marketCap })}</Text><View style={styles.inlineChange}>{change == null ? null : <Ionicons name={positive ? 'caret-up' : 'caret-down'} size={9} color={positive ? colors.positive : colors.negative} />}<Text style={[styles.inlineChangeText, { color: change == null ? colors.muted : positive ? colors.positive : colors.negative }]}>{change == null ? '—' : changeLabel}</Text></View></View></View>
+    </Pressable>
     {onToggleWatch ? <Pressable accessibilityRole="button" accessibilityLabel={t(watched ? 'removeTokenFromWatchlist' : 'addTokenToWatchlist', { symbol })} hitSlop={10} onPress={(event) => { event.stopPropagation(); onToggleWatch(); }}><Ionicons name={watched ? 'star' : 'star-outline'} size={18} color={watched ? colors.warning : colors.muted} /></Pressable> : null}
-  </Pressable>;
+  </View>;
 }, (previous, next) => previous.token === next.token && previous.watched === next.watched && previous.dense === next.dense && previous.period === next.period && Boolean(previous.onToggleWatch) === Boolean(next.onToggleWatch));
 
 export function displayTokenIdentity(token: MarketToken) {
@@ -68,8 +70,10 @@ function compactCount(value: number) {
 }
 
 const styles = StyleSheet.create({
-  row: { minHeight: 76, flexDirection: 'row', alignItems: 'center', gap: spacing.md, paddingHorizontal: spacing.lg, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
-  denseRow: { minHeight: 64, gap: spacing.sm, paddingHorizontal: spacing.md },
+  row: { minHeight: 76, flexDirection: 'row', alignItems: 'center', paddingRight: spacing.lg, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: colors.border },
+  denseRow: { minHeight: 64, paddingRight: spacing.md },
+  detailsAction: { flex: 1, minHeight: 76, flexDirection: 'row', alignItems: 'center', gap: spacing.md, paddingLeft: spacing.lg, paddingRight: spacing.md },
+  denseDetailsAction: { minHeight: 64, gap: spacing.sm, paddingLeft: spacing.md, paddingRight: spacing.sm },
   pressed: { backgroundColor: colors.surfaceRaised }, avatarWrap: { position: 'relative' },
   dexBadge: { position: 'absolute', right: -4, bottom: -4 },
   identity: { flex: 1, minWidth: 70 }, titleLine: { flexDirection: 'row', alignItems: 'center', gap: 6 }, symbol: { color: colors.text, fontSize: 15, fontWeight: '800', maxWidth: 76 }, age: { color: colors.muted, fontSize: 10 }, metaLine: { flexDirection: 'row', alignItems: 'center', gap: 5, marginTop: 4 }, meta: { flexShrink: 1, color: colors.muted, fontSize: 10 }, socials: { flexDirection: 'row', alignItems: 'center', gap: 3 },

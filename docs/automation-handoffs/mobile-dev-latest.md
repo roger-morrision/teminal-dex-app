@@ -1,5 +1,15 @@
 # MOBILE DEV → QA handoff
 
+## MOBILE-201 — EMFILE-free static browser acceptance runtime
+
+- Trigger/base: QA report `ac427d5` reproduced `EMFILE` in Metro cache during rendered Discover acceptance despite the two-worker limit; result: containing immutable DEV commit.
+- Stable outcomes: `MOBILE-RUNTIME-551` replaces Metro in the browser fixture lane with a fresh exact-commit Expo static export; `MOBILE-RUNTIME-552` serves that export through the existing bounded loopback server with browser-console capture; `MOBILE-OPS-553` records static-server/fixture ownership plus export provenance in temp-only state and removes the generated export on owned stop.
+- Exact lifecycle: `npm run qa:runtime:start -- --web-port 8105 --fixture-port 3103`; status and stop commands are unchanged. Start requires clean HEAD, exports Web to `%TEMP%\terminal-dex-mobile-qa-export-<commit>`, injects the fixture origin at build time, then starts only the static server and fixture. Metro is not started and no `.metro-cache` file is touched by browser navigation.
+- Safety: output/state/logs remain outside the repository; ports must be distinct/free; occupied/unowned processes are untouched; stop requires matching project ownership and removes only its bounded temp export.
+- Validation: TypeScript PASS; affected ESLint PASS; provenance/hydration 2 suites / 16 tests PASS; export-server 3/3 PASS. Exact static lifecycle/browser evidence follows after the immutable commit because clean-HEAD export is enforced.
+- NEXT_QA_ACTION: pin the containing commit, start with free ports, confirm `runtimeKind=static_export`, execute stale/scroll/footer/Retry/BONK browser matrix with console capture, then stop and verify ports plus temp export are removed.
+- NEXT_WEB_ACTION: none; WEB remains read-only.
+
 ## MOBILE-200 — Discover stale and scroll-retry evidence
 
 - Trigger/base: QA report `ca1d543` accepted persistent runtime/current/empty/offline recovery but found stale evidence indistinct and pagination unreachable with a one-row first page; result: containing immutable DEV commit.

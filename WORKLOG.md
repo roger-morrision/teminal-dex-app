@@ -1,5 +1,11 @@
 # Mobile Worklog
 
+## 2026-08-29 — MOBILE-201 static browser acceptance runtime
+
+- Replaced the persistent browser lane's Metro dev server with a fresh exact-commit Expo static export and the existing bounded export server, eliminating runtime Metro cache reads from browser acceptance.
+- Runtime ownership now records the static server, fixture, export directory, ports, and commit in temp-only state; explicit stop removes only those owned processes and generated output.
+- Native/device Metro remains separate and is not claimed resolved by this browser-only lane.
+
 ## 2026-08-29 — MOBILE-200 Discover stale/scroll fixture closure
 
 - Primary Discover now announces the backend `freshness.isStale` state with localized stale/degraded semantics.

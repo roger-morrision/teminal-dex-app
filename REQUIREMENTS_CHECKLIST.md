@@ -2,6 +2,13 @@
 
 Status legend: `[x]` verified, `[ ]` incomplete, `[~]` intentionally visible but backend-connected behavior incomplete.
 
+## MOBILE-201 static browser runtime
+
+- [x] Browser acceptance uses a fresh exact-commit static export instead of Metro cache reads.
+- [x] Fixture origin and build commit are injected only during the controlled export.
+- [x] Static server, fixture, state, logs, and generated output have explicit owned cleanup.
+- [ ] QA must independently complete the rendered stale/pagination/retry matrix.
+
 ## MOBILE-200 Discover recovery evidence
 
 - [x] Stale provider evidence is distinct and accessible on primary Discover.

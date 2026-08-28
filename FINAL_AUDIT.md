@@ -2,9 +2,15 @@
 
 Audit date: 2026-08-27
 
-Audit maintained through: MOBILE-200
+Audit maintained through: MOBILE-201
 
 Backend authority: `C:\Tuan\devApps\TERMINAL_DEX_Intelligent` (source of truth; isolated Slice 43–49 contracts added with explicit write approval)
+
+## MOBILE-201 browser runtime EMFILE isolation
+
+- The controlled browser lane no longer depends on a long-lived Metro process or runtime Metro cache files; it serves a fresh exact-commit static export.
+- Temp export ownership and deletion are explicit and bounded. Native/device Metro evidence remains a separate conditional lane.
+- No production configuration, generated repository output, provider state, wallet authority, or WEB file changed.
 
 ## MOBILE-200 Discover stale and pagination recovery
 

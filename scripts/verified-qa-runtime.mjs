@@ -47,7 +47,7 @@ function portListening(port) {
   });
 }
 
-async function waitForPorts(ports, timeoutMs = 45000) {
+async function waitForPorts(ports, timeoutMs = 120000) {
   const deadline = Date.now() + timeoutMs;
   while (Date.now() < deadline) {
     if ((await Promise.all(ports.map(portListening))).every(Boolean)) return true;
@@ -103,7 +103,7 @@ async function start() {
     metro.unref();
     const state = { schema: 1, root, commit, metroPort, fixturePort, metroPid: metro.pid, fixturePid: fixture.pid, startedAt: new Date().toISOString(), stdoutPath, stderrPath };
     writeFileSync(statePath, `${JSON.stringify(state, null, 2)}\n`, { encoding: 'utf8', mode: 0o600 });
-    if (!(await waitForPorts([fixturePort, metroPort]))) throw new Error('Verified QA runtime did not become reachable within 45 seconds.');
+    if (!(await waitForPorts([fixturePort, metroPort]))) throw new Error('Verified QA runtime did not become reachable within 120 seconds.');
     console.log(JSON.stringify({ started: true, ...state }));
   } catch (error) {
     if (metro && pidAlive(metro.pid)) process.kill(metro.pid, 'SIGTERM');

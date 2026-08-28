@@ -2,7 +2,7 @@
 
 ## 2026-08-29 — MOBILE-199 persistent verified fixture runtime
 
-- Added an exact-commit detached launcher for the QA fixture and Metro, with bounded port readiness, temp-only ownership/log state, status inspection, and exact owned shutdown.
+- Added an exact-commit detached launcher for the QA fixture and Metro, with 120-second bounded port readiness for the observed cold graph, temp-only ownership/log state, status inspection, and exact owned shutdown.
 - The launcher requires a clean tracked worktree, injects only the deterministic local fixture origin, and never kills an occupied or unowned port.
 - Automated provenance coverage is 13/13; QA must independently execute rendered recovery and stop verification.
 

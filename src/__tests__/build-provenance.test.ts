@@ -106,6 +106,7 @@ describe('verified development build provenance', () => {
     expect(persistentLauncher).toContain("EXPO_PUBLIC_API_URL: `http://127.0.0.1:${fixturePort}`");
     expect(persistentLauncher).toContain("state.root !== root");
     expect(persistentLauncher).toContain("process.kill(pid, 'SIGTERM')");
+    expect(persistentLauncher).toContain('timeoutMs = 120000');
     expect(persistentLauncher).not.toContain('taskkill');
   });
 

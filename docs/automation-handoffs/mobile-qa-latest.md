@@ -1437,3 +1437,48 @@ The initial sandboxed diagnostic could not open Expo's user native-module cache 
 - Findings inspected/reconciled: 20. DEV outcomes available and independently verified: **4/4 PASS** (`MOBILE-FIXTURE-540..542`, `MOBILE-SEC-543`). Exact shortfall to 20: 16; stable carry-forward includes `MOBILE-QA-269..272`, `MOBILE-QA-274..277`, `MOBILE-QA-280`, `MOBILE-QA-283..287`, plus fixture-driven UI rendering/retry evidence. Owners are MOBILE QA/runtime/device, authorized provider/identity operators, and upstream Noble maintainers.
 - **MOBILE-QA release recommendation: CONDITIONAL NO-GO.** The controlled provider contract is verified, but its actual rendered recovery matrix and physical/device/provider certification are still absent.
 - **NEXT_DEV_ACTION:** provide an operator-owned persistent verified web/device runtime that remains reachable after Metro starts, with the fixture URL injected, so QA can execute the current/empty/stale/offline/filter/paging/retry UI matrix.
+
+---
+
+# MOBILE-QA validation handoff — MOBILE-199 persistent runtime verification
+
+- Trigger: 2026-08-29. Scope PASS: canonical top-level `C:/Tuan/devApps/teminal-dex-app`, empty Git prefix, clean immutable candidate `cb992d9510efebc111966f2524f00e43629313cc` (`docs: record persistent mobile runtime proof`), runtime implementation `01ed18e`, and no MOBILE DEV writer lock. WEB was not accessed or changed.
+- Environment: Windows; bundled Node; in-app browser; QA-owned loopback ports `8103` (Metro) and `3101` (fixture). No physical Android/iOS target, live provider, credential, wallet, signing, submission, trade, or CopyTrade activation was used.
+
+## Acceptance results
+
+| ID / criterion | Result | Independent evidence |
+| --- | --- | --- |
+| `MOBILE-RUNTIME-544` persistent detached runtime | PASS | Exact `node scripts/verified-qa-runtime.mjs start --metro-port 8103 --fixture-port 3101` produced state rooted at this repository and commit, with Metro PID `18728` and fixture PID `20408`. After the launcher returned, `status` reported both alive; fixture routes rendered and `/monitor` returned HTTP 200 (52,287 bytes). |
+| `MOBILE-RUNTIME-545` cold-start readiness | PASS | The exact committed launcher reached a usable Metro web route within its declared 120-second bound; the first QA request to `/monitor` returned 200. No unrelated port or process was used. |
+| `MOBILE-SEC-546` owned-process boundary | PASS | State was bound to the canonical repository and exact commit. The launcher used temporary state/log paths and did not require a production provider, app-data, or repository configuration mutation. |
+| `MOBILE-OPS-547` explicit cleanup | PASS | `stop` reported only the recorded PIDs, then `status` returned `{"running":false}` and loopback listeners `8103`/`3101` were both absent. |
+| Current provider UI | PASS | `/discover` rendered the `mobile_qa_fixture` provenance label and interactive PUMP row with zero browser error logs. |
+| Empty provider UI | PASS | The controlled empty scenario rendered the truthful “No validated provider rows” recovery state and Retry control with zero browser error logs. |
+| Offline provider UI and retry | PASS | The controlled offline scenario rendered the `Market data unavailable` alert and Retry control; after restoring `current`, Retry recovered PUMP and removed the alert with zero browser error logs. |
+| Stale provider state | CONDITIONAL PASS | The stale fixture response was accepted without browser errors; the primary Discover row did not expose a distinct stale visual marker in this web viewport, so visual stale affordance remains a device/detail-page carry-forward rather than a claimed PASS. |
+| Page-failure/retry UI | BLOCKED | The fixture’s one-shot second-page failure/retry contract remains independently verified from MOBILE-198, but Discover uses scroll-driven `onEndReached`; this desktop viewport contained only one row and offered no accessible next-page trigger. No page-retry UI result is inferred. |
+| Provenance and Discover accessibility regressions | PASS | Focused `jest --runInBand build-provenance primary-a11y` passed 2 suites / 81 tests, including the source regression for explicit retained-row recovery after a next-page failure. |
+
+## Commands and evidence
+
+```text
+node scripts/verified-qa-runtime.mjs start --metro-port 8103 --fixture-port 3101  PASS
+node scripts/verified-qa-runtime.mjs status                                   PASS: exact root/commit, both PIDs alive
+GET http://127.0.0.1:8103/monitor                                             PASS: HTTP 200, 52,287 bytes
+Browser /discover current, empty, stale, offline, Retry                       PASS as classified above; no error logs
+node node_modules/jest/bin/jest.js --runInBand build-provenance primary-a11y  PASS: 2 suites / 81 tests
+node scripts/verified-qa-runtime.mjs stop                                     PASS: owned PIDs stopped
+node scripts/verified-qa-runtime.mjs status                                   PASS: {"running":false}
+Get-NetTCPConnection 8103,3101                                                PASS: both listeners absent
+```
+
+- The initial `GET /health` returned the fixture's expected route-unavailable JSON; it is not a health endpoint and was not treated as a fixture failure. The actual `/discover` fixture flow and Metro route were usable before cleanup.
+- Regression risk: P2. Desktop web recovery is now real-browser verified, but gesture/scroll pagination, large text, screen readers, lifecycle/storage, physical platform rendering, live Privy/provider authorization, and the upstream Noble condition remain unverified.
+
+## 20/20 reconciliation and release recommendation
+
+- Findings reconciled: 20. Material DEV outcomes available and independently verified: **4/4 PASS** (`MOBILE-RUNTIME-544..545`, `MOBILE-SEC-546`, `MOBILE-OPS-547`). Exact outcome shortfall to 20: **16**, with no padding.
+- Carry-forward in order: `MOBILE-QA-269..272`, `MOBILE-QA-274..277`, `MOBILE-QA-280`, `MOBILE-QA-283..287`, plus rendered scroll-pagination/retry. Owners: MOBILE QA/device, authorized provider/identity operators, and upstream Noble maintainers.
+- **MOBILE-QA release recommendation: CONDITIONAL NO-GO.** The persistent local runtime and current/empty/offline recovery are independently accepted, but release certification still lacks physical-device, assistive-tech/large-text, scroll-pagination, lifecycle/performance, and authorized live identity/provider evidence.
+- **NEXT_DEV_ACTION:** provide an operator-owned Android/iOS device lane with a controllable scrollable Discover fixture and authorized identity test configuration so QA can complete the remaining 16 acceptance cases.

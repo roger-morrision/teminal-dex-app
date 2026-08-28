@@ -5,6 +5,7 @@
 - Added an exact-commit detached launcher for the QA fixture and Metro, with 120-second bounded port readiness for the observed cold graph, temp-only ownership/log state, status inspection, and exact owned shutdown.
 - The launcher requires a clean tracked worktree, injects only the deterministic local fixture origin, and never kills an occupied or unowned port.
 - Automated provenance coverage is 13/13; QA must independently execute rendered recovery and stop verification.
+- Exact lifecycle proof on committed launcher `01ed18e`: detached fixture and Metro remained alive after launcher exit, both returned HTTP 200, status retained exact commit/PIDs/ports, and explicit stop closed both listeners and cleared state.
 
 ## 2026-08-29 — MOBILE-198 deterministic provider/recovery fixture
 

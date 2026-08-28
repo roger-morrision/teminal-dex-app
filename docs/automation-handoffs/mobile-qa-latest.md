@@ -1385,3 +1385,15 @@ The initial sandboxed diagnostic could not open Expo's user native-module cache 
 - Findings inspected/reconciled: 20. Material DEV outcomes available: 3; freshly verified outcomes: 1 FAIL (`MOBILE-QA-276`); prior independent automated outcomes retained: 3 PASS. Exact shortfall to 20: 16 carry-forward device/provider scenarios, `MOBILE-QA-269..275` and `MOBILE-QA-277..287`; their owners remain MOBILE QA/device and controlled provider/identity operators.
 - **MOBILE-QA release recommendation: NO-GO.** Expo Doctor fails on the current immutable release candidate.
 - **NEXT_DEV_ACTION:** update the Expo SDK patch family and lockfile together to Doctor-compatible versions, supply a new immutable DEV handoff, and rerun the exact Doctor command before any device/runtime certification.
+
+---
+
+# MOBILE-QA validation handoff — static-export availability regression
+
+- Trigger: 2026-08-28T14:40:18.548Z. Scope PASS: canonical root and empty Git prefix, immutable HEAD `4295805da3c2ac35da8c89d308968fa485b3ab39`, clean worktree, and no DEV writer lock. WEB was not accessed or changed.
+- FAIL P1 — `MOBILE-WEB-535`: the claimed static-export browser evidence cannot be independently reproduced from the current workspace. `dist/` contains only `metadata.json` plus assets and is ignored by Git; it contains no `index.html`, `whales.html`, or other web route HTML. QA started the committed loopback-only server against that exact directory: both `/` and `/whales` returned 404. The temporary server PID `30264` was stopped immediately after the check.
+- PASS (narrow): `serve-web-export.mjs` correctly rejects unavailable files rather than inventing route content; its independent fixture suite remains 2/2. This does not certify an actual current web bundle or page navigation.
+- BLOCKED: browser tab/page, navigation, Retry, Auth recovery, filters, offline/error, responsive/large-text, and accessibility acceptance cannot run without an immutable current web export. ADB remains unavailable; live Privy/provider flows are unauthorized and were not attempted.
+- Findings inspected/reconciled: 20. Material DEV outcomes available: 3. Freshly verified: 1 FAIL (`MOBILE-WEB-535`), 1 narrow server-safety PASS; exact shortfall to 20: 18, including `MOBILE-QA-269..280`, `MOBILE-QA-283..287`, plus static-bundle provenance. Owners: MOBILE DEV for reproducible export, then MOBILE QA/device and controlled provider/identity operators.
+- **MOBILE-QA release recommendation: NO-GO.** Current web static bundle availability and Expo Doctor both fail release gates.
+- **NEXT_DEV_ACTION:** produce and preserve a current exact-HEAD static web export containing route HTML, record the export command and artifact provenance in a new immutable DEV handoff, and align the Expo SDK patch family before QA re-runs browser/device acceptance.

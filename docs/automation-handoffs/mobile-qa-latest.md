@@ -1374,3 +1374,14 @@ The initial sandboxed diagnostic could not open Expo's user native-module cache 
 - Findings inspected/reconciled: 20. DEV outcomes available: 3. Outcomes independently verified: 3 PASS. Exact shortfall to 20: 17, stable IDs `MOBILE-QA-269..280`, `MOBILE-QA-283..287`; owners are MOBILE QA/device and controlled provider/identity operators. Regression risk is P2 for unexercised device and live-provider flows.
 - **MOBILE-QA release recommendation: CONDITIONAL NO-GO.** Automated/source/config acceptance passes, but release approval awaits fresh exact-export browser evidence and physical-device/provider/accessibility scenarios.
 - **NEXT_DEV_ACTION:** provide an operator-owned free runtime/device lane and authorized deterministic Privy/provider fixtures for the 17 carry-forward end-to-end cases.
+
+---
+
+# MOBILE-QA validation handoff — Expo patch-alignment regression
+
+- Trigger: 2026-08-28T12:40:16.544Z. Scope PASS: canonical top-level `C:/Tuan/devApps/teminal-dex-app`, empty Git prefix, immutable HEAD `da73f90f4c39d7a6487eb0e7f838377f317d96b0`, clean worktree, and no DEV writer lock. This is a fresh release-toolchain verification attempt; WEB remained unread and unmodified.
+- FAIL P1 — `MOBILE-QA-276` is reopened on the exact bundled-node command `node scripts/run-expo-doctor.mjs`: **20/21** checks passed and Expo Doctor rejects SDK patch alignment. Installed/locked values are `expo 57.0.17`, `expo-constants 57.0.15`, and `expo-font 57.0.1`; current Doctor expects `~57.0.18`, `~57.0.16`, and `~57.0.2`. This is a genuine release-gate failure even though the previous child `node`/`npm` ENOENT failures remain resolved.
+- PASS (carried, not re-counted as fresh): static export server 2/2 and focused recovery suites 4/84 from the immediately preceding immutable QA evidence. No exact device, provider, or browser result is inferred this trigger.
+- Findings inspected/reconciled: 20. Material DEV outcomes available: 3; freshly verified outcomes: 1 FAIL (`MOBILE-QA-276`); prior independent automated outcomes retained: 3 PASS. Exact shortfall to 20: 16 carry-forward device/provider scenarios, `MOBILE-QA-269..275` and `MOBILE-QA-277..287`; their owners remain MOBILE QA/device and controlled provider/identity operators.
+- **MOBILE-QA release recommendation: NO-GO.** Expo Doctor fails on the current immutable release candidate.
+- **NEXT_DEV_ACTION:** update the Expo SDK patch family and lockfile together to Doctor-compatible versions, supply a new immutable DEV handoff, and rerun the exact Doctor command before any device/runtime certification.

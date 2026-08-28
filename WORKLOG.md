@@ -1870,3 +1870,10 @@ Fresh post-`e0a6dc9` reconciliation records 20 findings. Sixteen locale-sensitiv
 - Validation: TypeScript PASS; full ESLint PASS; focused Privy tests 4/4 PASS; full Jest 85 suites/463 tests PASS; web export PASS; Android Hermes export PASS; Expo compatibility PASS; Doctor 21/21 PASS; npm production audit 0 high/critical (20 moderate).
 - NEXT_QA_ACTION: supply an authorized Privy App ID and mobile Client ID, register scheme `terminaldex`, then verify new/existing email OTP, Google signup/login, persisted restart, logout, cancellation, offline recovery, and unchanged wallet-verification gates on web and an exact Android development build.
 - NEXT_WEB_ACTION: confirm the existing Privy application enables email and Google and authorize the public App ID/mobile Client ID pair; no WEB code change is requested.
+
+## MOBILE runtime/toolchain revalidation — 2026-08-28T05:21:40.455Z
+
+- Canonical root and clean `7f8b6c4` result verified. TypeScript, full ESLint, Doctor 21/21, full Jest 88/476, public Expo config, and Expo dependency compatibility pass.
+- No dependency-ready source blocker was found. Metro still fails `/discover` and `/auth` with host-level `EMFILE`; `/whales` served HTTP 200 in the exact-HEAD attempt. ADB is unavailable, so device evidence remains blocked.
+- Findings reconciled: 20; completed material validation outcome: 1; exact shortfall: 19. No product/API/transaction/WEB change.
+- NEXT_QA_ACTION: rerun exact-build browser and device matrices after host file-handle remediation. NEXT_WEB_ACTION: none.

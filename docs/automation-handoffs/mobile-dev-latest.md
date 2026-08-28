@@ -517,3 +517,16 @@ Findings reconciled: 22. Outcomes completed: 22. Remaining to required 20: 0. Ex
 - Pin the containing commit and independently verify all 22 outcomes, especially expiry during preparation/confirmation and readiness retry overlap.
 - `MOBILE-QA-002`: repeat on responsive Android with TalkBack and enlarged text.
 - `MOBILE-QA-003`: clean immutable full-suite certification still awaits isolation/commit of concurrent whale/logo work.
+
+---
+
+## MOBILE runtime evidence — 2026-08-28T05:21:40.455Z
+
+- Scope: canonical MOBILE root verified; base/result `7f8b6c460dfbe5817ab81cef59f2baf6e9b245c4`; clean worktree before evidence collection. WEB remained read-only.
+- BA/PO reconciliation: 20 current findings reviewed. No dependency-ready product-code blocker remains. Nineteen physical-device, controlled network/provider, lifecycle/performance, or upstream Noble findings remain externally owned; `MOBILE-DEV-EMFILE-528` remains the host/runtime blocker.
+- Completed outcome: current immutable source/toolchain health independently reconfirmed. TypeScript PASS; full source ESLint PASS; Doctor 21/21 PASS; full Jest PASS (88 suites/476 tests); public Expo config PASS; Expo dependency compatibility PASS.
+- Runtime evidence carried from the immediately preceding exact-HEAD attempt: `/whales` returned HTTP 200, while `/discover` and `/auth` returned HTTP 500 with Metro `EMFILE` opening the user temp `metro-cache`. The owned Metro process was stopped cleanly. No MOBILE source change is justified by this host-level failure.
+- Exact shortfall: 19 to the 20-outcome target; no padding. ADB is unavailable in this shell, so no Android/device result is inferred.
+- Changed files: MOBILE evidence documents only. No environment file, credential, cache, generated output, provider data, wallet action, signing, submission, trade, or WEB mutation.
+- NEXT_QA_ACTION: after host file-handle remediation, start this exact commit on a free port and validate Discover, Whales, Auth/Privy, all tabs/filters/actions, EN/VI, loading/empty/offline/retry/partial recovery, then physical accessibility/layout/performance.
+- NEXT_WEB_ACTION: none; current failure occurs inside Metro before page delivery and does not request an API/schema change.

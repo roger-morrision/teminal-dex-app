@@ -194,6 +194,13 @@ No in-scope automated regression was found. Generated export directories were re
 - **NEXT_QA_ACTION:** verify all 20 stable IDs on the committed checkout, including TalkBack group traversal, malformed filter entry, pagination retry state, and Discover/Monitor/Trenches navigation on API 37.
 - **NEXT_WEB_ACTION:** none.
 
+## MOBILE runtime/toolchain audit — 2026-08-28T05:21:40.455Z
+
+- Immutable source/toolchain gates at `7f8b6c4`: TypeScript PASS, full ESLint PASS, Doctor 21/21 PASS, Jest 88 suites/476 tests PASS, public Expo config PASS, dependency compatibility PASS.
+- Release remains CONDITIONAL NO-GO: exact web runtime is blocked by Metro `EMFILE` on Discover/Auth, ADB is unavailable, and physical accessibility/layout/recovery/performance plus upstream Noble evidence remain incomplete.
+- No dependency-ready code defect was identified; no transaction safety boundary or WEB contract changed.
+- NEXT_QA_ACTION: repeat the complete exact-build runtime/device matrix after host remediation. NEXT_WEB_ACTION: none.
+
 ## MOBILE Privy identity integration
 
 - **Outcome:** platform-specific official Privy providers now wrap the MOBILE application; `/auth` supports native email OTP and Google login/signup, web delegates to Privy's configured email/Google/wallet modal, and More reports configured/authenticated state.

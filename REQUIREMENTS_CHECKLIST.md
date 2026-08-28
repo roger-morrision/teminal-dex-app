@@ -160,3 +160,5 @@ Status legend: `[x]` verified, `[ ]` incomplete, `[~]` intentionally visible but
 - [x] MOBILE-DEV-533: a clean static Expo web export can be served through the loopback-only extensionless-route harness when interactive Metro is blocked by Windows `EMFILE`; Whales, Discover, Trenches, More, and Auth were exercised from the exact export.
 - [x] MOBILE-AUTH-534: malformed public Privy App IDs are rejected before either official SDK mounts, so an invalid local value produces the explicit setup-required screen instead of a blank application.
 - [x] MOBILE-WEB-535: responsive Whales and price-chart dimensions use a deterministic server/first-client snapshot and switch to live viewport dimensions after hydration.
+- [x] MOBILE-TOOLCHAIN-536: Expo SDK 57 runtime, constants, and font packages are aligned to the Doctor-required patch line and protected by a focused version assertion.
+- [x] MOBILE-EXPORT-537: a fresh isolated web export contains all 26 route HTML artifacts and serves `/`, `/whales`, `/discover`, and `/auth` with HTTP 200 through the loopback export harness.

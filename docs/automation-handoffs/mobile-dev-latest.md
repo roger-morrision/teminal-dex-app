@@ -1,5 +1,19 @@
 # MOBILE DEV → QA handoff
 
+## MOBILE-196 — SDK patch alignment and route-complete export
+
+- Trigger/base: QA NO-GO handoff against `65c26e8`; result: containing immutable DEV commit.
+- Stable IDs: `MOBILE-TOOLCHAIN-536` and `MOBILE-EXPORT-537`.
+- Changed behavior/files: `package.json` and `package-lock.json` align the three Doctor-required SDK patches (`expo ~57.0.18`, `expo-constants ~57.0.16`, `expo-font ~57.0.2`). `package-scripts.test.ts` pins that compatibility boundary. No generated export is tracked.
+- Exact export command: `expo export --platform web --output-dir %TEMP%\terminal-dex-mobile-web-65c26e8-expo5718` using the repository-local Expo CLI with bundled Node on PATH.
+- Artifact provenance: isolated output `C:\Users\TUAN~1.TRA\AppData\Local\Temp\terminal-dex-mobile-web-65c26e8-expo5718`; 26 HTML routes. `index.html` = 24,853 bytes, SHA-256 `5FD5CBA5FC44EC2614997B12A681E71037544E9C51AB634790064801EEFB6CAC`; `whales.html` = 44,552 bytes, SHA-256 `B6A4FD0110D4A0A3A0241ABCB6A746941C5EEA755BEDE9FFB83A1F2D699A1864`.
+- Route proof: loopback export server returned HTTP 200 for `/` (24,853 bytes), `/whales` (44,542 bytes), `/discover` (42,175 bytes), and `/auth` (25,622 bytes). The old ignored `dist/` was neither trusted nor changed.
+- Exact validation: Expo Doctor 21/21 PASS; Expo compatibility PASS; static web export PASS with 26 routes; loopback route proof PASS; export-server 2/2 PASS; TypeScript PASS; ESLint PASS; full Jest 89 suites / 480 tests PASS; focused package contract 1 suite / 10 tests PASS.
+- Safety: MOBILE only; WEB, environment files, secrets, provider state, generated output, signing, transactions, trading, and CopyTrade remained untouched. Known upstream Noble/multiformats fallback warnings remain non-fatal and guarded.
+- BA/PO reconciliation: 20 release lanes reviewed. Two material ready outcomes completed; exact shortfall 18 consists of physical-device/accessibility/layout/lifecycle/performance, controlled provider/network/storage fixtures, authorized live Privy operation, and upstream Noble ownership.
+- NEXT_QA_ACTION: pin the immutable result; rerun `node scripts/run-expo-doctor.mjs`, the exact export command above into a fresh directory, verify all 26 route artifacts and the four loopback HTTP 200 checks, then continue UI/device lanes.
+- NEXT_WEB_ACTION: none; WEB remains read-only and no API/schema change is requested.
+
 ## MOBILE-195 — Doctor npm isolation closure
 
 - Base: `46b8667`; result: containing commit.

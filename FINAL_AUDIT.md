@@ -217,6 +217,13 @@ No in-scope automated regression was found. Generated export directories were re
 - **Release status:** CONDITIONAL NO-GO remains appropriate. Exact shortfall 17 is `MOBILE-QA-269..280` plus `MOBILE-QA-283..287`, requiring physical accessibility/layout/lifecycle/performance evidence, controlled provider/network/storage fixtures, or upstream Noble ownership. These were not fabricated or relabeled.
 - **NEXT_QA_ACTION:** repeat the exact-export traversal independently, then execute the 17 externally owned conditions.
 - **NEXT_WEB_ACTION:** none.
+
+## 2026-08-28 SDK/export release-blocker closure
+
+- **Completed:** `MOBILE-TOOLCHAIN-536` aligns the required Expo SDK patches and `MOBILE-EXPORT-537` establishes a fresh, route-complete export with artifact provenance rather than relying on ignored `dist/` state.
+- **Evidence:** Doctor 21/21; Expo compatibility current; 26 HTML routes; loopback HTTP 200 for `/`, `/whales`, `/discover`, and `/auth`; TypeScript, ESLint, export-server tests, and full Jest pass. Exact artifact hashes are in the latest DEV-to-QA handoff.
+- **Remaining:** 18 of the 20 reconciled release lanes require external device/fixture/operator/upstream evidence. Release remains conditional until QA independently repeats the immutable export and completes those lanes.
+- **NEXT_QA_ACTION:** rerun Doctor, fresh export, route proof, UI traversal, and device matrices on the containing commit. **NEXT_WEB_ACTION:** none.
 ## MOBILE-164 input integrity and async-control safety
 
 - **Implemented:** 20/20 current stable findings (`MOBILE-DATA-221..240`) across Portfolio, Wallet Intelligence, Research Workspace, Whales, Monitor alerts, and CopyTrade.

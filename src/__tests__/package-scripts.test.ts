@@ -12,6 +12,12 @@ const qualityScriptExecutables = {
 } as const;
 
 describe('package quality scripts', () => {
+  it('keeps Expo SDK 57 packages on the Doctor-approved patch line', () => {
+    expect(packageJson.dependencies.expo).toBe('~57.0.18');
+    expect(packageJson.dependencies['expo-constants']).toBe('~57.0.16');
+    expect(packageJson.dependencies['expo-font']).toBe('~57.0.2');
+  });
+
   it.each(Object.entries(qualityScriptExecutables))(
     '%s resolves through a declared local executable',
     (scriptName, expected) => {

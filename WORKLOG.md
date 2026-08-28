@@ -1888,3 +1888,11 @@ Fresh post-`e0a6dc9` reconciliation records 20 findings. Sixteen locale-sensitiv
 - Validation: focused 5 suites / 86 tests PASS; full 89 suites / 479 tests PASS; TypeScript PASS; ESLint PASS; export-server 2/2 PASS; Expo compatibility PASS; Expo Doctor 21/21 PASS; web static export PASS (26 routes). Known upstream Noble/multiformats fallback warnings remain guarded and non-fatal.
 - NEXT_QA_ACTION: independently repeat the exported Whales/Discover/Trenches/More/Auth traversal, then execute `MOBILE-QA-269..280` and `MOBILE-QA-283..287` with physical devices and controlled fixtures.
 - NEXT_WEB_ACTION: none. Authorized public Privy identifiers and current provider data remain runtime/operator inputs; no MOBILE-to-WEB schema change is requested.
+# 2026-08-28 — QA Doctor/export release-blocker closure
+
+- Base `65c26e8`; MOBILE-only writer lock acquired. QA's 20/21 Doctor and route-empty ignored `dist/` evidence were independently reproduced as dependency/artifact-provenance risks.
+- Completed `MOBILE-TOOLCHAIN-536`: aligned `expo` to `~57.0.18`, `expo-constants` to `~57.0.16`, and `expo-font` to `~57.0.2`; added a focused version contract.
+- Completed `MOBILE-EXPORT-537`: fresh isolated export completed with 26 HTML routes. Loopback proof returned HTTP 200 for `/`, `/whales`, `/discover`, and `/auth`; artifact sizes and SHA-256 hashes are recorded at the top of `mobile-dev-latest.md`.
+- Validation: Doctor 21/21 PASS; Expo compatibility PASS; web export PASS; route proof PASS; export-server 2/2 PASS; TypeScript PASS; ESLint PASS; full Jest 89/480 PASS; focused package contract 10/10 PASS.
+- Reconciliation: 20 release lanes reviewed; 2 material outcomes completed; exact shortfall 18 remains externally owned device/accessibility/layout/lifecycle/performance, controlled-fixture, authorized-Privy, or upstream Noble work.
+- NEXT_QA_ACTION: rerun the immutable Doctor/export/route matrix and then device/UI lanes. NEXT_WEB_ACTION: none.

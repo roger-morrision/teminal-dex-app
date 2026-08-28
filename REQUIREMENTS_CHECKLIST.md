@@ -157,3 +157,6 @@ Status legend: `[x]` verified, `[ ]` incomplete, `[~]` intentionally visible but
 - [x] MOBILE-AUTH-520: Privy authentication remains separate from verified Solana ownership and does not grant signing, trading, CopyTrade activation, or transaction submission authority.
 - [x] MOBILE-SEC-521: patched axios/ws transitive overrides remove high/critical npm production advisories; remaining findings are moderate.
 - [x] MOBILE-BUNDLE-522: platform-specific Privy modules bundle successfully for Expo web and Android; native jose resolves to its WebCrypto implementation instead of Node zlib.
+- [x] MOBILE-DEV-533: a clean static Expo web export can be served through the loopback-only extensionless-route harness when interactive Metro is blocked by Windows `EMFILE`; Whales, Discover, Trenches, More, and Auth were exercised from the exact export.
+- [x] MOBILE-AUTH-534: malformed public Privy App IDs are rejected before either official SDK mounts, so an invalid local value produces the explicit setup-required screen instead of a blank application.
+- [x] MOBILE-WEB-535: responsive Whales and price-chart dimensions use a deterministic server/first-client snapshot and switch to live viewport dimensions after hydration.

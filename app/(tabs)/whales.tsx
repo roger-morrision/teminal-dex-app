@@ -2,7 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
-import { Pressable, RefreshControl, ScrollView, StyleSheet, Text, TextInput, View, useWindowDimensions } from "react-native";
+import { Pressable, RefreshControl, ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { fetchTopTraders, fetchTrackFeed } from "@/api/client";
 import type { TopTrader, TrackNotification } from "@/api/schema";
@@ -13,6 +13,7 @@ import { defaultWhaleWatchPreferences, loadWhaleWatchPreferences, saveWhaleWatch
 import { colors, spacing } from "@/theme";
 import { TokenAvatar } from "@/components/TokenAvatar";
 import { DexLogo } from "@/components/DexLogo";
+import { useHydratedWindowDimensions } from "@/lib/use-hydrated-window-dimensions";
 
 type Mode = WhaleWatchMode;
 const modes: Mode[] = ["live", "accumulating", "distributing", "wallets", "alerts"];
@@ -20,7 +21,7 @@ const modes: Mode[] = ["live", "accumulating", "distributing", "wallets", "alert
 export default function WhalesScreen() {
   const { t } = useSettings();
   const router = useRouter();
-  const { width, fontScale } = useWindowDimensions();
+  const { width, fontScale } = useHydratedWindowDimensions();
   const narrow = width < 380;
   const largeText = fontScale >= 1.5;
   const [mode, setMode] = useState<Mode>(defaultWhaleWatchPreferences.mode);

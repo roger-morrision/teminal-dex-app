@@ -209,6 +209,14 @@ No in-scope automated regression was found. Generated export directories were re
 - **Runtime boundary:** live provider authentication cannot be truthfully exercised until the authorized Privy operator supplies the App ID/mobile Client ID and registers `terminaldex`; the unconfigured UI exposes this exact prerequisite rather than simulating success.
 - **NEXT_QA_ACTION:** validate the complete login/signup/session/logout/recovery matrix against an authorized exact build without treating authentication as wallet verification.
 - **NEXT_WEB_ACTION:** enable/confirm email and Google in the existing Privy app and provide the public identifiers; WEB remains read-only.
+
+## 2026-08-28 static-web blocking closure
+
+- **Completed:** `MOBILE-DEV-533`, `MOBILE-AUTH-534`, and `MOBILE-WEB-535`. A clean 26-route export is browser-testable through the loopback-only harness; malformed Privy App IDs produce a setup-required state instead of a fatal blank screen; responsive Whales/chart layouts hydrate from a deterministic initial snapshot.
+- **Evidence:** Whales, Discover, Trenches, More, and Auth were exercised from the exact export. Focused tests are 86/86, full Jest is 479/479, TypeScript and ESLint pass, export-server tests are 2/2, Expo compatibility is current, Doctor is 21/21, and static web export completes.
+- **Release status:** CONDITIONAL NO-GO remains appropriate. Exact shortfall 17 is `MOBILE-QA-269..280` plus `MOBILE-QA-283..287`, requiring physical accessibility/layout/lifecycle/performance evidence, controlled provider/network/storage fixtures, or upstream Noble ownership. These were not fabricated or relabeled.
+- **NEXT_QA_ACTION:** repeat the exact-export traversal independently, then execute the 17 externally owned conditions.
+- **NEXT_WEB_ACTION:** none.
 ## MOBILE-164 input integrity and async-control safety
 
 - **Implemented:** 20/20 current stable findings (`MOBILE-DATA-221..240`) across Portfolio, Wallet Intelligence, Research Workspace, Whales, Monitor alerts, and CopyTrade.

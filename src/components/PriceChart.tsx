@@ -1,8 +1,9 @@
 import { useMemo } from 'react';
-import { StyleSheet, Text, View, useWindowDimensions } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import Svg, { Defs, LinearGradient, Path, Stop } from 'react-native-svg';
 import type { OhlcvResponse } from '@/api/schema';
 import { colors } from '@/theme';
+import { useHydratedWindowDimensions } from '@/lib/use-hydrated-window-dimensions';
 
 type Candle = OhlcvResponse['candles'][number];
 
@@ -42,7 +43,7 @@ export function downsampleCandles(candles: Candle[], maxPoints = 240): Candle[] 
 }
 
 export function PriceChart({ data, compact = false }: { data: OhlcvResponse; compact?: boolean }) {
-  const { width } = useWindowDimensions();
+  const { width } = useHydratedWindowDimensions();
   const chartWidth = Math.max(240, width - (compact ? 64 : 32)); const height = compact ? 150 : 190;
   const candles = useMemo(() => downsampleCandles(data.candles), [data.candles]);
   if (candles.length < 2) return <View style={styles.empty}><Text style={styles.emptyText}>Not enough verified candles for this timeframe.</Text></View>;

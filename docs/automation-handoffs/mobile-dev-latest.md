@@ -530,3 +530,14 @@ Findings reconciled: 22. Outcomes completed: 22. Remaining to required 20: 0. Ex
 - Changed files: MOBILE evidence documents only. No environment file, credential, cache, generated output, provider data, wallet action, signing, submission, trade, or WEB mutation.
 - NEXT_QA_ACTION: after host file-handle remediation, start this exact commit on a free port and validate Discover, Whales, Auth/Privy, all tabs/filters/actions, EN/VI, loading/empty/offline/retry/partial recovery, then physical accessibility/layout/performance.
 - NEXT_WEB_ACTION: none; current failure occurs inside Metro before page delivery and does not request an API/schema change.
+
+## 2026-08-28 — MOBILE static-export recovery
+
+- Scope: MOBILE only. Trigger base `4199333`; result baseline included concurrent `8c0096b`. WEB was not edited.
+- BA/PO findings: 20 current items reconciled. Selected/completed: `MOBILE-DEV-533`, `MOBILE-AUTH-534`, `MOBILE-WEB-535`. Exact shortfall: 17 (`MOBILE-QA-269..280`, `MOBILE-QA-283..287`) with physical-device/controlled-fixture/upstream owners.
+- Behavior: the exact static export is route-correct on loopback; malformed Privy App IDs fail closed before SDK mount; Whales/chart responsiveness no longer changes the server/first-client dimension snapshot.
+- Browser evidence: exact export at port 8097 rendered Whales, Discover, Trenches, More, and Auth. Whales controls and Retry operated; Discover navigation rendered; Auth showed the setup-required alert instead of a blank screen.
+- Validation: focused 86/86 PASS; full Jest 89 suites / 479 tests PASS; TypeScript PASS; ESLint PASS; export-server 2/2 PASS; Expo compatibility PASS; Doctor 21/21 PASS; web export PASS with 26 routes. Upstream Noble/multiformats fallback warnings remain non-fatal and guarded.
+- Risks: no authorized live Privy login was attempted; no transaction/signing/trading capability was enabled; device and controlled-provider acceptance evidence remains outstanding.
+- NEXT_QA_ACTION: independently traverse the exact export, then run the 17 physical-device and controlled-fixture conditions.
+- NEXT_WEB_ACTION: none; current contracts are sufficient.

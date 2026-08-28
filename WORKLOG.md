@@ -1877,3 +1877,14 @@ Fresh post-`e0a6dc9` reconciliation records 20 findings. Sixteen locale-sensitiv
 - No dependency-ready source blocker was found. Metro still fails `/discover` and `/auth` with host-level `EMFILE`; `/whales` served HTTP 200 in the exact-HEAD attempt. ADB is unavailable, so device evidence remains blocked.
 - Findings reconciled: 20; completed material validation outcome: 1; exact shortfall: 19. No product/API/transaction/WEB change.
 - NEXT_QA_ACTION: rerun exact-build browser and device matrices after host file-handle remediation. NEXT_WEB_ACTION: none.
+# 2026-08-28 — Static web recovery and fail-closed auth
+
+- Scope: MOBILE only. Base `4199333`; concurrent baseline advanced to `8c0096b` before this slice. WEB remained read-only.
+- BA/PO: reconciled the remaining acceptance queue. Three dependency-ready material outcomes were completed (`MOBILE-DEV-533`, `MOBILE-AUTH-534`, `MOBILE-WEB-535`); exact shortfall 17 is the externally owned `MOBILE-QA-269..280` and `MOBILE-QA-283..287` physical-device, controlled-fixture, performance, and upstream Noble matrix.
+- `MOBILE-DEV-533`: produced a clean 26-route static web export and served it with the committed loopback-only export harness, bypassing the host Metro `EMFILE` failure without changing production routing.
+- `MOBILE-AUTH-534`: invalid/placeholder Privy App IDs now fail closed before SDK initialization. The browser renders the localized setup prerequisite rather than throwing the Privy invalid-App-ID fatal error.
+- `MOBILE-WEB-535`: Whales and `PriceChart` now share hydration-safe dimensions, retaining post-hydration responsiveness without server/client initial-layout drift.
+- Browser evidence on `http://127.0.0.1:8097`: Whales rendered its complete tabs/filters/retry state; Discover navigation rendered and no nested-button warning appeared in the DOM; Auth rendered the explicit setup-required alert and was nonblank.
+- Validation: focused 5 suites / 86 tests PASS; full 89 suites / 479 tests PASS; TypeScript PASS; ESLint PASS; export-server 2/2 PASS; Expo compatibility PASS; Expo Doctor 21/21 PASS; web static export PASS (26 routes). Known upstream Noble/multiformats fallback warnings remain guarded and non-fatal.
+- NEXT_QA_ACTION: independently repeat the exported Whales/Discover/Trenches/More/Auth traversal, then execute `MOBILE-QA-269..280` and `MOBILE-QA-283..287` with physical devices and controlled fixtures.
+- NEXT_WEB_ACTION: none. Authorized public Privy identifiers and current provider data remain runtime/operator inputs; no MOBILE-to-WEB schema change is requested.

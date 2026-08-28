@@ -7,6 +7,7 @@ import { cleanEmail, PrivyIdentityContext, publicAuthError, type PrivyIdentitySt
 
 const appId = String(Constants.expoConfig?.extra?.privyAppId ?? '').trim();
 const clientId = String(Constants.expoConfig?.extra?.privyClientId ?? '').trim();
+const configured = appId.length === 25 && Boolean(clientId);
 
 function Unconfigured({ children }: { children: ReactNode }) {
   const value = useMemo<PrivyIdentityState>(() => ({ configured: false, ready: true, authenticated: false, busy: false, userLabel: null, error: null, supportsEmailOtp: true, sendEmailCode: async () => false, verifyEmailCode: async () => false, loginWithGoogle: async () => false, openLogin: () => undefined, logout: async () => undefined }), []);
@@ -38,7 +39,7 @@ function NativeIdentity({ children }: { children: ReactNode }) {
 }
 
 export function TerminalPrivyProvider({ children }: { children: ReactNode }) {
-  if (!appId || !clientId) return <Unconfigured>{children}</Unconfigured>;
+  if (!configured) return <Unconfigured>{children}</Unconfigured>;
   return <PrivyProvider appId={appId} clientId={clientId}><NativeIdentity>{children}</NativeIdentity></PrivyProvider>;
 }
 

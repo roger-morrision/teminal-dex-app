@@ -16,5 +16,9 @@ describe('Privy platform bundle boundary', () => {
     expect(nativeProvider).not.toContain("from '@privy-io/react-auth'");
     expect(webProvider).toContain("from '@privy-io/react-auth'");
     expect(webProvider).not.toContain("from '@privy-io/expo'");
+    expect(webProvider).toContain('appId.length === 25');
+    expect(webProvider).toContain('if (!configured)');
+    expect(nativeProvider).toContain('appId.length === 25');
+    expect(nativeProvider).toContain('if (!configured)');
   });
 });

@@ -5,6 +5,7 @@ import { PrivyIdentityContext, publicAuthError, type PrivyIdentityState } from '
 
 const appId = String(Constants.expoConfig?.extra?.privyAppId ?? '').trim();
 const clientId = String(Constants.expoConfig?.extra?.privyClientId ?? '').trim();
+const configured = appId.length === 25;
 
 function Identity({ children }: { children: ReactNode }) {
   const { ready, authenticated, user, login, logout } = usePrivy();
@@ -18,7 +19,7 @@ function Unconfigured({ children }: { children: ReactNode }) {
 }
 
 export function TerminalPrivyProvider({ children }: { children: ReactNode }) {
-  if (!appId) return <Unconfigured>{children}</Unconfigured>;
+  if (!configured) return <Unconfigured>{children}</Unconfigured>;
   return <PrivyProvider appId={appId} clientId={clientId || undefined} config={{ loginMethods: ['email', 'google', 'wallet'], appearance: { theme: 'dark', accentColor: '#4cf5ae', showWalletLoginFirst: false }, embeddedWallets: { ethereum: { createOnLogin: 'off' }, solana: { createOnLogin: 'off' } } }}><Identity>{children}</Identity></PrivyProvider>;
 }
 

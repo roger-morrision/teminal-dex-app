@@ -96,10 +96,16 @@ describe('verified development build provenance', () => {
   });
 
   it('maps coordinated WEB App ID and MOBILE Client ID aliases', () => {
-    expect(loadPrivyConfig({ NEXT_PUBLIC_PRIVY_APP_ID: 'app-public', PRIVY_CLIENT_ID_MOBILE: 'client-mobile' })).toMatchObject({ privyAppId: 'app-public', privyClientId: 'client-mobile' });
+    const appId = 'a'.repeat(25);
+    expect(loadPrivyConfig({ NEXT_PUBLIC_PRIVY_APP_ID: appId, PRIVY_CLIENT_ID_MOBILE: 'client-mobile' })).toMatchObject({ privyAppId: appId, privyClientId: 'client-mobile' });
   });
 
   it('refuses secret-shaped Privy values from public Expo config', () => {
-    expect(loadPrivyConfig({ EXPO_PUBLIC_PRIVY_APP_ID: 'app-public', EXPO_PUBLIC_PRIVY_CLIENT_ID: 'privy_app_secret_never_public' })).toMatchObject({ privyAppId: 'app-public', privyClientId: null });
+    const appId = 'a'.repeat(25);
+    expect(loadPrivyConfig({ EXPO_PUBLIC_PRIVY_APP_ID: appId, EXPO_PUBLIC_PRIVY_CLIENT_ID: 'privy_app_secret_never_public' })).toMatchObject({ privyAppId: appId, privyClientId: null });
+  });
+
+  it('fails closed before either Privy SDK receives a malformed public App ID', () => {
+    expect(loadPrivyConfig({ EXPO_PUBLIC_PRIVY_APP_ID: 'placeholder-app-id', EXPO_PUBLIC_PRIVY_CLIENT_ID: 'client-mobile' })).toMatchObject({ privyAppId: null, privyClientId: 'client-mobile' });
   });
 });

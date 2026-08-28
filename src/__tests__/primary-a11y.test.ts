@@ -31,7 +31,7 @@ describe('audited-screen accessibility contract', () => {
     expect(source).not.toContain('allowFontScaling={false}');
     expect(source).not.toContain('maxFontSizeMultiplier');
     expect(source).toContain('horizontal showsHorizontalScrollIndicator={false} accessibilityRole="tablist"');
-    expect(source).toContain('useWindowDimensions');
+    expect(source).toContain('useHydratedWindowDimensions');
     expect(source).toContain('fontScale >= 1.5');
     expect(source).toContain('largeText && { alignItems: "flex-start" }');
     expect(source).toContain('largeText && { minWidth: 0 }');

@@ -2,6 +2,13 @@
 
 Status legend: `[x]` verified, `[ ]` incomplete, `[~]` intentionally visible but backend-connected behavior incomplete.
 
+## MOBILE-199 persistent verified runtime
+
+- [x] Detached fixture/Metro processes retain immutable HEAD provenance after the launching shell exits.
+- [x] Runtime state and logs are temp-only, ports are bounded and must be available, and shutdown requires matching project ownership.
+- [x] Explicit start/status/stop commands exist; no unknown process or occupied port is terminated.
+- [ ] QA must complete rendered scenario and device evidence on the persistent runtime.
+
 ## MOBILE-198 controlled QA evidence
 
 - [x] QA-only provider fixture is opt-in and never selected by production code.

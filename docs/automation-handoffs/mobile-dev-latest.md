@@ -1,5 +1,16 @@
 # MOBILE DEV → QA handoff
 
+## MOBILE-199 — persistent verified fixture runtime
+
+- Trigger/base: QA report `4d5dfbe` accepted the deterministic provider boundary but could not keep Metro reachable after its launching command ended; result: containing immutable DEV commit.
+- Stable outcomes: `MOBILE-RUNTIME-544` starts Metro and the MOBILE QA fixture as detached exact-commit processes; `MOBILE-RUNTIME-545` waits up to 45 seconds for both bounded ports; `MOBILE-SEC-546` records ownership/state only in the OS temp directory and refuses unowned shutdown; `MOBILE-OPS-547` provides explicit status and stop commands.
+- Exact commands: `npm run qa:runtime:start -- --metro-port 8101 --fixture-port 3099`; `npm run qa:runtime:status`; `npm run qa:runtime:stop`. Start requires a clean tracked worktree, injects `MOBILE_BUILD_COMMIT=<HEAD>` and `EXPO_PUBLIC_API_URL=http://127.0.0.1:3099`, limits Metro to two workers, and never terminates occupied ports.
+- Persistence/evidence: state and stdout/stderr live under `%TEMP%` as `terminal-dex-mobile-verified-runtime*`; no log, cache, build output, environment file, or provider payload is written to the repository. The operator must run stop after QA.
+- Validation: TypeScript PASS; affected ESLint PASS; build-provenance 13/13 PASS; inactive status reports `{running:false}`. Exact detached startup evidence follows after the immutable commit is created because the launcher correctly rejects a dirty tracked worktree.
+- Findings reconciled: 17 carried release lanes. This closes the runtime-lifetime prerequisite for controlled browser evidence but does not itself claim rendered, device, accessibility, storage, Privy, performance, or upstream-Noble acceptance.
+- NEXT_QA_ACTION: pin the containing commit, start the persistent runtime, confirm both PIDs/ports remain alive after the command exits, exercise fixture scenarios in the rendered UI, then run the explicit stop command and verify both listeners close.
+- NEXT_WEB_ACTION: none; WEB remains read-only.
+
 ## MOBILE-198 — deterministic provider and recovery lane
 
 - Trigger/base: QA report `0397573` accepted hydration commit `bdb613c`; result: containing immutable DEV commit. WEB remained read-only.

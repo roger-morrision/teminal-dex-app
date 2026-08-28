@@ -2,9 +2,15 @@
 
 Audit date: 2026-08-27
 
-Audit maintained through: MOBILE-198
+Audit maintained through: MOBILE-199
 
 Backend authority: `C:\Tuan\devApps\TERMINAL_DEX_Intelligent` (source of truth; isolated Slice 43–49 contracts added with explicit write approval)
+
+## MOBILE-199 persistent runtime ownership
+
+- The exact-commit QA runtime can outlive its launcher while remaining bounded by recorded temp-only PIDs, distinct available ports, and a repository-identity stop check.
+- It neither mutates production configuration nor terminates unowned processes. Operators must use the explicit stop command after acceptance testing.
+- Release remains conditional until QA completes rendered and physical-device evidence.
 
 ## MOBILE-198 controlled provider/recovery evidence
 

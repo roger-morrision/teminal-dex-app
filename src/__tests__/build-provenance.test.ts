@@ -6,6 +6,10 @@ const launcher = fs.readFileSync(
   path.join(projectRoot, 'scripts/start-verified.mjs'),
   'utf8',
 );
+const persistentLauncher = fs.readFileSync(
+  path.join(projectRoot, 'scripts/verified-qa-runtime.mjs'),
+  'utf8',
+);
 const rootLayout = fs.readFileSync(path.join(projectRoot, 'app/_layout.tsx'), 'utf8');
 
 function loadConfig(commit?: string) {
@@ -93,6 +97,16 @@ describe('verified development build provenance', () => {
   it('emits a bounded device-log marker at app mount', () => {
     expect(rootLayout).toContain('[MOBILE_BUILD] commit=');
     expect(rootLayout).toContain("commit : 'unverified'");
+  });
+
+  it('keeps a persistent QA runtime owned, bounded, and outside the repository', () => {
+    expect(persistentLauncher).toContain("join(tmpdir(), 'terminal-dex-mobile-verified-runtime.json')");
+    expect(persistentLauncher).toContain("git('status', '--porcelain', '--untracked-files=no')");
+    expect(persistentLauncher).toContain("MOBILE_BUILD_COMMIT: commit");
+    expect(persistentLauncher).toContain("EXPO_PUBLIC_API_URL: `http://127.0.0.1:${fixturePort}`");
+    expect(persistentLauncher).toContain("state.root !== root");
+    expect(persistentLauncher).toContain("process.kill(pid, 'SIGTERM')");
+    expect(persistentLauncher).not.toContain('taskkill');
   });
 
   it('maps coordinated WEB App ID and MOBILE Client ID aliases', () => {

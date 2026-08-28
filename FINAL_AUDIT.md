@@ -2,9 +2,15 @@
 
 Audit date: 2026-08-27
 
-Audit maintained through: MOBILE-195
+Audit maintained through: MOBILE-198
 
 Backend authority: `C:\Tuan\devApps\TERMINAL_DEX_Intelligent` (source of truth; isolated Slice 43–49 contracts added with explicit write approval)
+
+## MOBILE-198 controlled provider/recovery evidence
+
+- Added reversible QA infrastructure for deterministic current/empty/stale/offline and cursor-retry behavior without changing the production client contract.
+- Security boundary: explicit operator startup and API override are required; fixture provenance is visible; no secrets, persistence, wallet authority, signing, submission, trading, or WEB mutation exists.
+- Release remains conditional pending independent exact-build execution plus physical accessibility/layout/lifecycle/storage/performance, authorized Privy, and upstream Noble evidence.
 
 ## Outcome
 

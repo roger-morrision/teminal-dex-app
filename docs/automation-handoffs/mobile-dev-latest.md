@@ -1,5 +1,17 @@
 # MOBILE DEV → QA handoff
 
+## MOBILE-198 — deterministic provider and recovery lane
+
+- Trigger/base: QA report `0397573` accepted hydration commit `bdb613c`; result: containing immutable DEV commit. WEB remained read-only.
+- Stable outcomes: `MOBILE-FIXTURE-540` adds a QA-only schema-compatible trending provider; `MOBILE-FIXTURE-541` supplies current/stale/empty/offline states; `MOBILE-FIXTURE-542` supplies a one-shot second-page failure with exact-cursor retry; `MOBILE-SEC-543` bounds control to five declared states behind an explicit header and exposes no secret/provider payload.
+- Production boundary: the app API client, schemas, production configuration, and production data paths are unchanged. The fixture runs only when an operator explicitly starts `npm run qa:provider-fixture` and points a development build at it. It binds port 3099 by default, returns `mobile_qa_fixture` / `deterministic_test_fixture` provenance, stores nothing, signs nothing, and cannot trade.
+- Exact runtime: terminal 1 `npm run qa:provider-fixture`; web terminal 2 set `EXPO_PUBLIC_API_URL=http://127.0.0.1:3099` then run `npm run dev:verified -- --web`; Android emulator uses `EXPO_PUBLIC_API_URL=http://10.0.2.2:3099`. Change state with POST `/__mobile_qa_fixture__/state?scenario=current|empty|stale|offline|page-failure-once` and header `x-mobile-fixture-control: qa-local`.
+- Acceptance mapping: current→empty/stale/offline→current supports recovery evidence for `MOBILE-QA-273`/`287`; `page-failure-once` makes `MOBILE-QA-279` deterministic; current mixed-DEX pages make `MOBILE-QA-278` reset/filter behavior deterministic. Physical storage fault injection (`MOBILE-QA-275`) remains unavailable because no production runtime hook was introduced.
+- Validation: fixture server 3/3 PASS; TypeScript PASS; `eslint app src scripts` PASS; full Jest 89 suites / 481 tests PASS; Expo Doctor 21/21 PASS. No export was required because runtime application code, packages, and bundler configuration are unchanged.
+- Findings reconciled: 17 carried lanes. Four now have an operator-controlled runtime prerequisite; 13 remain physical-device/accessibility/layout/lifecycle/storage/performance, authorized Privy, or upstream Noble lanes. No acceptance result is inferred until QA runs the exact build.
+- NEXT_QA_ACTION: pin the containing commit, run the fixture plus exact development build, execute current/empty/stale/offline recovery and one-shot cursor retry, then record build marker, route, locale, scenario, and console/device evidence.
+- NEXT_WEB_ACTION: none. This fixture is MOBILE-owned QA infrastructure and requests no API/provider mutation.
+
 ## MOBILE-197 — browser hydration and console gate
 
 - Trigger/base: QA NO-GO `829cdb2` against immutable `fed4403`; result: containing immutable DEV commit. WEB remained read-only.

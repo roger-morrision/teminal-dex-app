@@ -2,6 +2,13 @@
 
 Status legend: `[x]` verified, `[ ]` incomplete, `[~]` intentionally visible but backend-connected behavior incomplete.
 
+## MOBILE-198 controlled QA evidence
+
+- [x] QA-only provider fixture is opt-in and never selected by production code.
+- [x] Current, empty, stale, offline, mixed-DEX, pagination, and retry states are deterministic.
+- [x] Fixture control is bounded and contains no credentials or real provider payloads.
+- [ ] QA must execute the exact-build runtime/device matrix before closing `MOBILE-QA-273`, `278`, `279`, or `287`.
+
 ## Fourteen-phase delivery ledger (MOBILE-523..527)
 
 - [x] Repository-local Expo Doctor prepends the actual `process.execPath` directory and supplies a temporary, fail-closed npm compatibility command limited to version reporting and lockfile-backed dependency explanation, eliminating isolated Windows `spawn node/npm ENOENT`; the exact non-escalated QA-style lane passes 21/21 checks.

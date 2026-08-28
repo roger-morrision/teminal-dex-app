@@ -12,6 +12,8 @@
     "web": "expo start --web",
     "serve:web-export": "node scripts/serve-web-export.mjs",
     "test:export-server": "node --test scripts/serve-web-export.test.mjs",
+    "qa:provider-fixture": "node scripts/qa-provider-fixture.mjs",
+    "test:provider-fixture": "node --test scripts/qa-provider-fixture.test.mjs",
     "typecheck": "tsc --noEmit",
     "lint": "eslint app src",
     "diagnostics:expo": "expo install --check",

@@ -1,5 +1,11 @@
 # Mobile Worklog
 
+## 2026-08-29 — MOBILE-198 deterministic provider/recovery fixture
+
+- Added an explicitly started, QA-only local trending provider with truthful fixture provenance and current, empty, stale, offline, and one-shot cursor-failure states.
+- Added bounded control and 3/3 regression coverage. Production API/schema/config paths are unchanged; no generated or production mock data is shipped.
+- `MOBILE-QA-273`, `278`, `279`, and `287` now have deterministic runtime prerequisites for QA execution. Physical device, accessibility, storage-fault, performance, live Privy, and upstream Noble evidence remain conditional.
+
 ## 2026-08-27 — MOBILE-195 Doctor npm isolation closure
 
 - Consumed fresh independent QA evidence showing MOBILE-194 resolved child `node` discovery but the archive shell still failed four Doctor checks at `spawn npm ENOENT`.

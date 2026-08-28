@@ -10,6 +10,8 @@
     "dev:verified": "node scripts/start-verified.mjs",
     "ios": "expo start --ios",
     "web": "expo start --web",
+    "serve:web-export": "node scripts/serve-web-export.mjs",
+    "test:export-server": "node --test scripts/serve-web-export.test.mjs",
     "typecheck": "tsc --noEmit",
     "lint": "eslint app src",
     "diagnostics:expo": "expo install --check",

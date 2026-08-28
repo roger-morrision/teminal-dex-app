@@ -1896,3 +1896,12 @@ Fresh post-`e0a6dc9` reconciliation records 20 findings. Sixteen locale-sensitiv
 - Validation: Doctor 21/21 PASS; Expo compatibility PASS; web export PASS; route proof PASS; export-server 2/2 PASS; TypeScript PASS; ESLint PASS; full Jest 89/480 PASS; focused package contract 10/10 PASS.
 - Reconciliation: 20 release lanes reviewed; 2 material outcomes completed; exact shortfall 18 remains externally owned device/accessibility/layout/lifecycle/performance, controlled-fixture, authorized-Privy, or upstream Noble work.
 - NEXT_QA_ACTION: rerun the immutable Doctor/export/route matrix and then device/UI lanes. NEXT_WEB_ACTION: none.
+# 2026-08-29 — React #418 static hydration closure
+
+- Base `829cdb2`; MOBILE writer lock acquired; WEB untouched. QA's React #418 was reproduced through a new opt-in browser-console capture gate.
+- `MOBILE-WEB-538`: deterministic root safe-area metrics removed the Auth mismatch; deferring the client-dependent tab navigator until after hydration removed Whales/Discover mismatches while preserving rendered interactive DOM after mount.
+- `MOBILE-QA-539`: loopback console capture reports console/window/unhandled-rejection failures, resets per route, remains bounded and opt-in, and keeps normal mutation rejection intact.
+- Fresh isolated export: 26 HTML routes. Real browser results for `/whales`, `/discover`, and `/auth`: expected interactive DOM, zero captured errors each, final report `[]`.
+- Validation: TypeScript PASS; ESLint PASS; hydration 3/3; export-server 3/3; full Jest 89/481; Doctor 21/21; web export PASS. Known Noble/multiformats warnings remain conditional/non-fatal.
+- Reconciliation: hydration failure closed; exact shortfall 17 remains `MOBILE-QA-269..280` and `MOBILE-QA-283..287` with external device/fixture/operator/upstream owners.
+- NEXT_QA_ACTION: independently repeat console-clean export/browser traversal and physical-device lanes. NEXT_WEB_ACTION: none.

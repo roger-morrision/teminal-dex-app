@@ -1,5 +1,19 @@
 # MOBILE DEV → QA handoff
 
+## MOBILE-197 — browser hydration and console gate
+
+- Trigger/base: QA NO-GO `829cdb2` against immutable `fed4403`; result: containing immutable DEV commit. WEB remained read-only.
+- Stable outcome: `MOBILE-WEB-538` resolves `MOBILE-QA-288`. Regression control: `MOBILE-QA-539` adds an opt-in loopback browser-console capture gate; it is not enabled in normal serving or production output.
+- Root cause/fix: the root safe-area provider had no deterministic server/client initial metrics, and the browser-dependent Expo tab navigator rendered during static hydration. Root layout now uses fixed initial safe-area metrics; the tab navigator renders a matching inert shell for the server/first client snapshot and mounts immediately after hydration. Native provider updates and post-hydration responsive dimensions remain active.
+- Browser-console gate: `serve-web-export.mjs --capture-console` injects a diagnostic-only pre-bundle reporter, captures `console.error`, `window.error`, and unhandled rejections at a bounded loopback endpoint, and supports explicit reset between routes. Normal mode retains GET/HEAD-only semantics. Unit coverage is 3/3.
+- Exact export command: `expo export --platform web --output-dir %TEMP%\terminal-dex-mobile-web-hydration-fix2` with bundled Node on PATH. Output contains 26 HTML routes; generated output is untracked.
+- Artifact provenance: `index.html` 24,853 bytes / SHA-256 `E1477F6DEF6EE78EC60AB846783F0E23ADD616DA9807D55C347AD87B453278AB`; `whales.html` and `discover.html` 27,391 bytes / SHA-256 `6B383F1B4054252DA2FBBE873BBA8ACA81B6510B6BB804356E7C4F6017FB9B89`; `auth.html` 25,623 bytes / SHA-256 `F83FA01D2E4E71BB9E0E6C60E0AABF6855DECDE9F51B5C9F0A6A787EA4BB1ECA`.
+- Exact browser evidence: real in-app browser loaded `/whales`, `/discover`, and `/auth` independently with capture reset between routes. Each route rendered its expected interactive DOM and returned `errors: []`; the final diagnostic endpoint returned `[]`. Before the fix, the same gate reproduced React #418 on Whales and Discover and proved Auth was resolved by deterministic safe-area metrics.
+- Validation: TypeScript PASS; `eslint app src scripts` PASS; focused hydration 3/3 PASS; export-server 3/3 PASS; full Jest 89 suites / 481 tests PASS; Expo Doctor 21/21 PASS; fresh 26-route web export PASS. Known Noble/multiformats fallback warnings remain non-fatal and guarded.
+- Findings reconciled: 20 release lanes. The hydration failure is closed; exact shortfall 17 remains `MOBILE-QA-269..280` plus `MOBILE-QA-283..287`, owned by physical-device/accessibility/layout/lifecycle/performance QA, controlled provider/network/storage fixtures, authorized live Privy operation, or upstream Noble maintainers.
+- NEXT_QA_ACTION: pin the containing commit; rebuild a fresh export; run the capture-console server and require empty arrays after `/whales`, `/discover`, and `/auth`; then repeat route UI and device matrices.
+- NEXT_WEB_ACTION: none; no API/schema/provider change is requested.
+
 ## MOBILE-196 — SDK patch alignment and route-complete export
 
 - Trigger/base: QA NO-GO handoff against `65c26e8`; result: containing immutable DEV commit.

@@ -17,4 +17,12 @@ describe('static web hydration boundary', () => {
     expect(whales).not.toContain('useWindowDimensions } from "react-native"');
     expect(chart).not.toContain("useWindowDimensions } from 'react-native'");
   });
+
+  it('defers the client-dependent tab navigator until after the static hydration snapshot', () => {
+    const tabs = fs.readFileSync(path.join(process.cwd(), 'app', '(tabs)', '_layout.tsx'), 'utf8');
+    const root = fs.readFileSync(path.join(process.cwd(), 'app', '_layout.tsx'), 'utf8');
+    expect(tabs).toContain('const hydrated = useIsHydrated()');
+    expect(tabs).toContain('if (!hydrated) return <View');
+    expect(root).toContain('initialMetrics={staticSafeAreaMetrics}');
+  });
 });

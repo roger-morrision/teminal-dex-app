@@ -224,6 +224,13 @@ No in-scope automated regression was found. Generated export directories were re
 - **Evidence:** Doctor 21/21; Expo compatibility current; 26 HTML routes; loopback HTTP 200 for `/`, `/whales`, `/discover`, and `/auth`; TypeScript, ESLint, export-server tests, and full Jest pass. Exact artifact hashes are in the latest DEV-to-QA handoff.
 - **Remaining:** 18 of the 20 reconciled release lanes require external device/fixture/operator/upstream evidence. Release remains conditional until QA independently repeats the immutable export and completes those lanes.
 - **NEXT_QA_ACTION:** rerun Doctor, fresh export, route proof, UI traversal, and device matrices on the containing commit. **NEXT_WEB_ACTION:** none.
+
+## 2026-08-29 browser hydration closure
+
+- **Completed:** `MOBILE-WEB-538` resolves QA's reproducible React #418 on Whales, Discover, and Auth through deterministic safe-area initialization and a post-hydration tab-navigator boundary. `MOBILE-QA-539` provides an opt-in browser-console regression gate.
+- **Evidence:** fresh 26-route export; real-browser interactive DOM on all three target routes; zero console/window/unhandled-rejection reports per route; TypeScript, ESLint, 89/481 Jest, Doctor 21/21, and export-server 3/3 pass.
+- **Release status:** the web hydration blocker is closed. Conditional NO-GO remains only for the 17 physical-device, controlled-fixture, authorized-provider/identity, performance, and upstream Noble lanes.
+- **NEXT_QA_ACTION:** independently repeat the console-clean route matrix on the immutable commit, then continue device lanes. **NEXT_WEB_ACTION:** none.
 ## MOBILE-164 input integrity and async-control safety
 
 - **Implemented:** 20/20 current stable findings (`MOBILE-DATA-221..240`) across Portfolio, Wallet Intelligence, Research Workspace, Whales, Monitor alerts, and CopyTrade.

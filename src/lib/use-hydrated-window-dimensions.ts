@@ -12,13 +12,17 @@ export function hydrationSafeDimensions(dimensions: ScaledSize, hydrated: boolea
   return hydrated ? dimensions : STATIC_WEB_DIMENSIONS;
 }
 
-/** Keeps static HTML and the first browser render identical, then becomes responsive. */
-export function useHydratedWindowDimensions() {
-  const dimensions = useWindowDimensions();
-  const hydrated = useSyncExternalStore(
+export function useIsHydrated() {
+  return useSyncExternalStore(
     () => () => undefined,
     () => true,
     () => false,
   );
+}
+
+/** Keeps static HTML and the first browser render identical, then becomes responsive. */
+export function useHydratedWindowDimensions() {
+  const dimensions = useWindowDimensions();
+  const hydrated = useIsHydrated();
   return hydrationSafeDimensions(dimensions, hydrated);
 }

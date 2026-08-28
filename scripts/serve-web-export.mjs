@@ -1,5 +1,5 @@
 import { createReadStream } from 'node:fs';
-import { stat } from 'node:fs/promises';
+import { readFile, stat } from 'node:fs/promises';
 import { createServer } from 'node:http';
 import path from 'node:path';
 import process from 'node:process';
@@ -54,9 +54,48 @@ export function contentTypeFor(filePath) {
   return MIME_TYPES.get(path.extname(filePath).toLowerCase()) ?? 'application/octet-stream';
 }
 
-export function createExportServer(root) {
+const CONSOLE_PATH = '/__mobile_browser_console__';
+const CONSOLE_CAPTURE = `<script>(function(){var send=function(level,args){try{fetch('${CONSOLE_PATH}',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({level:level,args:Array.prototype.map.call(args,function(value){try{return typeof value==='string'?value:JSON.stringify(value)}catch(_){return String(value)}})})})}catch(_){}};var original=console.error;console.error=function(){send('error',arguments);return original.apply(console,arguments)};window.addEventListener('error',function(event){send('window-error',[event.message])});window.addEventListener('unhandledrejection',function(event){send('unhandled-rejection',[String(event.reason)])})})();</script>`;
+
+export function injectConsoleCapture(html) {
+  return html.includes('</head>') ? html.replace('</head>', `${CONSOLE_CAPTURE}</head>`) : `${CONSOLE_CAPTURE}${html}`;
+}
+
+export function createExportServer(root, { captureConsole = false } = {}) {
   const canonicalRoot = path.resolve(root);
+  const browserConsole = [];
   return createServer(async (request, response) => {
+    const pathname = safeRequestPath(request.url);
+    if (captureConsole && pathname === CONSOLE_PATH) {
+      if (request.method === 'GET') {
+        response.writeHead(200, { 'Cache-Control': 'no-store', 'Content-Type': 'application/json; charset=utf-8' });
+        response.end(JSON.stringify(browserConsole));
+        return;
+      }
+      if (request.method === 'DELETE') {
+        browserConsole.length = 0;
+        response.writeHead(204);
+        response.end();
+        return;
+      }
+      if (request.method === 'POST') {
+        let body = '';
+        for await (const chunk of request) {
+          body += chunk;
+          if (body.length > 65_536) break;
+        }
+        try {
+          const entry = JSON.parse(body);
+          browserConsole.push({ level: String(entry.level ?? 'error').slice(0, 64), args: Array.isArray(entry.args) ? entry.args.map((value) => String(value).slice(0, 2_000)).slice(0, 20) : [] });
+        } catch {
+          browserConsole.push({ level: 'capture-error', args: ['Malformed browser console report'] });
+        }
+        if (browserConsole.length > 200) browserConsole.splice(0, browserConsole.length - 200);
+        response.writeHead(204);
+        response.end();
+        return;
+      }
+    }
     if (request.method !== 'GET' && request.method !== 'HEAD') {
       response.writeHead(405, { Allow: 'GET, HEAD' });
       response.end('Method not allowed');
@@ -74,6 +113,7 @@ export function createExportServer(root) {
       'X-Content-Type-Options': 'nosniff',
     });
     if (request.method === 'HEAD') response.end();
+    else if (captureConsole && path.extname(filePath).toLowerCase() === '.html') response.end(injectConsoleCapture(await readFile(filePath, 'utf8')));
     else createReadStream(filePath).pipe(response);
   });
 }
@@ -97,7 +137,7 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
     console.error(`Static export directory is unavailable: ${root}`);
     process.exit(1);
   }
-  createExportServer(root).listen(parsedPort, '127.0.0.1', () => {
+  createExportServer(root, { captureConsole: process.argv.includes('--capture-console') }).listen(parsedPort, '127.0.0.1', () => {
     console.log(`Serving MOBILE static export from ${root} at http://127.0.0.1:${parsedPort}`);
   });
 }

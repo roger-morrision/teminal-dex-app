@@ -162,3 +162,5 @@ Status legend: `[x]` verified, `[ ]` incomplete, `[~]` intentionally visible but
 - [x] MOBILE-WEB-535: responsive Whales and price-chart dimensions use a deterministic server/first-client snapshot and switch to live viewport dimensions after hydration.
 - [x] MOBILE-TOOLCHAIN-536: Expo SDK 57 runtime, constants, and font packages are aligned to the Doctor-required patch line and protected by a focused version assertion.
 - [x] MOBILE-EXPORT-537: a fresh isolated web export contains all 26 route HTML artifacts and serves `/`, `/whales`, `/discover`, and `/auth` with HTTP 200 through the loopback export harness.
+- [x] MOBILE-WEB-538: static web hydration uses deterministic safe-area metrics and defers the browser-dependent tab navigator until after the matching server/first-client snapshot; Whales, Discover, and Auth hydrate without React #418.
+- [x] MOBILE-QA-539: the loopback export harness has an explicit opt-in, bounded browser-console capture/reset endpoint that detects hydration errors without changing normal server or production behavior.

@@ -1,5 +1,11 @@
 # Mobile Worklog
 
+## 2026-08-29 — MOBILE-200 Discover stale/scroll fixture closure
+
+- Primary Discover now announces the backend `freshness.isStale` state with localized stale/degraded semantics.
+- The QA fixture first page now contains 24 unique mixed-DEX rows, allowing real scroll-triggered pagination while retaining the controlled one-shot cursor failure and exact retry page.
+- Production APIs and provider data remain unchanged.
+
 ## 2026-08-29 — MOBILE-199 persistent verified fixture runtime
 
 - Added an exact-commit detached launcher for the QA fixture and Metro, with 120-second bounded port readiness for the observed cold graph, temp-only ownership/log state, status inspection, and exact owned shutdown.

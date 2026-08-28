@@ -31,6 +31,18 @@ function token(address, symbol, dex, liquidity, observedAt) {
   };
 }
 
+function firstPageTokens(observedAt) {
+  return Array.from({ length: 24 }, (_, index) =>
+    token(
+      index === 0 ? '11111111111111111111111111111111' : `fixture-address-${String(index + 1).padStart(2, '0')}`,
+      index === 0 ? 'PUMP' : `QA${String(index + 1).padStart(2, '0')}`,
+      index % 2 === 0 ? 'Pump.fun' : 'letsbonk',
+      900000 - index * 10000,
+      observedAt,
+    ),
+  );
+}
+
 function json(response, status, body, origin) {
   const payload = JSON.stringify(body);
   response.writeHead(status, {
@@ -76,7 +88,7 @@ export function createQaProviderFixture() {
       ? []
       : cursor === '1'
         ? [token('11111111111111111111111111111112', 'BONK', 'letsbonk', 500000, now)]
-        : [token('11111111111111111111111111111111', 'PUMP', 'Pump.fun', 900000, now)];
+        : firstPageTokens(now);
     const hasMore = scenario !== 'empty' && !cursor;
     return json(response, 200, {
       tokens,
@@ -84,7 +96,7 @@ export function createQaProviderFixture() {
       dataQuality: 'deterministic_test_fixture',
       fetchedAt: now,
       recordCount: tokens.length,
-      totalCount: scenario === 'empty' ? 0 : 2,
+      totalCount: scenario === 'empty' ? 0 : 25,
       pagination: { hasMore, nextCursor: hasMore ? '1' : null },
       freshness: { isStale: scenario === 'stale', ageMs: scenario === 'stale' ? 100000000000 : 0 },
     }, origin);

@@ -25,6 +25,8 @@ test('serves schema-compatible deterministic current, stale, and empty pages', a
   let body = await response.json();
   assert.equal(response.status, 200);
   assert.equal(body.tokens[0].symbol, 'PUMP');
+  assert.equal(body.tokens.length, 24);
+  assert.equal(new Set(body.tokens.map((token) => token.address)).size, 24);
   assert.deepEqual(body.pagination, { hasMore: true, nextCursor: '1' });
   await select(origin, 'stale');
   body = await (await fetch(`${origin}/api/trending`)).json();

@@ -447,6 +447,11 @@ export default function DiscoverScreen() {
                   : (firstPage?.source ?? t("marketFeed"))}
               </Text>
             </View>
+            {!searching && firstPage?.freshness?.isStale ? (
+              <Text accessibilityRole="alert" accessibilityLiveRegion="polite" style={styles.staleEvidence}>
+                {t("staleDegraded")}
+              </Text>
+            ) : null}
             {mode === "watchlist" && watchStorageError ? (
               <Text accessibilityRole="alert" style={styles.watchWarning}>
                 {t("watchlistStorageUnavailable")}
@@ -890,6 +895,7 @@ const styles = StyleSheet.create({
   watchEvidenceText: { color: colors.muted, fontSize: 9 },
   watchWarning: { color: colors.warning, fontSize: 9 },
   source: { color: colors.muted, fontSize: 9, flex: 1, textAlign: "right" },
+  staleEvidence: { color: colors.warning, fontSize: 11, fontWeight: "800", marginHorizontal: spacing.md, marginBottom: spacing.xs },
   state: {
     flex: 1,
     minHeight: 300,

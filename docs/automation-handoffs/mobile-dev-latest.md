@@ -1,5 +1,15 @@
 # MOBILE DEV → QA handoff
 
+## MOBILE-200 — Discover stale and scroll-retry evidence
+
+- Trigger/base: QA report `ca1d543` accepted persistent runtime/current/empty/offline recovery but found stale evidence indistinct and pagination unreachable with a one-row first page; result: containing immutable DEV commit.
+- Stable outcomes: `MOBILE-DATA-548` exposes stale provider evidence as an accessible live alert on primary Discover; `MOBILE-FIXTURE-549` makes the deterministic first page 24 unique mixed-DEX rows so real viewport scrolling can trigger `onEndReached`; `MOBILE-QA-550` preserves a 25th second-page row and one-shot cursor=1 503→200 retry.
+- Production boundary: only truthful rendering of the existing `freshness.isStale` contract changed. The larger dataset exists exclusively in the opt-in MOBILE QA fixture and retains explicit fixture provenance.
+- Acceptance: stale scenario displays localized `STALE / DEGRADED`; page-failure-once renders 24 initial rows, scroll triggers cursor `1`, existing rows remain visible after controlled 503, Retry requests the same cursor, and BONK appears after 200 recovery.
+- Validation: fixture 3/3 PASS including 24 unique first-page addresses; primary accessibility 68/68 PASS; TypeScript PASS; affected ESLint PASS. Full regression and Doctor follow in containing-commit evidence.
+- NEXT_QA_ACTION: pin the containing commit, start the persistent runtime, select stale and require the primary alert, then select page-failure-once, scroll Discover to the footer, verify retained rows/error/Retry, press Retry, and require BONK with no console errors.
+- NEXT_WEB_ACTION: none; WEB remains read-only.
+
 ## MOBILE-199 — persistent verified fixture runtime
 
 - Trigger/base: QA report `4d5dfbe` accepted the deterministic provider boundary but could not keep Metro reachable after its launching command ended; result: containing immutable DEV commit.

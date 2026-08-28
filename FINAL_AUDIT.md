@@ -2,9 +2,15 @@
 
 Audit date: 2026-08-27
 
-Audit maintained through: MOBILE-199
+Audit maintained through: MOBILE-200
 
 Backend authority: `C:\Tuan\devApps\TERMINAL_DEX_Intelligent` (source of truth; isolated Slice 43–49 contracts added with explicit write approval)
+
+## MOBILE-200 Discover stale and pagination recovery
+
+- Discover now surfaces stale backend evidence rather than relying on per-row timestamps alone.
+- The opt-in fixture is viewport-scrollable and preserves exact cursor/error/retry behavior; no production mock data or backend capability was added.
+- Release remains conditional pending QA runtime acceptance and external physical/live-provider lanes.
 
 ## MOBILE-199 persistent runtime ownership
 

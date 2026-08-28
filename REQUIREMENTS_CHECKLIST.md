@@ -2,6 +2,13 @@
 
 Status legend: `[x]` verified, `[ ]` incomplete, `[~]` intentionally visible but backend-connected behavior incomplete.
 
+## MOBILE-200 Discover recovery evidence
+
+- [x] Stale provider evidence is distinct and accessible on primary Discover.
+- [x] Controlled first-page data is long enough for real scroll-triggered pagination.
+- [x] One-shot cursor failure retains existing rows and supports exact retry.
+- [ ] QA must independently complete the rendered scroll/error/retry flow.
+
 ## MOBILE-199 persistent verified runtime
 
 - [x] Detached fixture/Metro processes retain immutable HEAD provenance after the launching shell exits.

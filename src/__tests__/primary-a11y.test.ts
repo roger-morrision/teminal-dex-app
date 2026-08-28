@@ -166,6 +166,8 @@ describe('audited-screen accessibility contract', () => {
     expect(source).toContain('feed.isFetchNextPageError && rows.length');
     expect(source).toContain('!feed.isFetchNextPageError');
     expect(source).toContain('onPress={() => void feed.fetchNextPage()}');
+    expect(source).toContain('firstPage?.freshness?.isStale');
+    expect(source).toContain('t("staleDegraded")');
     expect(source).toContain('accessibilityLiveRegion="polite"');
     expect(source).not.toContain('feed.error.message');
   });

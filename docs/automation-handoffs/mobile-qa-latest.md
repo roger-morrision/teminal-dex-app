@@ -1482,3 +1482,45 @@ Get-NetTCPConnection 8103,3101                                                PA
 - Carry-forward in order: `MOBILE-QA-269..272`, `MOBILE-QA-274..277`, `MOBILE-QA-280`, `MOBILE-QA-283..287`, plus rendered scroll-pagination/retry. Owners: MOBILE QA/device, authorized provider/identity operators, and upstream Noble maintainers.
 - **MOBILE-QA release recommendation: CONDITIONAL NO-GO.** The persistent local runtime and current/empty/offline recovery are independently accepted, but release certification still lacks physical-device, assistive-tech/large-text, scroll-pagination, lifecycle/performance, and authorized live identity/provider evidence.
 - **NEXT_DEV_ACTION:** provide an operator-owned Android/iOS device lane with a controllable scrollable Discover fixture and authorized identity test configuration so QA can complete the remaining 16 acceptance cases.
+
+---
+
+# MOBILE-QA validation handoff — MOBILE-200 stale and scroll-retry regression
+
+- Trigger: 2026-08-29. Scope PASS: canonical root `C:/Tuan/devApps/teminal-dex-app`, empty Git prefix, clean immutable candidate `4950131f6a1f7e02d6e39dbe01f3b709e075910f` (`fix(mobile): expose stale discovery recovery`), no DEV writer lock, and unchanged HEAD throughout evidence collection. WEB was not accessed or changed.
+- Environment: Windows; bundled Node; in-app browser; QA-owned loopback ports `8105` and `3103`. The runtime state recorded only commit `4950131`, Metro PID `27920`, and fixture PID `25664`; explicit stop later removed state and both listeners. An existing non-QA Metro session on port `8101` was observed read-only and left untouched.
+
+## Acceptance results
+
+| ID / criterion | Result | Independent evidence |
+| --- | --- | --- |
+| `MOBILE-DATA-548` stale Discover alert | CONDITIONAL PASS | `primary-a11y.test.ts` passes and asserts `firstPage?.freshness?.isStale`, localized `staleDegraded`, and polite live-region semantics in Discover. Rendered stale-alert acceptance is BLOCKED by the Metro failure below. |
+| `MOBILE-FIXTURE-549` scrollable mixed-DEX fixture | PASS (fixture contract) | `node --test scripts/qa-provider-fixture.test.mjs` passes 3/3. Current first page has exactly 24 unique addresses and `hasMore=true` / cursor `1`; it is bounded to the QA-only fixture. Rendered scrolling is BLOCKED below. |
+| `MOBILE-QA-550` one-shot second-page retry | PASS (fixture contract) | The same fixture suite proves cursor `1` returns 503 once, then exact retry returns HTTP 200/BONK with no next cursor. Discover source regression also requires retained rows and Retry after page failure. Rendered retry is BLOCKED below. |
+| `MOBILE-DEV-EMFILE-528` Metro runtime regression | FAIL P1 | QA-owned persistent runtime reported both PIDs alive and HTTP 200 for `/discover`, but the actual in-app-browser route rendered Expo Server Error: `EMFILE: too many open files, open ...\\metro-cache\\...mp`. A single Reload application retry reproduced the same error against a different cache file. This prevents stale/scroll/retry UI evidence. |
+| Toolchain/source regression | PASS | TypeScript and `eslint app src scripts` exited 0. Focused `primary-a11y` plus `build-provenance` passed 2 suites / 81 tests; Doctor passed 21/21. |
+| QA cleanup ownership | PASS | `verified-qa-runtime.mjs stop` stopped only recorded PIDs; subsequent status reported `{\"running\":false}` and ports `8105`/`3103` were absent. |
+
+## Commands and evidence
+
+```text
+node scripts/verified-qa-runtime.mjs start --metro-port 8105 --fixture-port 3103  PASS
+node scripts/verified-qa-runtime.mjs status                                   PASS: exact root/commit, both PIDs alive
+GET http://127.0.0.1:8105/discover                                            PASS: HTTP 200 before browser bundle request
+Browser /discover; Reload application                                           FAIL: reproducible Metro EMFILE server error
+node --test scripts/qa-provider-fixture.test.mjs                               PASS: 3/3
+jest --runInBand primary-a11y build-provenance                                 PASS: 2 suites / 81 tests
+tsc --noEmit; eslint app src scripts; scripts/run-expo-doctor.mjs              PASS; Doctor 21/21
+node scripts/verified-qa-runtime.mjs stop/status                               PASS: stopped / {"running":false}
+Get-NetTCPConnection 8105,3103                                                 PASS: both absent after bounded shutdown
+```
+
+- No stale scenario, footer scroll, pagination request, Retry press, BONK DOM, credential, provider production payload, wallet, signing, submission, trade, or CopyTrade action is claimed from the failed browser session.
+- Regression risk: P1. An HTTP-ready Metro process is insufficient when its first actual browser bundle read fails with EMFILE. The existing 8101 session may be environmental contention, but QA has not attributed causality and did not terminate it.
+
+## 20/20 reconciliation and release recommendation
+
+- Findings reconciled: 20. Material DEV outcomes available: 3. Source/fixture contracts independently accepted: **3/3**; rendered outcomes independently accepted: **0/3** because `MOBILE-DEV-EMFILE-528` regressed. Exact shortfall to 20: **17** with no padding.
+- Carry-forward in order: first `MOBILE-DEV-EMFILE-528`, then rendered `MOBILE-DATA-548`, `MOBILE-FIXTURE-549`, `MOBILE-QA-550`, followed by `MOBILE-QA-269..272`, `MOBILE-QA-274..277`, `MOBILE-QA-280`, and `MOBILE-QA-283..287`.
+- **MOBILE-QA release recommendation: NO-GO.** The exact candidate cannot render Discover reliably in the independent browser runtime, so the new stale/recovery UI cannot be accepted despite passing contracts.
+- **NEXT_DEV_ACTION:** reproduce and eliminate the Metro cache-file `EMFILE` failure in the canonical QA shell without terminating unowned sessions, then provide a new immutable handoff for the stale-alert and 24-row scroll/retry browser matrix.

@@ -1524,3 +1524,46 @@ Get-NetTCPConnection 8105,3103                                                 P
 - Carry-forward in order: first `MOBILE-DEV-EMFILE-528`, then rendered `MOBILE-DATA-548`, `MOBILE-FIXTURE-549`, `MOBILE-QA-550`, followed by `MOBILE-QA-269..272`, `MOBILE-QA-274..277`, `MOBILE-QA-280`, and `MOBILE-QA-283..287`.
 - **MOBILE-QA release recommendation: NO-GO.** The exact candidate cannot render Discover reliably in the independent browser runtime, so the new stale/recovery UI cannot be accepted despite passing contracts.
 - **NEXT_DEV_ACTION:** reproduce and eliminate the Metro cache-file `EMFILE` failure in the canonical QA shell without terminating unowned sessions, then provide a new immutable handoff for the stale-alert and 24-row scroll/retry browser matrix.
+
+---
+
+# MOBILE-QA validation handoff — MOBILE-202 static-runtime and recovery retest
+
+- Trigger: 2026-09-03. Inspected exact immutable `8954c4d7c1dfdaf143b49191f8f5dfe26d7cc5be` (`fix(mobile): export QA fixture in development mode`), base `ac427d5`; canonical top-level `C:/Tuan/devApps/teminal-dex-app`, empty prefix, clean worktree, and no MOBILE DEV lock: PASS. WEB was neither read nor changed. Windows, bundled Node, in-app browser, and only the project-owned loopback fixture/export server on `3103`/`8105` were used; no credentials, production payload, wallet, signing, submission, trade, or CopyTrade action occurred.
+- DEV's recorded state had the expected canonical root, commit, static-export kind, ports, PIDs, and command lines. Non-elevated liveness probing could not inspect the listeners; an ownership-safe elevated inspection confirmed `scripts/qa-provider-fixture.mjs` (PID `42336`) and `scripts/serve-web-export.mjs <temp export> --port 8105 --capture-console` (PID `28496`) before use. The static export had replaced the failing Metro browser lane; no `EMFILE` occurred in this run.
+
+## Acceptance results
+
+| ID / criterion | Result | Independent evidence |
+| --- | --- | --- |
+| `MOBILE-RUNTIME-554` development fixture transport | PASS | The exact static export rendered the injected `mobile_qa_fixture` provenance and all 24 current rows, including PUMP. This is development-only evidence, not production release certification. |
+| `MOBILE-RUNTIME-551` static export instead of Metro | PASS | Runtime status was bound to the canonical root and exact commit with `runtimeKind: static_export`; both owned loopback servers were live. Real `/discover` browser navigation did not reproduce the prior Metro-cache `EMFILE`. |
+| `MOBILE-RUNTIME-552` console-capture server | PASS | Capture was reset before stale and page-failure flows. The server capture endpoint returned `[]` after each observed route flow; in-app-browser error logs were also `[]`. |
+| `MOBILE-OPS-553` owned cleanup | PASS | `verified-qa-runtime.mjs stop` reported only PIDs `28496`/`42336`; status then returned `{"running":false}`, its temp state file was absent, and no listener remained on `8105` or `3103`. |
+| `MOBILE-DATA-548` stale Discover alert | PASS | With the bounded fixture set to `stale`, rendered Discover exposed exactly one polite alert, `STALE / DEGRADED`, with all 24 rows including PUMP and no captured/browser error. |
+| `MOBILE-FIXTURE-549` rendered scrollability | PASS | With `page-failure-once`, Discover rendered 24 retained first-page detail controls. A real user-style scroll reached the list footer and requested the second page. |
+| `MOBILE-QA-550` one-shot page failure → visible Retry → BONK | **FAIL P1** | Fixture state proves the first cursor-`1` request was consumed, but the rendered page never exposed the required error alert or `Retry` control: it automatically retried the HTTP 503 and appended BONK, yielding 25 detail controls. Source confirms `useInfiniteQuery` inherits `queryDefaults` retry for 503s, so the footer's `isFetchNextPageError` branch cannot settle for this one-shot fixture. Retained rows and BONK are present, but they do not meet the explicit manual-Retry acceptance criterion. |
+| `MOBILE-QA-276` current Expo Doctor | **FAIL P1** | Exact `node scripts/run-expo-doctor.mjs` now reports **20/21**: Expo expects the SDK 57 patch set `expo ~57.0.19`, `expo-constants ~57.0.17`, `expo-dev-client ~57.0.18`, `expo-font ~57.0.3`, `expo-linking ~57.0.9`, `expo-router ~57.0.18`, and `expo-secure-store ~57.0.3`; the pinned candidate is older. This contradicts the handoff's 21/21 claim and is a release gate failure. |
+
+## Independent command evidence
+
+```text
+node scripts/verified-qa-runtime.mjs status                         PASS: canonical root / 8954c4d / static_export / owned PIDs
+Browser /discover stale                                             PASS: 24 rows, PUMP, one STALE / DEGRADED alert, error logs []
+GET /__mobile_browser_console__                                     PASS: [] after stale flow
+Browser /discover page-failure-once + real scroll                  FAIL: cursor failure consumed; 25 rows/BONK; Retry 0; error alert 0
+GET /__mobile_browser_console__                                     PASS: [] after page-recovery flow
+jest --runInBand build-provenance hydration-boundary                PASS: 2 suites / 16 tests
+node --test qa-provider-fixture.test.mjs serve-web-export.test.mjs PASS: 6/6
+tsc --noEmit; eslint app src scripts; jest --runInBand primary-a11y PASS
+node scripts/run-expo-doctor.mjs                                    FAIL: 20/21 SDK patch mismatch
+node scripts/verified-qa-runtime.mjs stop/status                    PASS: only owned PIDs stopped / {"running":false}
+```
+
+- Regression risk: P1. Automatic retry hides a partial-page provider failure from the user and makes the documented Retry control unreachable for the deterministic failure it was intended to cover. The current Expo patch mismatch independently blocks release certification. Android/iOS device, large-text, assistive-technology, lifecycle/storage, performance, authorized live-Privy/provider, and upstream Noble lanes remain unverified; no runtime evidence is fabricated for them.
+
+## 20/20 reconciliation and release recommendation
+
+- Findings reconciled: 20. Material DEV outcomes available: 7; independently classified: **6 PASS / 1 FAIL**. Exact material-outcome shortfall to 20: **13**, with no padding. Carry-forward order: `MOBILE-QA-269`, `MOBILE-QA-270`, `MOBILE-QA-271`, `MOBILE-QA-272`, `MOBILE-QA-274`, `MOBILE-QA-275`, `MOBILE-QA-277`, `MOBILE-QA-280`, `MOBILE-QA-283`, `MOBILE-QA-284`, `MOBILE-QA-285`, `MOBILE-QA-286`, and device/live-provider authorization.
+- **MOBILE-QA release recommendation: NO-GO.** `MOBILE-DEV-EMFILE-528` is closed for this static browser path, but `MOBILE-QA-550` and `MOBILE-QA-276` are current P1 release blockers.
+- **NEXT_DEV_ACTION:** provide one immutable release candidate that makes the first controlled cursor-`1` 503 settle as a visible retained-row error with an explicit user Retry, while aligning the candidate to the currently required Expo SDK patch versions.

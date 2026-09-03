@@ -104,7 +104,7 @@ describe('verified development build provenance', () => {
     expect(persistentLauncher).toContain("git('status', '--porcelain', '--untracked-files=no')");
     expect(persistentLauncher).toContain("MOBILE_BUILD_COMMIT: commit");
     expect(persistentLauncher).toContain("EXPO_PUBLIC_API_URL: `http://127.0.0.1:${fixturePort}`");
-    expect(persistentLauncher).toContain("'export', '--platform', 'web'");
+    expect(persistentLauncher).toContain("'export', '--dev', '--platform', 'web'");
     expect(persistentLauncher).toContain("'scripts/serve-web-export.mjs', exportDir");
     expect(persistentLauncher).toContain("runtimeKind: 'static_export'");
     expect(persistentLauncher).toContain("state.root !== root");

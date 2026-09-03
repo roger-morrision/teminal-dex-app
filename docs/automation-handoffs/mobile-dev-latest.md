@@ -1,5 +1,14 @@
 # MOBILE DEV → QA handoff
 
+## MOBILE-202 — local static fixture transport correction
+
+- Trigger: 2026-09-03T02:08:19.957Z; base e02d139. MOBILE-RUNTIME-554 adds Expo export --dev to the opt-in QA launcher; production client HTTPS enforcement remains unchanged.
+- Cause: default static export is production mode, while the injected fixture is HTTP. getApiOrigin correctly rejects HTTP unless __DEV__ is true. Local Expo export --help explicitly documents --dev for non-HTTPS local development.
+- Regression: build-provenance requires the exact development export arguments. Fresh export and rendered fixture acceptance remain pending; prior HTTP 200/empty console evidence did not prove fixture consumption.
+- NEXT_QA_ACTION: rebuild from the containing commit, verify PUMP rows and stale/page retry behavior; do not classify this development artifact as production release certification.
+- NEXT_WEB_ACTION: none. Physical-device, storage fault, live-provider/Privy and upstream lanes remain unverified.
+
+
 ## MOBILE-201 — EMFILE-free static browser acceptance runtime
 
 - Trigger/base: QA report `ac427d5` reproduced `EMFILE` in Metro cache during rendered Discover acceptance despite the two-worker limit; result: containing immutable DEV commit.

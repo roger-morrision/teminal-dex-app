@@ -93,7 +93,7 @@ async function start() {
   try {
     if (!exportDir.startsWith(`${tmpdir()}\\terminal-dex-mobile-qa-export-`)) throw new Error('Refusing unsafe QA export path.');
     rmSync(exportDir, { recursive: true, force: true });
-    const exported = spawnSync(process.execPath, ['node_modules/expo/bin/cli', 'export', '--platform', 'web', '--output-dir', exportDir, '--max-workers', '2'], {
+    const exported = spawnSync(process.execPath, ['node_modules/expo/bin/cli', 'export', '--dev', '--platform', 'web', '--output-dir', exportDir, '--max-workers', '2'], {
       cwd: root,
       stdio: 'inherit',
       env: { ...process.env, MOBILE_BUILD_COMMIT: commit, EXPO_PUBLIC_API_URL: `http://127.0.0.1:${fixturePort}` },
